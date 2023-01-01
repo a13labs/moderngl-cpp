@@ -145,3 +145,5 @@ if(MGL_SHOW_CMAKE_VARS)
       message(STATUS "${_variableName}=${${_variableName}}")
   endforeach()
 endif()
+
+set(MGL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src PARENT_SCOPE)
