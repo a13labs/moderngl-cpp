@@ -17,6 +17,11 @@ project(
   LANGUAGES CXX C
 )
 
+add_definitions(-DMGL_SEM_VERSION="$MGL_SEMANTIC_VERSION")
+add_definitions(-DMGL_VERSION_MAJOR="$MGL_VERSION_MAJOR")
+add_definitions(-DMGL_VERSION_MINOR="$MGL_VERSION_MINOR")
+add_definitions(-DMGL_VERSION_RELEASE="$MGL_VERSION_RELEASE")
+
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_definitions(-DMGL_DEBUG)
 endif()
@@ -55,9 +60,6 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_OUTPUT_DIR}/dist")
 if(NOT DEFINED ENV{MGL_NO_TESTS})
   add_definitions(-DMGL_TESTS)
 endif()
-
-# Pass version variables to Application
-configure_file(config.h.in config.h @ONLY)
 
 # Allow config.h to be visible
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
