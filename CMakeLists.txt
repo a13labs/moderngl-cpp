@@ -109,6 +109,7 @@ if(MGL_BUILD_TESTS)
       "https://github.com/google/googletest.git" 
       "release-1.11.0"
   )    
+  set(GOOGLE_TEST_PRESENT ON)
   
   # The gtest/gtest_main targets carry header search path
   # dependencies automatically when using CMake 2.8.11 or
@@ -125,7 +126,8 @@ if(MGL_BUILD_TESTS)
   foreach(UNITTEST ${UNITTESTS})
     AddUnitTest(${UNITTEST})
   endforeach(UNITTEST ${UNITTESTS})
-
+else()
+  set(GOOGLE_TEST_PRESENT OFF)
 endif() 
 
 # Debug CMake Vars, uncomment to show CMake vars
