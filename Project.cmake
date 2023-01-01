@@ -21,7 +21,7 @@ set(
 
 set(MGL_LIBRARIES "mgl_core" "mgl_opengl" "mgl_window")
 
-set(MGL_BUILD_EXAMPLES ON)
+set(MGL_BUILD_EXAMPLES OFF)
 set(
     MGL_EXAMPLES_EXTERNAL_PROJECTS 
     NumCpp     "https://github.com/dpilger26/NumCpp.git"                        Version_2.8.0
