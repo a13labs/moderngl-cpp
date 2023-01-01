@@ -146,4 +146,12 @@ if(MGL_SHOW_CMAKE_VARS)
   endforeach()
 endif()
 
-set(MGL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+export(TARGETS 
+  mgl_core
+  mgl_opengl
+  mgl_window 
+  spdlog
+  nlohmann_json
+  glm
+  FILE MGLLib.cmake
+)
