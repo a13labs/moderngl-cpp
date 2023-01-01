@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #pragma once
+#include "config.hpp"
 #include "pch.hpp"
 #include <nlohmann/json.hpp>
 

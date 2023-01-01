@@ -10,21 +10,19 @@ include(cmake/ExternalDeps.cmake)
 include(cmake/Build.cmake)
 
 project(
-  APP
+  ${MGL_SHORT}
   VERSION ${MGL_VERSION_MAJOR}.${MGL_VERSION_MINOR}.${MGL_VERSION_RELEASE}
   DESCRIPTION ${MGL_DESCRIPTION}
   HOMEPAGE_URL ${MGL_HOMEPAGE_URL}
   LANGUAGES CXX C
 )
 
-add_definitions(-DMGL_SEM_VERSION="$MGL_SEMANTIC_VERSION")
-add_definitions(-DMGL_VERSION_MAJOR="$MGL_VERSION_MAJOR")
-add_definitions(-DMGL_VERSION_MINOR="$MGL_VERSION_MINOR")
-add_definitions(-DMGL_VERSION_RELEASE="$MGL_VERSION_RELEASE")
-
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_definitions(-DMGL_DEBUG)
 endif()
+
+# Pass version variables to Application
+configure_file(config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/src/mgl_core/config.hpp @ONLY)
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
@@ -32,13 +30,6 @@ if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
 else ()
   set(BUILD_ARCH "x86")
 endif ()
-
-# Platform specific configuration
-if(WIN32)
-  add_definitions(-DMGL_PLATFORM_WINDOWS)
-elseif (UNIX)
-  add_definitions(-DMGL_PLATFORM_LINUX)
-endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")

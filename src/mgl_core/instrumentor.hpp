@@ -15,13 +15,16 @@
 */
 #pragma once
 #include "builtins.hpp"
+#include "config.hpp"
 #include "log.hpp"
 #include <sys/types.h>
 
 #ifdef MGL_PLATFORM_WINDOWS
 #  include <process.h>
 #  define GET_PROCESS_ID _getpid
-#elif MGL_PLATFORM_LINUX
+#endif
+
+#ifdef MGL_PLATFORM_LINUX
 #  include <unistd.h>
 #  define GET_PROCESS_ID getpid
 #endif

@@ -96,7 +96,7 @@ function(AddLibrary TGT_NAME)
 
   target_include_directories( 
     ${MGL_CURRENT_TARGET}
-    PRIVATE
+    INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
   )
 
