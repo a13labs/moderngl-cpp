@@ -1,0 +1,125 @@
+# Doxyfile
+# The PROJECT_NAME tag is used as a title in the HTML and docsets
+PROJECT_NAME           = "GameLib"
+
+# The PROJECT_NUMBER tag can be used to enter a project or revision number.
+PROJECT_NUMBER         = @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@
+
+# The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) location where the generated documentation will be put.
+OUTPUT_DIRECTORY       = @CMAKE_BINARY_DIR@/doc/
+
+# The INPUT tag can be used to specify the files and/or directories that contain documented source files.
+INPUT                  = @CMAKE_SOURCE_DIR@/gamelib/inc @CMAKE_SOURCE_DIR@/inc/cglm
+
+# Recursively search for input files in subdirectories
+RECURSIVE              = NO
+
+# Exclude any files or directories that should not be documented
+EXCLUDE                =
+
+# Filter the input files based on file patterns
+FILE_PATTERNS          = *.c *.h
+
+# Generate HTML output
+GENERATE_HTML          = YES
+
+# Generate XML output (for source browser)
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+
+# Group documented entities by file
+SOURCE_BROWSER         = YES
+
+# List the files separately (without documentation)
+GENERATE_LATEX         = NO
+
+# Sort the input alphabetically
+SORT_MEMBER_DOCS       = YES
+
+# Include undocumented entities in the documentation
+EXTRACT_ALL            = YES
+
+# Include private members in the documentation
+EXTRACT_PRIVATE        = YES
+
+# Show the TOC (Table of Contents) on each HTML page
+HTML_DYNAMIC_SECTIONS  = YES
+
+# Show the directory structure in the HTML output
+GENERATE_TREEVIEW      = YES
+
+# Include brief descriptions in the TOC
+GENERATE_TODOLIST      = YES
+
+# Enable detailed description of page members (functions, structures, etc.)
+INLINE_INHERITED_MEMB  = YES
+
+# Include a description of the module structure in the documentation
+GENERATE_DEPRECATEDLIST = YES
+
+# Generate collaboration diagrams for structures
+COLLABORATION_GRAPH    = YES
+UML_LOOK               = YES
+
+# Use dot tool from Graphviz to generate graphs
+HAVE_DOT               = YES
+
+# Show included headers in the documentation
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = YES
+
+# Enable cross-referencing between entities (functions, structures, etc.)
+REFERENCED_BY_RELATION = YES
+
+# Enable cross-referencing between entities in the same file
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
+
+# Show the inheritance hierarchy
+INHERIT_DOCS           = YES
+INLINE_INFO            = YES
+
+# Generate caller graphs
+CALLER_GRAPH           = YES
+
+# Generate caller graph for each function
+CALL_GRAPH             = YES
+
+# Show callers/callees in the caller/callee graph
+CALLER_GRAPH           = YES
+CALL_GRAPH             = YES
+
+# Display caller graphs on each function's documentation
+CALLER_GRAPH           = YES
+
+# Generate the collaboration graph for the entire project
+COLLABORATION_GRAPH    = YES
+
+# Display collaboration graphs on each structure's documentation
+COLLABORATION_GRAPH    = YES
+
+# Show inheritance diagrams on structure documentation
+INLINE_INHERITED_MEMB  = YES
+
+# Use dot tool from Graphviz to generate graphs
+HAVE_DOT               = YES
+
+# Set the warning level (use "YES" or "NO" for individual warnings)
+WARN_LOGFILE           = doxygen_warnings.log
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+WARN_FORMAT            = "%$file:%line: %severity: %text"
+
+# Enable additional output formats for the generated documentation
+GENERATE_MAN           = NO
+GENERATE_RTF           = NO
+GENERATE_QHP           = NO
+GENERATE_ECLIPSEHELP   = NO
+
+# Display cross-references as hyperlinks
+HTML_DYNAMIC_SECTIONS  = YES
+
+# Enable grouping of entities
+ENABLED_SECTIONS       = UtilsGroup MathGroup RenderGroup InputGroup SoundGroup GeneralGroup
+

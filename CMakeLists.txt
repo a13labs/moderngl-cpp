@@ -1,150 +1,139 @@
-cmake_minimum_required(VERSION 3.7...3.25)
+cmake_minimum_required(VERSION 3.21)
+project(duna 
+        VERSION 0.0.1
+        LANGUAGES CXX
+       )
 
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-endif()
+# Enable the FetchContent module
+include(FetchContent)
 
-include(Project.cmake)
-include(cmake/Unittest.cmake)
-include(cmake/ExternalDeps.cmake)
-include(cmake/Build.cmake)
+# Build options
+option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
+option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
+option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
+option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 
-project(
-  ${MGL_SHORT}
-  VERSION ${MGL_VERSION_MAJOR}.${MGL_VERSION_MINOR}.${MGL_VERSION_RELEASE}
-  DESCRIPTION ${MGL_DESCRIPTION}
-  HOMEPAGE_URL ${MGL_HOMEPAGE_URL}
-  LANGUAGES CXX C
-)
+# Set the C20 standard
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-  add_definitions(-DMGL_DEBUG)
-endif()
+# Set the location for external projects
+set(EXTERNAL_PROJECTS_DIR "${CMAKE_CURRENT_BINARY_DIR}/external")
 
-# Pass version variables to Application
-configure_file(config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/src/mgl_core/config.hpp @ONLY)
+# Set the location for downloaded projects
+set(SCRIPTS_DIR "${CMAKE_SOURCE_DIR}/scripts")
 
-# Support both 32 and 64 bit builds
-if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(BUILD_ARCH "x64")
-else ()
-  set(BUILD_ARCH "x86")
-endif ()
+# Game data file
+set(MGL_DATA_FILE "data.mgz")
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
-  # POSIX Threads
-  find_package(Threads REQUIRED)
+# Detect the compiler and set MGL_COMPILER_DEFINITION
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_GNU")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_MSVC")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_CLANG")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+    set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_INTEL")
 else()
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3")
+    message(FATAL_ERROR "Unsupported compiler! ${CMAKE_CXX_COMPILER_ID}" )
 endif()
 
-# Specify build paths
-set(PROJECT_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/output")
-file(MAKE_DIRECTORY ${PROJECT_OUTPUT_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_OUTPUT_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_OUTPUT_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_OUTPUT_DIR}/bin")
-set(CMAKE_INSTALL_PREFIX "${PROJECT_OUTPUT_DIR}/dist")
-
-# Activate Unit Testing
-if(NOT DEFINED ENV{MGL_NO_TESTS})
-  add_definitions(-DMGL_TESTS)
+if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+    set(MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RELEASE")
+    set(MGL_BUILD_DOCS ON)
+else()
+    set(MGL_BUILD_TYPE_DEFINITIONS "-DMGL_DEBUG")
 endif()
 
-# Allow config.h to be visible
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+# Detect the operating system and set MGL_OS_DEFINITION
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(MGL_OS_DEFINITION "-DMGL_OS_LINUX")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(MGL_OS_DEFINITION "-DMGL_OS_WINDOWS")
 
-# Include custom configuration if required
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.cmake")
-  message(STATUS "Adding custom configuration: config.cmake")
-  include("${CMAKE_CURRENT_SOURCE_DIR}/config.cmake")
+    # Setup SDL2
+    set(SDL_VERSION "2.28.1")
+    set(SDL2_SCRIPT "${SCRIPTS_DIR}/download_sdl2.ps1")
+
+    # Set the SDL2 extraction directory
+    set(SDL2_EXTRACT_PATH "/SDL2")
+    set(SDL2_DIR "${EXTERNAL_PROJECTS_DIR}/SDL2-${SDL_VERSION}")
+
+    # Add the SDL2 installation directory to the CMAKE_PREFIX_PATH
+    list(APPEND CMAKE_PREFIX_PATH "${SDL2_DIR}")
+
+    # Run the PowerShell script during the configure step
+    execute_process(
+        COMMAND powershell.exe -ExecutionPolicy Bypass -File ${SDL2_SCRIPT} -ExtractPath ${EXTERNAL_PROJECTS_DIR} -SDL2Version ${SDL_VERSION}
+        RESULT_VARIABLE SDL2_SCRIPT_RESULT
+    )
+
+    if(NOT SDL2_SCRIPT_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to run the PowerShell script to download and extract SDL2.")
+    endif()
+
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(MGL_OS_DEFINITION "-DMGL_OS_MACOS")
+else()
+    message(FATAL_ERROR "Unsupported operating system!")
 endif()
 
-while(MGL_EXTERNAL_PROJECTS)
-  list(POP_FRONT MGL_EXTERNAL_PROJECTS PRJ_NAME PRJ_GIT_REPO PRJ_GIT_TAG)
-  message(STATUS ${PRJ_NAME} ${PRJ_GIT_REPO} ${PRJ_GIT_TAG} )
-  AddExternalProject(${PRJ_NAME} ${PRJ_GIT_REPO} ${PRJ_GIT_TAG})
-endwhile()
-
-# Application/Libraries Source
-foreach(LIB ${MGL_LIBRARIES})
-  message(STATUS "Adding library: '${LIB}")
-  AddLibrary(${LIB})
-endforeach()
-
-foreach(EXECUTABLE ${MGL_EXECUTABLES})
-  message(STATUS "Adding executable: '${EXECUTABLE}")
-  AddExecutable(${EXECUTABLE})
-endforeach()
-
-if(MGL_BUILD_EXAMPLES)
-
-  while(MGL_EXAMPLES_EXTERNAL_PROJECTS)
-    list(POP_FRONT MGL_EXAMPLES_EXTERNAL_PROJECTS PRJ_NAME PRJ_GIT_REPO PRJ_GIT_TAG)
-    message(STATUS ${PRJ_NAME} ${PRJ_GIT_REPO} ${PRJ_GIT_TAG} )
-    AddExternalProject(${PRJ_NAME} ${PRJ_GIT_REPO} ${PRJ_GIT_TAG})
-  endwhile()
-
-  foreach(EXAMPLE ${MGL_EXAMPLES})
-    message(STATUS "Adding examples: '${EXAMPLE}")
-    AddExample(${EXAMPLE})
-  endforeach()
+if (MGL_BUILD_TESTS)
+    # TODO: Setup testing on windows and macOS
+    # Add unit tests
+    message(STATUS "ModernGL-Cpp tests: ON")
+    enable_testing()
+    include(Dart)
+else()
+    message(STATUS "ModernGL-Cpp tests: OFF")
 endif()
 
-# Unit Testing
-# https://github.com/google/googletest.git
+if (MGL_BUILD_DOCS)
+    message(STATUS "ModernGL-Cpp documentation: ON")
+    find_package(Doxygen REQUIRED)
+    find_package(Doxygen)
+    if (DOXYGEN_FOUND)
+        # set input and output files
+        set(DOXYGEN_IN "${CMAKE_SOURCE_DIR}/doc/Doxyfile.in")
+        set(DOXYGEN_OUT "${CMAKE_BINARY_DIR}/Doxyfile")
 
-if(DEFINED ENV{MGL_NO_BUILD_TESTS})
-  set(MGL_BUILD_TESTS OFF)
+        # request to configure the file
+        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+        message("Doxygen build started")
+
+        # note the option ALL which allows to build the docs together with the application
+        add_custom_target(gamelib_documentation ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM 
+            )
+    else (DOXYGEN_FOUND)
+        message("Doxygen need to be installed to generate the doxygen documentation")
+    endif (DOXYGEN_FOUND)
+else()
+    message(STATUS "ModernGL-Cpp documentation: OFF")
 endif()
 
 if(MGL_BUILD_TESTS)
-  # Prevent overriding the parent project's compiler/linker
-  # settings on Windows
-  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    # Set the path where you want to download Google Test
+    set(GTEST_INSTALL_DIR "${CMAKE_BINARY_DIR}/googletest" CACHE PATH "Path to Google Test installation directory")
 
-  AddExternalProject(
-      googletest
-      "https://github.com/google/googletest.git" 
-      "release-1.11.0"
-  )    
-  set(GOOGLE_TEST_PRESENT ON)
-  
-  # The gtest/gtest_main targets carry header search path
-  # dependencies automatically when using CMake 2.8.11 or
-  # later. Otherwise we have to add them here ourselves.
-  if (CMAKE_VERSION VERSION_LESS 2.8.11)
-      include_directories("${gtest_SOURCE_DIR}/include")
-  endif()
+    # Use FetchContent to download Google Test
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        v1.13.0 
+    )
 
-  enable_testing()
-  include(Dart)
-
-  ListTests(UNITTESTS)
-
-  foreach(UNITTEST ${UNITTESTS})
-    AddUnitTest(${UNITTEST})
-  endforeach(UNITTEST ${UNITTESTS})
-else()
-  set(GOOGLE_TEST_PRESENT OFF)
-endif() 
-
-# Debug CMake Vars, uncomment to show CMake vars
-if(MGL_SHOW_CMAKE_VARS) 
-  get_cmake_property(_variableNames VARIABLES)
-  list (SORT _variableNames)
-  foreach (_variableName ${_variableNames})
-      message(STATUS "${_variableName}=${${_variableName}}")
-  endforeach()
+    # FetchContent will download Google Test and build it at configure time
+    FetchContent_MakeAvailable(googletest)
 endif()
 
-export(TARGETS 
-  mgl_core
-  mgl_opengl
-  mgl_window 
-  spdlog
-  nlohmann_json
-  glm
-  FILE MGLLib.cmake
-)
+# # Include CMakeLists.txt files for the targets
+add_subdirectory(vendors)
+add_subdirectory(mgl)
+if(MGL_BUILD_EXAMPLES) 
+    add_subdirectory(examples)
+endif()

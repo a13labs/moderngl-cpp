@@ -1,0 +1,6 @@
+add_subdirectory(basic_alpha_blending)
+add_subdirectory(basic_index_buffer)
+add_subdirectory(basic_perspective_projection)
+add_subdirectory(basic_simple_color_triangle)
+add_subdirectory(basic_uniforms_and_attributes)
+add_subdirectory(compute_shader)
