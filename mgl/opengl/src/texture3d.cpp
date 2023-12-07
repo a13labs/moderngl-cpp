@@ -21,13 +21,14 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void texture_3d::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
     {
@@ -35,7 +36,7 @@ namespace mgl::opengl
     }
 
     m_released = true;
-    gl.DeleteTextures(1, (GLuint*)&m_texture_obj);
+    glDeleteTextures(1, (GLuint*)&m_texture_obj);
   }
 
   texture::type texture_3d::texture_type()
@@ -51,7 +52,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     size_t expected_size = m_width * m_components * m_data_type->size;
     expected_size = (expected_size + alignment - 1) / alignment * alignment;
@@ -63,14 +63,14 @@ namespace mgl::opengl
 
     char* ptr = (char*)dst.data() + write_offset;
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.GetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, ptr);
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glGetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, ptr);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool texture_3d::read_into(buffer_ref& dst, int alignment, size_t write_offset)
@@ -80,21 +80,20 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    gl.BindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.GetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, (void*)write_offset);
-    gl.BindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glGetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, (void*)write_offset);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool texture_3d::write(const mgl::core::mem_buffer<uint8_t>& src,
@@ -106,7 +105,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     int x = viewport.x;
     int y = viewport.y;
@@ -123,15 +121,15 @@ namespace mgl::opengl
     int base_format = m_data_type->base_format[m_components];
     int pixel_type = m_data_type->gl_type;
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.TexSubImage3D(
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glTexSubImage3D(
         GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, src.data());
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool texture_3d::write(const mgl::core::mem_buffer<uint8_t>& src, int alignment)
@@ -141,7 +139,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     int x = 0;
     int y = 0;
@@ -158,15 +155,15 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.TexSubImage3D(
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glTexSubImage3D(
         GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, src.data());
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool
@@ -177,7 +174,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     int x = viewport.x;
     int y = viewport.y;
@@ -189,16 +185,16 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    gl.BindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.TexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
-    gl.BindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glTexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool texture_3d::write(const buffer_ref& src, int alignment)
@@ -208,7 +204,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    const GLMethods& gl = m_context->gl();
 
     int x = 0;
     int y = 0;
@@ -220,16 +215,16 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    gl.BindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.TexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
-    gl.BindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glTexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   void texture_3d::bind_to_image(int unit, bool read, bool write, int level, int format)
@@ -238,7 +233,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(read || write, "Illegal access mode. Read or write needs to be enabled.");
-    const GLMethods& gl = m_context->gl();
 
     int access = GL_READ_WRITE;
     if(read && !write)
@@ -248,7 +242,7 @@ namespace mgl::opengl
 
     int frmt = format ? format : m_data_type->internal_format[m_components];
 
-    gl.BindImageTexture(unit, m_texture_obj, level, GL_TRUE, 0, access, frmt);
+    glBindImageTexture(unit, m_texture_obj, level, GL_TRUE, 0, access, frmt);
   }
 
   void texture_3d::use(int index)
@@ -256,10 +250,9 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + index);
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + index);
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
   }
 
   void texture_3d::build_mipmaps(int base, int max_level)
@@ -268,18 +261,17 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(base <= max_level, "invalid base");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, base);
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, m_max_level);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, base);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, m_max_level);
 
-    gl.GenerateMipmap(GL_TEXTURE_3D);
+    glGenerateMipmap(GL_TEXTURE_3D);
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     m_filter = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR };
     m_max_level = max_level;
@@ -290,20 +282,19 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
     m_repeat_x = value;
 
     if(m_repeat_x)
     {
-      gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       return;
     }
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   }
 
   void texture_3d::set_repeat_y(bool value)
@@ -311,20 +302,19 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
     m_repeat_y = value;
 
     if(m_repeat_y)
     {
-      gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
       return;
     }
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
   void texture_3d::set_repeat_z(bool value)
@@ -332,20 +322,19 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
     m_repeat_z = value;
 
     if(m_repeat_z)
     {
-      gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
       return;
     }
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
   }
 
   void texture_3d::set_filter(const texture::filter& value)
@@ -353,15 +342,14 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     m_filter = value;
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
   }
 
   mgl::core::string texture_3d::swizzle()
@@ -369,20 +357,19 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
     int swizzle_r = 0;
     int swizzle_g = 0;
     int swizzle_b = 0;
     int swizzle_a = 0;
 
-    gl.GetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, &swizzle_r);
-    gl.GetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_G, &swizzle_g);
-    gl.GetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_B, &swizzle_b);
-    gl.GetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_A, &swizzle_a);
+    glGetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, &swizzle_r);
+    glGetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_G, &swizzle_g);
+    glGetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_B, &swizzle_b);
+    glGetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_A, &swizzle_a);
 
     char swizzle[5] = {
       char_from_swizzle(swizzle_r),
@@ -400,7 +387,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     const char* swizzle = value.c_str();
     MGL_CORE_ASSERT(swizzle[0], "the swizzle is empty");
@@ -414,19 +400,19 @@ namespace mgl::opengl
       MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", swizzle[i]);
     }
 
-    gl.ActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
-    gl.BindTexture(GL_TEXTURE_3D, m_texture_obj);
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
-    gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, tex_swizzle[0]);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, tex_swizzle[0]);
     if(tex_swizzle[1] != -1)
     {
-      gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_G, tex_swizzle[1]);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_G, tex_swizzle[1]);
       if(tex_swizzle[2] != -1)
       {
-        gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_B, tex_swizzle[2]);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_B, tex_swizzle[2]);
         if(tex_swizzle[3] != -1)
         {
-          gl.TexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_A, tex_swizzle[3]);
+          glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_A, tex_swizzle[3]);
         }
       }
     }

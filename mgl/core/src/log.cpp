@@ -21,7 +21,6 @@ namespace mgl::core
 {
   namespace log
   {
-
     ref<spdlog::logger> logger;
 
     void init(const string& logfile)

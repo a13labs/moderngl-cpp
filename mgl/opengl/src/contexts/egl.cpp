@@ -19,151 +19,8 @@
 
 #  include "mgl_core/log.hpp"
 
-#  include "EGL/egl.h"
-#  include "EGL/eglext.h"
-#  include <dlfcn.h>
-
-static PFNEGLGETERRORPROC eglGetError = nullptr;
-static PFNEGLGETDISPLAYPROC eglGetDisplay = nullptr;
-static PFNEGLINITIALIZEPROC eglInitialize = nullptr;
-static PFNEGLCHOOSECONFIGPROC eglChooseConfig = nullptr;
-static PFNEGLBINDAPIPROC eglBindAPI = nullptr;
-static PFNEGLCREATECONTEXTPROC eglCreateContext = nullptr;
-static PFNEGLDESTROYCONTEXTPROC eglDestroyContext = nullptr;
-static PFNEGLMAKECURRENTPROC eglMakeCurrent = nullptr;
-static PFNEGLGETPROCADDRESSPROC eglGetProcAddress = nullptr;
-
-static PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = nullptr;
-static PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT = nullptr;
-static PFNEGLGETCURRENTDISPLAYPROC eglGetCurrentDisplay = nullptr;
-static PFNEGLGETCURRENTCONTEXTPROC eglGetCurrentContext = nullptr;
-static PFNEGLGETCURRENTSURFACEPROC eglGetCurrentSurface = nullptr;
-
-static void* s_lib_egl = nullptr;
-static void* s_lib_gl = nullptr;
-
-static bool load_libraries()
-{
-  if(s_lib_egl || s_lib_gl)
-  {
-    return true;
-  }
-
-  s_lib_gl = dlopen("libGL.so", RTLD_LAZY);
-  if(!s_lib_gl)
-  {
-    MGL_CORE_ERROR("'libGL.so' not loaded");
-    return false;
-  }
-
-  s_lib_egl = dlopen("libEGL.so", RTLD_LAZY);
-  if(!s_lib_egl)
-  {
-    MGL_CORE_ERROR("'libEGL.so' not loaded");
-    return false;
-  }
-
-  eglGetError = (PFNEGLGETERRORPROC)dlsym(s_lib_egl, "eglGetError");
-  if(!eglGetError)
-  {
-    MGL_CORE_ERROR("eglGetError not found");
-    return false;
-  }
-
-  eglGetDisplay = (PFNEGLGETDISPLAYPROC)dlsym(s_lib_egl, "eglGetDisplay");
-  if(!eglGetDisplay)
-  {
-    MGL_CORE_ERROR("eglGetDisplay not found");
-    return false;
-  }
-
-  eglInitialize = (PFNEGLINITIALIZEPROC)dlsym(s_lib_egl, "eglInitialize");
-  if(!eglInitialize)
-  {
-    MGL_CORE_ERROR("eglInitialize not found");
-    return false;
-  }
-
-  eglChooseConfig = (PFNEGLCHOOSECONFIGPROC)dlsym(s_lib_egl, "eglChooseConfig");
-  if(!eglChooseConfig)
-  {
-    MGL_CORE_ERROR("eglChooseConfig not found");
-    return false;
-  }
-
-  eglBindAPI = (PFNEGLBINDAPIPROC)dlsym(s_lib_egl, "eglBindAPI");
-  if(!eglBindAPI)
-  {
-    MGL_CORE_ERROR("eglBindAPI not found");
-    return false;
-  }
-
-  eglCreateContext = (PFNEGLCREATECONTEXTPROC)dlsym(s_lib_egl, "eglCreateContext");
-  if(!eglCreateContext)
-  {
-    MGL_CORE_ERROR("eglCreateContext not found");
-    return false;
-  }
-
-  eglDestroyContext = (PFNEGLDESTROYCONTEXTPROC)dlsym(s_lib_egl, "eglDestroyContext");
-  if(!eglDestroyContext)
-  {
-    MGL_CORE_ERROR("eglDestroyContext not found");
-    return false;
-  }
-
-  eglMakeCurrent = (PFNEGLMAKECURRENTPROC)dlsym(s_lib_egl, "eglMakeCurrent");
-  if(!eglMakeCurrent)
-  {
-    MGL_CORE_ERROR("eglMakeCurrent not found");
-    return false;
-  }
-
-  eglGetProcAddress = (PFNEGLGETPROCADDRESSPROC)dlsym(s_lib_egl, "eglGetProcAddress");
-  if(!eglGetProcAddress)
-  {
-    MGL_CORE_ERROR("eglGetProcAddress not found");
-    return false;
-  }
-
-  eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)eglGetProcAddress("eglQueryDevicesEXT");
-  if(!eglQueryDevicesEXT)
-  {
-    MGL_CORE_ERROR("eglQueryDevicesEXT not found");
-    return false;
-  }
-
-  eglGetPlatformDisplayEXT =
-      (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
-  if(!eglGetPlatformDisplayEXT)
-  {
-    MGL_CORE_ERROR("eglGetPlatformDisplayEXT not found");
-    return false;
-  }
-
-  eglGetCurrentDisplay = (PFNEGLGETCURRENTDISPLAYPROC)eglGetProcAddress("eglGetCurrentDisplay");
-  if(!eglGetCurrentDisplay)
-  {
-    MGL_CORE_ERROR("eglGetCurrentDisplay not found");
-    return false;
-  }
-
-  eglGetCurrentContext = (PFNEGLGETCURRENTCONTEXTPROC)eglGetProcAddress("eglGetCurrentContext");
-  if(!eglGetCurrentContext)
-  {
-    MGL_CORE_ERROR("eglGetCurrentContext not found");
-    return false;
-  }
-
-  eglGetCurrentSurface = (PFNEGLGETCURRENTSURFACEPROC)eglGetProcAddress("eglGetCurrentSurface");
-  if(!eglGetCurrentSurface)
-  {
-    MGL_CORE_ERROR("eglGetCurrentSurface not found");
-    return false;
-  }
-
-  return true;
-}
+#  include "glad/egl.h"
+#  include "glad/gl.h"
 
 struct EGLContextData
 {
@@ -174,7 +31,6 @@ struct EGLContextData
 
   int standalone;
 };
-
 namespace mgl::opengl
 {
   ContextEGL::ContextEGL(context_mode::Enum mode, int required)
@@ -185,11 +41,15 @@ namespace mgl::opengl
 
     m_context = nullptr;
 
-    if(!load_libraries())
+    int egl_version = gladLoaderLoadEGL(nullptr);
+
+    if(!egl_version)
     {
-      MGL_CORE_ERROR("Error loading libegl.so or libgl.so");
+      MGL_CORE_ERROR("Error loading EGL");
       return;
     }
+
+    int gl_version = gladLoaderLoadGL();
 
     auto res = new EGLContextData;
 
@@ -387,22 +247,6 @@ namespace mgl::opengl
   {
     if(m_context != nullptr)
       delete(EGLContextData*)m_context;
-  }
-
-  gl_function ContextEGL::load(const mgl::core::string& method)
-  {
-    if(!m_context)
-      return nullptr;
-
-    auto self = (EGLContextData*)m_context;
-
-    void* proc = (void*)dlsym(s_lib_gl, method.c_str());
-    if(!proc)
-    {
-      proc = (void*)eglGetProcAddress(method.c_str());
-    }
-
-    return proc;
   }
 
   void ContextEGL::enter()

@@ -22,3 +22,6 @@ add_subdirectory(spdlog)
 
 # glm
 add_subdirectory(glm)
+
+# glad
+add_subdirectory(glad)

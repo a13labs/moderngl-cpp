@@ -16,7 +16,6 @@
 #pragma once
 #include "builtins.hpp"
 #include "framebuffer.hpp"
-#include "glmethods.hpp"
 
 #include "glm/vec4.hpp"
 
@@ -37,7 +36,6 @@ namespace mgl::opengl
 public:
     virtual ~context() = default;
 
-    const GLMethods& gl() const;
     int version_code();
     int max_samples();
     int max_integer_samples();
@@ -168,7 +166,6 @@ public:
                                   bool skip_errors = false,
                                   mgl::opengl::render_mode mode = mgl::opengl::render_mode::POINTS);
 
-    virtual gl_function load(const mgl::core::string& method) = 0;
     virtual void enter() = 0;
     virtual void exit() = 0;
 
@@ -188,7 +185,6 @@ public:
                const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d);
 
 private:
-    void load_functions();
     buffer_ref buffer(void* data, size_t size, bool dynamic);
 
 protected:
@@ -198,7 +194,6 @@ protected:
 private:
     friend class framebuffer;
 
-    GLMethods m_gl;
     int m_version_code;
     int m_max_samples;
     int m_max_integer_samples;
@@ -230,7 +225,6 @@ public:
     ContextEGL(context_mode::Enum mode, int required);
     virtual ~ContextEGL() override;
 
-    virtual gl_function load(const mgl::core::string& method) override;
     virtual void enter() override;
     virtual void exit() override;
 
@@ -253,8 +247,6 @@ public:
     virtual ~ContextGLX() override;
 
 public:
-    virtual gl_function load(const mgl::core::string& method) override;
-
     virtual void enter() override;
     virtual void exit() override;
 
@@ -271,11 +263,6 @@ private:
 #ifdef MGL_OPENGL_WGL
 
 #endif
-
-  inline const GLMethods& context::gl() const
-  {
-    return m_gl;
-  }
 
   inline context_mode::Enum context::mode()
   {

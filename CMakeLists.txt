@@ -46,10 +46,16 @@ else()
     set(MGL_BUILD_TYPE_DEFINITIONS "-DMGL_DEBUG")
 endif()
 
+set(MGL_LINUX_OS FALSE)
+set(MGL_WINDOWS_OS FALSE)
+set(MGL_OSX_OS FALSE)
+
 # Detect the operating system and set MGL_OS_DEFINITION
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(MGL_LINUX_OS TRUE)
     set(MGL_OS_DEFINITION "-DMGL_OS_LINUX")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(MGL_WINDOWS_OS TRUE)
     set(MGL_OS_DEFINITION "-DMGL_OS_WINDOWS")
 
     # Setup SDL2
@@ -73,7 +79,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         message(FATAL_ERROR "Failed to run the PowerShell script to download and extract SDL2.")
     endif()
 
-    elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(MGL_OSX_OS TRUE)
     set(MGL_OS_DEFINITION "-DMGL_OS_MACOS")
 else()
     message(FATAL_ERROR "Unsupported operating system!")

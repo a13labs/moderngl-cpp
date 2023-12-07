@@ -21,6 +21,8 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void scope::release()
@@ -44,7 +46,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Scope released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     const int& flags = m_enable_flags;
 
@@ -55,13 +56,13 @@ namespace mgl::opengl
 
     for(auto&& texture : m_textures)
     {
-      gl.ActiveTexture(texture.binding);
-      gl.BindTexture(texture.type, texture.gl_object);
+      glActiveTexture(texture.binding);
+      glBindTexture(texture.type, texture.gl_object);
     }
 
     for(auto&& buffer : m_buffers)
     {
-      gl.BindBufferBase(buffer.type, buffer.binding, buffer.gl_object);
+      glBindBufferBase(buffer.type, buffer.binding, buffer.gl_object);
     }
 
     for(auto&& sampler : m_samplers)
@@ -72,47 +73,47 @@ namespace mgl::opengl
 
     if(flags & mgl::opengl::enable_flag::BLEND)
     {
-      gl.Enable(GL_BLEND);
+      glEnable(GL_BLEND);
     }
     else
     {
-      gl.Disable(GL_BLEND);
+      glDisable(GL_BLEND);
     }
 
     if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
     {
-      gl.Enable(GL_DEPTH_TEST);
+      glEnable(GL_DEPTH_TEST);
     }
     else
     {
-      gl.Disable(GL_DEPTH_TEST);
+      glDisable(GL_DEPTH_TEST);
     }
 
     if(flags & mgl::opengl::enable_flag::CULL_FACE)
     {
-      gl.Enable(GL_CULL_FACE);
+      glEnable(GL_CULL_FACE);
     }
     else
     {
-      gl.Disable(GL_CULL_FACE);
+      glDisable(GL_CULL_FACE);
     }
 
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
-      gl.Enable(GL_RASTERIZER_DISCARD);
+      glEnable(GL_RASTERIZER_DISCARD);
     }
     else
     {
-      gl.Disable(GL_RASTERIZER_DISCARD);
+      glDisable(GL_RASTERIZER_DISCARD);
     }
 
     if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
     {
-      gl.Enable(GL_PROGRAM_POINT_SIZE);
+      glEnable(GL_PROGRAM_POINT_SIZE);
     }
     else
     {
-      gl.Disable(GL_PROGRAM_POINT_SIZE);
+      glDisable(GL_PROGRAM_POINT_SIZE);
     }
   }
 
@@ -121,7 +122,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Scope released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     const int& flags = m_old_enable_flags;
 
     m_context->set_enable_flags(m_old_enable_flags);
@@ -130,47 +130,47 @@ namespace mgl::opengl
 
     if(flags & mgl::opengl::enable_flag::BLEND)
     {
-      gl.Enable(GL_BLEND);
+      glEnable(GL_BLEND);
     }
     else
     {
-      gl.Disable(GL_BLEND);
+      glDisable(GL_BLEND);
     }
 
     if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
     {
-      gl.Enable(GL_DEPTH_TEST);
+      glEnable(GL_DEPTH_TEST);
     }
     else
     {
-      gl.Disable(GL_DEPTH_TEST);
+      glDisable(GL_DEPTH_TEST);
     }
 
     if(flags & mgl::opengl::enable_flag::CULL_FACE)
     {
-      gl.Enable(GL_CULL_FACE);
+      glEnable(GL_CULL_FACE);
     }
     else
     {
-      gl.Disable(GL_CULL_FACE);
+      glDisable(GL_CULL_FACE);
     }
 
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
-      gl.Enable(GL_RASTERIZER_DISCARD);
+      glEnable(GL_RASTERIZER_DISCARD);
     }
     else
     {
-      gl.Disable(GL_RASTERIZER_DISCARD);
+      glDisable(GL_RASTERIZER_DISCARD);
     }
 
     if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
     {
-      gl.Enable(GL_PROGRAM_POINT_SIZE);
+      glEnable(GL_PROGRAM_POINT_SIZE);
     }
     else
     {
-      gl.Disable(GL_PROGRAM_POINT_SIZE);
+      glDisable(GL_PROGRAM_POINT_SIZE);
     }
   }
 

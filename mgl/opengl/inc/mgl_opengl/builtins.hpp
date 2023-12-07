@@ -15,9 +15,6 @@
 */
 #pragma once
 #include "mgl_core.hpp"
-
-#include "opengl.h"
-
 namespace mgl::opengl
 {
   using gl_function = void*;
@@ -25,18 +22,18 @@ namespace mgl::opengl
 
   enum render_mode
   {
-    POINTS = GL_POINTS,
-    LINES = GL_LINES,
-    LINE_LOOP = GL_LINE_LOOP,
-    LINE_STRIP = GL_LINE_STRIP,
-    TRIANGLES = GL_TRIANGLES,
-    TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
-    TRIANGLE_FAN = GL_TRIANGLE_FAN,
-    LINES_ADJACENCY = GL_LINES_ADJACENCY,
-    LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY,
-    TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY,
-    TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY,
-    PATCHES = GL_PATCHES,
+    POINTS = 0x0000,
+    LINES = 0x0001,
+    LINE_LOOP = 0x0002,
+    LINE_STRIP = 0x0003,
+    TRIANGLES = 0x0004,
+    TRIANGLE_STRIP = 0x0005,
+    TRIANGLE_FAN = 0x0006,
+    LINES_ADJACENCY = 0x000A,
+    LINE_STRIP_ADJACENCY = 0x000B,
+    TRIANGLES_ADJACENCY = 0x000C,
+    TRIANGLE_STRIP_ADJACENCY = 0x000D,
+    PATCHES = 0x000E,
   };
 
   enum enable_flag
@@ -53,14 +50,14 @@ namespace mgl::opengl
   enum compare_func
   {
     NONE = 0x0000,
-    NEVER = GL_NEVER,
-    LESS = GL_LESS,
-    EQUAL = GL_EQUAL,
-    LESS_EQUAL = GL_LEQUAL,
-    GREATER = GL_GREATER,
-    NOT_EQUAL = GL_NOTEQUAL,
-    GREATER_EQUAL = GL_GEQUAL,
-    ALWAYS = GL_ALWAYS,
+    NEVER = 0x0200,
+    LESS = 0x0201,
+    EQUAL = 0x0202,
+    LESS_EQUAL = 0x0203,
+    GREATER = 0x0204,
+    NOT_EQUAL = 0x0205,
+    GREATER_EQUAL = 0x0206,
+    ALWAYS = 0x0207,
   };
 
   struct color_mask

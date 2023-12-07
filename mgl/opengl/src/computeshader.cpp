@@ -19,21 +19,22 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void compute_shader::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
       return;
 
     m_released = true;
 
-    gl.DeleteShader(m_shader_obj);
-    gl.DeleteProgram(m_program_obj);
+    glDeleteShader(m_shader_obj);
+    glDeleteProgram(m_program_obj);
   }
 
   void compute_shader::run(int x, int y, int z)
@@ -41,10 +42,9 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Compute Shader already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.UseProgram(m_program_obj);
-    gl.DispatchCompute(x, y, z);
+    glUseProgram(m_program_obj);
+    glDispatchCompute(x, y, z);
   }
 
   const mgl::core::string_list compute_shader::uniforms()

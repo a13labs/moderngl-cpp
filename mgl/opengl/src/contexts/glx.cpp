@@ -16,9 +16,12 @@
 */
 #ifdef MGL_OPENGL_GLX
 
-#  include "mgl_core/log.hpp"
 #  include "mgl_opengl/context.hpp"
-#  include <dlfcn.h>
+
+#  include "mgl_core/log.hpp"
+
+#  include "glad/gl.h"
+#  include "glad/glx.h"
 
 namespace mgl::opengl
 {

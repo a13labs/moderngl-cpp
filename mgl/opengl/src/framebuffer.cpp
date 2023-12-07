@@ -21,14 +21,14 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void framebuffer::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
     if(m_released)
     {
       return;
@@ -38,7 +38,7 @@ namespace mgl::opengl
 
     if(m_framebuffer_obj)
     {
-      gl.DeleteFramebuffers(1, (GLuint*)&m_framebuffer_obj);
+      glDeleteFramebuffers(1, (GLuint*)&m_framebuffer_obj);
       delete[] m_draw_buffers;
     }
   }
@@ -49,41 +49,39 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
 
     if(m_framebuffer_obj)
     {
-      gl.DrawBuffers(m_draw_buffers_len, m_draw_buffers);
+      glDrawBuffers(m_draw_buffers_len, m_draw_buffers);
     }
 
-    gl.ClearColor(r, g, b, a);
-    gl.ClearDepth(depth);
+    glClearColor(r, g, b, a);
+    glClearDepth(depth);
 
     for(int i = 0; i < m_draw_buffers_len; ++i)
     {
-      gl.ColorMaski(
+      glColorMaski(
           i, m_color_masks[i].r, m_color_masks[i].g, m_color_masks[i].b, m_color_masks[i].a);
     }
 
-    gl.DepthMask(m_depth_mask);
+    glDepthMask(m_depth_mask);
 
     // Respect the passed in viewport even with scissor enabled
     if(viewport != mgl::core::null_viewport_2d)
     {
-      gl.Enable(GL_SCISSOR_TEST);
-      gl.Scissor(viewport.x, viewport.y, viewport.width, viewport.height);
-      gl.Clear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+      glEnable(GL_SCISSOR_TEST);
+      glScissor(viewport.x, viewport.y, viewport.width, viewport.height);
+      glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
       // restore scissor if enabled
       if(m_scissor_enabled)
       {
-        gl.Scissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
+        glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
       }
       else
       {
-        gl.Disable(GL_SCISSOR_TEST);
+        glDisable(GL_SCISSOR_TEST);
       }
     }
     else
@@ -91,14 +89,14 @@ namespace mgl::opengl
       // clear with scissor if enabled
       if(m_scissor_enabled)
       {
-        gl.Enable(GL_SCISSOR_TEST);
-        gl.Scissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
       }
 
-      gl.Clear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+      glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     }
 
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
   }
 
   void framebuffer::use()
@@ -106,34 +104,32 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
 
     if(m_framebuffer_obj)
     {
-      gl.DrawBuffers(m_draw_buffers_len, m_draw_buffers);
+      glDrawBuffers(m_draw_buffers_len, m_draw_buffers);
     }
 
-    gl.Viewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
+    glViewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
 
     if(m_scissor_enabled)
     {
-      gl.Enable(GL_SCISSOR_TEST);
-      gl.Scissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
+      glEnable(GL_SCISSOR_TEST);
+      glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
     }
     else
     {
-      gl.Disable(GL_SCISSOR_TEST);
+      glDisable(GL_SCISSOR_TEST);
     }
 
     for(int i = 0; i < m_draw_buffers_len; ++i)
     {
-      gl.ColorMaski(
+      glColorMaski(
           i, m_color_masks[i].r, m_color_masks[i].g, m_color_masks[i].b, m_color_masks[i].a);
     }
 
-    gl.DepthMask(m_depth_mask);
+    glDepthMask(m_depth_mask);
 
     m_context->m_bound_framebuffer = shared_from_this();
   }
@@ -149,8 +145,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
     data_type* data_type = from_dtype(dtype, strlen(dtype));
@@ -187,14 +181,14 @@ namespace mgl::opengl
 
     char* ptr = (char*)dst.data() + write_offset;
 
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
-    gl.ReadBuffer(read_depth ? GL_NONE : (GL_COLOR_ATTACHMENT0 + attachment));
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.ReadPixels(x, y, width, height, base_format, pixel_type, ptr);
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
+    glReadBuffer(read_depth ? GL_NONE : (GL_COLOR_ATTACHMENT0 + attachment));
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glReadPixels(x, y, width, height, base_format, pixel_type, ptr);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   bool framebuffer::read_into(buffer_ref dst,
@@ -208,8 +202,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
     data_type* data_type = from_dtype(dtype, strlen(dtype));
@@ -238,16 +230,16 @@ namespace mgl::opengl
     int pixel_type = data_type->gl_type;
     int base_format = read_depth ? GL_DEPTH_COMPONENT : data_type->base_format[components];
 
-    gl.BindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
-    gl.ReadBuffer(read_depth ? GL_NONE : (GL_COLOR_ATTACHMENT0 + attachment));
-    gl.PixelStorei(GL_PACK_ALIGNMENT, alignment);
-    gl.PixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    gl.ReadPixels(x, y, width, height, base_format, pixel_type, (void*)write_offset);
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
-    gl.BindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
+    glReadBuffer(read_depth ? GL_NONE : (GL_COLOR_ATTACHMENT0 + attachment));
+    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glReadPixels(x, y, width, height, base_format, pixel_type, (void*)write_offset);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   void framebuffer::set_color_mask(const color_masks& masks)
@@ -257,15 +249,13 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(masks.size() != (size_t)m_draw_buffers_len,
                     "color_mask must be a match buffers len");
-    const GLMethods& gl = m_context->gl();
-
     m_color_masks = masks;
 
     if(m_framebuffer_obj == m_context->m_bound_framebuffer->m_framebuffer_obj)
     {
       for(int i = 0; i < m_draw_buffers_len; ++i)
       {
-        gl.ColorMaski(
+        glColorMaski(
             i, m_color_masks[i].r, m_color_masks[i].g, m_color_masks[i].b, m_color_masks[i].a);
       }
     }
@@ -276,13 +266,11 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-
     m_depth_mask = value;
 
     if(m_framebuffer_obj == m_context->m_bound_framebuffer->m_framebuffer_obj)
     {
-      gl.DepthMask(m_depth_mask);
+      glDepthMask(m_depth_mask);
     }
   }
 
@@ -297,32 +285,28 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(!m_framebuffer_obj, "Only the default_framebuffer have bits");
-    const GLMethods& gl = m_context->gl();
-
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
-    gl.GetFramebufferAttachmentParameteriv(
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &red_bits);
-    gl.GetFramebufferAttachmentParameteriv(
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, &green_bits);
-    gl.GetFramebufferAttachmentParameteriv(
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, &blue_bits);
-    gl.GetFramebufferAttachmentParameteriv(
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &alpha_bits);
-    gl.GetFramebufferAttachmentParameteriv(
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &depth_bits);
-    gl.GetFramebufferAttachmentParameteriv(
+    glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &stencil_bits);
-    gl.BindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
 
-    return gl.GetError() == GL_NO_ERROR;
+    return glGetError() == GL_NO_ERROR;
   }
 
   void framebuffer::set_viewport(const mgl::core::viewport_2d& r)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
-    const GLMethods& gl = m_context->gl();
-
     if(m_context->released())
       return;
 
@@ -330,7 +314,7 @@ namespace mgl::opengl
 
     if(m_framebuffer_obj == m_context->m_bound_framebuffer->m_framebuffer_obj)
     {
-      gl.Viewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
+      glViewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
     }
   }
 
@@ -338,8 +322,6 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
-    const GLMethods& gl = m_context->gl();
-
     if(m_context->released())
       return;
 
@@ -347,7 +329,7 @@ namespace mgl::opengl
 
     if(m_framebuffer_obj == m_context->m_bound_framebuffer->m_framebuffer_obj)
     {
-      gl.Scissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
+      glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
     }
   }
 

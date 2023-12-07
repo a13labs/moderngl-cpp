@@ -19,19 +19,20 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void program::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
       return;
 
     m_released = true;
-    gl.DeleteProgram(m_program_obj);
+    glDeleteProgram(m_program_obj);
   }
 
   const mgl::core::string_list program::attributes(bool all)
@@ -101,9 +102,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.UseProgram(m_program_obj);
+    glUseProgram(m_program_obj);
   }
 
   void program::unbind()
@@ -111,9 +111,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.UseProgram(0);
+    glUseProgram(0);
   }
 
 } // namespace  mgl::opengl

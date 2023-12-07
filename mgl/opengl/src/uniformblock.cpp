@@ -19,6 +19,8 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   uniform_block::uniform_block(
@@ -33,17 +35,15 @@ namespace mgl::opengl
 
   int uniform_block::binding()
   {
-    const GLMethods& gl = m_context->gl();
 
     int binding = 0;
-    gl.GetActiveUniformBlockiv(m_program_obj, m_index, GL_UNIFORM_BLOCK_BINDING, &binding);
+    glGetActiveUniformBlockiv(m_program_obj, m_index, GL_UNIFORM_BLOCK_BINDING, &binding);
     return binding;
   }
 
   void uniform_block::set_binding(int value)
   {
-    const GLMethods& gl = m_context->gl();
-    gl.UniformBlockBinding(m_program_obj, m_index, value);
+    glUniformBlockBinding(m_program_obj, m_index, value);
   }
 
 } // namespace  mgl::opengl

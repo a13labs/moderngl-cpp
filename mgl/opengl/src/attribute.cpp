@@ -19,6 +19,8 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   static attribute::data_type gl_int = { 1, 0x1404, 1, 1, false, "i" };

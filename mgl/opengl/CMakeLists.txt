@@ -14,16 +14,16 @@ set (DEFAULT_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/mgl/core/inc
     ${CMAKE_SOURCE_DIR}/vendors/spdlog/inc
     ${CMAKE_SOURCE_DIR}/vendors/glm
+    ${CMAKE_SOURCE_DIR}/vendors/glad/include
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc
-    ${CMAKE_SOURCE_DIR}/inc
 )
 
 # Add include directories
 include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_opengl PRIVATE mgl::mgl_core glm::glm_static)
+target_link_libraries(mgl_opengl PRIVATE mgl::mgl_core glm::glm_static glad::static)
 
 # Find OpenGL package
 find_package(OpenGL REQUIRED)

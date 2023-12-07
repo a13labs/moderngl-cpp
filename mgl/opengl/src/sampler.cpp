@@ -19,19 +19,20 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void sampler::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
       return;
 
     m_released = true;
-    gl.DeleteSamplers(1, (GLuint*)&m_sampler_obj);
+    glDeleteSamplers(1, (GLuint*)&m_sampler_obj);
   }
 
   void sampler::use(int index)
@@ -39,8 +40,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-    gl.BindSampler(index, m_sampler_obj);
+    glBindSampler(index, m_sampler_obj);
   }
 
   void sampler::clear(int index)
@@ -48,8 +48,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
-    gl.BindSampler(index, 0);
+    glBindSampler(index, 0);
   }
 
   void sampler::set_repeat_x(bool value)
@@ -57,16 +56,15 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_repeat_x = value;
 
     if(value)
     {
-      gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_REPEAT);
       return;
     }
 
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   }
 
   void sampler::set_repeat_y(bool value)
@@ -74,16 +72,15 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_repeat_y = value;
 
     if(value)
     {
-      gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_REPEAT);
       return;
     }
 
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
   void sampler::set_repeat_z(bool value)
@@ -91,16 +88,15 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_repeat_z = value;
 
     if(value)
     {
-      gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_REPEAT);
+      glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_REPEAT);
       return;
     }
 
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
   }
 
   void sampler::set_filter(const sampler::Filter& value)
@@ -108,10 +104,9 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_filter = value;
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
   }
 
   void sampler::set_compare_func(mgl::opengl::compare_func value)
@@ -119,16 +114,15 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_compare_func = value;
     if(m_compare_func == mgl::opengl::compare_func::NONE)
     {
-      gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+      glSamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_MODE, GL_NONE);
       return;
     }
 
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_FUNC, m_compare_func);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_COMPARE_FUNC, m_compare_func);
   }
 
   void sampler::set_anisotropy(float value)
@@ -136,13 +130,12 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_context->max_anisotropy() == 0)
       return;
 
     m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), m_context->max_anisotropy());
-    gl.SamplerParameterf(m_sampler_obj, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
+    glSamplerParameterf(m_sampler_obj, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
   }
 
   void sampler::set_border_color(const glm::vec4& value)
@@ -150,12 +143,11 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_border_color = value;
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    gl.SamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-    gl.SamplerParameterfv(m_sampler_obj, GL_TEXTURE_BORDER_COLOR, (GLfloat*)&m_border_color);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glSamplerParameteri(m_sampler_obj, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    glSamplerParameterfv(m_sampler_obj, GL_TEXTURE_BORDER_COLOR, (GLfloat*)&m_border_color);
   }
 
   void sampler::set_min_lod(float value)
@@ -163,9 +155,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_min_lod = value;
-    gl.SamplerParameterf(m_sampler_obj, GL_TEXTURE_MIN_LOD, m_min_lod);
+    glSamplerParameterf(m_sampler_obj, GL_TEXTURE_MIN_LOD, m_min_lod);
   }
 
   void sampler::set_max_lod(float value)
@@ -173,9 +164,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Sampler already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
     m_max_lod = value;
-    gl.SamplerParameterf(m_sampler_obj, GL_TEXTURE_MAX_LOD, m_max_lod);
+    glSamplerParameterf(m_sampler_obj, GL_TEXTURE_MAX_LOD, m_max_lod);
   }
 
 } // namespace  mgl::opengl

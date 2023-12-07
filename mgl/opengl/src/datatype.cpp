@@ -18,6 +18,8 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   static int float_base_format[5] = { 0, GL_RED, GL_RG, GL_RGB, GL_RGBA };

@@ -20,13 +20,14 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void renderbuffer::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
     {
@@ -34,7 +35,7 @@ namespace mgl::opengl
     }
 
     m_released = true;
-    gl.DeleteRenderbuffers(1, (GLuint*)&m_renderbuffer_obj);
+    glDeleteRenderbuffers(1, (GLuint*)&m_renderbuffer_obj);
   }
 
   attachment::type renderbuffer::attachment_type()

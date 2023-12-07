@@ -1,6 +1,6 @@
 #include "mgl_opengl/format.hpp"
 
-#include "opengl.h"
+#include "glad/gl.h"
 
 namespace mgl::opengl
 {

@@ -22,13 +22,14 @@
 
 #include "mgl_core/log.hpp"
 
+#include "glad/gl.h"
+
 namespace mgl::opengl
 {
   void vertex_array::release()
   {
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(m_released)
     {
@@ -36,7 +37,7 @@ namespace mgl::opengl
     }
 
     m_released = true;
-    gl.DeleteVertexArrays(1, (GLuint*)&m_vertex_array_obj);
+    glDeleteVertexArrays(1, (GLuint*)&m_vertex_array_obj);
   }
 
   void vertex_array::render(mgl::opengl::render_mode mode, int vertices, int first, int instances)
@@ -44,7 +45,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     if(vertices < 0)
     {
@@ -57,17 +57,17 @@ namespace mgl::opengl
       instances = m_num_instances;
     }
 
-    gl.UseProgram(m_program->m_program_obj);
-    gl.BindVertexArray(m_vertex_array_obj);
+    glUseProgram(m_program->m_program_obj);
+    glBindVertexArray(m_vertex_array_obj);
 
     if(m_index_buffer != nullptr)
     {
       const void* ptr = (const void*)((GLintptr)first * m_index_element_size);
-      gl.DrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
+      glDrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
     }
     else
     {
-      gl.DrawArraysInstanced(mode, first, vertices, instances);
+      glDrawArraysInstanced(mode, first, vertices, instances);
     }
   }
 
@@ -79,21 +79,20 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
-    gl.UseProgram(m_program->m_program_obj);
-    gl.BindVertexArray(m_vertex_array_obj);
-    gl.BindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->m_buffer_obj);
+    glUseProgram(m_program->m_program_obj);
+    glBindVertexArray(m_vertex_array_obj);
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->m_buffer_obj);
 
     const void* ptr = (const void*)((GLintptr)first * 20);
 
     if(m_index_buffer != nullptr)
     {
-      gl.MultiDrawElementsIndirect(mode, m_index_element_type, ptr, count, 20);
+      glMultiDrawElementsIndirect(mode, m_index_element_type, ptr, count, 20);
     }
     else
     {
-      gl.MultiDrawArraysIndirect(mode, ptr, count, 20);
+      glMultiDrawArraysIndirect(mode, ptr, count, 20);
     }
   }
 
@@ -107,7 +106,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     MGL_CORE_ASSERT(m_program->num_varyings(), "the program has no varyings")
 
@@ -187,39 +185,39 @@ namespace mgl::opengl
       }
     }
 
-    gl.UseProgram(m_program->m_program_obj);
-    gl.BindVertexArray(m_vertex_array_obj);
+    glUseProgram(m_program->m_program_obj);
+    glBindVertexArray(m_vertex_array_obj);
 
     int i = 0;
     for(auto&& buffer : buffers)
     {
-      gl.BindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER,
-                         i,
-                         buffer->m_buffer_obj,
-                         buffer_offset,
-                         buffer->m_size - buffer_offset);
+      glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER,
+                        i,
+                        buffer->m_buffer_obj,
+                        buffer_offset,
+                        buffer->m_size - buffer_offset);
       i++;
     }
 
-    gl.Enable(GL_RASTERIZER_DISCARD);
-    gl.BeginTransformFeedback(output_mode);
+    glEnable(GL_RASTERIZER_DISCARD);
+    glBeginTransformFeedback(output_mode);
 
     if(m_index_buffer != nullptr)
     {
       const void* ptr = (const void*)((GLintptr)first * m_index_element_size);
-      gl.DrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
+      glDrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
     }
     else
     {
-      gl.DrawArraysInstanced(mode, first, vertices, instances);
+      glDrawArraysInstanced(mode, first, vertices, instances);
     }
 
-    gl.EndTransformFeedback();
+    glEndTransformFeedback();
     if(~m_context->enable_flags() & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
-      gl.Disable(GL_RASTERIZER_DISCARD);
+      glDisable(GL_RASTERIZER_DISCARD);
     }
-    gl.Flush();
+    glFlush();
   }
 
   void vertex_array::bind(int location,
@@ -234,7 +232,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const GLMethods& gl = m_context->gl();
 
     MGL_CORE_ASSERT(!(type[0] == 'f' && normalize), "invalid normalize");
 
@@ -251,21 +248,21 @@ namespace mgl::opengl
 
     char* ptr = (char*)offset;
 
-    gl.BindVertexArray(m_vertex_array_obj);
-    gl.BindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
+    glBindVertexArray(m_vertex_array_obj);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
 
     switch(type[0])
     {
       case 'f':
-        gl.VertexAttribPointer(location, node->count, node->type, normalize, stride, ptr);
+        glVertexAttribPointer(location, node->count, node->type, normalize, stride, ptr);
         break;
-      case 'i': gl.VertexAttribIPointer(location, node->count, node->type, stride, ptr); break;
-      case 'd': gl.VertexAttribLPointer(location, node->count, node->type, stride, ptr); break;
+      case 'i': glVertexAttribIPointer(location, node->count, node->type, stride, ptr); break;
+      case 'd': glVertexAttribLPointer(location, node->count, node->type, stride, ptr); break;
       default: MGL_CORE_ASSERT(false, "invalid type"); return;
     }
 
-    gl.VertexAttribDivisor(location, divisor);
-    gl.EnableVertexAttribArray(location);
+    glVertexAttribDivisor(location, divisor);
+    glEnableVertexAttribArray(location);
   }
 
   void vertex_array::set_index_buffer(const buffer_ref& value)
