@@ -17,9 +17,9 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/attribute.hpp"
 #include "mgl_opengl/buffer.hpp"
+#include "mgl_opengl/buffer_layout.hpp"
 #include "mgl_opengl/computeshader.hpp"
 #include "mgl_opengl/datatype.hpp"
-#include "mgl_opengl/format.hpp"
 #include "mgl_opengl/framebuffer.hpp"
 #include "mgl_opengl/glslsource.hpp"
 #include "mgl_opengl/program.hpp"
@@ -1934,12 +1934,11 @@ namespace mgl::opengl
         return nullptr;
       }
 
-      format_iterator it = format_iterator(v_data.buffer_layout.c_str());
-      format_info format_info = it.info();
+      buffer_layout layout = v_data.buffer_layout;
 
-      if(!format_info.valid)
+      if(layout.is_invalid())
       {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: invalid invalid format", i);
+        MGL_CORE_ERROR("vertex_buffers[{0}]: invalid buffer layout", i);
         return nullptr;
       }
 
@@ -1949,11 +1948,11 @@ namespace mgl::opengl
         return nullptr;
       }
 
-      if((int)v_data.attributes.size() != format_info.nodes)
+      if((int)v_data.attributes.size() != layout.size())
       {
         MGL_CORE_ERROR("vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
                        i,
-                       format_info.nodes,
+                       layout.size(),
                        v_data.attributes.size());
         return nullptr;
       }
@@ -2003,12 +2002,11 @@ namespace mgl::opengl
       auto buffer = v_data.buffer;
       const char* format = v_data.buffer_layout.c_str();
 
-      format_iterator it = format_iterator(format);
-      format_info format_info = it.info();
+      buffer_layout layout = v_data.buffer_layout;
 
-      int buf_vertices = (int)(buffer->size() / format_info.size);
+      int buf_vertices = (int)(buffer->size() / layout.size());
 
-      if(!format_info.divisor && array->m_index_buffer == nullptr &&
+      if(!layout.divisor() && array->m_index_buffer == nullptr &&
          (!i || array->m_num_vertices > buf_vertices))
       {
         array->m_num_vertices = buf_vertices;
@@ -2016,57 +2014,47 @@ namespace mgl::opengl
 
       glBindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
 
-      char* ptr = 0;
-
       for(size_t j = 0; j < v_data.attributes.size(); ++j)
       {
-        format_node* node = it.next();
-
-        while(!node->type)
-        {
-          ptr += node->size;
-          node = it.next();
-        }
 
         auto attribute = array->m_program->attribute(v_data.attributes[j]);
 
         if(!attribute)
         {
-          ptr += node->size;
           continue;
         }
 
+        buffer_layout::element element = layout[j];
         int attribute_location = attribute->m_location;
         int attribute_rows_length = attribute->m_data_type->rows_length;
         int attribute_scalar_type = attribute->m_data_type->scalar_type;
 
+        char* ptr = (char*)(intptr_t)element.offset;
         for(int r = 0; r < attribute_rows_length; ++r)
         {
           int location = attribute_location + r;
-          int count = node->count / attribute_rows_length;
+          int count = element.count / attribute_rows_length;
 
           switch(attribute_scalar_type)
           {
             case GL_FLOAT:
               glVertexAttribPointer(
-                  location, count, node->type, node->normalize, format_info.size, ptr);
+                  location, count, element.type, element.normalize, layout.stride(), ptr);
               break;
             case GL_DOUBLE:
-              glVertexAttribLPointer(location, count, node->type, format_info.size, ptr);
+              glVertexAttribLPointer(location, count, element.type, layout.stride(), ptr);
               break;
             case GL_INT:
-              glVertexAttribIPointer(location, count, node->type, format_info.size, ptr);
+              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
               break;
             case GL_UNSIGNED_INT:
-              glVertexAttribIPointer(location, count, node->type, format_info.size, ptr);
+              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
               break;
           }
 
-          glVertexAttribDivisor(location, format_info.divisor);
-
+          glVertexAttribDivisor(location, layout.divisor());
           glEnableVertexAttribArray(location);
-
-          ptr += node->size / attribute_rows_length;
+          ptr += element.size / attribute_rows_length;
         }
       }
       i++;

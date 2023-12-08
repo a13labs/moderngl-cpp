@@ -16,8 +16,8 @@
 */
 #include "mgl_opengl/vertexarray.hpp"
 #include "mgl_opengl/buffer.hpp"
+#include "mgl_opengl/buffer_layout.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_opengl/format.hpp"
 #include "mgl_opengl/program.hpp"
 
 #include "mgl_core/log.hpp"
@@ -235,16 +235,15 @@ namespace mgl::opengl
 
     MGL_CORE_ASSERT(!(type[0] == 'f' && normalize), "invalid normalize");
 
-    format_iterator it = format_iterator(format);
+    buffer_layout layout = buffer_layout(format);
 
 #ifdef MGL_CORE_ENABLE_ASSERTS
-    format_info format_info = it.info();
-    MGL_CORE_ASSERT(!(!format_info.valid || format_info.divisor || format_info.nodes != 1),
+    MGL_CORE_ASSERT(!(layout.is_invalid() || layout.divisor() || layout.size() != 1),
                     "invalid format");
 #endif
 
-    format_node* node = it.next();
-    MGL_CORE_ASSERT(node->type, "invalid format");
+    buffer_layout::element element = layout[0];
+    MGL_CORE_ASSERT(element.type, "invalid format");
 
     char* ptr = (char*)offset;
 
@@ -254,10 +253,10 @@ namespace mgl::opengl
     switch(type[0])
     {
       case 'f':
-        glVertexAttribPointer(location, node->count, node->type, normalize, stride, ptr);
+        glVertexAttribPointer(location, element.offset, element.type, normalize, stride, ptr);
         break;
-      case 'i': glVertexAttribIPointer(location, node->count, node->type, stride, ptr); break;
-      case 'd': glVertexAttribLPointer(location, node->count, node->type, stride, ptr); break;
+      case 'i': glVertexAttribIPointer(location, element.offset, element.type, stride, ptr); break;
+      case 'd': glVertexAttribLPointer(location, element.offset, element.type, stride, ptr); break;
       default: MGL_CORE_ASSERT(false, "invalid type"); return;
     }
 

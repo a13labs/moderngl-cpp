@@ -8,7 +8,6 @@
 #include "mgl_opengl/conditionalrender.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/datatype.hpp"
-#include "mgl_opengl/format.hpp"
 #include "mgl_opengl/framebuffer.hpp"
 #include "mgl_opengl/glslsource.hpp"
 #include "mgl_opengl/program.hpp"
