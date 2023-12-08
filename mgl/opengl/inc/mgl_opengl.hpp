@@ -2,6 +2,7 @@
 #include "mgl_opengl/attachment.hpp"
 #include "mgl_opengl/attribute.hpp"
 #include "mgl_opengl/buffer.hpp"
+#include "mgl_opengl/buffer_layout.hpp"
 #include "mgl_opengl/builtins.hpp"
 #include "mgl_opengl/computeshader.hpp"
 #include "mgl_opengl/conditionalrender.hpp"

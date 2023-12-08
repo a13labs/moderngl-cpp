@@ -30,10 +30,22 @@ public:
     size_t size();
     bool dynamic();
 
-    bool read_into(mgl::core::mem_buffer<float>& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
-    bool read_into(mgl::core::mem_buffer<uint32_t>& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
-    bool read_into(mgl::core::mem_buffer<uint8_t>& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
-    bool read_into(mgl::core::mem_buffer<int>& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
+    bool read_into(mgl::core::mem_buffer<float>& dst,
+                   size_t size = 0,
+                   size_t offset = 0,
+                   size_t write_offset = 0);
+    bool read_into(mgl::core::mem_buffer<uint32_t>& dst,
+                   size_t size = 0,
+                   size_t offset = 0,
+                   size_t write_offset = 0);
+    bool read_into(mgl::core::mem_buffer<uint8_t>& dst,
+                   size_t size = 0,
+                   size_t offset = 0,
+                   size_t write_offset = 0);
+    bool read_into(mgl::core::mem_buffer<int>& dst,
+                   size_t size = 0,
+                   size_t offset = 0,
+                   size_t write_offset = 0);
 
     bool write(const mgl::core::mem_buffer<float>& dst, size_t offset);
     bool write(const mgl::core::mem_buffer<uint32_t>& dst, size_t offset);
@@ -58,7 +70,8 @@ private:
 
     buffer() = default;
 
-    bool read_into(void* dst, size_t dst_size, size_t read_size, size_t read_offset, size_t write_offset);
+    bool read_into(
+        void* dst, size_t dst_size, size_t read_size, size_t read_offset, size_t write_offset);
     bool write(const void* src, size_t size, size_t offset);
 
     context* m_context;
@@ -93,22 +106,34 @@ private:
     return write(src.data(), src.size() * sizeof(int), offset);
   }
 
-  inline bool buffer::read_into(mgl::core::mem_buffer<float>& dst, size_t size, size_t offset, size_t write_offset)
+  inline bool buffer::read_into(mgl::core::mem_buffer<float>& dst,
+                                size_t size,
+                                size_t offset,
+                                size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
-  inline bool buffer::read_into(mgl::core::mem_buffer<uint32_t>& dst, size_t size, size_t offset, size_t write_offset)
+  inline bool buffer::read_into(mgl::core::mem_buffer<uint32_t>& dst,
+                                size_t size,
+                                size_t offset,
+                                size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
-  inline bool buffer::read_into(mgl::core::mem_buffer<uint8_t>& dst, size_t size, size_t offset, size_t write_offset)
+  inline bool buffer::read_into(mgl::core::mem_buffer<uint8_t>& dst,
+                                size_t size,
+                                size_t offset,
+                                size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
-  inline bool buffer::read_into(mgl::core::mem_buffer<int>& dst, size_t size, size_t offset, size_t write_offset)
+  inline bool buffer::read_into(mgl::core::mem_buffer<int>& dst,
+                                size_t size,
+                                size_t offset,
+                                size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }

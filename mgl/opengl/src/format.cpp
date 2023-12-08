@@ -1,10 +1,9 @@
 #include "mgl_opengl/format.hpp"
 
 #include "glad/gl.h"
-
 namespace mgl::opengl
 {
-  format_node* InvalidFormat = (format_node*)(-1);
+  format_node* invalid_format = (format_node*)(-1);
 
   format_iterator::format_iterator(const char* str)
       : ptr(str)
@@ -21,7 +20,7 @@ namespace mgl::opengl
     format_iterator it = format_iterator(ptr);
     while(format_node* node = it.next())
     {
-      if(node == InvalidFormat)
+      if(node == invalid_format)
       {
         return format_info::invalid();
       }
@@ -87,7 +86,7 @@ namespace mgl::opengl
             case '1':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 1 * node.count;
               node.type = GL_UNSIGNED_BYTE;
@@ -96,7 +95,7 @@ namespace mgl::opengl
             case '2':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 2 * node.count;
               node.type = GL_HALF_FLOAT;
@@ -105,7 +104,7 @@ namespace mgl::opengl
             case '4':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 4 * node.count;
               node.type = GL_FLOAT;
@@ -114,7 +113,7 @@ namespace mgl::opengl
             case '8':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 8 * node.count;
               node.type = GL_DOUBLE;
@@ -127,7 +126,7 @@ namespace mgl::opengl
               node.type = GL_FLOAT;
               node.normalize = false;
               break;
-            default: return InvalidFormat;
+            default: return invalid_format;
           }
           return &node;
 
@@ -142,7 +141,7 @@ namespace mgl::opengl
             case '1':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 1 * node.count;
               node.type = GL_BYTE;
@@ -150,7 +149,7 @@ namespace mgl::opengl
             case '2':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 2 * node.count;
               node.type = GL_SHORT;
@@ -158,7 +157,7 @@ namespace mgl::opengl
             case '4':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 4 * node.count;
               node.type = GL_INT;
@@ -169,7 +168,7 @@ namespace mgl::opengl
               node.size = 4 * node.count;
               node.type = GL_INT;
               break;
-            default: return InvalidFormat;
+            default: return invalid_format;
           }
           return &node;
 
@@ -184,7 +183,7 @@ namespace mgl::opengl
             case '1':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 1 * node.count;
               node.type = GL_UNSIGNED_BYTE;
@@ -192,7 +191,7 @@ namespace mgl::opengl
             case '2':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 2 * node.count;
               node.type = GL_UNSIGNED_SHORT;
@@ -200,7 +199,7 @@ namespace mgl::opengl
             case '4':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 4 * node.count;
               node.type = GL_UNSIGNED_INT;
@@ -211,7 +210,7 @@ namespace mgl::opengl
               node.size = 4 * node.count;
               node.type = GL_UNSIGNED_INT;
               break;
-            default: return InvalidFormat;
+            default: return invalid_format;
           }
           return &node;
 
@@ -227,44 +226,44 @@ namespace mgl::opengl
             case '1':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 1 * node.count;
               break;
             case '2':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 2 * node.count;
               break;
             case '4':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 4 * node.count;
               break;
             case '8':
               if(*ptr && *ptr != ' ' && *ptr != '/')
               {
-                return InvalidFormat;
+                return invalid_format;
               }
               node.size = 8 * node.count;
               break;
             case 0:
             case '/': --ptr;
             case ' ': node.size = 1 * node.count; break;
-            default: return InvalidFormat;
+            default: return invalid_format;
           }
           return &node;
 
         case ' ': break;
 
         case 0:
-        case '/': --ptr; return node.count ? InvalidFormat : 0;
+        case '/': --ptr; return node.count ? invalid_format : 0;
 
-        default: return InvalidFormat;
+        default: return invalid_format;
       }
     }
   }

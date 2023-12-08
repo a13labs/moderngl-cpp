@@ -1,4 +1,6 @@
 #pragma once
+
+#include <string>
 namespace mgl::opengl
 {
   struct format_node
