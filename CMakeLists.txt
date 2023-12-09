@@ -141,6 +141,3 @@ endif()
 # # Include CMakeLists.txt files for the targets
 add_subdirectory(vendors)
 add_subdirectory(mgl)
-if(MGL_BUILD_EXAMPLES) 
-    add_subdirectory(examples)
-endif()

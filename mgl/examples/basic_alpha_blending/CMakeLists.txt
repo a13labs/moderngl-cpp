@@ -12,7 +12,7 @@ set (DEFAULT_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/mgl/window/inc
     ${CMAKE_SOURCE_DIR}/vendors/spdlog/inc
     ${CMAKE_SOURCE_DIR}/vendors/glm
-    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${CMAKE_SOURCE_DIR}/vendors/headers_only
     ${}/inc
     ${CMAKE_SOURCE_DIR}/inc
 )

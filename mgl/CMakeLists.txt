@@ -1,3 +1,6 @@
 add_subdirectory(core)
 add_subdirectory(opengl)
 add_subdirectory(window)
+if(MGL_BUILD_EXAMPLES) 
+    add_subdirectory(examples)
+endif()
