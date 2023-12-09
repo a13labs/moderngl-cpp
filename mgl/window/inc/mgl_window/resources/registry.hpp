@@ -5,8 +5,8 @@
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-#include "mgl_opengl/glsl_source.hpp"
 #include "mgl_opengl/program.hpp"
+#include "mgl_opengl/shader.hpp"
 namespace mgl::window
 {
   namespace resources
@@ -70,7 +70,7 @@ namespace mgl::window
     load_program(const mgl::core::string& path,
                  const program_load_opts& opts = program_load_defaults);
     mgl::core::ref<mgl::opengl::program>
-    load_program(mgl::opengl::glsl_source& source,
+    load_program(mgl::opengl::shader& source,
                  const program_load_opts& opts = program_load_defaults);
 
   } // namespace resources

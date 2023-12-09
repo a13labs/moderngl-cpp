@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
   mgl::core::log::init();
 
   // author: minu jeong
-  auto code = mgl::opengl::glsl_source(R"(
+  auto code = mgl::opengl::shader(R"(
 #version 440
 layout(local_size_x=X, local_size_y=Y, local_size_z=Z) in;
 layout (std430, binding=0) buffer in_0

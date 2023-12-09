@@ -199,8 +199,8 @@ namespace mgl::window
       mgl::core::string shader_text((std::istreambuf_iterator<char>(shader_file)),
                                     std::istreambuf_iterator<char>());
 
-      mgl::opengl::glsl_source shader_source(shader_text);
-      mgl::opengl::glsl_sources glsl = { shader_source };
+      mgl::opengl::shader shader_source(shader_text);
+      mgl::opengl::shaders glsl = { shader_source };
       mgl::opengl::shaders_outputs outputs = opts.outputs;
 
       if(outputs.size() == 0 && glsl.fragment().empty())
@@ -213,13 +213,13 @@ namespace mgl::window
       return ctx->program(glsl, outputs);
     }
 
-    mgl::core::ref<mgl::opengl::program> load_program(mgl::opengl::glsl_source& source,
+    mgl::core::ref<mgl::opengl::program> load_program(mgl::opengl::shader& source,
                                                       const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();
 
-      mgl::opengl::glsl_sources glsl = { source };
+      mgl::opengl::shaders glsl = { source };
 
       MGL_CORE_ASSERT(!glsl.empty(), "Empty source");
       mgl::opengl::shaders_outputs outputs = opts.outputs;

@@ -1,5 +1,5 @@
 
-#include "mgl_opengl/glsl_source.hpp"
+#include "mgl_opengl/shader.hpp"
 #include <regex>
 
 #include "mgl_core/debug.hpp"
@@ -16,7 +16,7 @@ namespace mgl::opengl
   static const std::regex
       s_layout_regex("(layout\\(.+\\)\\))?(\\s+)?(out)(\\s+)(\\w+)(\\s+)(\\w+)");
 
-  glsl_source::glsl_source(const mgl::core::string& source, glsl_source::type type)
+  shader::shader(const mgl::core::string& source, shader::type type)
   {
     auto src = mgl::core::trim(source);
     auto lines = mgl::core::split(src, '\n');
@@ -28,7 +28,7 @@ namespace mgl::opengl
     m_source = mgl::core::join('\n', lines, 1);
   }
 
-  const mgl::core::string glsl_source::source(glsl_source::type type, const shader_defines& defines)
+  const mgl::core::string shader::source(shader::type type, const shader_defines& defines)
   {
     if(!mgl::core::in(s_shaders_text[type], m_source))
     {
@@ -55,7 +55,7 @@ namespace mgl::opengl
                              m_source);
   }
 
-  const mgl::core::string glsl_source::source(const shader_defines& defines)
+  const mgl::core::string shader::source(const shader_defines& defines)
   {
     mgl::core::string_list str_defines;
 
@@ -73,7 +73,7 @@ namespace mgl::opengl
                              m_source);
   }
 
-  const mgl::core::string_list glsl_source::outputs()
+  const mgl::core::string_list shader::outputs()
   {
     mgl::core::string_list outputs = {};
 
@@ -91,6 +91,6 @@ namespace mgl::opengl
     return outputs;
   }
 
-  void glsl_source::handle_includes(int depth, int source_id) { }
+  void shader::handle_includes(int depth, int source_id) { }
 
 } // namespace  mgl::opengl

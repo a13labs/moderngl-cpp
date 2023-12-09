@@ -24,7 +24,7 @@
 #include "data_type.hpp"
 #include "enums.hpp"
 #include "framebuffer.hpp"
-#include "glsl_source.hpp"
+#include "shader.hpp"
 #include "program.hpp"
 #include "query.hpp"
 #include "renderbuffer.hpp"
@@ -127,7 +127,7 @@ public:
     framebuffer_ref framebuffer(attachment_ref depth_attachment);
 
     // Program
-    program_ref program(const glsl_sources& shaders,
+    program_ref program(const shaders& shaders,
                         const shaders_outputs& outputs = {},
                         const fragment_outputs& fragment_outputs = {},
                         bool interleaved = true);

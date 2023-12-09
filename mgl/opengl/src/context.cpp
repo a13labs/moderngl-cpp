@@ -21,12 +21,12 @@
 #include "mgl_opengl/compute_shader.hpp"
 #include "mgl_opengl/data_type.hpp"
 #include "mgl_opengl/framebuffer.hpp"
-#include "mgl_opengl/glsl_source.hpp"
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/query.hpp"
 #include "mgl_opengl/renderbuffer.hpp"
 #include "mgl_opengl/sampler.hpp"
 #include "mgl_opengl/scope.hpp"
+#include "mgl_opengl/shader.hpp"
 #include "mgl_opengl/subroutine.hpp"
 #include "mgl_opengl/texture_2d.hpp"
 #include "mgl_opengl/texture_3d.hpp"
@@ -734,7 +734,7 @@ namespace mgl::opengl
     return framebuffer_ref(framebuffer);
   }
 
-  program_ref context::program(const glsl_sources& shaders,
+  program_ref context::program(const shaders& shaders,
                                const shaders_outputs& outputs,
                                const fragment_outputs& fragment_outputs,
                                bool interleaved)
@@ -743,7 +743,7 @@ namespace mgl::opengl
     auto program = new mgl::opengl::program();
     program->m_released = false;
     program->m_context = this;
-    program->m_transform = shaders.sources[glsl_source::type::FRAGMENT_SHADER].empty();
+    program->m_transform = shaders.sources[shader::type::FRAGMENT_SHADER].empty();
 
     int program_obj = glCreateProgram();
 
@@ -756,7 +756,7 @@ namespace mgl::opengl
 
     int shader_objs[] = { 0, 0, 0, 0, 0 };
 
-    for(int i = 0; i < glsl_source::type::GENERIC_PROGRAM; ++i)
+    for(int i = 0; i < shader::type::GENERIC_PROGRAM; ++i)
     {
       if(shaders.sources[i] == "")
       {
@@ -838,7 +838,7 @@ namespace mgl::opengl
 
     glLinkProgram(program_obj);
 
-    for(int i = 0; i < glsl_source::type::GENERIC_PROGRAM; ++i)
+    for(int i = 0; i < shader::type::GENERIC_PROGRAM; ++i)
     {
       if(shader_objs[i])
       {
@@ -886,7 +886,7 @@ namespace mgl::opengl
 
     if(program->m_context->version_code() >= 400)
     {
-      if(!shaders.sources[glsl_source::type::VERTEX_SHADER].empty())
+      if(!shaders.sources[shader::type::VERTEX_SHADER].empty())
       {
         glGetProgramStageiv(
             program_obj, GL_VERTEX_SHADER, GL_ACTIVE_SUBROUTINES, &num_vertex_shader_subroutines);
@@ -896,7 +896,7 @@ namespace mgl::opengl
                             &num_vertex_shader_subroutine_uniforms);
       }
 
-      if(!shaders.sources[glsl_source::type::FRAGMENT_SHADER].empty())
+      if(!shaders.sources[shader::type::FRAGMENT_SHADER].empty())
       {
         glGetProgramStageiv(program_obj,
                             GL_FRAGMENT_SHADER,
@@ -908,7 +908,7 @@ namespace mgl::opengl
                             &num_fragment_shader_subroutine_uniforms);
       }
 
-      if(!shaders.sources[glsl_source::type::GEOMETRY_SHADER].empty())
+      if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
       {
         glGetProgramStageiv(program_obj,
                             GL_GEOMETRY_SHADER,
@@ -920,7 +920,7 @@ namespace mgl::opengl
                             &num_geometry_shader_subroutine_uniforms);
       }
 
-      if(!shaders.sources[glsl_source::type::TESS_EVALUATION_SHADER].empty())
+      if(!shaders.sources[shader::type::TESS_EVALUATION_SHADER].empty())
       {
         glGetProgramStageiv(program_obj,
                             GL_TESS_EVALUATION_SHADER,
@@ -932,7 +932,7 @@ namespace mgl::opengl
                             &num_tess_evaluation_shader_subroutine_uniforms);
       }
 
-      if(!shaders.sources[glsl_source::type::TESS_CONTROL_SHADER].empty())
+      if(!shaders.sources[shader::type::TESS_CONTROL_SHADER].empty())
       {
         glGetProgramStageiv(program_obj,
                             GL_TESS_CONTROL_SHADER,
@@ -952,7 +952,7 @@ namespace mgl::opengl
         num_tess_evaluation_shader_subroutine_uniforms;
     program->m_num_tess_control_shader_subroutines = num_tess_control_shader_subroutine_uniforms;
 
-    if(!shaders.sources[glsl_source::type::GEOMETRY_SHADER].empty())
+    if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
     {
 
       int geometry_in = 0;
