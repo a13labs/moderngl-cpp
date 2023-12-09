@@ -14,11 +14,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_opengl/vertexarray.hpp"
 #include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/buffer_layout.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/program.hpp"
+#include "mgl_opengl/vertex_array.hpp"
 
 #include "mgl_core/log.hpp"
 

@@ -8,7 +8,7 @@ namespace mgl::opengl
 {
   // A buffer layout is a short string describing the layout of data in a vertex buffer object (VBO).
   // The buffer layout looks like: [count]type[size] [[count]type[size]...] [/usage]
-  void buffer_layout::parse_layout(const std::string& layout)
+  void buffer_layout::parse_layout(const mgl::core::string& layout)
   {
     m_layout = layout;
 
@@ -37,7 +37,7 @@ namespace mgl::opengl
 
     if(split.size() > 1)
     {
-      std::string divisor = split[1];
+      mgl::core::string divisor = split[1];
       if(divisor == "i")
       {
         // /i per instance. Successive values from the buffer are passed to each instance.

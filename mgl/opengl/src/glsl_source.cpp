@@ -1,4 +1,4 @@
-#include "mgl_opengl/glslsource.hpp"
+#include "mgl_opengl/glsl_source.hpp"
 #include <regex>
 
 namespace mgl::opengl

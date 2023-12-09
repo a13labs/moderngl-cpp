@@ -14,11 +14,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_opengl/texture2d.hpp"
 #include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_opengl/datatype.hpp"
+#include "mgl_opengl/data_type.hpp"
 #include "mgl_opengl/framebuffer.hpp"
+#include "mgl_opengl/texture_2d.hpp"
 
 #include "mgl_core/log.hpp"
 
