@@ -1,5 +1,5 @@
 #include "mgl_window/builtins.hpp"
-#include "mgl_window/context/window.hpp"
+#include "mgl_window/window.hpp"
 
 namespace mgl::window
 {

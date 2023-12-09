@@ -14,9 +14,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/context/window.hpp"
-#include "mgl_window/context/event.hpp"
-#include "mgl_window/context/input.hpp"
+#include "mgl_window/window.hpp"
+#include "mgl_window/event.hpp"
+#include "mgl_window/input.hpp"
+
 #include "mgl_window/context/sdl/window.hpp"
 
 #include "mgl_opengl/context.hpp"

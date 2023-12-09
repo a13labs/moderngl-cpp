@@ -2,7 +2,7 @@
 
 #include "mgl_core/math.hpp"
 
-#include "mgl_window/context/window.hpp"
+#include "mgl_window/window.hpp"
 
 #include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/context.hpp"

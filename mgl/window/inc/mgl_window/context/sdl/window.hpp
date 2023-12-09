@@ -14,9 +14,9 @@
    limitations under the License.
 */
 #pragma once
-#include "mgl_window/context/event.hpp"
-#include "mgl_window/context/input.hpp"
-#include "mgl_window/context/window.hpp"
+#include "mgl_window/event.hpp"
+#include "mgl_window/input.hpp"
+#include "mgl_window/window.hpp"
 
 #include "SDL2/SDL.h"
 

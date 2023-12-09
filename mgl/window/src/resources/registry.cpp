@@ -1,5 +1,5 @@
 #include "mgl_window/resources/registry.hpp"
-#include "mgl_window/context/window.hpp"
+#include "mgl_window/window.hpp"
 
 #include "stb/stb_image.hpp"
 
