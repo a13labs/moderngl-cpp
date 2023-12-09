@@ -28,11 +28,11 @@ public:
     void release();
     bool released();
 
-    const mgl::core::viewport_2d& viewport();
-    void set_viewport(const mgl::core::viewport_2d& r);
+    const mgl::core::rect& viewport();
+    void set_viewport(const mgl::core::rect& r);
 
-    const mgl::core::viewport_2d& scissor();
-    void set_scissor(const mgl::core::viewport_2d& r);
+    const mgl::core::rect& scissor();
+    void set_scissor(const mgl::core::rect& r);
 
     void enable_scissor();
     void disable_scissor();
@@ -56,16 +56,16 @@ public:
 
     void clear(const glm::vec4& color,
                float depth = 0.0,
-               const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d);
+               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
     void clear(float r,
                float g,
                float b,
                float a = 0.0,
                float depth = 0.0,
-               const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d);
+               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
 
     bool read_into(mgl::core::mem_buffer<u_int8_t>& dst,
-                   const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d,
+                   const mgl::core::rect& viewport = mgl::core::null_viewport_2d,
                    int components = 3,
                    int attachment = 0,
                    int alignment = 1,
@@ -73,7 +73,7 @@ public:
                    size_t write_offset = 0);
 
     bool read_into(buffer_ref dst,
-                   const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d,
+                   const mgl::core::rect& viewport = mgl::core::null_viewport_2d,
                    int components = 3,
                    int attachment = 0,
                    int alignment = 1,
@@ -94,9 +94,9 @@ private:
     context* m_context;
     int m_framebuffer_obj;
 
-    mgl::core::viewport_2d m_viewport;
+    mgl::core::rect m_viewport;
     bool m_scissor_enabled;
-    mgl::core::viewport_2d m_scissor;
+    mgl::core::rect m_scissor;
     color_masks m_color_masks;
 
     int m_draw_buffers_len;
@@ -122,12 +122,12 @@ private:
     return m_released;
   }
 
-  inline const mgl::core::viewport_2d& framebuffer::viewport()
+  inline const mgl::core::rect& framebuffer::viewport()
   {
     return m_viewport;
   }
 
-  inline const mgl::core::viewport_2d& framebuffer::scissor()
+  inline const mgl::core::rect& framebuffer::scissor()
   {
     return m_scissor;
   }
@@ -142,7 +142,7 @@ private:
   }
 
   inline void
-  framebuffer::clear(const glm::vec4& color, float depth, const mgl::core::viewport_2d& viewport)
+  framebuffer::clear(const glm::vec4& color, float depth, const mgl::core::rect& viewport)
   {
     clear(color.r, color.g, color.b, color.a, depth, viewport);
   }

@@ -103,7 +103,7 @@ namespace mgl::opengl
 
   bool texture_cube::write(const mgl::core::mem_buffer<uint8_t>& src,
                            int face,
-                           const mgl::core::viewport_2d& viewport,
+                           const mgl::core::rect& viewport,
                            int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureCube already released");
@@ -186,7 +186,7 @@ namespace mgl::opengl
 
   bool texture_cube::write(const buffer_ref& src,
                            int face,
-                           const mgl::core::viewport_2d& viewport,
+                           const mgl::core::rect& viewport,
                            int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureCube already released");

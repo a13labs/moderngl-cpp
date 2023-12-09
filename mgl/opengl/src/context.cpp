@@ -189,8 +189,15 @@ namespace mgl::opengl
 
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-    glEnable(GL_PRIMITIVE_RESTART);
-    glPrimitiveRestartIndex(-1);
+    if(glPrimitiveRestartIndex)
+    {
+      glEnable(GL_PRIMITIVE_RESTART);
+      glPrimitiveRestartIndex(-1);
+    }
+    else
+    {
+      glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+    }
 
     ctx->m_max_samples = 0;
     glGetIntegerv(GL_MAX_SAMPLES, (GLint*)&ctx->m_max_samples);
@@ -233,7 +240,9 @@ namespace mgl::opengl
     {
       auto framebuffer = new mgl::opengl::framebuffer();
       framebuffer->m_released = false;
+
       framebuffer->m_context = ctx;
+
       framebuffer->m_framebuffer_obj = 0;
       framebuffer->m_draw_buffers_len = 1;
       framebuffer->m_draw_buffers = new unsigned[1];
@@ -259,7 +268,7 @@ namespace mgl::opengl
       framebuffer->m_depth_mask = true;
 
       int scissor_box[4] = {};
-      glGetIntegerv(GL_SCISSOR_BOX, scissor_box);
+      glGetIntegerv(GL_SCISSOR_BOX, (int*)&scissor_box);
 
       framebuffer->m_viewport = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
 
@@ -2237,7 +2246,7 @@ namespace mgl::opengl
     }
   }
 
-  void context::clear(const glm::vec4& color, float depth, const mgl::core::viewport_2d& viewport)
+  void context::clear(const glm::vec4& color, float depth, const mgl::core::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
@@ -2245,7 +2254,7 @@ namespace mgl::opengl
   }
 
   void context::clear(
-      float r, float g, float b, float a, float depth, const mgl::core::viewport_2d& viewport)
+      float r, float g, float b, float a, float depth, const mgl::core::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");

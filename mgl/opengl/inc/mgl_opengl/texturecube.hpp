@@ -44,9 +44,9 @@ public:
     bool read_into(mgl::core::mem_buffer<uint8_t>& dst, int face, int alignment = 1, size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int face, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::core::mem_buffer<uint8_t>& src, int face, const mgl::core::viewport_2d& viewport, int alignment = 1);
+    bool write(const mgl::core::mem_buffer<uint8_t>& src, int face, const mgl::core::rect& viewport, int alignment = 1);
     bool write(const mgl::core::mem_buffer<uint8_t>& src, int face, int alignment = 1);
-    bool write(const buffer_ref& src, int face, const mgl::core::viewport_2d& viewport, int alignment = 1);
+    bool write(const buffer_ref& src, int face, const mgl::core::rect& viewport, int alignment = 1);
     bool write(const buffer_ref& src, int face, int alignment = 1);
 
     void bind_to_image(int unit, bool read = true, bool write = true, int level = 0, int format = 0);

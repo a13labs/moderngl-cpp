@@ -97,7 +97,7 @@ namespace mgl::opengl
   }
 
   bool texture_3d::write(const mgl::core::mem_buffer<uint8_t>& src,
-                         const mgl::core::viewport_3d& viewport,
+                         const mgl::core::cube& viewport,
                          int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
@@ -167,7 +167,7 @@ namespace mgl::opengl
   }
 
   bool
-  texture_3d::write(const buffer_ref& src, const mgl::core::viewport_3d& viewport, int alignment)
+  texture_3d::write(const buffer_ref& src, const mgl::core::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");

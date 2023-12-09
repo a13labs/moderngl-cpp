@@ -122,7 +122,7 @@ namespace mgl::opengl
   }
 
   bool texture_2d::write(const mgl::core::mem_buffer<uint8_t>& src,
-                         const mgl::core::viewport_2d& viewport,
+                         const mgl::core::rect& viewport,
                          int level,
                          int alignment)
   {
@@ -196,7 +196,7 @@ namespace mgl::opengl
   }
 
   bool texture_2d::write(const buffer_ref& src,
-                         const mgl::core::viewport_2d& viewport,
+                         const mgl::core::rect& viewport,
                          int level,
                          int alignment)
   {

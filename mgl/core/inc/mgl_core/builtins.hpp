@@ -105,36 +105,61 @@ namespace mgl::core
 
   using timepoint = std::chrono::time_point<std::chrono::system_clock>;
 
-  struct viewport_2d
+  struct rect
   {
     int x;
     int y;
     int width;
     int height;
 
-    viewport_2d(int x, int y, int w, int h)
+    rect(int x, int y, int w, int h)
         : x(x)
         , y(y)
         , width(w)
         , height(h)
     { }
 
-    viewport_2d(int w, int h)
+    rect(int w, int h)
         : x(0)
         , y(0)
         , width(w)
         , height(h)
     { }
 
-    viewport_2d()
+    rect()
         : x(0)
         , y(0)
         , width(0)
         , height(0)
     { }
+
+    rect(const rect& other)
+        : x(other.x)
+        , y(other.y)
+        , width(other.width)
+        , height(other.height)
+    { }
+
+    rect(rect&& other) noexcept
+        : x(other.x)
+        , y(other.y)
+        , width(other.width)
+        , height(other.height)
+    { }
+
+    ~rect() = default;
+
+    rect& operator=(const rect& other)
+    {
+      x = other.x;
+      y = other.y;
+      width = other.width;
+      height = other.height;
+      return *this;
+    }
   };
 
-  struct viewport_3d
+  struct cube
   {
     int x;
     int y;
@@ -143,7 +168,7 @@ namespace mgl::core
     int height;
     int depth;
 
-    viewport_3d(int x, int y, int z, int w, int h, int d)
+    cube(int x, int y, int z, int w, int h, int d)
         : x(x)
         , y(y)
         , z(z)
@@ -152,7 +177,7 @@ namespace mgl::core
         , depth(d)
     { }
 
-    viewport_3d(int w, int h, int d)
+    cube(int w, int h, int d)
         : x(0)
         , y(0)
         , z(0)
@@ -161,7 +186,7 @@ namespace mgl::core
         , depth(d)
     { }
 
-    viewport_3d()
+    cube()
         : x(0)
         , y(0)
         , z(0)
@@ -169,6 +194,28 @@ namespace mgl::core
         , height(0)
         , depth(0)
     { }
+
+    cube(const cube& other)
+        : x(other.x)
+        , y(other.y)
+        , z(other.z)
+        , width(other.width)
+        , height(other.height)
+        , depth(other.depth)
+    { }
+
+    ~cube() = default;
+
+    cube& operator=(const cube& other)
+    {
+      x = other.x;
+      y = other.y;
+      z = other.z;
+      width = other.width;
+      height = other.height;
+      depth = other.depth;
+      return *this;
+    }
   };
 
   struct size
@@ -185,18 +232,32 @@ namespace mgl::core
         : width(0)
         , height(0)
     { }
+
+    size(const size& other)
+        : width(other.width)
+        , height(other.height)
+    { }
+
+    ~size() = default;
+
+    size& operator=(const size& other)
+    {
+      width = other.width;
+      height = other.height;
+      return *this;
+    }
   };
 
-  extern const viewport_2d null_viewport_2d;
-  extern const viewport_3d null_viewport_3d;
+  extern const rect null_viewport_2d;
+  extern const cube null_viewport_3d;
   extern const size null_size;
 
-  inline bool operator==(const viewport_2d& lhs, const viewport_2d& rhs)
+  inline bool operator==(const rect& lhs, const rect& rhs)
   {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.width == rhs.width && lhs.height == rhs.height;
   }
 
-  inline bool operator==(const viewport_3d& lhs, const viewport_3d& rhs)
+  inline bool operator==(const cube& lhs, const cube& rhs)
   {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.width == rhs.width &&
            lhs.height == rhs.height && lhs.depth == rhs.depth;
@@ -207,12 +268,12 @@ namespace mgl::core
     return lhs.width == rhs.width && lhs.height == rhs.height;
   }
 
-  inline bool operator!=(const viewport_2d& lhs, const viewport_2d& rhs)
+  inline bool operator!=(const rect& lhs, const rect& rhs)
   {
     return !(lhs == rhs);
   }
 
-  inline bool operator!=(const viewport_3d& lhs, const viewport_3d& rhs)
+  inline bool operator!=(const cube& lhs, const cube& rhs)
   {
     return !(lhs == rhs);
   }

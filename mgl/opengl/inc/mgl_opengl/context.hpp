@@ -176,13 +176,13 @@ public:
     context_mode::Enum mode();
     void clear(const glm::vec4& color,
                float depth = 0.0,
-               const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d);
+               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
     void clear(float r,
                float g,
                float b,
                float a = 0.0,
                float depth = 0.0,
-               const mgl::core::viewport_2d& viewport = mgl::core::null_viewport_2d);
+               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
 
 private:
     buffer_ref buffer(void* data, size_t size, bool dynamic);
