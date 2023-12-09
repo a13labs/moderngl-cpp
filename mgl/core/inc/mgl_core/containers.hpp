@@ -13,11 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_core/math.hpp"
+#pragma once
+
+#include <map>
+#include <vector>
 
 namespace mgl::core
 {
-  const rect null_viewport_2d = { 0, 0, 0, 0 };
-  const cube null_viewport_3d = { 0, 0, 0, 0, 0, 0 };
-  const size null_size = { 0, 0 };
+  template <typename T>
+  using list = std::vector<T>;
+
+  template <typename T, typename U>
+  using pair = std::pair<T, U>;
+
+  template <typename T, typename U>
+  using dict = std::map<T, U>;
 } // namespace  mgl::core

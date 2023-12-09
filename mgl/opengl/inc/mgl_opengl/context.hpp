@@ -406,4 +406,10 @@ private:
   {
     return framebuffer(color_attachments, attachment_ref(nullptr));
   }
+
+  inline context_ref create_context(context_mode::Enum mode, int required = 330)
+  {
+    return context::create_context(mode, required);
+  }
+
 } // namespace  mgl::opengl

@@ -1,5 +1,4 @@
 #pragma once
-#include "builtins.hpp"
 #include "string.hpp"
 
 namespace mgl::core

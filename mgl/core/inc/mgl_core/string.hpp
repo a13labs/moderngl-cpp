@@ -1,6 +1,11 @@
 #pragma once
-#include "builtins.hpp"
+#include "containers.hpp"
+#include "memory.hpp"
+
 #include <spdlog/fmt/fmt.h>
+
+#include <functional>
+#include <sstream>
 
 namespace mgl::core
 {

@@ -15,8 +15,6 @@
 */
 #pragma once
 
-#include "mgl_core/builtins.hpp"
-
 #include "mgl_core/string.hpp"
 #include "mgl_core/utils.hpp"
 

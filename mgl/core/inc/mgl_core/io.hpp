@@ -13,11 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_core/math.hpp"
+#pragma once
+
+#include "containers.hpp"
+
+#include <filesystem>
+#include <fstream>
 
 namespace mgl::core
 {
-  const rect null_viewport_2d = { 0, 0, 0, 0 };
-  const cube null_viewport_3d = { 0, 0, 0, 0, 0, 0 };
-  const size null_size = { 0, 0 };
+  using path = std::filesystem::path;
+  using path_list = mgl::core::list<path>;
+  using input_file = std::ifstream;
+  using output_file = std::ofstream;
+  using openmode = std::ifstream::openmode;
+  extern const path null_path;
 } // namespace  mgl::core

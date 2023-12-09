@@ -1,6 +1,12 @@
 #pragma once
 #include "mgl_window/builtins.hpp"
 
+#include "mgl_core/io.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
+
+#include "mgl_opengl/glsl_source.hpp"
+#include "mgl_opengl/program.hpp"
 namespace mgl::window
 {
   namespace resources

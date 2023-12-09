@@ -1,5 +1,4 @@
 #pragma once
-#include "builtins.hpp"
 
 #define MGL_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MGL_MIN(a, b) (((a) < (b)) ? (a) : (b))

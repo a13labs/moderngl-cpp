@@ -1,4 +1,3 @@
-#include "mgl_core/builtins.hpp"
 
 #include "mgl_window/render/buffer.hpp"
 #include <cctype>

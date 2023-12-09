@@ -1,6 +1,9 @@
 #pragma once
 #include "mgl_window/builtins.hpp"
 
+#include "mgl_core/string.hpp"
+#include "mgl_opengl/buffer.hpp"
+
 namespace mgl::window
 {
   namespace render

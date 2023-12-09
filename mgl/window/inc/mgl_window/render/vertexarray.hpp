@@ -1,6 +1,13 @@
 #pragma once
 #include "mgl_window/builtins.hpp"
 
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
+
+#include "mgl_opengl/buffer.hpp"
+#include "mgl_opengl/program.hpp"
+#include "mgl_opengl/vertex_array.hpp"
+
 namespace mgl::window
 {
   namespace render
@@ -54,14 +61,21 @@ namespace mgl::window
       void index_buffer(const mgl::core::mem_buffer<uint8_t>& data, int index_element_size = 4);
       void index_buffer(const mgl::opengl::buffer_ref& buffer, int index_element_size = 4);
 
-      void buffer(const mgl::core::mem_buffer<float>& data, const mgl::core::string& layout, const mgl::core::string_list& attrs);
-      void
-      buffer(const mgl::core::mem_buffer<uint32_t>& data, const mgl::core::string& layout, const mgl::core::string_list& attrs);
-      void
-      buffer(const mgl::core::mem_buffer<uint16_t>& data, const mgl::core::string& layout, const mgl::core::string_list& attrs);
-      void
-      buffer(const mgl::core::mem_buffer<uint8_t>& data, const mgl::core::string& layout, const mgl::core::string_list& attrs);
-      void buffer(const mgl::opengl::buffer_ref& buffer, const mgl::core::string& layout, const mgl::core::string_list& attrs);
+      void buffer(const mgl::core::mem_buffer<float>& data,
+                  const mgl::core::string& layout,
+                  const mgl::core::string_list& attrs);
+      void buffer(const mgl::core::mem_buffer<uint32_t>& data,
+                  const mgl::core::string& layout,
+                  const mgl::core::string_list& attrs);
+      void buffer(const mgl::core::mem_buffer<uint16_t>& data,
+                  const mgl::core::string& layout,
+                  const mgl::core::string_list& attrs);
+      void buffer(const mgl::core::mem_buffer<uint8_t>& data,
+                  const mgl::core::string& layout,
+                  const mgl::core::string_list& attrs);
+      void buffer(const mgl::opengl::buffer_ref& buffer,
+                  const mgl::core::string& layout,
+                  const mgl::core::string_list& attrs);
 
       mgl::opengl::vertex_array_ref instance(const mgl::opengl::program_ref& program);
 
@@ -82,31 +96,36 @@ namespace mgl::window
       return mgl::window::current_context();
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<float>& data, int index_element_size)
+    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<float>& data,
+                                           int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint32_t>& data, int index_element_size)
+    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint32_t>& data,
+                                           int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint16_t>& data, int index_element_size)
+    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint16_t>& data,
+                                           int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint8_t>& data, int index_element_size)
+    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint8_t>& data,
+                                           int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::opengl::buffer_ref& buffer, int index_element_size)
+    inline void vertex_array::index_buffer(const mgl::opengl::buffer_ref& buffer,
+                                           int index_element_size)
     {
       m_index_buffer = buffer;
       m_index_element_size = index_element_size;

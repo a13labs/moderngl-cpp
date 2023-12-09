@@ -1,7 +1,11 @@
 #pragma once
-#include "mgl_core/builtins.hpp"
-#include "mgl_opengl.hpp"
 
+#include "mgl_core/containers.hpp"
+#include "mgl_core/string.hpp"
+
+#include "mgl_opengl/context.hpp"
+
+#include <functional>
 namespace mgl::window
 {
   class window;

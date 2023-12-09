@@ -1,5 +1,12 @@
 
-#include "mgl_window.hpp"
+#include "mgl_window/context/window.hpp"
+
+#include "mgl_opengl/buffer.hpp"
+#include "mgl_opengl/context.hpp"
+#include "mgl_opengl/glsl_source.hpp"
+#include "mgl_opengl/program.hpp"
+#include "mgl_opengl/uniform.hpp"
+#include "mgl_opengl/vertex_array.hpp"
 
 class example_window : public mgl::window::window
 {
