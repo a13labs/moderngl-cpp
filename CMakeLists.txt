@@ -91,7 +91,6 @@ if (MGL_BUILD_TESTS)
     # Add unit tests
     message(STATUS "ModernGL-Cpp tests: ON")
     enable_testing()
-    include(Dart)
 else()
     message(STATUS "ModernGL-Cpp tests: OFF")
 endif()

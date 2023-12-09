@@ -1,5 +1,4 @@
 #pragma once
-#include "mgl_window/builtins.hpp"
 
 #include "mgl_core/io.hpp"
 #include "mgl_core/memory.hpp"
@@ -7,8 +6,12 @@
 
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/shader.hpp"
+#include "mgl_opengl/texture_2d.hpp"
 namespace mgl::window
 {
+  using shader_defines = mgl::dict<std::string, std::string>;
+  using shaders_outputs = mgl::string_list;
+
   namespace resources
   {
     struct mipmap_levels
@@ -42,7 +45,7 @@ namespace mgl::window
     struct program_load_opts
     {
       shader_defines defines;
-      mgl::opengl::shaders_outputs outputs;
+      shaders_outputs outputs;
     };
 
     extern program_load_opts program_load_defaults;
@@ -67,8 +70,7 @@ namespace mgl::window
                         mgl::input_file& file,
                         const data_load_opts& opts = data_load_defaults);
     mgl::ref<mgl::opengl::program>
-    load_program(const std::string& path,
-                 const program_load_opts& opts = program_load_defaults);
+    load_program(const std::string& path, const program_load_opts& opts = program_load_defaults);
     mgl::ref<mgl::opengl::program>
     load_program(mgl::opengl::shader& source,
                  const program_load_opts& opts = program_load_defaults);

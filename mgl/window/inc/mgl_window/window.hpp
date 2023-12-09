@@ -14,10 +14,13 @@
    limitations under the License.
 */
 #pragma once
+#include "event.hpp"
 #include "input.hpp"
+#include "render/buffer.hpp"
+
+#include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"
-#include "mgl_window/builtins.hpp"
-#include "mgl_window/render/buffer.hpp"
+#include "mgl_opengl/context.hpp"
 
 namespace mgl::window
 {
@@ -150,4 +153,15 @@ private:
   }
 
   window_config load_window_configuration(const std::string& filename);
+
+  inline mgl::opengl::context_ref current_context()
+  {
+    return window::current().context();
+  }
+
+  inline window& current_window()
+  {
+    return window::current();
+  }
+
 } // namespace  mgl::window

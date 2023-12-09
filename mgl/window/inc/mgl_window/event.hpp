@@ -14,12 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#include "mgl_window/builtins.hpp"
 
 #include "input.hpp"
 
+#include "mgl_core/string.hpp"
+#include "mgl_core/utils.hpp"
+
+#include <functional>
+
 namespace mgl::window
 {
+
   enum class EventType
   {
     None = 0,
@@ -92,6 +97,8 @@ public:
 protected:
     bool mHandled = false;
   };
+
+  using event_handler = std::function<void(event&)>;
 
   class EventDispatcher
   {
