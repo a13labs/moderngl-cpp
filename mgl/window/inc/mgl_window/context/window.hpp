@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "input.hpp"
+#include "mgl_core/timer.hpp"
 #include "mgl_window/builtins.hpp"
 #include "mgl_window/render/buffer.hpp"
 

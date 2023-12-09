@@ -1,6 +1,11 @@
-#include "mgl_window/resources/registry.hpp"
+#include "mgl_core/builtins.hpp"
+
 #include "mgl_window/context/window.hpp"
+#include "mgl_window/resources/registry.hpp"
+
 #include "stb/stb_image.hpp"
+
+#include "mgl_core/debug.hpp"
 
 namespace mgl::window
 {

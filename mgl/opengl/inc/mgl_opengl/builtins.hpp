@@ -14,7 +14,12 @@
    limitations under the License.
 */
 #pragma once
-#include "mgl_core.hpp"
+
+#include "mgl_core/builtins.hpp"
+
+#include "mgl_core/string.hpp"
+#include "mgl_core/utils.hpp"
+
 namespace mgl::opengl
 {
   using gl_function = void*;

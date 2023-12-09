@@ -1,6 +1,8 @@
 #pragma once
 #include "builtins.hpp"
 
+#define BIT(x) 1 << x
+
 namespace mgl::core
 {
 

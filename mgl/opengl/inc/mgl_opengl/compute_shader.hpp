@@ -16,6 +16,8 @@
 #pragma once
 #include "builtins.hpp"
 
+#include "mgl_core/string.hpp"
+
 namespace mgl::opengl
 {
   class compute_shader

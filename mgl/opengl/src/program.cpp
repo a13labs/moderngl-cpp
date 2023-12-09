@@ -17,7 +17,8 @@
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/context.hpp"
 
-#include "mgl_core/log.hpp"
+#include "mgl_core/debug.hpp"
+#include "mgl_core/string.hpp"
 
 #include "glad/gl.h"
 

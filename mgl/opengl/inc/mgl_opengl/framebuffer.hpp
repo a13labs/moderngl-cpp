@@ -16,6 +16,8 @@
 #pragma once
 #include "builtins.hpp"
 
+#include "mgl_core/math.hpp"
+
 #include "glm/vec4.hpp"
 
 namespace mgl::opengl

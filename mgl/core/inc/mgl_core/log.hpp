@@ -15,6 +15,8 @@
 */
 #pragma once
 #include "builtins.hpp"
+#include "string.hpp"
+
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/spdlog.h>
 

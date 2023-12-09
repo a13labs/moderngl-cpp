@@ -13,7 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_core.hpp"
+#include "mgl_core/re.hpp"
+#include "mgl_core/string.hpp"
 #include "gtest/gtest.h"
 
 TEST(mgl_core, string_fmt_test)

@@ -76,6 +76,4 @@ _deps
 build/*
 tmp/*
 
-,vscode/launch
-,vscode/tasks
-,vscode/settings
+.vscode/*

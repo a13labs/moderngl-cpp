@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_core.hpp"
+#include "mgl_core/log.hpp"
 #include "gtest/gtest.h"
 #include <fstream>
 #include <iostream>

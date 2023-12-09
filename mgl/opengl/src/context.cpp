@@ -37,7 +37,8 @@
 #include "mgl_opengl/varying.hpp"
 #include "mgl_opengl/vertex_array.hpp"
 
-#include "mgl_core/log.hpp"
+#include "mgl_core/debug.hpp"
+#include "mgl_core/math.hpp"
 
 #include "glad/gl.h"
 

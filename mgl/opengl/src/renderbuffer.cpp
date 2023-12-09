@@ -18,7 +18,7 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/framebuffer.hpp"
 
-#include "mgl_core/log.hpp"
+#include "mgl_core/debug.hpp"
 
 #include "glad/gl.h"
 

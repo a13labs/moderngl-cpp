@@ -4,6 +4,9 @@
 
 namespace mgl::core
 {
+  using string = std::string;
+  using string_list = list<string>;
+
   static const size_t npos = std::string::npos;
 
   template <typename... T>

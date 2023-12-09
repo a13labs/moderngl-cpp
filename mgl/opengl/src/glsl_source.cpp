@@ -1,5 +1,8 @@
+
 #include "mgl_opengl/glsl_source.hpp"
 #include <regex>
+
+#include "mgl_core/debug.hpp"
 
 namespace mgl::opengl
 {

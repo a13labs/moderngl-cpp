@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "mgl_core/log.hpp"
+
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 

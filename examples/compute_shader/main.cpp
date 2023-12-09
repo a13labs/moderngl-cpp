@@ -6,6 +6,8 @@
 #include "gif.hpp"
 #include "mgl_opengl.hpp"
 
+#include "mgl_core/log.hpp"
+
 int main(int argc, char* argv[])
 {
   mgl::core::log::init();

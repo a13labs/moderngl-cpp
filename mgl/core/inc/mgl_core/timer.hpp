@@ -4,6 +4,8 @@
 namespace mgl::core
 {
 
+  using timepoint = std::chrono::time_point<std::chrono::system_clock>;
+
   class Timer
   {
     struct FrameTime

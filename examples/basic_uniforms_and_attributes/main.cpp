@@ -1,6 +1,8 @@
 #include "mgl_window.hpp"
 #include <cmath>
 
+#include "mgl_core/math.hpp"
+
 class example_window : public mgl::window::window
 {
 

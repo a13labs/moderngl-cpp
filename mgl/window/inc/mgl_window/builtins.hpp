@@ -1,5 +1,5 @@
 #pragma once
-#include "mgl_core.hpp"
+#include "mgl_core/builtins.hpp"
 #include "mgl_opengl.hpp"
 
 namespace mgl::window

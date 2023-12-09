@@ -17,6 +17,9 @@
 #include "builtins.hpp"
 #include "framebuffer.hpp"
 
+#include "mgl_core/math.hpp"
+#include "mgl_core/string.hpp"
+
 #include "glm/vec4.hpp"
 
 namespace mgl::opengl

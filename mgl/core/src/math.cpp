@@ -1,4 +1,3 @@
-
 /*
    Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
 
@@ -14,9 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_opengl/conditional_render.hpp"
+#include "mgl_core/math.hpp"
 
-namespace mgl::opengl
+namespace mgl::core
 {
-  void conditional_render::release() { }
-} // namespace  mgl::opengl
+  const rect null_viewport_2d = { 0, 0, 0, 0 };
+  const cube null_viewport_3d = { 0, 0, 0, 0, 0, 0 };
+  const size null_size = { 0, 0 };
+  const path null_path = path();
+} // namespace  mgl::core

@@ -1,6 +1,9 @@
 #include "mgl_window/render/vertexarray.hpp"
 #include "mgl_window/render/buffer.hpp"
 
+#include "mgl_core/debug.hpp"
+#include "mgl_core/utils.hpp"
+
 namespace mgl::window
 {
   namespace render
