@@ -14,10 +14,12 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
+  class context;
   class buffer
   {
 public:
@@ -80,6 +82,9 @@ private:
     bool m_dynamic;
     bool m_released;
   };
+
+  using buffer_ref = mgl::core::ref<buffer>;
+  using buffers = mgl::core::ref_list<buffer>;
 
   inline int buffer::glo()
   {

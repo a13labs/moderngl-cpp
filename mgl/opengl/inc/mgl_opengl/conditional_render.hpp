@@ -14,7 +14,8 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
@@ -29,4 +30,6 @@ private:
     friend class context;
     conditional_render();
   };
+
+  using conditional_render_ref = mgl::core::ref<conditional_render>;
 } // namespace  mgl::opengl

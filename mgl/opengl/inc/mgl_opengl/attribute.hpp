@@ -14,7 +14,8 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "data_type.hpp"
 
 #include "mgl_core/string.hpp"
 
@@ -50,4 +51,8 @@ private:
     int m_location;
     size_t m_array_length;
   };
+
+  using attribute_ref = mgl::core::ref<attribute>;
+  using attributes_dict = mgl::core::dict<mgl::core::string, attribute_ref>;
+
 } // namespace  mgl::opengl

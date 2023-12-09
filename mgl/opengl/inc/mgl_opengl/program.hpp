@@ -14,12 +14,19 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
 
+#include "attribute.hpp"
+#include "subroutine.hpp"
+#include "uniform.hpp"
+#include "uniform_block.hpp"
+#include "varying.hpp"
+
+#include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
   class program
   {
 public:
@@ -82,6 +89,8 @@ private:
     varyings_dict m_varyings_map;
     subroutines_dict m_subroutines_map;
   };
+
+  using program_ref = mgl::core::ref<program>;
 
   inline int program::glo()
   {

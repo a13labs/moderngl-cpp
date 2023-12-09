@@ -14,10 +14,11 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
 
+#include "mgl_core/memory.hpp"
 namespace mgl::opengl
 {
+  class context;
   class query
   {
 public:
@@ -49,4 +50,7 @@ private:
     context* m_context;
     int m_query_obj[query::keys::COUNT];
   };
+
+  using query_ref = mgl::core::ref<query>;
+
 } // namespace  mgl::opengl

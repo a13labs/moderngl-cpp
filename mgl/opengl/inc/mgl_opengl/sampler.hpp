@@ -14,11 +14,16 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "enums.hpp"
+
+#include "mgl_core/memory.hpp"
+
 #include "glm/vec4.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class sampler
   {
 public:
@@ -84,6 +89,9 @@ private:
     bool m_released;
     sampler::Filter m_filter;
   };
+
+  using sampler_ref = mgl::core::ref<sampler>;
+  using samplers = mgl::core::ref_list<sampler>;
 
   inline int sampler::glo()
   {

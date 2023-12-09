@@ -14,13 +14,15 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
-#include "mgl_core/string.hpp"
 
+#include "mgl_core/containers.hpp"
 #include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  using shader_defines = mgl::core::dict<mgl::core::string, mgl::core::string>;
+
+  extern const std::string no_shader;
 
   class glsl_source
   {

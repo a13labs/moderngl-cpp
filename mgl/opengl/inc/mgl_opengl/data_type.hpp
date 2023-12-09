@@ -14,7 +14,8 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include <cstddef>
 
 namespace mgl::opengl
 {

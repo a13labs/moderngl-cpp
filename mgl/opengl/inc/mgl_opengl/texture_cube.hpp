@@ -14,13 +14,20 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "attachment.hpp"
+#include "buffer.hpp"
+#include "data_type.hpp"
+#include "enums.hpp"
 #include "texture.hpp"
 
 #include "mgl_core/math.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class texture_cube : public texture
   {
 public:
@@ -78,6 +85,8 @@ private:
     float m_anisotropy;
     bool m_released;
   };
+
+  using texture_cube_ref = mgl::core::ref<texture_cube>;
 
   inline int texture_cube::glo()
   {

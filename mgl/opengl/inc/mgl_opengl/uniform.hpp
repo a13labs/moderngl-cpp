@@ -14,7 +14,10 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "mgl_core/containers.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 #include "glm/mat2x2.hpp"
 #include "glm/mat2x3.hpp"
@@ -31,6 +34,8 @@
 
 namespace mgl::opengl
 {
+  class context;
+
   class uniform
   {
 public:
@@ -112,6 +117,9 @@ private:
     data_type* m_data_type;
     uint8_t* m_data;
   };
+
+  using uniform_ref = mgl::core::ref<uniform>;
+  using uniforms_dict = mgl::core::dict<mgl::core::string, uniform_ref>;
 
   inline void uniform::get_value(uint8_t& value)
   {

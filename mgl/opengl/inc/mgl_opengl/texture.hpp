@@ -14,7 +14,6 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
 
 namespace mgl::opengl
 {
@@ -37,6 +36,9 @@ public:
     virtual ~texture() = default;
     virtual texture::type texture_type() = 0;
   };
+
+  using texture_ref = mgl::core::ref<mgl::opengl::texture>;
+  using textures = mgl::core::ref_list<texture>;
 
   inline int swizzle_from_char(char c)
   {

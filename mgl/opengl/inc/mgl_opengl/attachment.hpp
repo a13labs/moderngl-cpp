@@ -14,8 +14,8 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
 
+#include "mgl_core/memory.hpp"
 namespace mgl::opengl
 {
   class attachment
@@ -30,4 +30,8 @@ public:
     virtual ~attachment() = default;
     virtual attachment::type attachment_type() = 0;
   };
+
+  using attachment_ref = mgl::core::ref<attachment>;
+  using attachments_ref = mgl::core::ref_list<attachment>;
+
 } // namespace  mgl::opengl

@@ -1,15 +1,8 @@
 #include <cmath>
 
 #include "mgl_core/math.hpp"
-
-#include "mgl_window/window.hpp"
-
-#include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_opengl/glsl_source.hpp"
-#include "mgl_opengl/program.hpp"
-#include "mgl_opengl/uniform.hpp"
-#include "mgl_opengl/vertex_array.hpp"
+#include "mgl_window/window.hpp"
 
 class example_window : public mgl::window::window
 {

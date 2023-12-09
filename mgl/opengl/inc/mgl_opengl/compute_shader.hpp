@@ -14,12 +14,16 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "uniform.hpp"
+#include "uniform_block.hpp"
 
 #include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class compute_shader
   {
 public:
@@ -54,6 +58,8 @@ private:
     uniform_blocks_dict m_uniform_blocks_map;
     bool m_released;
   };
+
+  using compute_shader_ref = mgl::core::ref<mgl::opengl::compute_shader>;
 
   inline int compute_shader::glo()
   {

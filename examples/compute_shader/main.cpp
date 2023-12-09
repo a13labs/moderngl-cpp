@@ -6,11 +6,7 @@
 #include "gif.hpp"
 
 #include "mgl_core/log.hpp"
-
-#include "mgl_opengl/buffer.hpp"
-#include "mgl_opengl/compute_shader.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_opengl/glsl_source.hpp"
 
 int main(int argc, char* argv[])
 {

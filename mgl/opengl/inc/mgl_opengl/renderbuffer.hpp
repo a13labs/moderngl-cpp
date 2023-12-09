@@ -15,10 +15,14 @@
 */
 #pragma once
 #include "attachment.hpp"
-#include "builtins.hpp"
+#include "data_type.hpp"
+
+#include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class renderbuffer : public attachment
   {
 public:
@@ -50,6 +54,8 @@ private:
     bool m_depth;
     bool m_released;
   };
+
+  using renderbuffer_ref = mgl::core::ref<mgl::opengl::renderbuffer>;
 
   inline int renderbuffer::glo()
   {

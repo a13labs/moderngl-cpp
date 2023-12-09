@@ -15,13 +15,19 @@
 */
 #pragma once
 #include "attachment.hpp"
-#include "builtins.hpp"
+#include "buffer.hpp"
+#include "data_type.hpp"
+#include "enums.hpp"
 #include "texture.hpp"
 
 #include "mgl_core/math.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class texture_2d : public attachment, public texture
   {
 public:
@@ -98,6 +104,8 @@ private:
     bool m_repeat_y;
     bool m_released;
   };
+
+  using texture_2d_ref = mgl::core::ref<texture_2d>;
 
   inline int texture_2d::glo()
   {

@@ -14,13 +14,20 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "attachment.hpp"
+#include "buffer.hpp"
+#include "data_type.hpp"
+#include "enums.hpp"
 #include "texture.hpp"
 
 #include "mgl_core/math.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class texture_array
   {
 public:
@@ -84,6 +91,8 @@ private:
     float m_anisotropy;
     bool m_released;
   };
+
+  using texture_array_ref = mgl::core::ref<texture_array>;
 
   inline int texture_array::glo()
   {

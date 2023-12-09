@@ -14,10 +14,40 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "buffer.hpp"
+#include "framebuffer.hpp"
+#include "sampler.hpp"
+#include "texture.hpp"
+
+#include "mgl_core/containers.hpp"
+#include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+  struct texture_binding
+  {
+    texture_ref texture;
+    int binding;
+  };
+
+  struct buffer_binding
+  {
+    buffer_ref buffer;
+    int binding;
+  };
+
+  struct sampler_binding
+  {
+    sampler_ref sampler;
+    int binding;
+  };
+
+  using texture_bindings = mgl::core::list<texture_binding>;
+  using buffer_bindings = mgl::core::list<buffer_binding>;
+  using sampler_bindings = mgl::core::list<sampler_binding>;
+
   class scope
   {
 public:
@@ -50,6 +80,8 @@ private:
     int m_old_enable_flags;
     bool m_released;
   };
+
+  using scope_ref = mgl::core::ref<scope>;
 
   inline bool scope::released()
   {

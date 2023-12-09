@@ -6,6 +6,8 @@
 
 namespace mgl::opengl
 {
+  const mgl::core::string no_shader = "";
+
   static mgl::core::string_list s_shaders_text = {
     "VERTEX_SHADER",       "FRAGMENT_SHADER",        "GEOMETRY_SHADER",
     "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",

@@ -14,14 +14,18 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "buffer.hpp"
+#include "color_mask.hpp"
 
 #include "mgl_core/math.hpp"
+#include "mgl_core/memory.hpp"
 
 #include "glm/vec4.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class framebuffer : public mgl::core::ref_from_this<framebuffer>
   {
 public:
@@ -113,6 +117,8 @@ private:
     bool m_depth_mask;
     bool m_released;
   };
+
+  using framebuffer_ref = mgl::core::ref<mgl::opengl::framebuffer>;
 
   inline int framebuffer::glo()
   {

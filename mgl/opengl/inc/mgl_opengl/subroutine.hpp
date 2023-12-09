@@ -14,10 +14,15 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "mgl_core/containers.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class subroutine
   {
     enum type
@@ -40,4 +45,8 @@ private:
     int m_index;
     subroutine::type m_type;
   };
+
+  using subroutine_ref = mgl::core::ref<subroutine>;
+  using subroutines_dict = mgl::core::dict<mgl::core::string, subroutine_ref>;
+
 } // namespace  mgl::opengl

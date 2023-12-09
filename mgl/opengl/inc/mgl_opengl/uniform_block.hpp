@@ -14,10 +14,15 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+
+#include "mgl_core/containers.hpp"
+#include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class uniform_block
   {
 public:
@@ -37,4 +42,8 @@ private:
     int m_index;
     int m_size;
   };
+
+  using uniform_block_ref = mgl::core::ref<uniform_block>;
+  using uniform_blocks_dict = mgl::core::dict<mgl::core::string, uniform_block_ref>;
+
 } // namespace  mgl::opengl

@@ -14,9 +14,35 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "attachment.hpp"
+#include "attribute.hpp"
+#include "buffer.hpp"
+#include "buffer_layout.hpp"
+#include "color_mask.hpp"
+#include "compute_shader.hpp"
+#include "conditional_render.hpp"
+#include "data_type.hpp"
+#include "enums.hpp"
 #include "framebuffer.hpp"
+#include "glsl_source.hpp"
+#include "program.hpp"
+#include "query.hpp"
+#include "renderbuffer.hpp"
+#include "sampler.hpp"
+#include "scope.hpp"
+#include "subroutine.hpp"
+#include "texture.hpp"
+#include "texture_2d.hpp"
+#include "texture_3d.hpp"
+#include "texture_array.hpp"
+#include "texture_cube.hpp"
+#include "uniform.hpp"
+#include "uniform_block.hpp"
+#include "varying.hpp"
+#include "vertex_array.hpp"
+#include "vertex_buffer.hpp"
 
+#include "mgl_core/containers.hpp"
 #include "mgl_core/math.hpp"
 #include "mgl_core/string.hpp"
 
@@ -24,6 +50,9 @@
 
 namespace mgl::opengl
 {
+
+  using gl_context = void*;
+
   struct context_mode
   {
     enum Enum
@@ -33,6 +62,10 @@ namespace mgl::opengl
       STANDALONE
     };
   };
+
+  using shaders_outputs = mgl::core::string_list;
+  using fragment_outputs = mgl::core::dict<mgl::core::string, int>;
+  using context_ref = mgl::core::ref<context>;
 
   class context
   {

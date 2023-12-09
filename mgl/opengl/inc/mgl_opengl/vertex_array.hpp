@@ -14,10 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#include "builtins.hpp"
+#include "buffer.hpp"
+#include "enums.hpp"
+#include "program.hpp"
+
+#include "mgl_core/containers.hpp"
+#include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
+  class context;
+
   class vertex_array
   {
 public:
@@ -27,16 +34,21 @@ public:
     void release();
     bool released();
 
-    void render(mgl::opengl::render_mode mode = mgl::opengl::render_mode::TRIANGLES,
+    void render(render_mode mode = render_mode::TRIANGLES,
                 int vertices = -1,
                 int first = 0,
                 int instances = -1);
     void render(int instances);
-    void render_indirect(const buffer_ref& buffer, mgl::opengl::render_mode mode, int count = -1, int first = -1);
-    void transform(const buffer_ref& b, mgl::opengl::render_mode mode, int vertices = -1, int first = 0, int instances = -1);
+    void
+    render_indirect(const buffer_ref& buffer, render_mode mode, int count = -1, int first = -1);
+    void transform(const buffer_ref& b,
+                   render_mode mode,
+                   int vertices = -1,
+                   int first = 0,
+                   int instances = -1);
 
     void transform(const mgl::core::ref_list<buffer>& buffers,
-                   mgl::opengl::render_mode mode,
+                   render_mode mode,
                    int vertices = -1,
                    int first = 0,
                    int instances = -1,
@@ -71,7 +83,10 @@ private:
     bool m_released;
   };
 
-  inline void vertex_array::transform(const buffer_ref& b, mgl::opengl::render_mode mode, int vertices, int first, int instances)
+  using vertex_array_ref = mgl::core::ref<vertex_array>;
+
+  inline void vertex_array::transform(
+      const buffer_ref& b, render_mode mode, int vertices, int first, int instances)
   {
     transform(mgl::core::ref_list<buffer>({ b }), mode, vertices, first, instances);
   }
