@@ -53,8 +53,8 @@ public:
     const texture::filter& filter() const;
     void set_filter(const texture::filter& value);
 
-    mgl::core::string swizzle();
-    void set_swizzle(const mgl::core::string& value);
+    std::string swizzle();
+    void set_swizzle(const std::string& value);
 
     mgl::opengl::compare_func compare_func();
     void set_compare_func(mgl::opengl::compare_func value);
@@ -62,19 +62,19 @@ public:
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool read_into(mgl::core::mem_buffer<uint8_t>& dst,
+    bool read_into(mgl::mem_buffer<uint8_t>& dst,
                    int level = 0,
                    int alignment = 1,
                    size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::core::mem_buffer<uint8_t>& src,
-               const mgl::core::rect& viewport,
+    bool write(const mgl::mem_buffer<uint8_t>& src,
+               const mgl::rect& viewport,
                int level = 0,
                int alignment = 1);
-    bool write(const mgl::core::mem_buffer<uint8_t>& src, int level = 0, int alignment = 1);
+    bool write(const mgl::mem_buffer<uint8_t>& src, int level = 0, int alignment = 1);
     bool
-    write(const buffer_ref& src, const mgl::core::rect& viewport, int level = 0, int alignment = 1);
+    write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
     bool write(const buffer_ref& src, int level = 0, int alignment = 1);
 
     void bind_to_image(
@@ -105,7 +105,7 @@ private:
     bool m_released;
   };
 
-  using texture_2d_ref = mgl::core::ref<texture_2d>;
+  using texture_2d_ref = mgl::ref<texture_2d>;
 
   inline int texture_2d::glo()
   {

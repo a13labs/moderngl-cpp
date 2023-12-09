@@ -24,7 +24,7 @@
 namespace mgl::opengl
 {
   uniform_block::uniform_block(
-      const mgl::core::string& name, int program_obj, int index, size_t size, context* ctx)
+      const std::string& name, int program_obj, int index, size_t size, context* ctx)
   {
     m_context = ctx;
     m_name = name;

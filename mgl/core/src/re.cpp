@@ -1,9 +1,9 @@
 #include "mgl_core/re.hpp"
 #include <regex>
 
-namespace mgl::core
+namespace mgl
 {
-  string_list re_split(const string& input, string re)
+  string_list re_split(const std::string& input, std::string re)
   {
     // The regular expression to use for splitting
     std::regex regex(re); // Split on one or more whitespace characters
@@ -16,4 +16,4 @@ namespace mgl::core
 
     return tokens;
   }
-} // namespace  mgl::core
+} // namespace  mgl

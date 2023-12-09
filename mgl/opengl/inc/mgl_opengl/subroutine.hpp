@@ -39,14 +39,14 @@ public:
 
 private:
     friend class context;
-    subroutine(const mgl::core::string& name, int index, subroutine::type type);
+    subroutine(const std::string& name, int index, subroutine::type type);
 
-    mgl::core::string m_name;
+    std::string m_name;
     int m_index;
     subroutine::type m_type;
   };
 
-  using subroutine_ref = mgl::core::ref<subroutine>;
-  using subroutines_dict = mgl::core::dict<mgl::core::string, subroutine_ref>;
+  using subroutine_ref = mgl::ref<subroutine>;
+  using subroutines_dict = mgl::dict<std::string, subroutine_ref>;
 
 } // namespace  mgl::opengl

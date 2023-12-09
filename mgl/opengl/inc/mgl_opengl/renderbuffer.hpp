@@ -55,7 +55,7 @@ private:
     bool m_released;
   };
 
-  using renderbuffer_ref = mgl::core::ref<mgl::opengl::renderbuffer>;
+  using renderbuffer_ref = mgl::ref<mgl::opengl::renderbuffer>;
 
   inline int renderbuffer::glo()
   {

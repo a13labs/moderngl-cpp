@@ -37,8 +37,8 @@ public:
     virtual texture::type texture_type() = 0;
   };
 
-  using texture_ref = mgl::core::ref<mgl::opengl::texture>;
-  using textures = mgl::core::ref_list<texture>;
+  using texture_ref = mgl::ref<mgl::opengl::texture>;
+  using textures = mgl::ref_list<texture>;
 
   inline int swizzle_from_char(char c)
   {

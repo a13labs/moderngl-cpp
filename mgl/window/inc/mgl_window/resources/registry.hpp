@@ -49,27 +49,27 @@ namespace mgl::window
 
     struct data_load_opts
     {
-      mgl::core::openmode mode;
+      mgl::openmode mode;
     };
 
     extern data_load_opts data_load_defaults;
 
-    bool register_dir(const mgl::core::string& path);
-    bool register_program_dir(const mgl::core::string& path);
-    bool register_texture_dir(const mgl::core::string& path);
-    bool register_scene_dir(const mgl::core::string& path);
-    bool register_data_dir(const mgl::core::string& path);
+    bool register_dir(const std::string& path);
+    bool register_program_dir(const std::string& path);
+    bool register_texture_dir(const std::string& path);
+    bool register_scene_dir(const std::string& path);
+    bool register_data_dir(const std::string& path);
 
-    mgl::core::ref<mgl::opengl::texture>
-    load_texture_2d(const mgl::core::string& path,
+    mgl::ref<mgl::opengl::texture>
+    load_texture_2d(const std::string& path,
                     const texture_2d_load_opts& opts = texture_2d_load_defaults);
-    bool load_data_file(const mgl::core::string& path,
-                        mgl::core::input_file& file,
+    bool load_data_file(const std::string& path,
+                        mgl::input_file& file,
                         const data_load_opts& opts = data_load_defaults);
-    mgl::core::ref<mgl::opengl::program>
-    load_program(const mgl::core::string& path,
+    mgl::ref<mgl::opengl::program>
+    load_program(const std::string& path,
                  const program_load_opts& opts = program_load_defaults);
-    mgl::core::ref<mgl::opengl::program>
+    mgl::ref<mgl::opengl::program>
     load_program(mgl::opengl::shader& source,
                  const program_load_opts& opts = program_load_defaults);
 

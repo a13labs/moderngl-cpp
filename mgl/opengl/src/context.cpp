@@ -332,7 +332,7 @@ namespace mgl::opengl
     return buffer_ref(buffer);
   }
 
-  compute_shader_ref context::compute_shader(const mgl::core::string& source)
+  compute_shader_ref context::compute_shader(const std::string& source)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     auto compute_shader = new mgl::opengl::compute_shader();
@@ -1336,9 +1336,9 @@ namespace mgl::opengl
     scope->m_old_enable_flags = mgl::opengl::enable_flag::INVALID;
     scope->m_framebuffer = framebuffer;
     scope->m_old_framebuffer = m_bound_framebuffer;
-    scope->m_textures = mgl::core::list<scope::BindingData>(textures.size());
+    scope->m_textures = mgl::list<scope::BindingData>(textures.size());
     scope->m_buffers =
-        mgl::core::list<scope::BindingData>(uniform_buffers.size() + storage_buffers.size());
+        mgl::list<scope::BindingData>(uniform_buffers.size() + storage_buffers.size());
     scope->m_samplers = samplers;
 
     int i = 0;
@@ -2247,7 +2247,7 @@ namespace mgl::opengl
     }
   }
 
-  void context::clear(const glm::vec4& color, float depth, const mgl::core::rect& viewport)
+  void context::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
@@ -2255,7 +2255,7 @@ namespace mgl::opengl
   }
 
   void
-  context::clear(float r, float g, float b, float a, float depth, const mgl::core::rect& viewport)
+  context::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");

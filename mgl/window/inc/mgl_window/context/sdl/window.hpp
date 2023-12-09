@@ -50,14 +50,14 @@ public:
 
     virtual void initialize_event_handler(const event_handler& handler) override;
     virtual void toggle_full_screen() override;
-    virtual mgl::core::size get_drawable_size() override;
+    virtual mgl::size get_drawable_size() override;
 
-    virtual void set_title(const mgl::core::string& value) override;
-    virtual const mgl::core::string& title() const override;
+    virtual void set_title(const std::string& value) override;
+    virtual const std::string& title() const override;
 
 private:
     SDL_GLContext m_context;
-    mgl::core::string m_title;
+    std::string m_title;
     SDL_Window* m_native_window = nullptr;
     window_state m_state;
   };

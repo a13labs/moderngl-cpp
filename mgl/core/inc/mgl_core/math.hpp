@@ -2,7 +2,7 @@
 
 #define MGL_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MGL_MIN(a, b) (((a) < (b)) ? (a) : (b))
-namespace mgl::core
+namespace mgl
 {
   static constexpr double pi = 3.14159265358979323846;
 
@@ -188,4 +188,4 @@ namespace mgl::core
   {
     return !(lhs == rhs);
   }
-} // namespace  mgl::core
+} // namespace  mgl

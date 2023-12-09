@@ -33,7 +33,7 @@ namespace mgl::opengl
 
   ContextGLX::~ContextGLX() { }
 
-  gl_function ContextGLX::load(const mgl::core::string& method)
+  gl_function ContextGLX::load(const std::string& method)
   {
     return nullptr;
   }

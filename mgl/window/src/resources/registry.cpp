@@ -13,8 +13,8 @@ namespace mgl::window
   {
     struct settings
     {
-      mgl::core::path_list textures_dirs;
-      mgl::core::path_list programs_dirs;
+      mgl::path_list textures_dirs;
+      mgl::path_list programs_dirs;
     };
 
     static settings s_settings;
@@ -22,13 +22,13 @@ namespace mgl::window
     mipmap_levels null_mipmap_levels = { 0, 0 };
     texture_2d_load_opts texture_2d_load_defaults = { false, true, null_mipmap_levels, 1.0 };
     program_load_opts program_load_defaults = { {}, {} };
-    data_load_opts data_load_defaults = { mgl::core::input_file::in |
-                                          mgl::core::input_file::binary };
+    data_load_opts data_load_defaults = { mgl::input_file::in |
+                                          mgl::input_file::binary };
 
-    bool append_unique_path(const mgl::core::string& value, mgl::core::path_list& list)
+    bool append_unique_path(const std::string& value, mgl::path_list& list)
     {
 
-      auto path = mgl::core::path(value);
+      auto path = mgl::path(value);
 
       if(path.is_relative())
       {
@@ -57,7 +57,7 @@ namespace mgl::window
       return true;
     }
 
-    const mgl::core::path& find(const mgl::core::string& value, mgl::core::path_list& list)
+    const mgl::path& find(const std::string& value, mgl::path_list& list)
     {
       for(auto&& base : list)
       {
@@ -69,10 +69,10 @@ namespace mgl::window
         }
       }
 
-      return mgl::core::null_path;
+      return mgl::null_path;
     }
 
-    bool register_dir(const mgl::core::string& path)
+    bool register_dir(const std::string& path)
     {
       auto result = register_program_dir(path);
       result &= register_texture_dir(path);
@@ -81,22 +81,22 @@ namespace mgl::window
       return result;
     }
 
-    bool register_program_dir(const mgl::core::string& path)
+    bool register_program_dir(const std::string& path)
     {
       return append_unique_path(path, s_settings.programs_dirs);
     }
 
-    bool register_texture_dir(const mgl::core::string& path)
+    bool register_texture_dir(const std::string& path)
     {
       return append_unique_path(path, s_settings.textures_dirs);
     }
 
-    bool register_scene_dir(const mgl::core::string& path)
+    bool register_scene_dir(const std::string& path)
     {
       return false;
     }
 
-    bool register_data_dir(const mgl::core::string& path)
+    bool register_data_dir(const std::string& path)
     {
       return false;
     }
@@ -123,7 +123,7 @@ namespace mgl::window
       }
     }
 
-    mgl::core::ref<mgl::opengl::texture> load_texture_2d(const mgl::core::string& path,
+    mgl::ref<mgl::opengl::texture> load_texture_2d(const std::string& path,
                                                          const texture_2d_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
@@ -161,8 +161,8 @@ namespace mgl::window
       return texture;
     }
 
-    bool load_data_file(const mgl::core::string& path,
-                        mgl::core::input_file& file,
+    bool load_data_file(const std::string& path,
+                        mgl::input_file& file,
                         const data_load_opts& opts)
     {
       auto base_path = find(path, s_settings.textures_dirs);
@@ -179,7 +179,7 @@ namespace mgl::window
       return true;
     }
 
-    mgl::core::ref<mgl::opengl::program> load_program(const mgl::core::string& path,
+    mgl::ref<mgl::opengl::program> load_program(const std::string& path,
                                                       const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
@@ -195,8 +195,8 @@ namespace mgl::window
 
       auto full_path = base_path / path;
 
-      mgl::core::input_file shader_file(full_path, mgl::core::input_file::in);
-      mgl::core::string shader_text((std::istreambuf_iterator<char>(shader_file)),
+      mgl::input_file shader_file(full_path, mgl::input_file::in);
+      std::string shader_text((std::istreambuf_iterator<char>(shader_file)),
                                     std::istreambuf_iterator<char>());
 
       mgl::opengl::shader shader_source(shader_text);
@@ -213,7 +213,7 @@ namespace mgl::window
       return ctx->program(glsl, outputs);
     }
 
-    mgl::core::ref<mgl::opengl::program> load_program(mgl::opengl::shader& source,
+    mgl::ref<mgl::opengl::program> load_program(mgl::opengl::shader& source,
                                                       const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");

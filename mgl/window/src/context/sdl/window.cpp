@@ -336,13 +336,13 @@ namespace mgl::window
     SDL_GL_SwapWindow(m_native_window);
   }
 
-  void sdl_window::set_title(const mgl::core::string& value)
+  void sdl_window::set_title(const std::string& value)
   {
     m_title = value;
     SDL_SetWindowTitle(m_native_window, m_title.c_str());
   }
 
-  const mgl::core::string& sdl_window::title() const
+  const std::string& sdl_window::title() const
   {
     return m_title;
   }
@@ -439,7 +439,7 @@ namespace mgl::window
     return static_cast<float>(m_state.width) / m_state.height;
   }
 
-  mgl::core::size sdl_window::get_drawable_size()
+  mgl::size sdl_window::get_drawable_size()
   {
     int x, y;
     SDL_GL_GetDrawableSize(m_native_window, &x, &y);

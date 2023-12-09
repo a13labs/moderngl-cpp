@@ -50,20 +50,20 @@ public:
     const texture::filter& filter() const;
     void set_filter(const texture::filter& value);
 
-    mgl::core::string swizzle();
-    void set_swizzle(const mgl::core::string& value);
+    std::string swizzle();
+    void set_swizzle(const std::string& value);
 
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool read_into(mgl::core::mem_buffer<uint8_t>& dst, int alignment = 1, size_t write_offset = 0);
+    bool read_into(mgl::mem_buffer<uint8_t>& dst, int alignment = 1, size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::core::mem_buffer<uint8_t>& src,
-               const mgl::core::cube& viewport,
+    bool write(const mgl::mem_buffer<uint8_t>& src,
+               const mgl::cube& viewport,
                int alignment = 1);
-    bool write(const mgl::core::mem_buffer<uint8_t>& src, int alignment = 1);
-    bool write(const buffer_ref& src, const mgl::core::cube& viewport, int alignment = 1);
+    bool write(const mgl::mem_buffer<uint8_t>& src, int alignment = 1);
+    bool write(const buffer_ref& src, const mgl::cube& viewport, int alignment = 1);
     bool write(const buffer_ref& src, int alignment = 1);
 
     void
@@ -92,7 +92,7 @@ private:
     bool m_released;
   };
 
-  using texture_array_ref = mgl::core::ref<texture_array>;
+  using texture_array_ref = mgl::ref<texture_array>;
 
   inline int texture_array::glo()
   {

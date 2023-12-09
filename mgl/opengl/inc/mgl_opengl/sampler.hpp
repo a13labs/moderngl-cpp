@@ -90,8 +90,8 @@ private:
     sampler::Filter m_filter;
   };
 
-  using sampler_ref = mgl::core::ref<sampler>;
-  using samplers = mgl::core::ref_list<sampler>;
+  using sampler_ref = mgl::ref<sampler>;
+  using samplers = mgl::ref_list<sampler>;
 
   inline int sampler::glo()
   {

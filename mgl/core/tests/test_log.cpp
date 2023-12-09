@@ -22,7 +22,7 @@
 
 TEST(mgl_core, log_test)
 {
-  ::mgl::core::log::init("test.log");
+  ::mgl::log::init("test.log");
   MGL_CORE_TRACE("Test MGL_CORE_TRACE");
   MGL_CORE_INFO("Test MGL_CORE_INFO");
   MGL_CORE_WARN("Test MGL_CORE_WARN");

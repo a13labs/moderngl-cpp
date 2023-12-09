@@ -31,5 +31,5 @@ private:
     conditional_render();
   };
 
-  using conditional_render_ref = mgl::core::ref<conditional_render>;
+  using conditional_render_ref = mgl::ref<conditional_render>;
 } // namespace  mgl::opengl

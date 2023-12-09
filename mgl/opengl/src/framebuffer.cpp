@@ -44,7 +44,7 @@ namespace mgl::opengl
   }
 
   void framebuffer::clear(
-      float r, float g, float b, float a, float depth, const mgl::core::rect& viewport)
+      float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -68,7 +68,7 @@ namespace mgl::opengl
     glDepthMask(m_depth_mask);
 
     // Respect the passed in viewport even with scissor enabled
-    if(viewport != mgl::core::null_viewport_2d)
+    if(viewport != mgl::null_viewport_2d)
     {
       glEnable(GL_SCISSOR_TEST);
       glScissor(viewport.x, viewport.y, viewport.width, viewport.height);
@@ -134,8 +134,8 @@ namespace mgl::opengl
     m_context->m_bound_framebuffer = shared_from_this();
   }
 
-  bool framebuffer::read_into(mgl::core::mem_buffer<uint8_t>& dst,
-                              const mgl::core::rect& viewport,
+  bool framebuffer::read_into(mgl::mem_buffer<uint8_t>& dst,
+                              const mgl::rect& viewport,
                               int components,
                               int attachment,
                               int alignment,
@@ -162,7 +162,7 @@ namespace mgl::opengl
     int y = 0;
     int width = m_width;
     int height = m_height;
-    if(viewport != mgl::core::null_viewport_2d)
+    if(viewport != mgl::null_viewport_2d)
     {
       x = viewport.x;
       y = viewport.y;
@@ -192,7 +192,7 @@ namespace mgl::opengl
   }
 
   bool framebuffer::read_into(buffer_ref dst,
-                              const mgl::core::rect& viewport,
+                              const mgl::rect& viewport,
                               int components,
                               int attachment,
                               int alignment,
@@ -219,7 +219,7 @@ namespace mgl::opengl
     int y = 0;
     int width = m_width;
     int height = m_height;
-    if(viewport != mgl::core::null_viewport_2d)
+    if(viewport != mgl::null_viewport_2d)
     {
       x = viewport.x;
       y = viewport.y;
@@ -303,7 +303,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  void framebuffer::set_viewport(const mgl::core::rect& r)
+  void framebuffer::set_viewport(const mgl::rect& r)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -318,7 +318,7 @@ namespace mgl::opengl
     }
   }
 
-  void framebuffer::set_scissor(const mgl::core::rect& r)
+  void framebuffer::set_scissor(const mgl::rect& r)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");

@@ -51,7 +51,7 @@ namespace mgl::opengl
     return texture::TEXTURE_2D;
   }
 
-  bool texture_2d::read_into(mgl::core::mem_buffer<uint8_t>& dst,
+  bool texture_2d::read_into(mgl::mem_buffer<uint8_t>& dst,
                              int level,
                              int alignment,
                              size_t write_offset)
@@ -122,8 +122,8 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_2d::write(const mgl::core::mem_buffer<uint8_t>& src,
-                         const mgl::core::rect& viewport,
+  bool texture_2d::write(const mgl::mem_buffer<uint8_t>& src,
+                         const mgl::rect& viewport,
                          int level,
                          int alignment)
   {
@@ -159,7 +159,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_2d::write(const mgl::core::mem_buffer<uint8_t>& src, int level, int alignment)
+  bool texture_2d::write(const mgl::mem_buffer<uint8_t>& src, int level, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -197,7 +197,7 @@ namespace mgl::opengl
   }
 
   bool texture_2d::write(const buffer_ref& src,
-                         const mgl::core::rect& viewport,
+                         const mgl::rect& viewport,
                          int level,
                          int alignment)
   {
@@ -376,7 +376,7 @@ namespace mgl::opengl
     glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
   }
 
-  mgl::core::string texture_2d::swizzle()
+  std::string texture_2d::swizzle()
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -409,7 +409,7 @@ namespace mgl::opengl
     return swizzle;
   }
 
-  void texture_2d::set_swizzle(const mgl::core::string& value)
+  void texture_2d::set_swizzle(const std::string& value)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");

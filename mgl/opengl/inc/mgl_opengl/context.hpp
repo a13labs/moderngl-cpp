@@ -63,9 +63,9 @@ namespace mgl::opengl
     };
   };
 
-  using shaders_outputs = mgl::core::string_list;
-  using fragment_outputs = mgl::core::dict<mgl::core::string, int>;
-  using context_ref = mgl::core::ref<context>;
+  using shaders_outputs = mgl::string_list;
+  using fragment_outputs = mgl::dict<std::string, int>;
+  using context_ref = mgl::ref<context>;
 
   class context
   {
@@ -79,7 +79,7 @@ public:
     int max_texture_units();
     int default_texture_unit();
     float max_anisotropy();
-    const mgl::core::string_list& extensions() const;
+    const mgl::string_list& extensions() const;
     const framebuffer_ref& screen() const;
 
     int enable_flags();
@@ -109,13 +109,13 @@ public:
                      size_t write_offset);
 
     // Buffer
-    buffer_ref buffer(const mgl::core::mem_buffer<float>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::core::mem_buffer<uint32_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::core::mem_buffer<uint16_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::core::mem_buffer<uint8_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::mem_buffer<float>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::mem_buffer<uint32_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::mem_buffer<uint16_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::mem_buffer<uint8_t>& data, bool dynamic = false);
 
     // Compute Shader
-    compute_shader_ref compute_shader(const mgl::core::string& source);
+    compute_shader_ref compute_shader(const std::string& source);
 
     // Create Shader
     static context_ref create_context(context_mode::Enum mode, int required = 330);
@@ -212,13 +212,13 @@ public:
     context_mode::Enum mode();
     void clear(const glm::vec4& color,
                float depth = 0.0,
-               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
+               const mgl::rect& viewport = mgl::null_viewport_2d);
     void clear(float r,
                float g,
                float b,
                float a = 0.0,
                float depth = 0.0,
-               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
+               const mgl::rect& viewport = mgl::null_viewport_2d);
 
 private:
     buffer_ref buffer(void* data, size_t size, bool dynamic);
@@ -248,7 +248,7 @@ private:
     int m_provoking_vertex;
     float m_polygon_offset_factor;
     float m_polygon_offset_units;
-    mgl::core::string_list m_extensions;
+    mgl::string_list m_extensions;
     framebuffer_ref m_default_framebuffer;
     framebuffer_ref m_bound_framebuffer;
   };
@@ -345,7 +345,7 @@ private:
     return m_max_anisotropy;
   }
 
-  inline const mgl::core::string_list& context::extensions() const
+  inline const mgl::string_list& context::extensions() const
   {
     return m_extensions;
   }
@@ -410,22 +410,22 @@ private:
     return m_polygon_offset_units;
   }
 
-  inline buffer_ref context::buffer(const mgl::core::mem_buffer<float>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::mem_buffer<float>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::core::mem_buffer<uint32_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::mem_buffer<uint32_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::core::mem_buffer<uint16_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::mem_buffer<uint16_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::core::mem_buffer<uint8_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::mem_buffer<uint8_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
   }

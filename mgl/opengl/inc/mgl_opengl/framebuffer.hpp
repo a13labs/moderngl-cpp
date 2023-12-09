@@ -26,7 +26,7 @@ namespace mgl::opengl
 {
   class context;
 
-  class framebuffer : public mgl::core::ref_from_this<framebuffer>
+  class framebuffer : public mgl::ref_from_this<framebuffer>
   {
 public:
     ~framebuffer() = default;
@@ -34,11 +34,11 @@ public:
     void release();
     bool released();
 
-    const mgl::core::rect& viewport();
-    void set_viewport(const mgl::core::rect& r);
+    const mgl::rect& viewport();
+    void set_viewport(const mgl::rect& r);
 
-    const mgl::core::rect& scissor();
-    void set_scissor(const mgl::core::rect& r);
+    const mgl::rect& scissor();
+    void set_scissor(const mgl::rect& r);
 
     void enable_scissor();
     void disable_scissor();
@@ -62,16 +62,16 @@ public:
 
     void clear(const glm::vec4& color,
                float depth = 0.0,
-               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
+               const mgl::rect& viewport = mgl::null_viewport_2d);
     void clear(float r,
                float g,
                float b,
                float a = 0.0,
                float depth = 0.0,
-               const mgl::core::rect& viewport = mgl::core::null_viewport_2d);
+               const mgl::rect& viewport = mgl::null_viewport_2d);
 
-    bool read_into(mgl::core::mem_buffer<u_int8_t>& dst,
-                   const mgl::core::rect& viewport = mgl::core::null_viewport_2d,
+    bool read_into(mgl::mem_buffer<u_int8_t>& dst,
+                   const mgl::rect& viewport = mgl::null_viewport_2d,
                    int components = 3,
                    int attachment = 0,
                    int alignment = 1,
@@ -79,7 +79,7 @@ public:
                    size_t write_offset = 0);
 
     bool read_into(buffer_ref dst,
-                   const mgl::core::rect& viewport = mgl::core::null_viewport_2d,
+                   const mgl::rect& viewport = mgl::null_viewport_2d,
                    int components = 3,
                    int attachment = 0,
                    int alignment = 1,
@@ -100,9 +100,9 @@ private:
     context* m_context;
     int m_framebuffer_obj;
 
-    mgl::core::rect m_viewport;
+    mgl::rect m_viewport;
     bool m_scissor_enabled;
-    mgl::core::rect m_scissor;
+    mgl::rect m_scissor;
     color_masks m_color_masks;
 
     int m_draw_buffers_len;
@@ -118,7 +118,7 @@ private:
     bool m_released;
   };
 
-  using framebuffer_ref = mgl::core::ref<mgl::opengl::framebuffer>;
+  using framebuffer_ref = mgl::ref<mgl::opengl::framebuffer>;
 
   inline int framebuffer::glo()
   {
@@ -130,12 +130,12 @@ private:
     return m_released;
   }
 
-  inline const mgl::core::rect& framebuffer::viewport()
+  inline const mgl::rect& framebuffer::viewport()
   {
     return m_viewport;
   }
 
-  inline const mgl::core::rect& framebuffer::scissor()
+  inline const mgl::rect& framebuffer::scissor()
   {
     return m_scissor;
   }
@@ -150,7 +150,7 @@ private:
   }
 
   inline void
-  framebuffer::clear(const glm::vec4& color, float depth, const mgl::core::rect& viewport)
+  framebuffer::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
   {
     clear(color.r, color.g, color.b, color.a, depth, viewport);
   }

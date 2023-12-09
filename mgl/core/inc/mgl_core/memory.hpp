@@ -4,7 +4,7 @@
 #include <queue>
 #include <vector>
 
-namespace mgl::core
+namespace mgl
 {
   template <typename T>
   using scope = std::unique_ptr<T>;
@@ -35,4 +35,4 @@ namespace mgl::core
 
   template <typename T>
   using mem_buffer = std::vector<T>;
-} // namespace mgl::core
+} // namespace mgl

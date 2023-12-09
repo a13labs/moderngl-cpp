@@ -4,7 +4,7 @@
 
 #define BIT(x) 1 << x
 
-namespace mgl::core
+namespace mgl
 {
 
   template <typename T, typename U>
@@ -19,4 +19,4 @@ namespace mgl::core
 
     return zipped;
   }
-} // namespace  mgl::core
+} // namespace  mgl

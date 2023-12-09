@@ -1,6 +1,6 @@
 #include "mgl_core/timer.hpp"
 
-namespace mgl::core
+namespace mgl
 {
 
   Timer::Timer()
@@ -82,4 +82,4 @@ namespace mgl::core
     return elapsed.count();
   }
 
-} // namespace  mgl::core
+} // namespace  mgl

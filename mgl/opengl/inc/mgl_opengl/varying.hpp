@@ -28,14 +28,14 @@ public:
 
 private:
     friend class context;
-    varying(const mgl::core::string& name, int number, size_t array_length, int m_dimension);
+    varying(const std::string& name, int number, size_t array_length, int m_dimension);
 
-    mgl::core::string m_name;
+    std::string m_name;
     int m_number;
     size_t m_array_length;
     int m_dimension;
   };
 
-  using varying_ref = mgl::core::ref<varying>;
-  using varyings_dict = mgl::core::dict<mgl::core::string, varying_ref>;
+  using varying_ref = mgl::ref<varying>;
+  using varyings_dict = mgl::dict<std::string, varying_ref>;
 } // namespace  mgl::opengl

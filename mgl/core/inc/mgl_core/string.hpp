@@ -6,24 +6,24 @@
 
 #include <functional>
 #include <sstream>
+#include <string>
 
-namespace mgl::core
+namespace mgl
 {
-  using string = std::string;
-  using string_list = list<string>;
+  using string_list = list<std::string>;
 
   static const size_t npos = std::string::npos;
 
   template <typename... T>
-  inline auto format(fmt::format_string<T...> fmt, T&&... args) -> string
+  inline auto format(fmt::format_string<T...> fmt, T&&... args) -> std::string
   {
     return fmt::vformat(fmt, fmt::make_format_args(args...));
   }
 
-  string_list split(const string& s, char delimiter);
+  string_list split(const std::string& s, char delimiter);
 
-  string trim(string s);
-  string trim(string s, const std::function<bool(char)>& predicate);
+  std::string trim(std::string s);
+  std::string trim(std::string s, const std::function<bool(char)>& predicate);
 
   std::string join(char delimiter,
                    const std::vector<std::string>& vec,
@@ -31,10 +31,10 @@ namespace mgl::core
                    std::size_t end_index = npos);
 
   template <typename T>
-  string join(char delimiter,
-              const list<T>& vec,
-              std::size_t start_index = 0,
-              std::size_t end_index = npos)
+  std::string join(char delimiter,
+                   const list<T>& vec,
+                   std::size_t start_index = 0,
+                   std::size_t end_index = npos)
   {
     std::ostringstream result;
 
@@ -56,28 +56,28 @@ namespace mgl::core
     return result.str();
   }
 
-  inline bool in(const string& e, const string& str)
+  inline bool in(const std::string& e, const std::string& str)
   {
     return str.find(e) != npos;
   }
 
-  inline bool in(const string& e, const string_list& l)
+  inline bool in(const std::string& e, const string_list& l)
   {
     return !(std::find(l.begin(), l.end(), e) == l.end());
   }
 
-  inline bool starts_with(const string& str, string e)
+  inline bool starts_with(const std::string& str, std::string e)
   {
     return str.rfind(e, 0) == 0;
   }
 
-  inline int to_int(const string& str)
+  inline int to_int(const std::string& str)
   {
     return std::stoi(str);
   };
 
   inline bool all_empty(const string_list& lst)
   {
-    return std::all_of(lst.begin(), lst.end(), [](const string& str) { return str.empty(); });
+    return std::all_of(lst.begin(), lst.end(), [](const std::string& str) { return str.empty(); });
   }
-} // namespace  mgl::core
+} // namespace  mgl

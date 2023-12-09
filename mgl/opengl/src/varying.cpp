@@ -21,7 +21,7 @@
 
 namespace mgl::opengl
 {
-  varying::varying(const mgl::core::string& name, int number, size_t array_length, int dimension)
+  varying::varying(const std::string& name, int number, size_t array_length, int dimension)
   {
     m_name = name;
     m_number = number;

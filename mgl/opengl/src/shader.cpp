@@ -6,9 +6,9 @@
 
 namespace mgl::opengl
 {
-  const mgl::core::string no_shader = "";
+  const std::string no_shader = "";
 
-  static mgl::core::string_list s_shaders_text = {
+  static mgl::string_list s_shaders_text = {
     "VERTEX_SHADER",       "FRAGMENT_SHADER",        "GEOMETRY_SHADER",
     "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",
   };
@@ -16,21 +16,21 @@ namespace mgl::opengl
   static const std::regex
       s_layout_regex("(layout\\(.+\\)\\))?(\\s+)?(out)(\\s+)(\\w+)(\\s+)(\\w+)");
 
-  shader::shader(const mgl::core::string& source, shader::type type)
+  shader::shader(const std::string& source, shader::type type)
   {
-    auto src = mgl::core::trim(source);
-    auto lines = mgl::core::split(src, '\n');
-    MGL_CORE_ASSERT(mgl::core::starts_with(lines[0], "#version"),
+    auto src = mgl::trim(source);
+    auto lines = mgl::split(src, '\n');
+    MGL_CORE_ASSERT(mgl::starts_with(lines[0], "#version"),
                     "#version must appear on the first line");
 
     m_type = type;
-    m_version_code = mgl::core::to_int(lines[0].substr(sizeof("#version")));
-    m_source = mgl::core::join('\n', lines, 1);
+    m_version_code = mgl::to_int(lines[0].substr(sizeof("#version")));
+    m_source = mgl::join('\n', lines, 1);
   }
 
-  const mgl::core::string shader::source(shader::type type, const shader_defines& defines)
+  const std::string shader::source(shader::type type, const shader_defines& defines)
   {
-    if(!mgl::core::in(s_shaders_text[type], m_source))
+    if(!mgl::in(s_shaders_text[type], m_source))
     {
       if(type == m_type)
         return source(defines);
@@ -38,48 +38,47 @@ namespace mgl::opengl
       return "";
     }
 
-    mgl::core::string_list str_defines;
+    mgl::string_list str_defines;
 
     for(const auto& [key, value] : defines)
     {
-      str_defines.push_back(mgl::core::format("#define {} {}", key, value));
+      str_defines.push_back(mgl::format("#define {} {}", key, value));
     }
 
     auto line = (int)str_defines.size() + 2;
 
-    return mgl::core::format("#version {}\n#define {}\n{}\n#line {}\n{}",
-                             m_version_code,
-                             s_shaders_text[type],
-                             mgl::core::join('\n', str_defines),
-                             line,
-                             m_source);
+    return mgl::format("#version {}\n#define {}\n{}\n#line {}\n{}",
+                       m_version_code,
+                       s_shaders_text[type],
+                       mgl::join('\n', str_defines),
+                       line,
+                       m_source);
   }
 
-  const mgl::core::string shader::source(const shader_defines& defines)
+  const std::string shader::source(const shader_defines& defines)
   {
-    mgl::core::string_list str_defines;
+    mgl::string_list str_defines;
 
     for(const auto& [key, value] : defines)
     {
-      str_defines.push_back(mgl::core::format("#define {} {}", key, value));
+      str_defines.push_back(mgl::format("#define {} {}", key, value));
     }
 
     auto line = (int)str_defines.size() + 1;
 
-    return mgl::core::format("#version {}\n{}\n#line {}\n{}",
-                             m_version_code,
-                             mgl::core::join('\n', str_defines),
-                             line,
-                             m_source);
+    return mgl::format("#version {}\n{}\n#line {}\n{}",
+                       m_version_code,
+                       mgl::join('\n', str_defines),
+                       line,
+                       m_source);
   }
 
-  const mgl::core::string_list shader::outputs()
+  const mgl::string_list shader::outputs()
   {
-    mgl::core::string_list outputs = {};
+    mgl::string_list outputs = {};
 
-    std::regex_iterator<mgl::core::string::iterator> it(
-        m_source.begin(), m_source.end(), s_layout_regex);
-    std::regex_iterator<mgl::core::string::iterator> end;
+    std::regex_iterator<std::string::iterator> it(m_source.begin(), m_source.end(), s_layout_regex);
+    std::regex_iterator<std::string::iterator> end;
 
     for(; it != end; ++it)
     {

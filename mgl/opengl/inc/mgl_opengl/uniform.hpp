@@ -98,7 +98,7 @@ public:
 
 private:
     friend class context;
-    uniform(const mgl::core::string& name,
+    uniform(const std::string& name,
             int gl_type,
             int program_obj,
             int location,
@@ -109,7 +109,7 @@ private:
     void get_value(void* data, size_t size);
 
     context* m_context;
-    mgl::core::string m_name;
+    std::string m_name;
     int m_program_obj;
     int m_gl_type;
     int m_location;
@@ -118,8 +118,8 @@ private:
     uint8_t* m_data;
   };
 
-  using uniform_ref = mgl::core::ref<uniform>;
-  using uniforms_dict = mgl::core::dict<mgl::core::string, uniform_ref>;
+  using uniform_ref = mgl::ref<uniform>;
+  using uniforms_dict = mgl::dict<std::string, uniform_ref>;
 
   inline void uniform::get_value(uint8_t& value)
   {

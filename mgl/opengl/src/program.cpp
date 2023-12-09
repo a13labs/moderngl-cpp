@@ -36,13 +36,13 @@ namespace mgl::opengl
     glDeleteProgram(m_program_obj);
   }
 
-  const mgl::core::string_list program::attributes(bool all)
+  const mgl::string_list program::attributes(bool all)
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_attributes_map)
     {
-      if(!all && mgl::core::starts_with(a.first, "gl_"))
+      if(!all && mgl::starts_with(a.first, "gl_"))
         continue;
       result.push_back(a.first);
     }
@@ -50,9 +50,9 @@ namespace mgl::opengl
     return result;
   }
 
-  const mgl::core::string_list program::uniforms()
+  const mgl::string_list program::uniforms()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_uniforms_map)
     {
@@ -62,9 +62,9 @@ namespace mgl::opengl
     return result;
   }
 
-  const mgl::core::string_list program::uniform_blocks()
+  const mgl::string_list program::uniform_blocks()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_uniform_blocks_map)
     {
@@ -74,9 +74,9 @@ namespace mgl::opengl
     return result;
   }
 
-  const mgl::core::string_list program::varyings()
+  const mgl::string_list program::varyings()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_varyings_map)
     {
@@ -86,9 +86,9 @@ namespace mgl::opengl
     return result;
   }
 
-  const mgl::core::string_list program::subroutines()
+  const mgl::string_list program::subroutines()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_subroutines_map)
     {

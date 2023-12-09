@@ -51,6 +51,6 @@ private:
     int m_query_obj[query::keys::COUNT];
   };
 
-  using query_ref = mgl::core::ref<query>;
+  using query_ref = mgl::ref<query>;
 
 } // namespace  mgl::opengl

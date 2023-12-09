@@ -38,13 +38,13 @@ public:
 
 private:
     friend class context;
-    attribute(const mgl::core::string& name,
+    attribute(const std::string& name,
               int gl_type,
               int program_obj,
               int location,
               size_t array_length);
 
-    mgl::core::string m_name;
+    std::string m_name;
     int m_program_obj;
     int m_gl_type;
     data_type* m_data_type;
@@ -52,7 +52,7 @@ private:
     size_t m_array_length;
   };
 
-  using attribute_ref = mgl::core::ref<attribute>;
-  using attributes_dict = mgl::core::dict<mgl::core::string, attribute_ref>;
+  using attribute_ref = mgl::ref<attribute>;
+  using attributes_dict = mgl::dict<std::string, attribute_ref>;
 
 } // namespace  mgl::opengl

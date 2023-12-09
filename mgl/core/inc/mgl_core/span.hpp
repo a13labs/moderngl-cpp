@@ -611,7 +611,7 @@ public:
 
 } // end namespace std
 
-namespace mgl::core
+namespace mgl
 {
   template <typename T>
   using span = tcb::span<T>;

@@ -20,12 +20,12 @@
 #include <filesystem>
 #include <fstream>
 
-namespace mgl::core
+namespace mgl
 {
   using path = std::filesystem::path;
-  using path_list = mgl::core::list<path>;
+  using path_list = mgl::list<path>;
   using input_file = std::ifstream;
   using output_file = std::ofstream;
   using openmode = std::ifstream::openmode;
   extern const path null_path;
-} // namespace  mgl::core
+} // namespace  mgl

@@ -34,16 +34,16 @@ public:
 private:
     friend class context;
     uniform_block(
-        const mgl::core::string& name, int program_obj, int index, size_t size, context* ctx);
+        const std::string& name, int program_obj, int index, size_t size, context* ctx);
 
     context* m_context;
-    mgl::core::string m_name;
+    std::string m_name;
     int m_program_obj;
     int m_index;
     int m_size;
   };
 
-  using uniform_block_ref = mgl::core::ref<uniform_block>;
-  using uniform_blocks_dict = mgl::core::dict<mgl::core::string, uniform_block_ref>;
+  using uniform_block_ref = mgl::ref<uniform_block>;
+  using uniform_blocks_dict = mgl::dict<std::string, uniform_block_ref>;
 
 } // namespace  mgl::opengl

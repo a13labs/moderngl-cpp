@@ -101,7 +101,7 @@ namespace mgl::opengl
     };
   }
 
-  attribute::attribute(const mgl::core::string& name,
+  attribute::attribute(const std::string& name,
                        int gl_type,
                        int program_obj,
                        int location,

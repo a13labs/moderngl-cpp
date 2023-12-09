@@ -9,6 +9,6 @@ namespace mgl::opengl
     bool r, g, b, a;
   };
 
-  using color_masks = mgl::core::list<color_mask>;
+  using color_masks = mgl::list<color_mask>;
 
 } // namespace mgl::opengl

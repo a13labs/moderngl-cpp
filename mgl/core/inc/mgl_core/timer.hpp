@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace mgl::core
+namespace mgl
 {
 
   using timepoint = std::chrono::time_point<std::chrono::system_clock>;
@@ -59,4 +59,4 @@ private:
     }
   }
 
-} // namespace  mgl::core
+} // namespace  mgl

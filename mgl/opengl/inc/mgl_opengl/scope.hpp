@@ -44,9 +44,9 @@ namespace mgl::opengl
     int binding;
   };
 
-  using texture_bindings = mgl::core::list<texture_binding>;
-  using buffer_bindings = mgl::core::list<buffer_binding>;
-  using sampler_bindings = mgl::core::list<sampler_binding>;
+  using texture_bindings = mgl::list<texture_binding>;
+  using buffer_bindings = mgl::list<buffer_binding>;
+  using sampler_bindings = mgl::list<sampler_binding>;
 
   class scope
   {
@@ -74,14 +74,14 @@ private:
     framebuffer_ref m_framebuffer;
     framebuffer_ref m_old_framebuffer;
     sampler_bindings m_samplers;
-    mgl::core::list<scope::BindingData> m_textures;
-    mgl::core::list<scope::BindingData> m_buffers;
+    mgl::list<scope::BindingData> m_textures;
+    mgl::list<scope::BindingData> m_buffers;
     int m_enable_flags;
     int m_old_enable_flags;
     bool m_released;
   };
 
-  using scope_ref = mgl::core::ref<scope>;
+  using scope_ref = mgl::ref<scope>;
 
   inline bool scope::released()
   {

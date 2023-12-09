@@ -18,13 +18,13 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace mgl::core
+namespace mgl
 {
   namespace log
   {
     ref<spdlog::logger> logger;
 
-    void init(const string& logfile)
+    void init(const std::string& logfile)
     {
 
       std::vector<spdlog::sink_ptr> logSinks;
@@ -45,4 +45,4 @@ namespace mgl::core
       logger->flush_on(spdlog::level::trace);
     }
   } // namespace log
-} // namespace  mgl::core
+} // namespace  mgl

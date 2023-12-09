@@ -10,9 +10,9 @@ namespace mgl::opengl
   struct vertex_buffer
   {
     buffer_ref buffer;
-    mgl::core::string buffer_layout;
-    mgl::core::string_list attributes;
+    std::string buffer_layout;
+    mgl::string_list attributes;
   };
 
-  using vertex_buffer_list = mgl::core::list<vertex_buffer>;
+  using vertex_buffer_list = mgl::list<vertex_buffer>;
 } // namespace mgl::opengl

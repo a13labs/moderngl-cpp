@@ -10,7 +10,7 @@ namespace mgl::window
   {
     struct buffer_element
     {
-      const mgl::core::string format_string;
+      const std::string format_string;
       const int components;
       const int byte_per_component;
       const bool per_instance;
@@ -20,23 +20,23 @@ namespace mgl::window
 
     extern const buffer_element null_buffer_format;
 
-    buffer_layout parse_layout(const mgl::core::string& str);
-    const buffer_element& to_buffer_element(const mgl::core::string& str);
+    buffer_layout parse_layout(const std::string& str);
+    const buffer_element& to_buffer_element(const std::string& str);
 
     class vertex_buffer
     {
 
   public:
       vertex_buffer(mgl::opengl::buffer_ref buffer,
-                    const mgl::core::string& format,
-                    const mgl::core::string_list& attrs = {},
+                    const std::string& format,
+                    const mgl::string_list& attrs = {},
                     bool per_instance = false);
       ~vertex_buffer() = default;
 
       size_t size();
       const buffer_layout& layout() const;
-      const mgl::core::string_list& attributes() const;
-      bool has_attribute(const mgl::core::string& name);
+      const mgl::string_list& attributes() const;
+      bool has_attribute(const std::string& name);
       const mgl::opengl::buffer_ref& buffer() const;
       bool per_instance();
       int vertices();
@@ -45,9 +45,9 @@ namespace mgl::window
 
   private:
       mgl::opengl::buffer_ref m_buffer;
-      mgl::core::string m_layout_str;
+      std::string m_layout_str;
       buffer_layout m_layout;
-      mgl::core::string_list m_attrs;
+      mgl::string_list m_attrs;
       bool m_per_instance;
       int m_vertices;
     };
@@ -62,14 +62,14 @@ namespace mgl::window
       return m_layout;
     }
 
-    inline const mgl::core::string_list& vertex_buffer::attributes() const
+    inline const mgl::string_list& vertex_buffer::attributes() const
     {
       return m_attrs;
     }
 
-    inline bool vertex_buffer::has_attribute(const mgl::core::string& name)
+    inline bool vertex_buffer::has_attribute(const std::string& name)
     {
-      return mgl::core::in(name, m_attrs);
+      return mgl::in(name, m_attrs);
     }
 
     inline const mgl::opengl::buffer_ref& vertex_buffer::buffer() const

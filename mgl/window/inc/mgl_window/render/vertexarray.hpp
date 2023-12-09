@@ -33,7 +33,7 @@ namespace mgl::window
     class vertex_array
     {
   public:
-      vertex_array(const mgl::core::string& name, render_mode mode = render_mode::TRIANGLES);
+      vertex_array(const std::string& name, render_mode mode = render_mode::TRIANGLES);
       ~vertex_array() = default;
 
       void render(const mgl::opengl::program_ref& program,
@@ -55,36 +55,36 @@ namespace mgl::window
                      int first = 0,
                      int instances = -1);
 
-      void index_buffer(const mgl::core::mem_buffer<float>& data, int index_element_size = 4);
-      void index_buffer(const mgl::core::mem_buffer<uint32_t>& data, int index_element_size = 4);
-      void index_buffer(const mgl::core::mem_buffer<uint16_t>& data, int index_element_size = 4);
-      void index_buffer(const mgl::core::mem_buffer<uint8_t>& data, int index_element_size = 4);
+      void index_buffer(const mgl::mem_buffer<float>& data, int index_element_size = 4);
+      void index_buffer(const mgl::mem_buffer<uint32_t>& data, int index_element_size = 4);
+      void index_buffer(const mgl::mem_buffer<uint16_t>& data, int index_element_size = 4);
+      void index_buffer(const mgl::mem_buffer<uint8_t>& data, int index_element_size = 4);
       void index_buffer(const mgl::opengl::buffer_ref& buffer, int index_element_size = 4);
 
-      void buffer(const mgl::core::mem_buffer<float>& data,
-                  const mgl::core::string& layout,
-                  const mgl::core::string_list& attrs);
-      void buffer(const mgl::core::mem_buffer<uint32_t>& data,
-                  const mgl::core::string& layout,
-                  const mgl::core::string_list& attrs);
-      void buffer(const mgl::core::mem_buffer<uint16_t>& data,
-                  const mgl::core::string& layout,
-                  const mgl::core::string_list& attrs);
-      void buffer(const mgl::core::mem_buffer<uint8_t>& data,
-                  const mgl::core::string& layout,
-                  const mgl::core::string_list& attrs);
+      void buffer(const mgl::mem_buffer<float>& data,
+                  const std::string& layout,
+                  const mgl::string_list& attrs);
+      void buffer(const mgl::mem_buffer<uint32_t>& data,
+                  const std::string& layout,
+                  const mgl::string_list& attrs);
+      void buffer(const mgl::mem_buffer<uint16_t>& data,
+                  const std::string& layout,
+                  const mgl::string_list& attrs);
+      void buffer(const mgl::mem_buffer<uint8_t>& data,
+                  const std::string& layout,
+                  const mgl::string_list& attrs);
       void buffer(const mgl::opengl::buffer_ref& buffer,
-                  const mgl::core::string& layout,
-                  const mgl::core::string_list& attrs);
+                  const std::string& layout,
+                  const mgl::string_list& attrs);
 
       mgl::opengl::vertex_array_ref instance(const mgl::opengl::program_ref& program);
 
       mgl::opengl::context_ref context();
 
   private:
-      mgl::core::string m_name;
+      std::string m_name;
       render_mode m_mode;
-      mgl::core::dict<int, mgl::opengl::vertex_array_ref> m_vao_cache;
+      mgl::dict<int, mgl::opengl::vertex_array_ref> m_vao_cache;
       vertex_buffers_list m_buffers;
       int m_vertex_count;
       mgl::opengl::buffer_ref m_index_buffer;
@@ -96,28 +96,28 @@ namespace mgl::window
       return mgl::window::current_context();
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<float>& data,
+    inline void vertex_array::index_buffer(const mgl::mem_buffer<float>& data,
                                            int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint32_t>& data,
+    inline void vertex_array::index_buffer(const mgl::mem_buffer<uint32_t>& data,
                                            int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint16_t>& data,
+    inline void vertex_array::index_buffer(const mgl::mem_buffer<uint16_t>& data,
                                            int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
       index_buffer(b, index_element_size);
     }
 
-    inline void vertex_array::index_buffer(const mgl::core::mem_buffer<uint8_t>& data,
+    inline void vertex_array::index_buffer(const mgl::mem_buffer<uint8_t>& data,
                                            int index_element_size)
     {
       auto b = mgl::window::current_context()->buffer(data);
@@ -131,33 +131,33 @@ namespace mgl::window
       m_index_element_size = index_element_size;
     }
 
-    inline void vertex_array::buffer(const mgl::core::mem_buffer<float>& data,
-                                     const mgl::core::string& layout,
-                                     const mgl::core::string_list& attrs)
+    inline void vertex_array::buffer(const mgl::mem_buffer<float>& data,
+                                     const std::string& layout,
+                                     const mgl::string_list& attrs)
     {
       auto b = mgl::window::current_context()->buffer(data);
       buffer(b, layout, attrs);
     }
 
-    inline void vertex_array::buffer(const mgl::core::mem_buffer<uint32_t>& data,
-                                     const mgl::core::string& layout,
-                                     const mgl::core::string_list& attrs)
+    inline void vertex_array::buffer(const mgl::mem_buffer<uint32_t>& data,
+                                     const std::string& layout,
+                                     const mgl::string_list& attrs)
     {
       auto b = mgl::window::current_context()->buffer(data);
       buffer(b, layout, attrs);
     }
 
-    inline void vertex_array::buffer(const mgl::core::mem_buffer<uint16_t>& data,
-                                     const mgl::core::string& layout,
-                                     const mgl::core::string_list& attrs)
+    inline void vertex_array::buffer(const mgl::mem_buffer<uint16_t>& data,
+                                     const std::string& layout,
+                                     const mgl::string_list& attrs)
     {
       auto b = mgl::window::current_context()->buffer(data);
       buffer(b, layout, attrs);
     }
 
-    inline void vertex_array::buffer(const mgl::core::mem_buffer<uint8_t>& data,
-                                     const mgl::core::string& layout,
-                                     const mgl::core::string_list& attrs)
+    inline void vertex_array::buffer(const mgl::mem_buffer<uint8_t>& data,
+                                     const std::string& layout,
+                                     const mgl::string_list& attrs)
     {
       auto b = mgl::window::current_context()->buffer(data);
       buffer(b, layout, attrs);

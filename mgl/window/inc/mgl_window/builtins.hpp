@@ -23,15 +23,15 @@ namespace mgl::window
   namespace render
   {
     struct buffer_element;
-    using buffer_layout = mgl::core::list<buffer_element>;
+    using buffer_layout = mgl::list<buffer_element>;
 
     class vertex_buffer;
-    using vertex_buffers_list = mgl::core::list<vertex_buffer>;
+    using vertex_buffers_list = mgl::list<vertex_buffer>;
   } // namespace render
 
   using event_handler = std::function<void(event&)>;
 
-  using shader_defines = mgl::core::dict<mgl::core::string, mgl::core::string>;
+  using shader_defines = mgl::dict<std::string, std::string>;
 
   mgl::opengl::context_ref current_context();
   window& current_window();

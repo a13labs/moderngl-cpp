@@ -24,7 +24,7 @@ void example_window::on_draw(float time, float frame_time)
 {
   const auto ctx = context();
 
-  float sin_scale = static_cast<float>(sin(mgl::core::deg2rad(time * 60)));
+  float sin_scale = static_cast<float>(sin(mgl::deg2rad(time * 60)));
 
   ctx->clear(1.0, 1.0, 1.0);
   ctx->enable(mgl::opengl::enable_flag::BLEND);
@@ -72,7 +72,7 @@ void example_window::on_load()
 
   m_scale->set_value({ width() / height() * 0.75, 0.25 });
 
-  mgl::core::mem_buffer<float> vertices = {
+  mgl::mem_buffer<float> vertices = {
     1.0,  0.0, //
     -0.5, 0.86, //
     -0.5, -0.86 //

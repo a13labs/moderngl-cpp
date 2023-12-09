@@ -18,7 +18,7 @@
 #include <map>
 #include <vector>
 
-namespace mgl::core
+namespace mgl
 {
   template <typename T>
   using list = std::vector<T>;
@@ -28,4 +28,4 @@ namespace mgl::core
 
   template <typename T, typename U>
   using dict = std::map<T, U>;
-} // namespace  mgl::core
+} // namespace  mgl

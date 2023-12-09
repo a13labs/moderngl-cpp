@@ -47,9 +47,9 @@ namespace mgl::opengl
     glDispatchCompute(x, y, z);
   }
 
-  const mgl::core::string_list compute_shader::uniforms()
+  const mgl::string_list compute_shader::uniforms()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_uniforms_map)
     {
@@ -59,9 +59,9 @@ namespace mgl::opengl
     return result;
   }
 
-  const mgl::core::string_list compute_shader::uniform_blocks()
+  const mgl::string_list compute_shader::uniform_blocks()
   {
-    auto result = mgl::core::string_list();
+    auto result = mgl::string_list();
 
     for(auto&& a : m_uniform_blocks_map)
     {

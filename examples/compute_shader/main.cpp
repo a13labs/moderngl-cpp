@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[])
 {
-  mgl::core::log::init();
+  mgl::log::init();
 
   // author: minu jeong
   auto code = mgl::opengl::shader(R"(
@@ -131,7 +131,7 @@ void main()
   GifBegin(&writer, "debug.gif", (int)W, (int)H, 2, 8, true);
 
   auto out_size = H * W * 4 * sizeof(float);
-  mgl::core::mem_buffer<uint8_t> out(out_size);
+  mgl::mem_buffer<uint8_t> out(out_size);
   auto last_buffer = buffer_b;
 
   for(int i = 0; i < FRAMES; i++)

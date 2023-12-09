@@ -96,7 +96,7 @@ namespace mgl::opengl
     }
   }
 
-  void vertex_array::transform(const mgl::core::ref_list<buffer>& buffers,
+  void vertex_array::transform(const mgl::ref_list<buffer>& buffers,
                                mgl::opengl::render_mode mode,
                                int vertices,
                                int first,

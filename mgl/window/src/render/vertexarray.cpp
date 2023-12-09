@@ -8,7 +8,7 @@ namespace mgl::window
 {
   namespace render
   {
-    vertex_array::vertex_array(const mgl::core::string& name, render_mode mode)
+    vertex_array::vertex_array(const std::string& name, render_mode mode)
     {
       m_name = name;
       m_mode = mode;
@@ -68,10 +68,10 @@ namespace mgl::window
         return m_vao_cache.at(program->glo());
       }
 
-      mgl::core::string_list program_attrs = program->attributes(false);
+      mgl::string_list program_attrs = program->attributes(false);
 
 #ifdef MGL_DEBUG
-      mgl::core::list<bool> has_attr_v;
+      mgl::list<bool> has_attr_v;
 
       for(auto&& attr : program_attrs)
       {
@@ -87,20 +87,20 @@ namespace mgl::window
 
       mgl::opengl::vertex_buffer_list v_buffers;
 
-      mgl::core::string_list layout;
-      mgl::core::string_list attrs;
+      mgl::string_list layout;
+      mgl::string_list attrs;
 
       for(auto&& buffer : m_buffers)
       {
-        for(auto&& p : mgl::core::zip(buffer.layout(), buffer.attributes()))
+        for(auto&& p : mgl::zip(buffer.layout(), buffer.attributes()))
         {
           auto attr = p.second;
           auto element = p.first;
 
-          if(!mgl::core::in(attr, program_attrs))
+          if(!mgl::in(attr, program_attrs))
           {
             layout.push_back(
-                mgl::core::format("{}x{}", element.components, element.byte_per_component));
+                mgl::format("{}x{}", element.components, element.byte_per_component));
             continue;
           }
 
@@ -110,8 +110,8 @@ namespace mgl::window
           std::remove(program_attrs.begin(), program_attrs.end(), attr);
         }
 
-        mgl::core::string v_layout = mgl::core::format(
-            "{}{}", mgl::core::join(' ', layout), buffer.per_instance() ? "/i" : "");
+        std::string v_layout = mgl::format(
+            "{}{}", mgl::join(' ', layout), buffer.per_instance() ? "/i" : "");
         v_buffers.push_back({ buffer.buffer(), v_layout, attrs });
       }
 
@@ -127,11 +127,11 @@ namespace mgl::window
     }
 
     void vertex_array::buffer(const mgl::opengl::buffer_ref& buffer,
-                              const mgl::core::string& layout,
-                              const mgl::core::string_list& attrs)
+                              const std::string& layout,
+                              const mgl::string_list& attrs)
     {
 #ifdef MGL_DEBUG
-      auto elements = mgl::core::split(layout, ' ');
+      auto elements = mgl::split(layout, ' ');
       MGL_CORE_ASSERT(elements.size() == attrs.size(), "layout does not match attributes");
 #endif
 

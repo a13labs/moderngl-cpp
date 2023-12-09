@@ -75,7 +75,7 @@ public:
     };
 
 public:
-    buffer_layout(const mgl::core::string& layout)
+    buffer_layout(const std::string& layout)
         : m_layout()
         , m_elements()
         , m_stride(0)
@@ -98,8 +98,8 @@ public:
         , m_divisor(other.m_divisor)
     { }
 
-    const mgl::core::string& layout() const { return m_layout; }
-    const mgl::core::list<element>& elements() const { return m_elements; }
+    const std::string& layout() const { return m_layout; }
+    const mgl::list<element>& elements() const { return m_elements; }
     int stride() const { return m_stride; }
     int divisor() const { return m_divisor; }
     size_t size() const { return m_elements.size(); }
@@ -127,7 +127,7 @@ public:
       return *this;
     }
 
-    buffer_layout& operator=(const mgl::core::string& layout)
+    buffer_layout& operator=(const std::string& layout)
     {
       parse_layout(layout);
       return *this;
@@ -168,11 +168,11 @@ private:
 
     iterator begin() { return iterator(m_layout.c_str()); }
     iterator end() { return iterator(nullptr); }
-    void parse_layout(const mgl::core::string& layout);
+    void parse_layout(const std::string& layout);
 
 private:
-    mgl::core::string m_layout;
-    mgl::core::list<element> m_elements;
+    std::string m_layout;
+    mgl::list<element> m_elements;
     int m_stride;
     int m_divisor;
   };

@@ -20,11 +20,11 @@
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/spdlog.h>
 
-namespace mgl::core
+namespace mgl
 {
   namespace log
   {
-    void init(const string& file = "app.log");
+    void init(const std::string& file = "app.log");
     extern ref<spdlog::logger> logger;
 
     template <typename... Args>
@@ -65,11 +65,11 @@ namespace mgl::core
 
   }; // namespace log
 
-} // namespace  mgl::core
+} // namespace  mgl
 
 // log macros
-#define MGL_CORE_TRACE(...) ::mgl::core::log::trace(__VA_ARGS__)
-#define MGL_CORE_INFO(...) ::mgl::core::log::info(__VA_ARGS__)
-#define MGL_CORE_WARN(...) ::mgl::core::log::warn(__VA_ARGS__)
-#define MGL_CORE_ERROR(...) ::mgl::core::log::error(__VA_ARGS__)
-#define MGL_CORE_CRITICAL(...) ::mgl::core::log::critical(__VA_ARGS__)
+#define MGL_CORE_TRACE(...) ::mgl::log::trace(__VA_ARGS__)
+#define MGL_CORE_INFO(...) ::mgl::log::info(__VA_ARGS__)
+#define MGL_CORE_WARN(...) ::mgl::log::warn(__VA_ARGS__)
+#define MGL_CORE_ERROR(...) ::mgl::log::error(__VA_ARGS__)
+#define MGL_CORE_CRITICAL(...) ::mgl::log::critical(__VA_ARGS__)

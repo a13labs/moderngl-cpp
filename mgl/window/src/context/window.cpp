@@ -34,9 +34,9 @@ namespace mgl::window
   window::window(const window_config& config)
   {
     MGL_CORE_ASSERT(!s_instance, "BaseWindow already running!");
-    mgl::core::log::init();
+    mgl::log::init();
 
-    m_native_window = mgl::core::create_scope<sdl_window>(config);
+    m_native_window = mgl::create_scope<sdl_window>(config);
     s_instance = this;
     m_running = false;
   }
@@ -115,7 +115,7 @@ namespace mgl::window
     return true;
   }
 
-  window_config load_window_configuration(const mgl::core::string& filename)
+  window_config load_window_configuration(const std::string& filename)
   {
     // TODO: Implement load from JSON
     return window_config();

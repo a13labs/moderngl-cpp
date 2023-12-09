@@ -47,7 +47,7 @@ public:
                    int first = 0,
                    int instances = -1);
 
-    void transform(const mgl::core::ref_list<buffer>& buffers,
+    void transform(const mgl::ref_list<buffer>& buffers,
                    render_mode mode,
                    int vertices = -1,
                    int first = 0,
@@ -83,12 +83,12 @@ private:
     bool m_released;
   };
 
-  using vertex_array_ref = mgl::core::ref<vertex_array>;
+  using vertex_array_ref = mgl::ref<vertex_array>;
 
   inline void vertex_array::transform(
       const buffer_ref& b, render_mode mode, int vertices, int first, int instances)
   {
-    transform(mgl::core::ref_list<buffer>({ b }), mode, vertices, first, instances);
+    transform(mgl::ref_list<buffer>({ b }), mode, vertices, first, instances);
   }
 
   inline void vertex_array::render(int instances)

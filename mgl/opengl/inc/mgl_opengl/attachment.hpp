@@ -31,7 +31,7 @@ public:
     virtual attachment::type attachment_type() = 0;
   };
 
-  using attachment_ref = mgl::core::ref<attachment>;
-  using attachments_ref = mgl::core::ref_list<attachment>;
+  using attachment_ref = mgl::ref<attachment>;
+  using attachments_ref = mgl::ref_list<attachment>;
 
 } // namespace  mgl::opengl
