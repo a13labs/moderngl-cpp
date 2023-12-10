@@ -168,12 +168,18 @@ namespace mgl::opengl
     int major = 0;
     int minor = 0;
 
-    ctx->enter();
-
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
     ctx->m_version_code = major * 100 + minor * 10;
+
+    if(ctx->m_version_code < required)
+    {
+      MGL_CORE_ERROR(
+          "OpenGL version {0} not supported. Required {1}", ctx->m_version_code, required);
+      delete ctx;
+      return nullptr;
+    }
 
     // Load extensions
     int num_extensions = 0;
