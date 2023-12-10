@@ -22,8 +22,7 @@ namespace mgl::window
     mipmap_levels null_mipmap_levels = { 0, 0 };
     texture_2d_load_opts texture_2d_load_defaults = { false, true, null_mipmap_levels, 1.0 };
     program_load_opts program_load_defaults = { {}, {} };
-    data_load_opts data_load_defaults = { mgl::input_file::in |
-                                          mgl::input_file::binary };
+    data_load_opts data_load_defaults = { mgl::input_file::in | mgl::input_file::binary };
 
     bool append_unique_path(const std::string& value, mgl::path_list& list)
     {
@@ -110,7 +109,7 @@ namespace mgl::window
       for(int col = 0; col < h; col++)
       {
         stbi_uc* line = bytes + col * line_bytes;
-        memcpy(&temp, line, line_bytes);
+        std::copy(&temp[0], &temp[line_bytes], &line[0]);
         for(int row = 0; row < w; row++)
         {
           lpos = row * components;
@@ -124,7 +123,7 @@ namespace mgl::window
     }
 
     mgl::ref<mgl::opengl::texture> load_texture_2d(const std::string& path,
-                                                         const texture_2d_load_opts& opts)
+                                                   const texture_2d_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();
@@ -161,9 +160,7 @@ namespace mgl::window
       return texture;
     }
 
-    bool load_data_file(const std::string& path,
-                        mgl::input_file& file,
-                        const data_load_opts& opts)
+    bool load_data_file(const std::string& path, mgl::input_file& file, const data_load_opts& opts)
     {
       auto base_path = find(path, s_settings.textures_dirs);
 
@@ -180,7 +177,7 @@ namespace mgl::window
     }
 
     mgl::ref<mgl::opengl::program> load_program(const std::string& path,
-                                                      const program_load_opts& opts)
+                                                const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();
@@ -197,7 +194,7 @@ namespace mgl::window
 
       mgl::input_file shader_file(full_path, mgl::input_file::in);
       std::string shader_text((std::istreambuf_iterator<char>(shader_file)),
-                                    std::istreambuf_iterator<char>());
+                              std::istreambuf_iterator<char>());
 
       mgl::opengl::shader shader_source(shader_text);
       mgl::opengl::shaders glsl = { shader_source };
@@ -214,7 +211,7 @@ namespace mgl::window
     }
 
     mgl::ref<mgl::opengl::program> load_program(mgl::opengl::shader& source,
-                                                      const program_load_opts& opts)
+                                                const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();

@@ -12,6 +12,8 @@ option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
 option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
+option(MGL_WINDOW_CONTEXT_GLFW "Use GLFW for window and context creation" OFF)
+option(MGL_WINDOW_CONTEXT_SDL "Use SDL for window and context creation" ON)
 
 # Set the C20 standard
 set(CMAKE_CXX_STANDARD 23)
@@ -49,6 +51,9 @@ endif()
 set(MGL_LINUX_OS FALSE)
 set(MGL_WINDOWS_OS FALSE)
 set(MGL_OSX_OS FALSE)
+
+# find SDL2
+find_package(SDL2 REQUIRED)
 
 # Detect the operating system and set MGL_OS_DEFINITION
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -122,21 +127,13 @@ else()
     message(STATUS "ModernGL-Cpp documentation: OFF")
 endif()
 
-if(MGL_BUILD_TESTS)
-    # Set the path where you want to download Google Test
-    set(GTEST_INSTALL_DIR "${CMAKE_BINARY_DIR}/googletest" CACHE PATH "Path to Google Test installation directory")
-
-    # Use FetchContent to download Google Test
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        v1.13.0 
-    )
-
-    # FetchContent will download Google Test and build it at configure time
-    FetchContent_MakeAvailable(googletest)
-endif()
-
 # # Include CMakeLists.txt files for the targets
 add_subdirectory(vendors)
 add_subdirectory(mgl)
+
+# Debug CMake Vars, uncomment to show CMake vars
+# get_cmake_property(_variableNames VARIABLES)
+# list (SORT _variableNames)
+# foreach (_variableName ${_variableNames})
+#     message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()

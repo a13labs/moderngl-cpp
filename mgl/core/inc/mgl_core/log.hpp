@@ -17,55 +17,67 @@
 #include "memory.hpp"
 #include "string.hpp"
 
-#include <spdlog/fmt/ostr.h>
-#include <spdlog/spdlog.h>
+#include <format>
 
-namespace mgl
+namespace mgl::log
 {
-  namespace log
+  enum class level
   {
-    void init(const std::string& file = "app.log");
-    extern ref<spdlog::logger> logger;
+    trace,
+    debug,
+    info,
+    warn,
+    error,
+    critical
+  };
 
-    template <typename... Args>
-    void trace(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::trace, fmt, std::forward<Args>(args)...);
-    }
+  void init(const std::string& file = "app.log");
 
-    template <typename... Args>
-    void debug(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::debug, fmt, std::forward<Args>(args)...);
-    }
+  void log(level lvl, const std::string& msg);
 
-    template <typename... Args>
-    void info(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::info, fmt, std::forward<Args>(args)...);
-    }
+  template <typename... Args>
+  void trace(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::trace, msg);
+  }
 
-    template <typename... Args>
-    void warn(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::warn, fmt, std::forward<Args>(args)...);
-    }
+  template <typename... Args>
+  void debug(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::debug, msg);
+  }
 
-    template <typename... Args>
-    void error(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::err, fmt, std::forward<Args>(args)...);
-    }
+  template <typename... Args>
+  void info(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::info, msg);
+  }
 
-    template <typename... Args>
-    void critical(spdlog::format_string_t<Args...> fmt, Args&&... args)
-    {
-      logger->log(spdlog::level::critical, fmt, std::forward<Args>(args)...);
-    }
+  template <typename... Args>
+  void warn(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::warn, msg);
+  }
 
-  }; // namespace log
+  template <typename... Args>
+  void error(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::error, msg);
+  }
 
-} // namespace  mgl
+  template <typename... Args>
+  void critical(std::format_string<Args...> fmt, Args&&... args)
+  {
+    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    log(level::critical, msg);
+  }
+
+} // namespace mgl::log
 
 // log macros
 #define MGL_CORE_TRACE(...) ::mgl::log::trace(__VA_ARGS__)

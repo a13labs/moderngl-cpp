@@ -2,8 +2,6 @@
 #include "containers.hpp"
 #include "memory.hpp"
 
-#include <spdlog/fmt/fmt.h>
-
 #include <functional>
 #include <sstream>
 #include <string>
@@ -13,12 +11,6 @@ namespace mgl
   using string_list = list<std::string>;
 
   static const size_t npos = std::string::npos;
-
-  template <typename... T>
-  inline auto format(fmt::format_string<T...> fmt, T&&... args) -> std::string
-  {
-    return fmt::vformat(fmt, fmt::make_format_args(args...));
-  }
 
   string_list split(const std::string& s, char delimiter);
 

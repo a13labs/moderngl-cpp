@@ -4,6 +4,8 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/utils.hpp"
 
+#include <format>
+
 namespace mgl::window::opengl
 {
   vertex_array::vertex_array(const std::string& name, render_mode mode)
@@ -97,7 +99,7 @@ namespace mgl::window::opengl
 
         if(!mgl::in(attr, program_attrs))
         {
-          layout.push_back(mgl::format("{}x{}", element.components, element.byte_per_component));
+          layout.push_back(std::format("{}x{}", element.components, element.byte_per_component));
           continue;
         }
 
@@ -108,7 +110,7 @@ namespace mgl::window::opengl
       }
 
       std::string v_layout =
-          mgl::format("{}{}", mgl::join(' ', layout), buffer.per_instance() ? "/i" : "");
+          std::format("{}{}", mgl::join(' ', layout), buffer.per_instance() ? "/i" : "");
       v_buffers.push_back({ buffer.buffer(), v_layout, attrs });
     }
 

@@ -13,7 +13,6 @@ add_library(mgl::mgl_window ALIAS mgl_window)
 set (DEFAULT_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/mgl/core/inc
     ${CMAKE_SOURCE_DIR}/mgl/opengl/inc
-    ${CMAKE_SOURCE_DIR}/vendors/spdlog/inc
     ${CMAKE_SOURCE_DIR}/vendors/glm
     ${CMAKE_SOURCE_DIR}/vendors/headers_only
     ${CMAKE_CURRENT_SOURCE_DIR}/inc

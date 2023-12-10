@@ -72,7 +72,8 @@ namespace mgl::opengl
     auto map = glMapBufferRange(GL_ARRAY_BUFFER, read_offset, read_size, GL_MAP_READ_BIT);
 
     char* ptr = (char*)dst + write_offset;
-    memcpy(ptr, map, read_size);
+    std::copy((char*)map, (char*)map + read_size, ptr);
+    // memcpy(ptr, map, read_size);
 
     glUnmapBuffer(GL_ARRAY_BUFFER);
     return glGetError() == GL_NO_ERROR;
@@ -94,7 +95,8 @@ namespace mgl::opengl
       return;
     }
 
-    memset(map, 0, m_size);
+    // memset(map, 0, m_size);
+    std::fill(map, map + m_size, 0);
 
     glUnmapBuffer(GL_ARRAY_BUFFER);
   }

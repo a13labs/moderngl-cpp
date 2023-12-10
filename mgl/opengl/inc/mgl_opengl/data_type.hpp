@@ -15,7 +15,7 @@
 */
 #pragma once
 
-#include <cstddef>
+#include <string>
 
 namespace mgl::opengl
 {
@@ -30,5 +30,9 @@ namespace mgl::opengl
   };
 
   data_type* from_dtype(const char* dtype, size_t size);
+  inline data_type* from_dtype(const std::string& dtype)
+  {
+    return from_dtype(dtype.c_str(), dtype.length());
+  }
 
 } // namespace  mgl::opengl

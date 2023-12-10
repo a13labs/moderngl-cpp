@@ -1191,8 +1191,8 @@ namespace mgl::opengl
     return query_ref(query);
   }
 
-  renderbuffer_ref
-  context::renderbuffer(int width, int height, int components, int samples, const char* dtype)
+  renderbuffer_ref context::renderbuffer(
+      int width, int height, int components, int samples, const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if(components < 1 || components > 4)
@@ -1207,7 +1207,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    auto data_type = from_dtype(dtype, strlen(dtype));
+    auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
@@ -1416,7 +1416,7 @@ namespace mgl::opengl
                                     const void* data,
                                     int samples,
                                     int alignment,
-                                    const char* dtype,
+                                    const std::string& dtype,
                                     int internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
@@ -1444,7 +1444,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    auto data_type = from_dtype(dtype, strlen(dtype));
+    auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
@@ -1602,7 +1602,7 @@ namespace mgl::opengl
                                     int components,
                                     const void* data,
                                     int alignment,
-                                    const char* dtype)
+                                    const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if(components < 1 || components > 4)
@@ -1617,7 +1617,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    auto data_type = from_dtype(dtype, strlen(dtype));
+    auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
@@ -1684,7 +1684,7 @@ namespace mgl::opengl
                                            int components,
                                            const void* data,
                                            int alignment,
-                                           const char* dtype)
+                                           const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if(components < 1 || components > 4)
@@ -1699,7 +1699,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    auto data_type = from_dtype(dtype, strlen(dtype));
+    auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
@@ -1772,7 +1772,7 @@ namespace mgl::opengl
                                          int components,
                                          const void* data,
                                          int alignment,
-                                         const char* dtype,
+                                         const std::string& dtype,
                                          int internal_format_override)
   {
 
@@ -1789,7 +1789,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    auto data_type = from_dtype(dtype, strlen(dtype));
+    auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
@@ -2254,8 +2254,7 @@ namespace mgl::opengl
     m_bound_framebuffer->clear(color, depth, viewport);
   }
 
-  void
-  context::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
+  void context::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");

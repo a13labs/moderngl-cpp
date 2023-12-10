@@ -11,7 +11,7 @@ add_library(mgl_core STATIC ${LIB_SOURCES})
 add_library(mgl::mgl_core ALIAS mgl_core)
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_SOURCE_DIR}/vendors/spdlog/inc
+    ${SPDLOG_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/vendors/headers_only
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc

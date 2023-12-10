@@ -4,6 +4,8 @@
 
 #include "mgl_core/debug.hpp"
 
+#include <format>
+
 namespace mgl::opengl
 {
   const std::string no_shader = "";
@@ -42,12 +44,12 @@ namespace mgl::opengl
 
     for(const auto& [key, value] : defines)
     {
-      str_defines.push_back(mgl::format("#define {} {}", key, value));
+      str_defines.push_back(std::format("#define {} {}", key, value));
     }
 
     auto line = (int)str_defines.size() + 2;
 
-    return mgl::format("#version {}\n#define {}\n{}\n#line {}\n{}",
+    return std::format("#version {}\n#define {}\n{}\n#line {}\n{}",
                        m_version_code,
                        s_shaders_text[type],
                        mgl::join('\n', str_defines),
@@ -61,12 +63,12 @@ namespace mgl::opengl
 
     for(const auto& [key, value] : defines)
     {
-      str_defines.push_back(mgl::format("#define {} {}", key, value));
+      str_defines.push_back(std::format("#define {} {}", key, value));
     }
 
     auto line = (int)str_defines.size() + 1;
 
-    return mgl::format("#version {}\n{}\n#line {}\n{}",
+    return std::format("#version {}\n{}\n#line {}\n{}",
                        m_version_code,
                        mgl::join('\n', str_defines),
                        line,

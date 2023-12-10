@@ -19,7 +19,6 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_syswm.h"
-// #include "glad/glad.h"
 
 namespace mgl::window
 {
@@ -44,11 +43,10 @@ namespace mgl::window
 
   inline void clear_key_map()
   {
-    std::memset(key_forward_map, 0, sizeof(key_forward_map));
-    std::memset(key_reverse_map, 0, sizeof(key_reverse_map));
-    std::memset(s_input_state.pressed_keys, 0, sizeof(s_input_state.pressed_keys));
-    std::memset(
-        s_input_state.pressed_mouse_buttons, 0, sizeof(s_input_state.pressed_mouse_buttons));
+    std::fill(key_forward_map, key_forward_map + 256, 0);
+    std::fill(key_reverse_map, key_reverse_map + 256, 0);
+    std::fill(s_input_state.pressed_keys, s_input_state.pressed_keys + 256, 0);
+    std::fill(s_input_state.pressed_mouse_buttons, s_input_state.pressed_mouse_buttons + 256, 0);
   }
 
   inline void set_key_pressed_state(key::name key, bool value)

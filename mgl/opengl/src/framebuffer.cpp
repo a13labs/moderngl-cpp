@@ -43,8 +43,8 @@ namespace mgl::opengl
     }
   }
 
-  void framebuffer::clear(
-      float r, float g, float b, float a, float depth, const mgl::rect& viewport)
+  void
+  framebuffer::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -147,7 +147,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    data_type* data_type = from_dtype(dtype, strlen(dtype));
+    data_type* data_type = from_dtype(dtype);
     MGL_CORE_ASSERT(data_type != nullptr, "invalid dtype");
 
     bool read_depth = false;
@@ -204,7 +204,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
-    data_type* data_type = from_dtype(dtype, strlen(dtype));
+    data_type* data_type = from_dtype(dtype);
     MGL_CORE_ASSERT(data_type != nullptr, "invalid dtype");
 
     bool read_depth = false;

@@ -24,12 +24,12 @@
 #include "data_type.hpp"
 #include "enums.hpp"
 #include "framebuffer.hpp"
-#include "shader.hpp"
 #include "program.hpp"
 #include "query.hpp"
 #include "renderbuffer.hpp"
 #include "sampler.hpp"
 #include "scope.hpp"
+#include "shader.hpp"
 #include "subroutine.hpp"
 #include "texture.hpp"
 #include "texture_2d.hpp"
@@ -139,8 +139,11 @@ public:
                     bool primitives_generated = false);
 
     // Renderbuffer
-    renderbuffer_ref renderbuffer(
-        int width, int height, int components = 4, int samples = 0, const char* dtype = "f1");
+    renderbuffer_ref renderbuffer(int width,
+                                  int height,
+                                  int components = 4,
+                                  int samples = 0,
+                                  const std::string& dtype = "f1");
     renderbuffer_ref depth_renderbuffer(int width, int height, int samples = 0);
 
     // Sampler
@@ -161,7 +164,7 @@ public:
                              const void* data = nullptr,
                              int samples = 0,
                              int alignment = 1,
-                             const char* dtype = "f1",
+                             const std::string& dtype = "f1",
                              int internal_format_override = 0);
 
     texture_2d_ref depth_texture2d(
@@ -174,7 +177,7 @@ public:
                              int components,
                              const void* data = nullptr,
                              int alignment = 1,
-                             const char* dtype = "f1");
+                             const std::string& dtype = "f1");
 
     // TextureArray
     texture_array_ref texture_array(int width,
@@ -183,7 +186,7 @@ public:
                                     int components,
                                     const void* data = nullptr,
                                     int alignment = 1,
-                                    const char* dtype = "f1");
+                                    const std::string& dtype = "f1");
 
     // TextureCube
     texture_cube_ref texture_cube(int width,
@@ -191,7 +194,7 @@ public:
                                   int components,
                                   const void* data = nullptr,
                                   int alignment = 1,
-                                  const char* dtype = "f1",
+                                  const std::string& dtype = "f1",
                                   int internal_format_override = 0);
 
     // VertexArray

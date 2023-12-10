@@ -17,9 +17,11 @@
 #include "mgl_core/string.hpp"
 #include "gtest/gtest.h"
 
+#include <format>
+
 TEST(mgl_core, string_fmt_test)
 {
-  auto fmt_test = mgl::format("This is a {0}!", "test");
+  auto fmt_test = std::format("This is a {0}!", "test");
   EXPECT_EQ(fmt_test, "This is a test!");
 }
 
@@ -111,7 +113,7 @@ TEST(mgl_core, string_split_test)
 
 TEST(mgl_core, string_format)
 {
-  std::string s1 = mgl::format("#define {} {}", "A", 20);
+  std::string s1 = std::format("#define {} {}", "A", 20);
   const std::string s2 = "#define A 20";
   EXPECT_TRUE(s1.compare(s2) == 0);
 }
