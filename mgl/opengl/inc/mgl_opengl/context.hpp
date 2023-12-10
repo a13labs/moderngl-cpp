@@ -109,10 +109,10 @@ public:
                      size_t write_offset);
 
     // Buffer
-    buffer_ref buffer(const mgl::mem_buffer<float>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::mem_buffer<uint32_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::mem_buffer<uint16_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::mem_buffer<uint8_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::buffer<float>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::buffer<uint32_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::buffer<uint8_t>& data, bool dynamic = false);
 
     // Compute Shader
     compute_shader_ref compute_shader(const std::string& source);
@@ -410,22 +410,22 @@ private:
     return m_polygon_offset_units;
   }
 
-  inline buffer_ref context::buffer(const mgl::mem_buffer<float>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::buffer<float>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::mem_buffer<uint32_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::buffer<uint32_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::mem_buffer<uint16_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::buffer<uint16_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::mem_buffer<uint8_t>& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::buffer<uint8_t>& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
   }

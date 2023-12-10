@@ -66,11 +66,14 @@ namespace mgl::window
     mgl::ref<mgl::opengl::texture>
     load_texture_2d(const std::string& path,
                     const texture_2d_load_opts& opts = texture_2d_load_defaults);
+
     bool load_data_file(const std::string& path,
                         mgl::input_file& file,
                         const data_load_opts& opts = data_load_defaults);
+
     mgl::ref<mgl::opengl::program>
     load_program(const std::string& path, const program_load_opts& opts = program_load_defaults);
+
     mgl::ref<mgl::opengl::program>
     load_program(mgl::opengl::shader& source,
                  const program_load_opts& opts = program_load_defaults);

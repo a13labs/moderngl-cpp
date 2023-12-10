@@ -34,5 +34,5 @@ namespace mgl
   using ref_from_this = std::enable_shared_from_this<T>;
 
   template <typename T>
-  using mem_buffer = std::vector<T>;
+  using buffer = std::vector<T>;
 } // namespace mgl

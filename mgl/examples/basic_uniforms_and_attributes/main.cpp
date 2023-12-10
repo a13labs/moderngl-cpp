@@ -72,7 +72,7 @@ void example_window::on_load()
 
   m_scale->set_value({ width() / height() * 0.75, 0.25 });
 
-  mgl::mem_buffer<float> vertices = {
+  mgl::buffer<float> vertices = {
     1.0,  0.0, //
     -0.5, 0.86, //
     -0.5, -0.86 //

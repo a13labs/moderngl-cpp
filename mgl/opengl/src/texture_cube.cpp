@@ -45,7 +45,7 @@ namespace mgl::opengl
     glDeleteTextures(1, (GLuint*)&m_texture_obj);
   }
 
-  bool texture_cube::read_into(mgl::mem_buffer<uint8_t>& dst,
+  bool texture_cube::read_into(mgl::buffer<uint8_t>& dst,
                                int face,
                                int alignment,
                                size_t write_offset)
@@ -102,7 +102,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_cube::write(const mgl::mem_buffer<uint8_t>& src,
+  bool texture_cube::write(const mgl::buffer<uint8_t>& src,
                            int face,
                            const mgl::rect& viewport,
                            int alignment)
@@ -145,7 +145,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_cube::write(const mgl::mem_buffer<uint8_t>& src, int face, int alignment)
+  bool texture_cube::write(const mgl::buffer<uint8_t>& src, int face, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureCube already released");
     MGL_CORE_ASSERT(m_context, "No context");

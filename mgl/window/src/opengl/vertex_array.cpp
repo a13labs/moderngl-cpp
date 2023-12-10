@@ -1,10 +1,10 @@
-#include "mgl_window/render/vertex_array.hpp"
+#include "mgl_window/opengl/vertex_array.hpp"
 #include "mgl_window/window.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/utils.hpp"
 
-namespace mgl::window::render
+namespace mgl::window::opengl
 {
   vertex_array::vertex_array(const std::string& name, render_mode mode)
   {
@@ -136,25 +136,25 @@ namespace mgl::window::render
     m_vertex_count += m_buffers.end()->vertices();
   }
 
-  void vertex_array::index_buffer(const mgl::mem_buffer<float>& data, int index_element_size)
+  void vertex_array::index_buffer(const mgl::buffer<float>& data, int index_element_size)
   {
     auto b = mgl::window::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
-  void vertex_array::index_buffer(const mgl::mem_buffer<uint32_t>& data, int index_element_size)
+  void vertex_array::index_buffer(const mgl::buffer<uint32_t>& data, int index_element_size)
   {
     auto b = mgl::window::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
-  void vertex_array::index_buffer(const mgl::mem_buffer<uint16_t>& data, int index_element_size)
+  void vertex_array::index_buffer(const mgl::buffer<uint16_t>& data, int index_element_size)
   {
     auto b = mgl::window::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
-  void vertex_array::index_buffer(const mgl::mem_buffer<uint8_t>& data, int index_element_size)
+  void vertex_array::index_buffer(const mgl::buffer<uint8_t>& data, int index_element_size)
   {
     auto b = mgl::window::current_context()->buffer(data);
     index_buffer(b, index_element_size);
@@ -166,7 +166,7 @@ namespace mgl::window::render
     m_index_element_size = index_element_size;
   }
 
-  void vertex_array::buffer(const mgl::mem_buffer<float>& data,
+  void vertex_array::buffer(const mgl::buffer<float>& data,
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
@@ -174,7 +174,7 @@ namespace mgl::window::render
     buffer(b, layout, attrs);
   }
 
-  void vertex_array::buffer(const mgl::mem_buffer<uint32_t>& data,
+  void vertex_array::buffer(const mgl::buffer<uint32_t>& data,
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
@@ -182,7 +182,7 @@ namespace mgl::window::render
     buffer(b, layout, attrs);
   }
 
-  void vertex_array::buffer(const mgl::mem_buffer<uint16_t>& data,
+  void vertex_array::buffer(const mgl::buffer<uint16_t>& data,
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
@@ -190,11 +190,11 @@ namespace mgl::window::render
     buffer(b, layout, attrs);
   }
 
-  void vertex_array::buffer(const mgl::mem_buffer<uint8_t>& data,
+  void vertex_array::buffer(const mgl::buffer<uint8_t>& data,
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
     auto b = mgl::window::current_context()->buffer(data);
     buffer(b, layout, attrs);
   }
-} // namespace mgl::window::render
+} // namespace mgl::window::opengl

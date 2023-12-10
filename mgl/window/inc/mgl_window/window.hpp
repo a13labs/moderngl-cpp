@@ -16,7 +16,6 @@
 #pragma once
 #include "event.hpp"
 #include "input.hpp"
-#include "render/buffer.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"

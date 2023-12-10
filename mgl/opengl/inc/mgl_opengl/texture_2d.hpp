@@ -62,17 +62,17 @@ public:
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool read_into(mgl::mem_buffer<uint8_t>& dst,
+    bool read_into(mgl::buffer<uint8_t>& dst,
                    int level = 0,
                    int alignment = 1,
                    size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::mem_buffer<uint8_t>& src,
+    bool write(const mgl::buffer<uint8_t>& src,
                const mgl::rect& viewport,
                int level = 0,
                int alignment = 1);
-    bool write(const mgl::mem_buffer<uint8_t>& src, int level = 0, int alignment = 1);
+    bool write(const mgl::buffer<uint8_t>& src, int level = 0, int alignment = 1);
     bool
     write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
     bool write(const buffer_ref& src, int level = 0, int alignment = 1);

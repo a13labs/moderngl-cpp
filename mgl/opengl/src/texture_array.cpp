@@ -41,7 +41,7 @@ namespace mgl::opengl
   }
 
   bool
-  texture_array::read_into(mgl::mem_buffer<uint8_t>& dst, int alignment, size_t write_offset)
+  texture_array::read_into(mgl::buffer<uint8_t>& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -92,7 +92,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_array::write(const mgl::mem_buffer<uint8_t>& src,
+  bool texture_array::write(const mgl::buffer<uint8_t>& src,
                             const mgl::cube& viewport,
                             int alignment)
   {
@@ -137,7 +137,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_array::write(const mgl::mem_buffer<uint8_t>& src, int alignment)
+  bool texture_array::write(const mgl::buffer<uint8_t>& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");

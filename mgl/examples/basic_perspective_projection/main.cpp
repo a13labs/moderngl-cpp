@@ -96,7 +96,7 @@ void example_window::on_load()
   m_program->uniform("center")->set_value({ 0.f, 0.f, 0.f });
   m_program->uniform("up")->set_value({ 0.f, 0.f, 1.f });
 
-  mgl::mem_buffer<float> grid;
+  mgl::buffer<float> grid;
 
   grid.reserve(65 * 12);
 
