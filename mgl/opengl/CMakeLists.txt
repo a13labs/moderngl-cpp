@@ -8,7 +8,7 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_opengl"
 add_library(mgl_opengl STATIC ${LIB_SOURCES})
-add_library(mgl::mgl_opengl ALIAS mgl_opengl)
+add_library(mgl::opengl-static ALIAS mgl_opengl)
 
 set (DEFAULT_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/mgl/core/inc
@@ -23,7 +23,7 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_opengl PRIVATE mgl::mgl_core glm::glm_static glad::static)
+target_link_libraries(mgl_opengl PRIVATE mgl::core-static glm::glm_static glad::static)
 
 # Find OpenGL package
 find_package(OpenGL REQUIRED)

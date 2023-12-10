@@ -8,7 +8,7 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_core"
 add_library(mgl_core STATIC ${LIB_SOURCES})
-add_library(mgl::mgl_core ALIAS mgl_core)
+add_library(mgl::core-static ALIAS mgl_core)
 
 set (DEFAULT_INCLUDE_DIRS 
     ${SPDLOG_SOURCE_DIR}/include

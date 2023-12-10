@@ -19,7 +19,7 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_index_buffer PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_index_buffer PRIVATE mgl::mgl_core mgl::mgl_opengl mgl::mgl_window)
+target_link_libraries(basic_index_buffer PRIVATE mgl::core-static mgl::opengl-static mgl::window-static)
 
 # Link statically to the external projects
 target_link_libraries(basic_index_buffer PRIVATE m)

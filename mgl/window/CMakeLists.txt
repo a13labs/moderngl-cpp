@@ -8,7 +8,7 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_window"
 add_library(mgl_window STATIC ${LIB_SOURCES})
-add_library(mgl::mgl_window ALIAS mgl_window)
+add_library(mgl::window-static ALIAS mgl_window)
 
 set (DEFAULT_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/mgl/core/inc
@@ -24,10 +24,10 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(mgl_window PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_window PRIVATE mgl::mgl_core mgl::mgl_opengl )
+target_link_libraries(mgl_window PRIVATE mgl::core-static mgl::opengl-static)
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_window PRIVATE PhysFS::PhysFS-static SDL2::SDL2-static )
+target_link_libraries(mgl_window PRIVATE SDL2::SDL2-static)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_window 

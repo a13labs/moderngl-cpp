@@ -22,7 +22,3 @@ FetchContent_MakeAvailable(sdl2)
 
 set(SDL2_BINARY_DIR "${sdl2_BINARY_DIR}" CACHE PATH "Path to sdl2 binary directory")
 set(SDL2_INCLUDE_DIR "${SDL2_SOURCE_DIR}/include" CACHE PATH "Path to sdl2 include directory")
-
-message(STATUS "SDL2_SOURCE_DIR: ${SDL2_SOURCE_DIR}")
-message(STATUS "SDL2_BINARY_DIR: ${SDL2_BINARY_DIR}")
-message(STATUS "SDL2_INCLUDE_DIR: ${SDL2_INCLUDE_DIR}")
