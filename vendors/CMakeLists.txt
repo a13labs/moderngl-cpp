@@ -33,8 +33,8 @@ add_subdirectory(physfs)
 # SDL2
 add_subdirectory(sdl2)
 
-# # mojoAL
-# add_subdirectory(mojoAL)
+# mojoAL
+add_subdirectory(mojoAL)
 
 # spdlog
 add_subdirectory(spdlog)
