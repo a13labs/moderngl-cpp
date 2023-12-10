@@ -49,8 +49,6 @@ namespace mgl::opengl
       return;
     }
 
-    int gl_version = gladLoaderLoadGL();
-
     auto res = new EGLContextData;
 
     switch(mode)
@@ -237,6 +235,19 @@ namespace mgl::opengl
         return;
       }
       break;
+    }
+
+    int gl_version = gladLoaderLoadGL();
+
+    if(!gl_version)
+    {
+      MGL_CORE_ERROR("Error loading OpenGL");
+      return;
+    }
+    else
+    {
+      MGL_CORE_INFO(
+          "OpenGL {0}.{1}", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
     }
 
     m_context = res;

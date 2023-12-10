@@ -168,10 +168,10 @@ namespace mgl::opengl
     int major = 0;
     int minor = 0;
 
+    ctx->enter();
+
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-    MGL_CORE_INFO("GL Version: {0}.{1}", major, minor);
 
     ctx->m_version_code = major * 100 + minor * 10;
 
