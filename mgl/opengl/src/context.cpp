@@ -122,23 +122,6 @@ namespace mgl::opengl
       MGL_CORE_INFO("EGL supported!");
     }
 #endif
-#ifdef MGL_OPENGL_GLX
-    if(!ctx)
-    {
-      MGL_CORE_INFO("Trying GLX context!");
-      ctx = new ContextGLX(mode, required);
-      if(!ctx->is_valid())
-      {
-        MGL_CORE_INFO("GLX not supported!");
-        delete ctx;
-        ctx = nullptr;
-      }
-    }
-    else
-    {
-      MGL_CORE_INFO("GLX supported!");
-    }
-#endif
 #ifdef MGL_OPENGL_WGL
     if(!ctx)
     {

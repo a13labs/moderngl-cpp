@@ -276,14 +276,14 @@ private:
   };
 #endif
 
-#ifdef MGL_OPENGL_GLX
-  class ContextGLX : public context
+#ifdef MGL_OPENGL_WGL
+  class ContextWGL : public context
   {
 
 public:
-    ContextGLX(context_mode::Enum mode, int required);
-    ContextGLX(){};
-    virtual ~ContextGLX() override;
+    ContextWGL(context_mode::Enum mode, int required);
+    ContextWGL(){};
+    virtual ~ContextWGL() override;
 
 public:
     virtual void enter() override;
@@ -297,13 +297,10 @@ private:
     context_mode::Enum m_mode;
     gl_context m_context;
   };
-#endif
+#  endif
 
-#ifdef MGL_OPENGL_WGL
-
-#endif
-
-  inline context_mode::Enum context::mode()
+      inline context_mode::Enum
+      context::mode()
   {
     return m_mode;
   }
