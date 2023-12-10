@@ -14,10 +14,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/window.hpp"
-#include "mgl_window/event.hpp"
-#include "mgl_window/input.hpp"
-#include "mgl_window/sdl_window.hpp"
+#include "mgl_game/window.hpp"
+#include "mgl_game/event.hpp"
+#include "mgl_game/input.hpp"
+#include "mgl_game/sdl_window.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -25,7 +25,7 @@
 
 #define MGL_CORE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-namespace mgl::window
+namespace mgl::game
 {
 
   window* window::s_instance = nullptr;
@@ -119,4 +119,4 @@ namespace mgl::window
     // TODO: Implement load from JSON
     return window_config();
   }
-} // namespace  mgl::window
+} // namespace  mgl::game

@@ -1,7 +1,7 @@
 #include "mgl_opengl/context.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_game/window.hpp"
 
-class example_window : public mgl::window::window
+class game_window : public mgl::game::window
 {
 
   public:
@@ -15,14 +15,14 @@ class example_window : public mgl::window::window
   mgl::opengl::vertex_array_ref m_vao;
 };
 
-void example_window::on_draw(float time, float frame_time)
+void game_window::on_draw(float time, float frame_time)
 {
   const auto ctx = context();
   ctx->clear(1.0, 1.0, 1.0);
   m_vao->render(mgl::opengl::render_mode::LINES, 65 * 4);
 }
 
-void example_window::on_load()
+void game_window::on_load()
 {
   set_title("Perspective Projection");
 
@@ -116,7 +116,7 @@ void example_window::on_load()
   m_vao = ctx->vertex_array(m_program, { { m_vbo, "3f", { "vert" } } });
 }
 
-void example_window::on_unload()
+void game_window::on_unload()
 {
   m_vao->release();
   m_vbo->release();
@@ -125,7 +125,7 @@ void example_window::on_unload()
 
 int main(int argc, char* argv[])
 {
-  example_window app;
+  game_window app;
   app.run();
 
   return 0;

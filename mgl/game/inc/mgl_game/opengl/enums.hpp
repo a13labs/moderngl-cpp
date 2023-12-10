@@ -2,7 +2,7 @@
 
 #include "mgl_opengl/enums.hpp"
 
-namespace mgl::window::opengl
+namespace mgl::game::opengl
 {
   enum render_mode
   {

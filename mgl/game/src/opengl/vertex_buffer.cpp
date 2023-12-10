@@ -1,11 +1,11 @@
 
-#include "mgl_window/opengl/vertex_buffer.hpp"
+#include "mgl_game/opengl/vertex_buffer.hpp"
 #include <cctype>
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/re.hpp"
 
-namespace mgl::window::opengl
+namespace mgl::game::opengl
 {
 
   const buffer_element null_buffer_format = { "", 0, 0 };
@@ -125,4 +125,4 @@ namespace mgl::window::opengl
     return r;
   }
 
-} // namespace mgl::window::opengl
+} // namespace mgl::game::opengl

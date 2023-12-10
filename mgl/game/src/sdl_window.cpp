@@ -14,13 +14,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/sdl_window.hpp"
+#include "mgl_game/sdl_window.hpp"
 #include "mgl_core/log.hpp"
 
 #include "SDL.h"
 #include "SDL_syswm.h"
 
-namespace mgl::window
+namespace mgl::game
 {
   static uint8_t key_forward_map[256];
   static uint8_t key_reverse_map[256];
@@ -448,4 +448,4 @@ namespace mgl::window
     return { x, y };
   }
 
-} // namespace  mgl::window
+} // namespace  mgl::game

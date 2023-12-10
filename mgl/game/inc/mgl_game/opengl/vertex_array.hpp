@@ -8,7 +8,7 @@
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/vertex_array.hpp"
 
-namespace mgl::window::opengl
+namespace mgl::game::opengl
 {
   class vertex_array
   {
@@ -73,4 +73,4 @@ private:
     int m_index_element_size;
   };
 
-} // namespace mgl::window::opengl
+} // namespace mgl::game::opengl

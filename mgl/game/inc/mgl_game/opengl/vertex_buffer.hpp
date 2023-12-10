@@ -4,7 +4,7 @@
 #include "mgl_core/string.hpp"
 #include "mgl_opengl/vertex_buffer.hpp"
 
-namespace mgl::window::opengl
+namespace mgl::game::opengl
 {
 
   struct buffer_element
@@ -94,4 +94,4 @@ private:
   {
     return m_vertices;
   }
-} // namespace mgl::window::opengl
+} // namespace mgl::game::opengl

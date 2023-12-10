@@ -1,5 +1,5 @@
-#include "mgl_window/resources/registry.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_game/resources/registry.hpp"
+#include "mgl_game/window.hpp"
 
 #include "stb/stb_image.hpp"
 
@@ -7,7 +7,7 @@
 
 #include "mgl_opengl/texture_2d.hpp"
 
-namespace mgl::window
+namespace mgl::game
 {
   namespace resources
   {
@@ -225,4 +225,4 @@ namespace mgl::window
     }
 
   } // namespace resources
-} // namespace  mgl::window
+} // namespace  mgl::game

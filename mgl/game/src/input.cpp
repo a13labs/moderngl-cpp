@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/input.hpp"
-#include "mgl_window/event.hpp"
+#include "mgl_game/input.hpp"
+#include "mgl_game/event.hpp"
 
 #include "SDL.h"
 
-namespace mgl::window
+namespace mgl::game
 {
   input_state s_input_state;
-} // namespace  mgl::window
+} // namespace  mgl::game

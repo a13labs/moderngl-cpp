@@ -1,12 +1,12 @@
-#include "mgl_window/opengl/vertex_array.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_game/opengl/vertex_array.hpp"
+#include "mgl_game/window.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/utils.hpp"
 
 #include <format>
 
-namespace mgl::window::opengl
+namespace mgl::game::opengl
 {
   vertex_array::vertex_array(const std::string& name, render_mode mode)
   {
@@ -117,7 +117,7 @@ namespace mgl::window::opengl
     MGL_CORE_ASSERT(program_attrs.size() == 0, "Missing buffer mapping");
 
     mgl::opengl::vertex_array_ref vao = nullptr;
-    vao = mgl::window::current_context()->vertex_array(
+    vao = mgl::game::current_context()->vertex_array(
         program, v_buffers, m_index_buffer, m_index_element_size);
 
     m_vao_cache.insert({ program->glo(), vao });
@@ -140,25 +140,25 @@ namespace mgl::window::opengl
 
   void vertex_array::index_buffer(const mgl::buffer<float>& data, int index_element_size)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
   void vertex_array::index_buffer(const mgl::buffer<uint32_t>& data, int index_element_size)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
   void vertex_array::index_buffer(const mgl::buffer<uint16_t>& data, int index_element_size)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
   void vertex_array::index_buffer(const mgl::buffer<uint8_t>& data, int index_element_size)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     index_buffer(b, index_element_size);
   }
 
@@ -172,7 +172,7 @@ namespace mgl::window::opengl
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     buffer(b, layout, attrs);
   }
 
@@ -180,7 +180,7 @@ namespace mgl::window::opengl
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     buffer(b, layout, attrs);
   }
 
@@ -188,7 +188,7 @@ namespace mgl::window::opengl
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     buffer(b, layout, attrs);
   }
 
@@ -196,7 +196,7 @@ namespace mgl::window::opengl
                             const std::string& layout,
                             const mgl::string_list& attrs)
   {
-    auto b = mgl::window::current_context()->buffer(data);
+    auto b = mgl::game::current_context()->buffer(data);
     buffer(b, layout, attrs);
   }
-} // namespace mgl::window::opengl
+} // namespace mgl::game::opengl

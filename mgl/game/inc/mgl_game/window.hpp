@@ -21,7 +21,7 @@
 #include "mgl_core/timer.hpp"
 #include "mgl_opengl/context.hpp"
 
-namespace mgl::window
+namespace mgl::game
 {
   struct window_config
   {
@@ -163,4 +163,4 @@ private:
     return window::current();
   }
 
-} // namespace  mgl::window
+} // namespace  mgl::game

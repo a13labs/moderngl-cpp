@@ -22,7 +22,7 @@
 
 #include <functional>
 
-namespace mgl::window
+namespace mgl::game
 {
 
   enum class EventType
@@ -329,4 +329,4 @@ public:
 
     EVENT_CLASS_TYPE(KeyTyped)
   };
-} // namespace  mgl::window
+} // namespace  mgl::game

@@ -2,9 +2,9 @@
 
 #include "mgl_core/math.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_game/window.hpp"
 
-class example_window : public mgl::window::window
+class game_window : public mgl::game::window
 {
 
   public:
@@ -20,7 +20,7 @@ class example_window : public mgl::window::window
   float m_time = 0;
 };
 
-void example_window::on_draw(float time, float frame_time)
+void game_window::on_draw(float time, float frame_time)
 {
   const auto ctx = context();
 
@@ -34,7 +34,7 @@ void example_window::on_draw(float time, float frame_time)
   m_scale->set_value({ sin_scale * 0.75, 0.75 });
 }
 
-void example_window::on_load()
+void game_window::on_load()
 {
   set_title("Alpha Blending");
 
@@ -82,7 +82,7 @@ void example_window::on_load()
   m_vao = ctx->vertex_array(m_program, { { m_vbo, "2f", { "vert" } } });
 }
 
-void example_window::on_unload()
+void game_window::on_unload()
 {
   m_vao->release();
   m_vbo->release();
@@ -91,7 +91,7 @@ void example_window::on_unload()
 
 int main(int argc, char* argv[])
 {
-  example_window app;
+  game_window app;
   app.run();
 
   return 0;
