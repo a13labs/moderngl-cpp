@@ -1,10 +1,10 @@
-project(basic_uniforms_and_attributes)
+project(imgui_integration)
 
 # Add the C source files for the application
 file(GLOB_RECURSE APP_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 # Create the executable target "game"
-add_executable(basic_uniforms_and_attributes ${APP_SOURCES})
+add_executable(imgui_integration ${APP_SOURCES})
 
 set (DEFAULT_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/inc
@@ -12,14 +12,15 @@ set (DEFAULT_INCLUDE_DIRS
     ${MGL_OPENGL_INCLUDE_DIR}
     ${MGL_GAME_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
+    ${IMGUI_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
 )
 
 # Add include directories
-include_directories(basic_uniforms_and_attributes PRIVATE ${DEFAULT_INCLUDE_DIRS})
+include_directories(imgui_integration PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_uniforms_and_attributes PRIVATE mgl::core-static mgl::opengl-static mgl::game-static)
+target_link_libraries(imgui_integration PRIVATE mgl::core-static mgl::opengl-static mgl::game-static ImGUI::static)
 
 # Link statically to the external projects
-target_link_libraries(basic_uniforms_and_attributes PRIVATE m)
+target_link_libraries(imgui_integration PRIVATE m)

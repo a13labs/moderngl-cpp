@@ -107,9 +107,14 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
-    if(size == 0)
+    if(size == SIZE_MAX)
     {
       size = m_size;
+    }
+
+    if(size > 0)
+    {
+      m_size = size;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
@@ -124,7 +129,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 
-    if(size == 0)
+    if(size == SIZE_MAX)
     {
       size = m_size - offset;
     }
@@ -140,7 +145,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 
-    if(size == 0)
+    if(size == SIZE_MAX)
     {
       size = m_size - offset;
     }

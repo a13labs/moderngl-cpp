@@ -30,7 +30,7 @@ namespace mgl::game
     uint32_t height = 600;
     bool fullscreen = false;
     bool resizable = true;
-    bool VSync = true;
+    bool v_sync = true;
     uint32_t samples = 0;
     bool cursor = true;
     key::name exit_key = key::Esc;
@@ -81,6 +81,7 @@ public:
     mgl::ref<mgl::opengl::context> context();
 
     inline static window& current() { return *s_instance; }
+    inline static bool is_available() { return s_instance != nullptr; }
 
     // Events
     void on_event(event& event);
@@ -161,6 +162,11 @@ private:
   inline window& current_window()
   {
     return window::current();
+  }
+
+  inline bool is_window_available()
+  {
+    return window::is_available();
   }
 
 } // namespace  mgl::game

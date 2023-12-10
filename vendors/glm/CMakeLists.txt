@@ -9,3 +9,5 @@ option(GLM_BUILD_SHARED_LIBS "Buil GLM shared library" OFF)
 
 add_subdirectory(glm)
 add_library(glm::glm ALIAS glm)
+
+set(GLM_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Path to glm include directory")

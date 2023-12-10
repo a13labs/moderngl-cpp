@@ -15,9 +15,9 @@
    limitations under the License.
 */
 #include "mgl_game/window.hpp"
+#include "mgl_game/context/sdl_window.hpp"
 #include "mgl_game/event.hpp"
 #include "mgl_game/input.hpp"
-#include "mgl_game/sdl_window.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -36,6 +36,7 @@ namespace mgl::game
     mgl::log::init();
 
     m_native_window = mgl::create_scope<sdl_window>(config);
+
     s_instance = this;
     m_running = false;
   }

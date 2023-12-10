@@ -12,3 +12,4 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(spdlog)
 
 set(SPDLOG_SOURCE_DIR "${spdlog_SOURCE_DIR}" CACHE PATH "Path to spdlog source directory")
+set(SPDLOG_INCLUDE_DIR "${SPDLOG_SOURCE_DIR}/include" CACHE PATH "Path to spdlog include directory")

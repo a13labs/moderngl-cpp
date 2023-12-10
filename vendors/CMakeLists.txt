@@ -3,6 +3,9 @@ if(MGL_BUILD_TESTS)
     add_subdirectory(gtest)
 endif()
 
+# Header-only libraries
+add_subdirectory(headers_only)
+
 # SDL2
 add_subdirectory(sdl2)
 
@@ -17,3 +20,7 @@ add_subdirectory(glm)
 
 # glad
 add_subdirectory(glad)
+
+# imgui
+add_subdirectory(imgui)
+

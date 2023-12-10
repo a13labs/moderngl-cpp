@@ -73,42 +73,98 @@ public:
     virtual ~context() = default;
 
     int version_code();
+
     int max_samples();
+
     int max_integer_samples();
+
     int max_color_attachments();
+
     int max_texture_units();
+
     int default_texture_unit();
+
     float max_anisotropy();
+
     const mgl::string_list& extensions() const;
+
     const framebuffer_ref& screen() const;
 
     int enable_flags();
+
     void set_enable_flags(int flags);
+
     void enable(int flags);
+
     void disable(int flags);
+
     void enable_direct(int value);
+
     void disable_direct(int value);
+
     void finish();
 
     void clear_samplers(int start = 0, int end = -1);
 
     int front_face();
+
     int cull_face();
+
     int depth_func();
+
     int blend_func_src();
+
     int blend_func_dst();
+
+    void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha);
+
+    void set_blend_equation(blend_equation_mode mode) { set_blend_equation(mode, mode); }
+
+    void set_blend_func(blend_factor srcRGB,
+                        blend_factor dstRGB,
+                        blend_factor srcAlpha,
+                        blend_factor dstAlpha);
+
+    void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
+
     bool wireframe();
+
     bool multisample();
+
     int provoking_vertex();
+
     float polygon_offset_factor();
+
     float polygon_offset_units();
+
     void copy_buffer(const buffer_ref& src,
                      const buffer_ref& dst,
                      size_t size,
                      size_t read_offset,
                      size_t write_offset);
 
+    void set_scissor(const mgl::rect& r) { m_bound_framebuffer->set_scissor(r); }
+
+    void set_scissor(int x, int y, int width, int height)
+    {
+      m_bound_framebuffer->set_scissor({ x, y, width, height });
+    }
+
+    void reset_scissor() { m_bound_framebuffer->reset_scissor(); }
+
+    void set_viewport(const mgl::rect& r) { m_bound_framebuffer->set_viewport(r); }
+
+    void set_viewport(int x, int y, int width, int height)
+    {
+      m_bound_framebuffer->set_viewport({ x, y, width, height });
+    }
+
+    void enable_scissor() { m_bound_framebuffer->enable_scissor(); }
+
+    void disable_scissor() { m_bound_framebuffer->disable_scissor(); }
+
     // Buffer
+    buffer_ref buffer(bool dynamic = false);
     buffer_ref buffer(const mgl::buffer<float>& data, bool dynamic = false);
     buffer_ref buffer(const mgl::buffer<uint32_t>& data, bool dynamic = false);
     buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false);
@@ -297,10 +353,9 @@ private:
     context_mode::Enum m_mode;
     gl_context m_context;
   };
-#  endif
+#endif
 
-      inline context_mode::Enum
-      context::mode()
+  inline context_mode::Enum context::mode()
   {
     return m_mode;
   }
@@ -408,6 +463,11 @@ private:
   inline float context::polygon_offset_units()
   {
     return m_polygon_offset_units;
+  }
+
+  inline buffer_ref context::buffer(bool dynamic)
+  {
+    return buffer((void*)nullptr, 0, dynamic);
   }
 
   inline buffer_ref context::buffer(const mgl::buffer<float>& data, bool dynamic)

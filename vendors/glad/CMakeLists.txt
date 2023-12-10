@@ -13,5 +13,4 @@ add_library(glad::static ALIAS glad-static)
 target_include_directories(glad-static PRIVATE include)
 target_link_libraries(glad-static)
 
-
-
+set(GLAD_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "Path to glad include directory")

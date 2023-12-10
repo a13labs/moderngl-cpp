@@ -2250,4 +2250,19 @@ namespace mgl::opengl
     m_bound_framebuffer->clear(r, g, b, a, depth, viewport);
   }
 
+  void context::set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
+  {
+    MGL_CORE_ASSERT(!released(), "Context already released");
+    glBlendEquationSeparate(modeRGB, modeAlpha);
+  }
+
+  void context::set_blend_func(blend_factor srcRGB,
+                               blend_factor dstRGB,
+                               blend_factor srcAlpha,
+                               blend_factor dstAlpha)
+  {
+    MGL_CORE_ASSERT(!released(), "Context already released");
+    glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+  }
+
 } // namespace  mgl::opengl

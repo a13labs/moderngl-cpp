@@ -10,13 +10,15 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(mgl_opengl STATIC ${LIB_SOURCES})
 add_library(mgl::opengl-static ALIAS mgl_opengl)
 
+set(MGL_OPENGL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::opengl include directory")
+
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_SOURCE_DIR}/mgl/core/inc
-    ${CMAKE_SOURCE_DIR}/vendors/glm
-    ${CMAKE_SOURCE_DIR}/vendors/glad/include
-    ${CMAKE_SOURCE_DIR}/vendors/headers_only
-    ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc
+    ${MGL_CORE_INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${GLAD_INCLUDE_DIR}
+    ${VENDORS_HEADERS_ONLY_INC_DIR}
+    ${MGL_OPENGL_INCLUDE_DIR}
 )
 
 # Add include directories

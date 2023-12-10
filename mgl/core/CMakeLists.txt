@@ -10,12 +10,13 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(mgl_core STATIC ${LIB_SOURCES})
 add_library(mgl::core-static ALIAS mgl_core)
 
+set(MGL_CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::core include directory")
+
 set (DEFAULT_INCLUDE_DIRS 
-    ${SPDLOG_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/vendors/headers_only
-    ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc
-    ${CMAKE_SOURCE_DIR}/inc
+    ${SPDLOG_INCLUDE_DIR}
+    ${VENDORS_HEADERS_ONLY_INC_DIR}
+    ${MGL_CORE_INCLUDE_DIR}
 )
 
 # Add include directories
@@ -51,3 +52,4 @@ if (MGL_BUILD_TESTS)
         add_test(NAME mgl_core_ctest_${TEST_NAME} COMMAND mgl_core_${TEST_NAME})
     endforeach()
 endif()
+

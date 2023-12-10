@@ -39,6 +39,7 @@ public:
 
     const mgl::rect& scissor();
     void set_scissor(const mgl::rect& r);
+    void reset_scissor() { set_scissor(m_viewport); }
 
     void enable_scissor();
     void disable_scissor();
@@ -149,8 +150,7 @@ private:
     m_scissor_enabled = false;
   }
 
-  inline void
-  framebuffer::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
+  inline void framebuffer::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
   {
     clear(color.r, color.g, color.b, color.a, depth, viewport);
   }

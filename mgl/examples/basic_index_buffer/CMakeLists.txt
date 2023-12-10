@@ -7,12 +7,12 @@ file(GLOB_RECURSE APP_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 add_executable(basic_index_buffer ${APP_SOURCES})
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_SOURCE_DIR}/mgl/core/inc
-    ${CMAKE_SOURCE_DIR}/mgl/opengl/inc
-    ${CMAKE_SOURCE_DIR}/mgl/game/inc
-    ${CMAKE_SOURCE_DIR}/vendors/glm
-    ${CMAKE_SOURCE_DIR}/vendors/headers_only
     ${CMAKE_SOURCE_DIR}/inc
+    ${MGL_CORE_INCLUDE_DIR}
+    ${MGL_OPENGL_INCLUDE_DIR}
+    ${MGL_GAME_INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${VENDORS_HEADERS_ONLY_INC_DIR}
 )
 
 # Add include directories
