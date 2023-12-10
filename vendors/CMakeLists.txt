@@ -30,15 +30,8 @@ option(PHYSFS_BUILD_TEST OFF)
 option(PHYSFS_BUILD_DOCS OFF)
 add_subdirectory(physfs)
 
-# glfw
-if (MGL_GLFW)
-    add_subdirectory(glfw)
-endif()
-
 # SDL2
-if(MGL_SDL2)
-    add_subdirectory(sdl2)
-endif()
+add_subdirectory(sdl2)
 
 # # mojoAL
 # add_subdirectory(mojoAL)

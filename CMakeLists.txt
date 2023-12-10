@@ -12,7 +12,6 @@ option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
 option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
-option(MGL_USE_GLFW "Use GLFW instead of SDL2" OFF)
 
 # Set the C20 standard
 set(CMAKE_CXX_STANDARD 23)
@@ -99,21 +98,6 @@ if (MGL_BUILD_DOCS)
     endif (DOXYGEN_FOUND)
 else()
     message(STATUS "ModernGL-Cpp documentation: OFF")
-endif()
-
-set(MGL_GLFW FALSE)
-set(MGL_SDL2 FALSE)
-
-if(MGL_USE_GLFW)
-    message(STATUS "Using GLFW")
-    set(MGL_WINDOW_DEFINITIONS "-DMGL_WINDOW_GLFW")
-    set(MGL_GLFW TRUE)
-    set(MGL_SDL2 FALSE)
-else()
-    message(STATUS "Using SDL2")
-    set(MGL_WINDOW_DEFINITIONS "-DMGL_WINDOW_SDL2")
-    set(MGL_GLFW FALSE)
-    set(MGL_SDL2 TRUE)
 endif()
 
 # # Include CMakeLists.txt files for the targets

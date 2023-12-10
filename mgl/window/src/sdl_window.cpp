@@ -14,12 +14,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef MGL_WINDOW_SDL2
-#  include "mgl_window/context/sdl/window.hpp"
-#  include "mgl_core/log.hpp"
+#include "mgl_window/sdl_window.hpp"
+#include "mgl_core/log.hpp"
 
-#  include "SDL.h"
-#  include "SDL_syswm.h"
+#include "SDL.h"
+#include "SDL_syswm.h"
 
 namespace mgl::window
 {
@@ -450,4 +449,3 @@ namespace mgl::window
   }
 
 } // namespace  mgl::window
-#endif

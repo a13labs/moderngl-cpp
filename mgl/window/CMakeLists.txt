@@ -17,27 +17,17 @@ set (DEFAULT_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/vendors/headers_only
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc
+    ${SDL2_INCLUDE_DIR}
 )
-
-if(MGL_SDL2)
-    # SDL is required
-    include_directories(mgl_window PRIVATE ${SDL2_INCLUDE_DIR})
-    target_link_libraries(mgl_window PRIVATE SDL2::SDL2-static)
-endif()
-
-if (MGL_GLFW)
-    # SDL is required
-    include_directories(mgl_window PRIVATE ${GLFW_INCLUDE_DIR})
-endif()
 
 # Add include directories
 include_directories(mgl_window PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_window PRIVATE mgl::mgl_core mgl::mgl_opengl)
+target_link_libraries(mgl_window PRIVATE mgl::mgl_core mgl::mgl_opengl )
 
 # Link simplelog library to the unit test executable
-target_link_libraries(mgl_window PRIVATE PhysFS::PhysFS-static)
+target_link_libraries(mgl_window PRIVATE PhysFS::PhysFS-static SDL2::SDL2-static )
 
 # compiler and OS definitions
 target_compile_definitions(mgl_window 
