@@ -14,11 +14,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/context/sdl/window.hpp"
-#include "mgl_core/log.hpp"
+#ifdef MGL_WINDOW_SDL2
+#  include "mgl_window/context/sdl/window.hpp"
+#  include "mgl_core/log.hpp"
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_syswm.h"
+#  include "SDL.h"
+#  include "SDL_syswm.h"
 
 namespace mgl::window
 {
@@ -266,6 +267,10 @@ namespace mgl::window
       {
         flags |= SDL_WINDOW_RESIZABLE;
       }
+      else
+      {
+        flags |= SDL_WINDOW_BORDERLESS;
+      }
     }
 
     MGL_CORE_INFO("BaseWindow: Creating window {0},{1} with OpenGL support",
@@ -445,3 +450,4 @@ namespace mgl::window
   }
 
 } // namespace  mgl::window
+#endif

@@ -12,8 +12,7 @@ option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
 option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
-option(MGL_WINDOW_CONTEXT_GLFW "Use GLFW for window and context creation" OFF)
-option(MGL_WINDOW_CONTEXT_SDL "Use SDL for window and context creation" ON)
+option(MGL_USE_GLFW "Use GLFW instead of SDL2" OFF)
 
 # Set the C20 standard
 set(CMAKE_CXX_STANDARD 23)
@@ -52,9 +51,6 @@ set(MGL_LINUX_OS FALSE)
 set(MGL_WINDOWS_OS FALSE)
 set(MGL_OSX_OS FALSE)
 
-# find SDL2
-find_package(SDL2 REQUIRED)
-
 # Detect the operating system and set MGL_OS_DEFINITION
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(MGL_LINUX_OS TRUE)
@@ -62,28 +58,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(MGL_WINDOWS_OS TRUE)
     set(MGL_OS_DEFINITION "-DMGL_OS_WINDOWS")
-
-    # Setup SDL2
-    set(SDL_VERSION "2.28.1")
-    set(SDL2_SCRIPT "${SCRIPTS_DIR}/download_sdl2.ps1")
-
-    # Set the SDL2 extraction directory
-    set(SDL2_EXTRACT_PATH "/SDL2")
-    set(SDL2_DIR "${EXTERNAL_PROJECTS_DIR}/SDL2-${SDL_VERSION}")
-
-    # Add the SDL2 installation directory to the CMAKE_PREFIX_PATH
-    list(APPEND CMAKE_PREFIX_PATH "${SDL2_DIR}")
-
-    # Run the PowerShell script during the configure step
-    execute_process(
-        COMMAND powershell.exe -ExecutionPolicy Bypass -File ${SDL2_SCRIPT} -ExtractPath ${EXTERNAL_PROJECTS_DIR} -SDL2Version ${SDL_VERSION}
-        RESULT_VARIABLE SDL2_SCRIPT_RESULT
-    )
-
-    if(NOT SDL2_SCRIPT_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to run the PowerShell script to download and extract SDL2.")
-    endif()
-
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(MGL_OSX_OS TRUE)
     set(MGL_OS_DEFINITION "-DMGL_OS_MACOS")
@@ -125,6 +99,21 @@ if (MGL_BUILD_DOCS)
     endif (DOXYGEN_FOUND)
 else()
     message(STATUS "ModernGL-Cpp documentation: OFF")
+endif()
+
+set(MGL_GLFW FALSE)
+set(MGL_SDL2 FALSE)
+
+if(MGL_USE_GLFW)
+    message(STATUS "Using GLFW")
+    set(MGL_WINDOW_DEFINITIONS "-DMGL_WINDOW_GLFW")
+    set(MGL_GLFW TRUE)
+    set(MGL_SDL2 FALSE)
+else()
+    message(STATUS "Using SDL2")
+    set(MGL_WINDOW_DEFINITIONS "-DMGL_WINDOW_SDL2")
+    set(MGL_GLFW FALSE)
+    set(MGL_SDL2 TRUE)
 endif()
 
 # # Include CMakeLists.txt files for the targets

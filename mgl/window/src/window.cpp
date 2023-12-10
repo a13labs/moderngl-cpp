@@ -18,7 +18,11 @@
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
 
-#include "mgl_window/context/sdl/window.hpp"
+#ifdef MGL_WINDOW_SDL2
+#  include "mgl_window/context/sdl/window.hpp"
+#elif defined(MGL_WINDOW_GLFW)
+#  include "mgl_window/context/glfw/window.hpp"
+#endif
 
 #include "mgl_opengl/context.hpp"
 
@@ -36,7 +40,11 @@ namespace mgl::window
     MGL_CORE_ASSERT(!s_instance, "BaseWindow already running!");
     mgl::log::init();
 
+#ifdef MGL_WINDOW_SDL2
     m_native_window = mgl::create_scope<sdl_window>(config);
+#elif defined(MGL_WINDOW_GLFW)
+    m_native_window = mgl::create_scope<glfw_window>(config);
+#endif
     s_instance = this;
     m_running = false;
   }

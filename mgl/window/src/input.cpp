@@ -16,7 +16,7 @@
 #include "mgl_window/input.hpp"
 #include "mgl_window/event.hpp"
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 namespace mgl::window
 {

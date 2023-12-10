@@ -30,16 +30,18 @@ option(PHYSFS_BUILD_TEST OFF)
 option(PHYSFS_BUILD_DOCS OFF)
 add_subdirectory(physfs)
 
-# # glfw
-# option(GLFW_BUILD_EXAMPLES "" OFF)
-# option(GLFW_BUILD_TESTS "" OFF)
-# option(GLFW_BUILD_DOCS "" OFF)
-# option(GLFW_INSTALL "" OFF)
-# option(GLFW_USE_WAYLAND "" ON)
-# add_subdirectory(glfw)
+# glfw
+if (MGL_GLFW)
+    add_subdirectory(glfw)
+endif()
 
-# mojoAL
-add_subdirectory(mojoAL)
+# SDL2
+if(MGL_SDL2)
+    add_subdirectory(sdl2)
+endif()
+
+# # mojoAL
+# add_subdirectory(mojoAL)
 
 # spdlog
 add_subdirectory(spdlog)
