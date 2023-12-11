@@ -388,7 +388,8 @@ namespace mgl::game
 
               if(is_key_pressed(m_state.current_config.exit_key))
               {
-                window::current().quit();
+                window_close_event event;
+                m_state.handler(event);
               }
 
               if(is_key_pressed(m_state.current_config.fullscreen_key))

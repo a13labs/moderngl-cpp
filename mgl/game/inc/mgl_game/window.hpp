@@ -30,7 +30,7 @@ namespace mgl::game
     uint32_t height = 600;
     bool fullscreen = false;
     bool resizable = true;
-    bool v_sync = true;
+    bool v_sync = false;
     uint32_t samples = 0;
     bool cursor = true;
     key::name exit_key = key::Esc;
@@ -68,7 +68,6 @@ public:
 
 public:
     void run();
-    void quit();
 
     int width();
     int height();
@@ -84,21 +83,21 @@ public:
     inline static bool is_available() { return s_instance != nullptr; }
 
     // Events
-    void on_event(event& event);
+    virtual void on_event(event& event);
 
     // Windows Events
     virtual bool on_window_close(window_close_event& event);
     virtual bool on_window_resize(window_resize_event& event);
 
     // Keys Events
-    virtual bool on_key_pressed(key_pressed_event& event) { return true; }
-    virtual bool on_key_released(key_released_event& event) { return true; }
+    virtual bool on_key_pressed(key_pressed_event& event) { return false; }
+    virtual bool on_key_released(key_released_event& event) { return false; }
 
     // Mouse Events
-    virtual bool on_mouse_moved(mouse_moved_event& event) { return true; }
-    virtual bool on_mouse_scrolled(mouse_scrolled_event& event) { return true; }
-    virtual bool on_mouse_button_pressed(mouse_button_pressed_event& event) { return true; }
-    virtual bool on_mouse_button_released(mouse_button_released_event& event) { return true; }
+    virtual bool on_mouse_moved(mouse_moved_event& event) { return false; }
+    virtual bool on_mouse_scrolled(mouse_scrolled_event& event) { return false; }
+    virtual bool on_mouse_button_pressed(mouse_button_pressed_event& event) { return false; }
+    virtual bool on_mouse_button_released(mouse_button_released_event& event) { return false; }
 
     virtual void on_draw(float time, float frame_time){};
     virtual void on_load(){};
@@ -140,11 +139,6 @@ private:
   inline void window::toggle_full_screen()
   {
     return m_native_window->toggle_full_screen();
-  }
-
-  inline void window::quit()
-  {
-    m_running = false;
   }
 
   inline mgl::ref<mgl::opengl::context> window::context()

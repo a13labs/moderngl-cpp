@@ -13,6 +13,8 @@ class game_window : public mgl::game::window
   virtual void on_load() override;
   virtual void on_unload() override;
 
+  virtual void on_event(mgl::game::event& event) override;
+
   private:
   mgl::opengl::program_ref m_program;
   mgl::opengl::buffer_ref m_vbo;
@@ -30,8 +32,7 @@ void game_window::on_draw(float time, float frame_time)
   static bool show_another_window = false;
   static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-  mgl::game::imgui::new_frame();
-
+  ImGui::NewFrame();
   {
     static float f = 0.0f;
     static int counter = 0;
@@ -109,6 +110,12 @@ void game_window::on_load()
   mgl::opengl::vertex_buffer_list m_content = { { m_vbo, "2f", { "in_vert" } } };
 
   m_vao = ctx->vertex_array(m_program, m_content, m_ibo);
+}
+
+void game_window::on_event(mgl::game::event& event)
+{
+  mgl::game::window::on_event(event);
+  mgl::game::imgui::on_event(event);
 }
 
 void game_window::on_unload()

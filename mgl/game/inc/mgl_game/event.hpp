@@ -22,6 +22,9 @@
 
 #include <functional>
 
+#define MGL_CLS_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define MGL_BIND_EVENT_FN(fn) std::bind(&fn, std::placeholders::_1)
+
 namespace mgl::game
 {
 
@@ -104,23 +107,23 @@ protected:
   {
 public:
     EventDispatcher(event& event)
-        : mEvent(event)
+        : m_event(event)
     { }
 
     // F will be deduced by the compiler
     template <typename T, typename F>
     bool dispatch(const F& func)
     {
-      if(mEvent.get_event_type() == T::get_static_type())
+      if(m_event.get_event_type() == T::get_static_type())
       {
-        mEvent.set_handled(func(static_cast<T&>(mEvent)));
+        m_event.set_handled(func(static_cast<T&>(m_event)));
         return true;
       }
       return false;
     }
 
 private:
-    event& mEvent;
+    event& m_event;
   };
 
   inline std::ostream& operator<<(std::ostream& os, const event& e)
@@ -136,8 +139,8 @@ public:
         , m_height(height)
     { }
 
-    uint32_t get_width() const { return m_width; }
-    uint32_t get_height() const { return m_height; }
+    uint32_t width() const { return m_width; }
+    uint32_t height() const { return m_height; }
 
     std::string to_string() const override
     {
@@ -169,8 +172,8 @@ public:
         , m_mouse_y(y)
     { }
 
-    float get_x() const { return m_mouse_x; }
-    float get_y() const { return m_mouse_y; }
+    float x() const { return m_mouse_x; }
+    float y() const { return m_mouse_y; }
 
     std::string to_string() const override
     {
@@ -193,13 +196,13 @@ public:
         , m_y_offset(yOffset)
     { }
 
-    float get_x_offset() const { return m_x_offset; }
-    float get_y_offset() const { return m_y_offset; }
+    float x_offset() const { return m_x_offset; }
+    float y_offset() const { return m_y_offset; }
 
     std::string to_string() const override
     {
       std::stringstream ss;
-      ss << "MouseScrolledEvent: " << get_x_offset() << ", " << get_y_offset();
+      ss << "MouseScrolledEvent: " << x_offset() << ", " << y_offset();
       return ss.str();
     }
 
@@ -212,7 +215,7 @@ private:
   class MouseButtonEvent : public event
   {
 public:
-    inline mouse_button::name get_mouse_button() const { return m_button; }
+    inline mouse_button::name button() const { return m_button; }
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton | EventCategoryInput)
 protected:
@@ -260,8 +263,8 @@ public:
   class KeyEvent : public event
   {
 public:
-    key::name get_key_code() const { return m_key_code; }
-    uint8_t get_key_modifiers() const { return m_modifiers; }
+    key::name key() const { return m_key_code; }
+    uint8_t modifiers() const { return m_modifiers; }
 
     EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 protected:
@@ -282,7 +285,7 @@ public:
         , m_repeat(repeat)
     { }
 
-    int get_repeat_count() const { return m_repeat; }
+    int repeat_count() const { return m_repeat; }
 
     std::string to_string() const override
     {

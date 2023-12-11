@@ -1,11 +1,17 @@
 #pragma once
 
+#include "mgl_game/event.hpp"
+
 namespace mgl::game::imgui
 {
   void initialize();
+
   void shutdown();
 
-  void new_frame();
+  void on_event(mgl::game::event& event);
+
+  bool is_initialized();
+
   void render();
 
 } // namespace mgl::game::imgui

@@ -23,8 +23,6 @@
 
 #include "mgl_core/debug.hpp"
 
-#define MGL_CORE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
-
 namespace mgl::game
 {
 
@@ -46,20 +44,20 @@ namespace mgl::game
     EventDispatcher dispatcher(event);
 
     // Dispatch Windows Events
-    dispatcher.dispatch<window_close_event>(MGL_CORE_BIND_EVENT_FN(window::on_window_close));
-    dispatcher.dispatch<window_resize_event>(MGL_CORE_BIND_EVENT_FN(window::on_window_resize));
+    dispatcher.dispatch<window_close_event>(MGL_CLS_BIND_EVENT_FN(window::on_window_close));
+    dispatcher.dispatch<window_resize_event>(MGL_CLS_BIND_EVENT_FN(window::on_window_resize));
 
     // Dispatch key events to be handled by the application
-    dispatcher.dispatch<key_pressed_event>(MGL_CORE_BIND_EVENT_FN(window::on_key_pressed));
-    dispatcher.dispatch<key_released_event>(MGL_CORE_BIND_EVENT_FN(window::on_key_released));
+    dispatcher.dispatch<key_pressed_event>(MGL_CLS_BIND_EVENT_FN(window::on_key_pressed));
+    dispatcher.dispatch<key_released_event>(MGL_CLS_BIND_EVENT_FN(window::on_key_released));
 
     // Dispatch mouse events to be handled by the application
-    dispatcher.dispatch<mouse_moved_event>(MGL_CORE_BIND_EVENT_FN(window::on_mouse_moved));
-    dispatcher.dispatch<mouse_scrolled_event>(MGL_CORE_BIND_EVENT_FN(window::on_mouse_scrolled));
+    dispatcher.dispatch<mouse_moved_event>(MGL_CLS_BIND_EVENT_FN(window::on_mouse_moved));
+    dispatcher.dispatch<mouse_scrolled_event>(MGL_CLS_BIND_EVENT_FN(window::on_mouse_scrolled));
     dispatcher.dispatch<mouse_button_pressed_event>(
-        MGL_CORE_BIND_EVENT_FN(window::on_mouse_button_pressed));
+        MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_pressed));
     dispatcher.dispatch<mouse_button_released_event>(
-        MGL_CORE_BIND_EVENT_FN(window::on_mouse_button_released));
+        MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_released));
   }
 
   bool window::on_window_close(window_close_event& event)
@@ -88,7 +86,7 @@ namespace mgl::game
       return;
     }
 
-    m_native_window->initialize_event_handler(MGL_CORE_BIND_EVENT_FN(window::on_event));
+    m_native_window->initialize_event_handler(MGL_CLS_BIND_EVENT_FN(window::on_event));
 
     m_running = true;
 
