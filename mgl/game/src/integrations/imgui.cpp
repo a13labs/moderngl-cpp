@@ -292,8 +292,11 @@ namespace mgl::game::imgui
     ctx->enable_scissor();
 
     // Create temporary vertex array
-    mgl::opengl::vertex_array_ref vao = ctx->vertex_array(
-        bd->prg, { { bd->vb, "2f 2f 4f1", { "Position", "UV", "Color" } } }, bd->ib);
+    mgl::opengl::vertex_array_ref vao =
+        ctx->vertex_array(bd->prg,
+                          { { bd->vb, "2f 2f 4f1", { "Position", "UV", "Color" } } },
+                          bd->ib,
+                          sizeof(ImDrawIdx));
 
     for(int n = 0; n < draw_data->CmdListsCount; ++n)
     {
@@ -302,8 +305,16 @@ namespace mgl::game::imgui
       bd->vb->orphan(cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
       bd->ib->orphan(cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
 
-      bd->vb->write(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-      bd->ib->write(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+      auto r1 =
+          bd->vb->write(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+      auto r2 =
+          bd->ib->write(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+
+      if(!r1 || !r2)
+      {
+        MGL_CORE_ERROR("Failed to write to ImGui buffers");
+        continue;
+      }
 
       int idx_buffer_offset = 0;
       for(int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)

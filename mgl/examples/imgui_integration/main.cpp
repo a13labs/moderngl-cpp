@@ -59,9 +59,9 @@ void game_window::on_draw(float time, float frame_time)
 
   const auto ctx = context();
   ctx->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-  mgl::game::imgui::render();
 
-  // m_vao->render();
+  m_vao->render();
+  mgl::game::imgui::render();
 }
 
 void game_window::on_load()
