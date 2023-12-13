@@ -67,8 +67,8 @@ void game_window::on_draw(float time, float frame_time)
 
 void game_window::on_load()
 {
-  mgl::game::imgui::initialize();
-  set_title("Index Buffer");
+  mgl::game::imgui::init();
+  set_title("ImGUI Integration Example");
 
   const auto ctx = context();
   m_program = ctx->program({

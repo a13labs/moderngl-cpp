@@ -4,7 +4,7 @@
 
 namespace mgl::game::imgui
 {
-  void initialize();
+  void init();
 
   void shutdown();
 

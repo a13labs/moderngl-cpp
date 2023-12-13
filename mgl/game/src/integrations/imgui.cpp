@@ -74,7 +74,7 @@ namespace mgl::game::imgui
   bool on_mouse_button_pressed(mouse_button_pressed_event& event);
   bool on_mouse_button_released(mouse_button_released_event& event);
 
-  void initialize()
+  void init()
   {
     MGL_CORE_ASSERT(ImGui::GetCurrentContext() == nullptr, "Already initialized");
 

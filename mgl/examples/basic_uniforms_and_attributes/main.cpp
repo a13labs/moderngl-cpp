@@ -1,8 +1,8 @@
 #include <cmath>
 
 #include "mgl_core/math.hpp"
-#include "mgl_opengl/context.hpp"
 #include "mgl_game/window.hpp"
+#include "mgl_opengl/context.hpp"
 
 class game_window : public mgl::game::window
 {
@@ -36,7 +36,7 @@ void game_window::on_draw(float time, float frame_time)
 
 void game_window::on_load()
 {
-  set_title("Alpha Blending");
+  set_title("Uniforms and Attributes Example");
 
   const auto ctx = context();
   m_program = ctx->program({

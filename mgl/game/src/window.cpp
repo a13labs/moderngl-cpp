@@ -58,6 +58,9 @@ namespace mgl::game
         MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_pressed));
     dispatcher.dispatch<mouse_button_released_event>(
         MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_released));
+
+    // Propagate events to the layers
+    m_layers.on_event(event);
   }
 
   bool window::on_window_close(window_close_event& event)
@@ -98,10 +101,12 @@ namespace mgl::game
       m_native_window->process_events();
       auto frame_time = m_timer.next_frame();
       on_draw(frame_time.current, frame_time.delta);
+      m_layers.on_draw(frame_time.current, frame_time.delta);
       m_native_window->swap_buffers();
     }
     on_unload();
 
+    m_layers.clear();
     m_context->release();
     m_native_window->destroy_window();
   }

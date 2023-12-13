@@ -1,8 +1,8 @@
 #include "mgl_game/layer.hpp"
+#include "mgl_game/integrations/imgui.hpp"
 
 namespace mgl::game
 {
-
   layer_stack::~layer_stack()
   {
     clear();
@@ -63,7 +63,7 @@ namespace mgl::game
       if(!(*it)->is_enabled())
         continue;
 
-      event.set_handled((*it)->on_event(event));
+      (*it)->on_event(event);
 
       if(event.is_handled())
         break;
@@ -87,5 +87,8 @@ namespace mgl::game
       layer->on_detach();
     }
     m_layers.clear();
+
+    if(mgl::game::imgui::is_initialized())
+      mgl::game::imgui::shutdown();
   }
 } // namespace mgl::game

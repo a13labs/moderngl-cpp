@@ -16,6 +16,7 @@
 #pragma once
 #include "event.hpp"
 #include "input.hpp"
+#include "layer.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"
@@ -99,9 +100,11 @@ public:
     virtual bool on_mouse_button_pressed(mouse_button_pressed_event& event) { return false; }
     virtual bool on_mouse_button_released(mouse_button_released_event& event) { return false; }
 
-    virtual void on_draw(float time, float frame_time){};
+    virtual void on_draw(float time, float frame_time) { }
     virtual void on_load(){};
     virtual void on_unload(){};
+
+    layer_stack& layers() { return m_layers; }
 
 private:
     static window* s_instance;
@@ -109,6 +112,7 @@ private:
     mgl::Timer m_timer;
     mgl::scope<native_window> m_native_window;
     mgl::opengl::context_ref m_context;
+    layer_stack m_layers;
   };
 
   inline int window::width()
