@@ -62,7 +62,11 @@ if (MGL_BUILD_TESTS)
         # Perform actions for each file, for example, displaying the file path and filename without extension
         message(STATUS "GameLib Test found: ${TEST_NAME}")
         # Create the unit test executable
-        add_executable(mgl_opengl_${TEST_NAME} ${FILE_PATH})
+        if (WIN32)
+            add_executable(mgl_opengl_${TEST_NAME} WIN32 ${FILE_PATH})
+        else()
+            add_executable(mgl_opengl_${TEST_NAME} ${FILE_PATH})
+        endif()
         # Link mgl_opengl and Check library to the unit test executable
         target_link_libraries(mgl_opengl_${TEST_NAME} PRIVATE mgl_opengl gtest)
         target_include_directories(mgl_opengl_${TEST_NAME} PRIVATE 

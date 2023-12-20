@@ -71,7 +71,7 @@ public:
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
-    bool read_into(mgl::buffer<u_int8_t>& dst,
+    bool read_into(mgl::buffer<uint8_t>& dst,
                    const mgl::rect& viewport = mgl::null_viewport_2d,
                    int components = 3,
                    int attachment = 0,

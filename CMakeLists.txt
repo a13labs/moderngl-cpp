@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(mgl
         VERSION 0.0.1
-        LANGUAGES CXX
+        LANGUAGES CXX C
        )
 
 # Enable the FetchContent module
@@ -16,6 +16,10 @@ option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 # Set the C20 standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Set the C20 standard
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Set the location for external projects
 set(EXTERNAL_PROJECTS_DIR "${CMAKE_CURRENT_BINARY_DIR}/external")

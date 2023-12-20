@@ -1,6 +1,7 @@
 option(SDL_SHARED "" OFF)
 option(SDL_STATIC "" ON)
 option(SDL_TESTS "" OFF)
+option(SDL2_DISABLE_SDL2MAIN "" ON)
 if (MGL_LINUX_OS)
     option(SDL_WAYLAND "" ON)
     option(SDL_X11 "" OFF)

@@ -140,7 +140,8 @@ namespace mgl::game
 
       int width, height, components;
       stbi_set_flip_vertically_on_load(opts.flip_y);
-      unsigned char* data = stbi_load(full_path.c_str(), &width, &height, &components, 0);
+      unsigned char* data =
+          stbi_load((const char*)full_path.c_str(), &width, &height, &components, 0);
 
       if(opts.flip_x)
       {

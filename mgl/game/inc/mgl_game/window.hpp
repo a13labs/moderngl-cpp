@@ -36,6 +36,71 @@ namespace mgl::game
     bool cursor = true;
     key::name exit_key = key::Esc;
     key::name fullscreen_key = key::F11;
+    uint8_t gl_major_version = 3;
+    uint8_t gl_minor_version = 3;
+
+    window_config() = default;
+
+    window_config(const std::string& title,
+                  uint32_t width,
+                  uint32_t height,
+                  bool fullscreen,
+                  bool resizable,
+                  bool v_sync,
+                  uint32_t samples,
+                  bool cursor,
+                  key::name exit_key,
+                  key::name fullscreen_key,
+                  uint8_t gl_major_version,
+                  uint8_t gl_minor_version)
+        : title(title)
+        , width(width)
+        , height(height)
+        , fullscreen(fullscreen)
+        , resizable(resizable)
+        , v_sync(v_sync)
+        , samples(samples)
+        , cursor(cursor)
+        , exit_key(exit_key)
+        , fullscreen_key(fullscreen_key)
+        , gl_major_version(gl_major_version)
+        , gl_minor_version(gl_minor_version)
+    { }
+
+    ~window_config() = default;
+
+    window_config(const window_config& other)
+    {
+      title = other.title;
+      width = other.width;
+      height = other.height;
+      fullscreen = other.fullscreen;
+      resizable = other.resizable;
+      v_sync = other.v_sync;
+      samples = other.samples;
+      cursor = other.cursor;
+      exit_key = other.exit_key;
+      fullscreen_key = other.fullscreen_key;
+      gl_major_version = other.gl_major_version;
+      gl_minor_version = other.gl_minor_version;
+    }
+
+    window_config& operator=(const window_config& other)
+    {
+      title = other.title;
+      width = other.width;
+      height = other.height;
+      fullscreen = other.fullscreen;
+      resizable = other.resizable;
+      v_sync = other.v_sync;
+      samples = other.samples;
+      cursor = other.cursor;
+      exit_key = other.exit_key;
+      fullscreen_key = other.fullscreen_key;
+      gl_major_version = other.gl_major_version;
+      gl_minor_version = other.gl_minor_version;
+      return *this;
+    }
   };
 
   class native_window
@@ -106,6 +171,8 @@ public:
 
     layer_stack& layers() { return m_layers; }
 
+    const window_config& config() const { return m_config; }
+
 private:
     static window* s_instance;
     bool m_running;
@@ -113,6 +180,7 @@ private:
     mgl::scope<native_window> m_native_window;
     mgl::opengl::context_ref m_context;
     layer_stack m_layers;
+    window_config m_config;
   };
 
   inline int window::width()

@@ -37,6 +37,7 @@ namespace mgl::game
 
     s_instance = this;
     m_running = false;
+    m_config = config;
   }
 
   void window::on_event(event& event)
@@ -80,7 +81,9 @@ namespace mgl::game
       return;
     }
 
-    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::SHARE, 330);
+    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::SHARE,
+                                            m_config.gl_major_version * 100 +
+                                                m_config.gl_minor_version * 10);
 
     if(!m_context)
     {
