@@ -5,7 +5,7 @@
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-namespace mgl::game
+namespace mgl::window
 {
   class layer
   {
@@ -83,4 +83,4 @@ public:
 private:
     mgl::ref_list<layer> m_layers;
   };
-} // namespace mgl::game
+} // namespace mgl::window

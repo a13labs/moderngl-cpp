@@ -14,16 +14,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_game/window.hpp"
-#include "mgl_game/context/sdl_window.hpp"
-#include "mgl_game/event.hpp"
-#include "mgl_game/input.hpp"
+#include "mgl_window/window.hpp"
+#include "mgl_window/context/sdl_window.hpp"
+#include "mgl_window/event.hpp"
+#include "mgl_window/input.hpp"
 
 #include "mgl_opengl/context.hpp"
 
 #include "mgl_core/debug.hpp"
 
-namespace mgl::game
+namespace mgl::window
 {
 
   window* window::s_instance = nullptr;
@@ -126,4 +126,4 @@ namespace mgl::game
     // TODO: Implement load from JSON
     return window_config();
   }
-} // namespace  mgl::game
+} // namespace  mgl::window

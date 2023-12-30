@@ -22,7 +22,7 @@
 #include "mgl_core/timer.hpp"
 #include "mgl_opengl/context.hpp"
 
-namespace mgl::game
+namespace mgl::window
 {
   struct window_config
   {
@@ -235,4 +235,4 @@ private:
     return window::is_available();
   }
 
-} // namespace  mgl::game
+} // namespace  mgl::window

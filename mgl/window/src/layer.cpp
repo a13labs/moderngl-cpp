@@ -1,7 +1,7 @@
-#include "mgl_game/layer.hpp"
-#include "mgl_game/integrations/imgui.hpp"
+#include "mgl_window/layer.hpp"
+#include "mgl_window/integrations/imgui.hpp"
 
-namespace mgl::game
+namespace mgl::window
 {
   layer_stack::~layer_stack()
   {
@@ -88,7 +88,7 @@ namespace mgl::game
     }
     m_layers.clear();
 
-    if(mgl::game::imgui::is_initialized())
-      mgl::game::imgui::shutdown();
+    if(mgl::window::imgui::is_initialized())
+      mgl::window::imgui::shutdown();
   }
-} // namespace mgl::game
+} // namespace mgl::window

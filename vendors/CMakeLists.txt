@@ -24,3 +24,5 @@ add_subdirectory(glad)
 # imgui
 add_subdirectory(imgui)
 
+# entt
+add_subdirectory(entt)

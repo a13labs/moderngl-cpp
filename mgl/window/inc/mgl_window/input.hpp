@@ -15,7 +15,7 @@
 */
 #pragma once
 
-namespace mgl::game
+namespace mgl::window
 {
   struct key
   {
@@ -168,4 +168,4 @@ namespace mgl::game
     return s_input_state.pressed_mouse_buttons[button & 0xff];
   }
 
-} // namespace  mgl::game
+} // namespace  mgl::window

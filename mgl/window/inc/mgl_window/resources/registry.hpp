@@ -7,7 +7,7 @@
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/shader.hpp"
 #include "mgl_opengl/texture_2d.hpp"
-namespace mgl::game
+namespace mgl::window
 {
   using shader_defines = mgl::dict<std::string, std::string>;
   using shaders_outputs = mgl::string_list;
@@ -36,7 +36,7 @@ namespace mgl::game
     {
       bool flip_x;
       bool flip_y;
-      mgl::game::resources::mipmap_levels mipmap_levels;
+      mgl::window::resources::mipmap_levels mipmap_levels;
       float anisotropy;
     };
 
@@ -79,4 +79,4 @@ namespace mgl::game
                  const program_load_opts& opts = program_load_defaults);
 
   } // namespace resources
-} // namespace  mgl::game
+} // namespace  mgl::window

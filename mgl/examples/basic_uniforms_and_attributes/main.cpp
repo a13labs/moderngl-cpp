@@ -1,10 +1,10 @@
 #include <cmath>
 
 #include "mgl_core/math.hpp"
-#include "mgl_game/window.hpp"
+#include "mgl_window/window.hpp"
 #include "mgl_opengl/context.hpp"
 
-class game_window : public mgl::game::window
+class game_window : public mgl::window::window
 {
 
   public:

@@ -25,7 +25,7 @@
 #define MGL_CLS_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 #define MGL_BIND_EVENT_FN(fn) std::bind(&fn, std::placeholders::_1)
 
-namespace mgl::game
+namespace mgl::window
 {
 
   enum class EventType
@@ -332,4 +332,4 @@ public:
 
     EVENT_CLASS_TYPE(KeyTyped)
   };
-} // namespace  mgl::game
+} // namespace  mgl::window

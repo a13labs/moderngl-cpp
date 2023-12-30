@@ -1,6 +1,6 @@
-#include "mgl_game/integrations/imgui.hpp"
-#include "mgl_game/input.hpp"
-#include "mgl_game/window.hpp"
+#include "mgl_window/integrations/imgui.hpp"
+#include "mgl_window/input.hpp"
+#include "mgl_window/window.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -11,7 +11,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace mgl::game::imgui
+namespace mgl::window::imgui
 {
 
   const std::string s_vertex_shader = R"(
@@ -84,9 +84,9 @@ namespace mgl::game::imgui
     MGL_CORE_ASSERT(io.BackendRendererUserData == nullptr,
                     "Backend already initialized, shutdown first");
 
-    mgl::game::current_context()->enter();
+    mgl::window::current_context()->enter();
     auto bd = new imgui_render_data();
-    auto ctx = mgl::game::current_context();
+    auto ctx = mgl::window::current_context();
 
     bd->prg = ctx->program({ s_vertex_shader, s_fragment_shader });
     if(!bd->prg)
@@ -144,7 +144,7 @@ namespace mgl::game::imgui
     io.Fonts->SetTexID((ImTextureID)(intptr_t)bd->font_texture->glo());
 
     io.BackendRendererUserData = bd;
-    io.BackendRendererName = "mgl::game::imgui";
+    io.BackendRendererName = "mgl::window::imgui";
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
 
     io.KeyMap[ImGuiKey_Tab] = static_cast<int>(key::Tab);
@@ -219,7 +219,7 @@ namespace mgl::game::imgui
     io.KeyMap[ImGuiKey_F12] = static_cast<int>(key::F12);
 
     io.DisplaySize =
-        ImVec2(mgl::game::current_window().width(), mgl::game::current_window().height());
+        ImVec2(mgl::window::current_window().width(), mgl::window::current_window().height());
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
   }
 
@@ -232,7 +232,7 @@ namespace mgl::game::imgui
 
     auto bd = static_cast<imgui_render_data*>(io.BackendRendererUserData);
 
-    mgl::game::current_context()->enter();
+    mgl::window::current_context()->enter();
     bd->ib->release();
     bd->vb->release();
     bd->prg->release();
@@ -253,7 +253,7 @@ namespace mgl::game::imgui
     ImGui::DestroyContext();
   }
 
-  void on_event(mgl::game::event& event)
+  void on_event(mgl::window::event& event)
   {
     if(!is_initialized())
       return;
@@ -305,7 +305,7 @@ namespace mgl::game::imgui
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    auto ctx = mgl::game::current_context();
+    auto ctx = mgl::window::current_context();
     ctx->enter();
 
     ctx->enable(mgl::opengl::enable_flag::BLEND);
@@ -364,7 +364,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::window_resize_event&>(event);
+    const auto& e = static_cast<const mgl::window::window_resize_event&>(event);
     io.DisplaySize = ImVec2(e.width(), e.height());
     return false;
   }
@@ -373,7 +373,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::key_pressed_event&>(event);
+    const auto& e = static_cast<const mgl::window::key_pressed_event&>(event);
     io.KeysDown[static_cast<int>(e.key())] = true;
     return false;
   }
@@ -382,7 +382,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::key_released_event&>(event);
+    const auto& e = static_cast<const mgl::window::key_released_event&>(event);
     io.KeysDown[static_cast<int>(e.key())] = false;
     return false;
   }
@@ -391,7 +391,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::mouse_moved_event&>(event);
+    const auto& e = static_cast<const mgl::window::mouse_moved_event&>(event);
     io.MousePos = ImVec2(e.x(), e.y());
     return false;
   }
@@ -400,7 +400,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::mouse_scrolled_event&>(event);
+    const auto& e = static_cast<const mgl::window::mouse_scrolled_event&>(event);
     io.MouseWheelH += e.x_offset();
     io.MouseWheel += e.y_offset();
     return false;
@@ -410,7 +410,7 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::mouse_button_pressed_event&>(event);
+    const auto& e = static_cast<const mgl::window::mouse_button_pressed_event&>(event);
     io.MouseDown[static_cast<int>(e.button())] = true;
     return false;
   }
@@ -419,9 +419,9 @@ namespace mgl::game::imgui
   {
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData != nullptr, "Not initialized");
-    const auto& e = static_cast<const mgl::game::mouse_button_released_event&>(event);
+    const auto& e = static_cast<const mgl::window::mouse_button_released_event&>(event);
     io.MouseDown[static_cast<int>(e.button())] = false;
     return false;
   }
 
-} // namespace mgl::game::imgui
+} // namespace mgl::window::imgui

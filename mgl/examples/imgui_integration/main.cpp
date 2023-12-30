@@ -1,11 +1,11 @@
 
-#include "mgl_game/integrations/imgui.hpp"
-#include "mgl_game/window.hpp"
+#include "mgl_window/integrations/imgui.hpp"
+#include "mgl_window/window.hpp"
 #include "mgl_opengl/context.hpp"
 
 #include "imgui/imgui.h"
 
-class game_window : public mgl::game::window
+class game_window : public mgl::window::window
 {
 
   public:
@@ -13,7 +13,7 @@ class game_window : public mgl::game::window
   virtual void on_load() override;
   virtual void on_unload() override;
 
-  virtual void on_event(mgl::game::event& event) override;
+  virtual void on_event(mgl::window::event& event) override;
 
   private:
   mgl::opengl::program_ref m_program;
@@ -62,12 +62,12 @@ void game_window::on_draw(float time, float frame_time)
   ctx->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
   m_vao->render();
-  mgl::game::imgui::render();
+  mgl::window::imgui::render();
 }
 
 void game_window::on_load()
 {
-  mgl::game::imgui::init();
+  mgl::window::imgui::init();
   set_title("ImGUI Integration Example");
 
   const auto ctx = context();
@@ -112,15 +112,15 @@ void game_window::on_load()
   m_vao = ctx->vertex_array(m_program, m_content, m_ibo);
 }
 
-void game_window::on_event(mgl::game::event& event)
+void game_window::on_event(mgl::window::event& event)
 {
-  mgl::game::window::on_event(event);
-  mgl::game::imgui::on_event(event);
+  mgl::window::window::on_event(event);
+  mgl::window::imgui::on_event(event);
 }
 
 void game_window::on_unload()
 {
-  mgl::game::imgui::shutdown();
+  mgl::window::imgui::shutdown();
   m_ibo->release();
   m_vao->release();
   m_vbo->release();

@@ -1,21 +1,21 @@
 
 #include "mgl_core/memory.hpp"
-#include "mgl_game/layers/imgui_layer.hpp"
-#include "mgl_game/window.hpp"
+#include "mgl_window/layers/imgui_layer.hpp"
+#include "mgl_window/window.hpp"
 #include "mgl_opengl/context.hpp"
 
 #include "imgui/imgui.h"
 
-class imgui_game_layer : public mgl::game::layers::imgui_layer
+class imgui_game_layer : public mgl::window::layers::imgui_layer
 {
   public:
   imgui_game_layer()
-      : mgl::game::layers::imgui_layer("ImGui Layer")
+      : mgl::window::layers::imgui_layer("ImGui Layer")
   { }
   virtual void draw_ui(float time, float frame_time) override;
 };
 
-class game_window : public mgl::game::window
+class game_window : public mgl::window::window
 {
   public:
   virtual void on_load() override;
