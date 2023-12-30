@@ -26,7 +26,6 @@ namespace mgl::window
 
     bool append_unique_path(const std::string& value, mgl::path_list& list)
     {
-
       auto path = mgl::path(value);
 
       if(path.is_relative())
@@ -122,8 +121,7 @@ namespace mgl::window
       }
     }
 
-    mgl::ref<mgl::opengl::texture> load_texture_2d(const std::string& path,
-                                                   const texture_2d_load_opts& opts)
+    mgl::window::texture load_texture_2d(const std::string& path, const texture_2d_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();
@@ -177,8 +175,7 @@ namespace mgl::window
       return true;
     }
 
-    mgl::ref<mgl::opengl::program> load_program(const std::string& path,
-                                                const program_load_opts& opts)
+    mgl::window::program load_program(const std::string& path, const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();
@@ -211,8 +208,7 @@ namespace mgl::window
       return ctx->program(glsl, outputs);
     }
 
-    mgl::ref<mgl::opengl::program> load_program(mgl::opengl::shader& source,
-                                                const program_load_opts& opts)
+    mgl::window::program load_program(mgl::opengl::shader& source, const program_load_opts& opts)
     {
       MGL_CORE_ASSERT(window::current().context(), "No context!");
       const auto ctx = window::current().context();

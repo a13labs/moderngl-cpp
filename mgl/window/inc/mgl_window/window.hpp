@@ -17,10 +17,10 @@
 #include "event.hpp"
 #include "input.hpp"
 #include "layer.hpp"
+#include "renderer.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"
-#include "mgl_opengl/context.hpp"
 
 namespace mgl::window
 {
@@ -36,8 +36,6 @@ namespace mgl::window
     bool cursor = true;
     key::name exit_key = key::Esc;
     key::name fullscreen_key = key::F11;
-    uint8_t gl_major_version = 3;
-    uint8_t gl_minor_version = 3;
 
     window_config() = default;
 
@@ -50,9 +48,7 @@ namespace mgl::window
                   uint32_t samples,
                   bool cursor,
                   key::name exit_key,
-                  key::name fullscreen_key,
-                  uint8_t gl_major_version,
-                  uint8_t gl_minor_version)
+                  key::name fullscreen_key)
         : title(title)
         , width(width)
         , height(height)
@@ -63,8 +59,6 @@ namespace mgl::window
         , cursor(cursor)
         , exit_key(exit_key)
         , fullscreen_key(fullscreen_key)
-        , gl_major_version(gl_major_version)
-        , gl_minor_version(gl_minor_version)
     { }
 
     ~window_config() = default;
@@ -81,8 +75,6 @@ namespace mgl::window
       cursor = other.cursor;
       exit_key = other.exit_key;
       fullscreen_key = other.fullscreen_key;
-      gl_major_version = other.gl_major_version;
-      gl_minor_version = other.gl_minor_version;
     }
 
     window_config& operator=(const window_config& other)
@@ -97,8 +89,6 @@ namespace mgl::window
       cursor = other.cursor;
       exit_key = other.exit_key;
       fullscreen_key = other.fullscreen_key;
-      gl_major_version = other.gl_major_version;
-      gl_minor_version = other.gl_minor_version;
       return *this;
     }
   };
@@ -143,7 +133,8 @@ public:
     void set_title(const std::string& value);
 
     void toggle_full_screen();
-    mgl::ref<mgl::opengl::context> context();
+    const mgl::window::context& context() const;
+    const mgl::window::renderer_ref& renderer() const;
 
     inline static window& current() { return *s_instance; }
     inline static bool is_available() { return s_instance != nullptr; }
@@ -178,7 +169,8 @@ private:
     bool m_running;
     mgl::Timer m_timer;
     mgl::scope<native_window> m_native_window;
-    mgl::opengl::context_ref m_context;
+    mgl::window::context m_context;
+    mgl::window::renderer_ref m_renderer;
     layer_stack m_layers;
     window_config m_config;
   };
@@ -213,14 +205,19 @@ private:
     return m_native_window->toggle_full_screen();
   }
 
-  inline mgl::ref<mgl::opengl::context> window::context()
+  inline const mgl::window::context& window::context() const
   {
     return m_context;
   }
 
+  inline const mgl::window::renderer_ref& window::renderer() const
+  {
+    return m_renderer;
+  }
+
   window_config load_window_configuration(const std::string& filename);
 
-  inline mgl::opengl::context_ref current_context()
+  inline const mgl::window::context& current_context()
   {
     return window::current().context();
   }

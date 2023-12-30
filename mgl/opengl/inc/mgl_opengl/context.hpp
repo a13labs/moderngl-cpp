@@ -279,6 +279,10 @@ public:
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
+    void bind_texture(texture_ref texture, int unit = 0);
+
+    void unbind_texture(int unit = 0);
+
 private:
     buffer_ref buffer(void* data, size_t size, bool dynamic);
 
@@ -366,7 +370,6 @@ private:
     gl_context m_context;
   };
 #endif
-
 
   inline context_mode::Enum context::mode()
   {

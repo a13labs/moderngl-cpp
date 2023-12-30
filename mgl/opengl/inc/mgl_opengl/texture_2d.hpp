@@ -62,10 +62,8 @@ public:
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool read_into(mgl::buffer<uint8_t>& dst,
-                   int level = 0,
-                   int alignment = 1,
-                   size_t write_offset = 0);
+    bool
+    read_into(mgl::buffer<uint8_t>& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
 
     bool write(const mgl::buffer<uint8_t>& src,
@@ -73,14 +71,14 @@ public:
                int level = 0,
                int alignment = 1);
     bool write(const mgl::buffer<uint8_t>& src, int level = 0, int alignment = 1);
-    bool
-    write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
+    bool write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
     bool write(const buffer_ref& src, int level = 0, int alignment = 1);
 
     void bind_to_image(
         int unit, bool read_into = true, bool write = true, int level = 0, int format = 0);
-    void use(int index = 0);
     void build_mipmaps(int base = 0, int max_level = 1000);
+
+    virtual void use(int index = 0) override;
 
     int glo();
 

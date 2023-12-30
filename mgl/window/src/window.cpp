@@ -18,6 +18,7 @@
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
+#include "mgl_window/renderer.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -81,9 +82,7 @@ namespace mgl::window
       return;
     }
 
-    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::SHARE,
-                                            m_config.gl_major_version * 100 +
-                                                m_config.gl_minor_version * 10);
+    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::SHARE, 330);
 
     if(!m_context)
     {
@@ -91,6 +90,8 @@ namespace mgl::window
       m_native_window->destroy_window();
       return;
     }
+
+    m_renderer = mgl::create_ref<mgl::window::renderer>(m_context);
 
     m_native_window->initialize_event_handler(MGL_CLS_BIND_EVENT_FN(window::on_event));
 

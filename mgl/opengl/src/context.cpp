@@ -219,8 +219,7 @@ namespace mgl::opengl
     int bound_framebuffer = 0;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
 
-#ifdef MGL_OSX
-
+#ifdef MGL_PLATFORM_MACOS
     if(ctx->Mode() == ContextMode::Standalone)
     {
       int bound_framebuffer = 0;
@@ -2274,6 +2273,26 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+  }
+
+  void context::bind_texture(texture_ref texture, int unit)
+  {
+    MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(unit >= 0 && unit < m_max_texture_units, "Invalid texture unit");
+
+    texture->use(unit);
+  }
+
+  void context::unbind_texture(int unit)
+  {
+    MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(unit >= 0 && unit < m_max_texture_units, "Invalid texture unit");
+
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_3D, 0);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
   }
 
 } // namespace  mgl::opengl

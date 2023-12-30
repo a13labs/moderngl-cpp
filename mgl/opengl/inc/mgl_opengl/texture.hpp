@@ -35,6 +35,7 @@ public:
 
     virtual ~texture() = default;
     virtual texture::type texture_type() = 0;
+    virtual void use(int index) = 0;
   };
 
   using texture_ref = mgl::ref<mgl::opengl::texture>;
