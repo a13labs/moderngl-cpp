@@ -123,20 +123,31 @@ namespace mgl::opengl
     }
 #endif
 #ifdef MGL_OPENGL_WGL
-    if(!ctx)
+    MGL_CORE_INFO("Trying WGL context!");
+    ctx = new ContextWGL(mode, required);
+    if(!ctx->is_valid())
     {
-      MGL_CORE_INFO("Trying WGL context!");
-      ctx = new ContextWGL(mode, required);
-      if(!ctx->is_valid())
-      {
-        MGL_CORE_INFO("WGL not supported!");
-        delete ctx;
-        ctx = nullptr;
-      }
+      MGL_CORE_INFO("WGL not supported!");
+      delete ctx;
+      ctx = nullptr;
     }
     else
     {
       MGL_CORE_INFO("WGL supported!");
+    }
+#endif
+#ifdef MGL_OPENGL_CGL
+    MGL_CORE_INFO("Trying CGL context!");
+    ctx = new ContextCGL(mode, required);
+    if(!ctx->is_valid())
+    {
+      MGL_CORE_INFO("CGL not supported!");
+      delete ctx;
+      ctx = nullptr;
+    }
+    else
+    {
+      MGL_CORE_INFO("CGL supported!");
     }
 #endif
 

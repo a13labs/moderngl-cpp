@@ -13,11 +13,11 @@ option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 
-# Set the C20 standard
+# Set the C23 standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set the C20 standard
+# Set the C11 standard
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -39,6 +39,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_CLANG")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_INTEL")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_APPLECLANG")
 else()
     message(FATAL_ERROR "Unsupported compiler! ${CMAKE_CXX_COMPILER_ID}" )
 endif()
@@ -56,18 +58,21 @@ set(MGL_OSX_OS FALSE)
 
 # Detect the operating system and set MGL_OS_DEFINITION
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    message(STATUS "Platform: Linux detected")
     set(MGL_LINUX_OS TRUE)
-    set(MGL_OS_DEFINITION "-DMGL_OS_LINUX")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    message(STATUS "Platform: Windows detected")
     set(MGL_WINDOWS_OS TRUE)
-    set(MGL_OS_DEFINITION "-DMGL_OS_WINDOWS")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    message(STATUS "Platform: MacOS detected")
     set(MGL_OSX_OS TRUE)
-    set(MGL_OS_DEFINITION "-DMGL_OS_MACOS")
 else()
     message(FATAL_ERROR "Unsupported operating system!")
 endif()
 
+# Configure the version.hpp file using version.hpp
+configure_file(version.hpp.in ${CMAKE_BINARY_DIR}/inc/version.hpp)
+                    
 if (MGL_BUILD_TESTS)
     # TODO: Setup testing on windows and macOS
     # Add unit tests

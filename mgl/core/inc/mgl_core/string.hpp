@@ -1,10 +1,15 @@
 #pragma once
+#include "platform.hpp"
 #include "containers.hpp"
 #include "memory.hpp"
 
 #include <functional>
 #include <sstream>
 #include <string>
+
+#ifdef MGL_PLATFORM_MACOS
+#include <algorithm>
+#endif
 
 namespace mgl
 {
@@ -72,4 +77,5 @@ namespace mgl
   {
     return std::all_of(lst.begin(), lst.end(), [](const std::string& str) { return str.empty(); });
   }
+
 } // namespace  mgl

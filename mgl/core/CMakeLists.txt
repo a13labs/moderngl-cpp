@@ -1,7 +1,4 @@
 project(mgl_core)
-
-# Configure the config.h file using config.h.in
-configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/inc/config.h)
                     
 # Add the C source files for the library
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -13,14 +10,17 @@ add_library(mgl::core-static ALIAS mgl_core)
 set(MGL_CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::core include directory")
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${SPDLOG_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${MGL_CORE_INCLUDE_DIR}
 )
 
 # Add include directories
-include_directories(mgl_core PRIVATE ${DEFAULT_INCLUDE_DIRS})
+target_include_directories(
+    mgl_core 
+PRIVATE 
+    ${DEFAULT_INCLUDE_DIRS}
+)
 
 # Link simplelog library to the unit test executable
 target_link_libraries(mgl_core PRIVATE spdlog::spdlog)
@@ -29,7 +29,6 @@ target_link_libraries(mgl_core PRIVATE spdlog::spdlog)
 target_compile_definitions(mgl_core 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
-    ${MGL_OS_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
 )
 

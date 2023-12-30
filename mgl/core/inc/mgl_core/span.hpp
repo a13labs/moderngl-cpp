@@ -12,10 +12,15 @@ http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/n4820.pdf
 #ifndef TCB_SPAN_HPP_INCLUDED
 #define TCB_SPAN_HPP_INCLUDED
 
+#include "platform.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <type_traits>
+
+#if defined(MGL_PLATFORM_MACOS)
+#include <exception>
+#endif
 
 #ifndef TCB_SPAN_NO_EXCEPTIONS
 // Attempt to discover whether we're being compiled with exception support

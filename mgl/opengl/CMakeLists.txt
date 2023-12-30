@@ -1,8 +1,5 @@
 project(mgl_opengl)
 
-# Configure the config.h file using config.h.in
-configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/inc/config.h)
-                    
 # Add the C source files for the library
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
@@ -13,7 +10,6 @@ add_library(mgl::opengl-static ALIAS mgl_opengl)
 set(MGL_OPENGL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::opengl include directory")
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${MGL_CORE_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${GLAD_INCLUDE_DIR}
@@ -22,7 +18,7 @@ set (DEFAULT_INCLUDE_DIRS
 )
 
 # Add include directories
-include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
+target_include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
 target_link_libraries(mgl_opengl PRIVATE mgl::core-static glm::glm_static glad::static)
@@ -36,11 +32,11 @@ if(WIN32)
     message(STATUS "OpenGL Platform: Windows")
     set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_WGL")
 elseif (UNIX)
-    if (OpenGL_EGL_FOUND)
-        message(STATUS "OpenGL Platform: Linux (EGL)")
+    if (NOT APPLE)
         set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_EGL")
     else()
-        message(FATAL_ERROR "OpenGL EGL not found. Please install it using your package manager.")
+        message(STATUS "OpenGL Platform: MacOS")
+        set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_CGL")
     endif()
 endif()
 
@@ -48,7 +44,6 @@ endif()
 target_compile_definitions(mgl_opengl 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
-    ${MGL_OS_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
     ${MGL_OPENGL_PLATFORM_DEFINITION}
 )

@@ -1,8 +1,5 @@
 project(mgl_game)
 
-# Configure the config.h file using config.h.in
-configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/inc/config.h)
-                    
 # Add the C source files for the library
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
@@ -13,7 +10,6 @@ add_library(mgl::game-static ALIAS mgl_game)
 set(MGL_GAME_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::game include directory")
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${MGL_CORE_INCLUDE_DIR}
     ${MGL_OPENGL_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
@@ -24,7 +20,7 @@ set (DEFAULT_INCLUDE_DIRS
 )
 
 # Add include directories
-include_directories(mgl_game PRIVATE ${DEFAULT_INCLUDE_DIRS})
+target_include_directories(mgl_game PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link simplelog library to the unit test executable
 target_link_libraries(mgl_game PRIVATE mgl::core-static mgl::opengl-static)
@@ -36,7 +32,6 @@ target_link_libraries(mgl_game PRIVATE SDL2::SDL2-static ImGUI::static)
 target_compile_definitions(mgl_game 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
-    ${MGL_OS_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
     ${MGL_WINDOW_DEFINITIONS}
 )

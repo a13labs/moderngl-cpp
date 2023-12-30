@@ -1,12 +1,11 @@
 #pragma once
 
-#include "config.hpp"
 #include "log.hpp"
 
 #ifdef MGL_DEBUG
 #  if defined(MGL_PLATFORM_WINDOWS)
 #    define MGL_DEBUGBREAK() __debugbreak()
-#  elif defined(MGL_PLATFORM_LINUX)
+#  elif defined(MGL_PLATFORM_LINUX) or defined(MGL_PLATFORM_MACOS)
 #    include <signal.h>
 #    define MGL_DEBUGBREAK() raise(SIGTRAP)
 #  else

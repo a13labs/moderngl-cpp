@@ -315,16 +315,13 @@ private:
 #ifdef MGL_OPENGL_EGL
   class ContextEGL : public context
   {
-
 public:
     ContextEGL(context_mode::Enum mode, int required);
     virtual ~ContextEGL() override;
 
     virtual void enter() override;
     virtual void exit() override;
-
     virtual void release() override;
-
     virtual bool is_valid() override;
 
 private:
@@ -341,19 +338,35 @@ public:
     ContextWGL(){};
     virtual ~ContextWGL() override;
 
-public:
     virtual void enter() override;
     virtual void exit() override;
-
     virtual void release() override;
-
     virtual bool is_valid() override;
 
 private:
-    context_mode::Enum m_mode;
     gl_context m_context;
   };
 #endif
+
+#ifdef MGL_OPENGL_CGL
+
+  class ContextCGL : public context
+  {
+
+public:
+    ContextCGL(context_mode::Enum mode, int required);
+    virtual ~ContextCGL() override;
+
+    virtual void enter() override;
+    virtual void exit() override;
+    virtual void release() override;
+    virtual bool is_valid() override;
+
+private:
+    gl_context m_context;
+  };
+#endif
+
 
   inline context_mode::Enum context::mode()
   {
