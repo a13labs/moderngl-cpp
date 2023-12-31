@@ -220,19 +220,17 @@ namespace mgl::opengl
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
 
 #ifdef MGL_PLATFORM_MACOS
-    if(ctx->Mode() == ContextMode::Standalone)
+    if(mode == context_mode::STANDALONE)
     {
-      int bound_framebuffer = 0;
-      glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
-
       int renderbuffer = 0;
       glGenRenderbuffers(1, (GLuint*)&renderbuffer);
       glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
       glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, 4, 4);
+
       int framebuffer = 0;
-      glGenFrameBuffers(1, (GLuint*)&framebuffer);
-      glBindFrameBuffer(GL_FRAMEBUFFER, framebuffer);
-      glFrameBufferRenderbuffer(
+      glGenFramebuffers(1, (GLuint*)&framebuffer);
+      glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+      glFramebufferRenderbuffer(
           GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
       bound_framebuffer = framebuffer;
     }
