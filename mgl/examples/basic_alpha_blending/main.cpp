@@ -1,5 +1,5 @@
-#include "mgl_window/window.hpp"
 #include "mgl_opengl/context.hpp"
+#include "mgl_window/window.hpp"
 
 class game_window : public mgl::window::window
 {
@@ -19,7 +19,7 @@ class game_window : public mgl::window::window
 
 void game_window::on_draw(float time, float frame_time)
 {
-  const auto ctx = context();
+  const auto ctx = current_context();
   ctx->clear(1.0, 1.0, 1.0);
   ctx->enable(mgl::opengl::enable_flag::BLEND);
   m_rotation->set_value(time);
@@ -30,7 +30,7 @@ void game_window::on_load()
 {
   set_title("Alpha Blending");
 
-  const auto ctx = context();
+  const auto ctx = current_context();
   m_program = ctx->program({
       R"(
                 #version 330

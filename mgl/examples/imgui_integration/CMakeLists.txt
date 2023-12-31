@@ -20,7 +20,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(imgui_integration PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(imgui_integration PRIVATE mgl::core-static mgl::opengl-static mgl::window-static ImGUI::static)
-
-# Link statically to the external projects
-target_link_libraries(imgui_integration PRIVATE m)
+target_link_libraries(imgui_integration PRIVATE mgl::window-static)

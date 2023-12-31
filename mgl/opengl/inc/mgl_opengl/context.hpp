@@ -59,6 +59,7 @@ namespace mgl::opengl
     {
       DETECT,
       SHARE,
+      ATTACHED,
       STANDALONE
     };
   };

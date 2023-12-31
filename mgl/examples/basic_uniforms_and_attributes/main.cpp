@@ -1,8 +1,8 @@
 #include <cmath>
 
 #include "mgl_core/math.hpp"
-#include "mgl_window/window.hpp"
 #include "mgl_opengl/context.hpp"
+#include "mgl_window/window.hpp"
 
 class game_window : public mgl::window::window
 {
@@ -22,7 +22,7 @@ class game_window : public mgl::window::window
 
 void game_window::on_draw(float time, float frame_time)
 {
-  const auto ctx = context();
+  const auto ctx = current_context();
 
   float sin_scale = static_cast<float>(sin(mgl::deg2rad(time * 60)));
 
@@ -38,7 +38,7 @@ void game_window::on_load()
 {
   set_title("Uniforms and Attributes Example");
 
-  const auto ctx = context();
+  const auto ctx = current_context();
   m_program = ctx->program({
       R"(
                 #version 330

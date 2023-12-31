@@ -1,7 +1,7 @@
 
+#include "mgl_opengl/context.hpp"
 #include "mgl_window/integrations/imgui.hpp"
 #include "mgl_window/window.hpp"
-#include "mgl_opengl/context.hpp"
 
 #include "imgui/imgui.h"
 
@@ -58,7 +58,7 @@ void game_window::on_draw(float time, float frame_time)
     ImGui::End();
   }
 
-  const auto ctx = context();
+  const auto ctx = current_context();
   ctx->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
   m_vao->render();
@@ -70,7 +70,7 @@ void game_window::on_load()
   mgl::window::imgui::init();
   set_title("ImGUI Integration Example");
 
-  const auto ctx = context();
+  const auto ctx = current_context();
   m_program = ctx->program({
       R"(
                 #version 330

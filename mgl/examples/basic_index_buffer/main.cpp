@@ -19,7 +19,7 @@ class game_window : public mgl::window::window
 
 void game_window::on_draw(float time, float frame_time)
 {
-  const auto ctx = context();
+  const auto ctx = current_context();
   ctx->clear(1.0, 1.0, 1.0);
   m_vao->render();
 }
@@ -28,7 +28,7 @@ void game_window::on_load()
 {
   set_title("Index Buffer");
 
-  const auto ctx = context();
+  const auto ctx = current_context();
   m_program = ctx->program({
       R"(
                 #version 330

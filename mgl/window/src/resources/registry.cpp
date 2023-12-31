@@ -123,8 +123,8 @@ namespace mgl::window
 
     mgl::window::texture load_texture_2d(const std::string& path, const texture_2d_load_opts& opts)
     {
-      MGL_CORE_ASSERT(window::current().context(), "No context!");
-      const auto ctx = window::current().context();
+      MGL_CORE_ASSERT(mgl::window::current_context(), "No context!");
+      const auto ctx = mgl::window::current_context();
 
       auto base_path = find(path, s_settings.textures_dirs);
 
@@ -177,8 +177,8 @@ namespace mgl::window
 
     mgl::window::program load_program(const std::string& path, const program_load_opts& opts)
     {
-      MGL_CORE_ASSERT(window::current().context(), "No context!");
-      const auto ctx = window::current().context();
+      MGL_CORE_ASSERT(mgl::window::current_context(), "No context!");
+      const auto ctx = mgl::window::current_context();
 
       auto base_path = find(path, s_settings.textures_dirs);
 
@@ -210,8 +210,8 @@ namespace mgl::window
 
     mgl::window::program load_program(mgl::opengl::shader& source, const program_load_opts& opts)
     {
-      MGL_CORE_ASSERT(window::current().context(), "No context!");
-      const auto ctx = window::current().context();
+      MGL_CORE_ASSERT(mgl::window::current_context(), "No context!");
+      const auto ctx = mgl::window::current_context();
 
       mgl::opengl::shaders glsl = { source };
 

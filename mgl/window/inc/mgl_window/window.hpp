@@ -125,19 +125,20 @@ public:
 public:
     void run();
 
-    int width();
-    int height();
-    float aspect_ratio();
+    int width() { return m_native_window->width(); }
+    int height() { return m_native_window->height(); }
+    float aspect_ratio() { return m_native_window->aspect_ratio(); }
 
-    const std::string& title() const;
-    void set_title(const std::string& value);
+    const std::string& title() const { return m_native_window->title(); }
+    void set_title(const std::string& value) { m_native_window->set_title(value); }
 
-    void toggle_full_screen();
-    const mgl::window::context& context() const;
-    const mgl::window::renderer_ref& renderer() const;
+    void toggle_full_screen() { m_native_window->toggle_full_screen(); }
 
-    inline static window& current() { return *s_instance; }
-    inline static bool is_available() { return s_instance != nullptr; }
+    const mgl::window::context& current_context() const;
+    const mgl::window::renderer_ref& current_renderer() const;
+
+    static window& current();
+    static bool is_available();
 
     // Events
     virtual void on_event(event& event);
@@ -165,7 +166,6 @@ public:
     const window_config& config() const { return m_config; }
 
 private:
-    static window* s_instance;
     bool m_running;
     mgl::Timer m_timer;
     mgl::scope<native_window> m_native_window;
@@ -175,51 +175,11 @@ private:
     window_config m_config;
   };
 
-  inline int window::width()
-  {
-    return m_native_window->width();
-  }
-
-  inline int window::height()
-  {
-    return m_native_window->height();
-  }
-
-  inline float window::aspect_ratio()
-  {
-    return m_native_window->aspect_ratio();
-  }
-
-  inline const std::string& window::title() const
-  {
-    return m_native_window->title();
-  }
-
-  inline void window::set_title(const std::string& value)
-  {
-    return m_native_window->set_title(value);
-  }
-
-  inline void window::toggle_full_screen()
-  {
-    return m_native_window->toggle_full_screen();
-  }
-
-  inline const mgl::window::context& window::context() const
-  {
-    return m_context;
-  }
-
-  inline const mgl::window::renderer_ref& window::renderer() const
-  {
-    return m_renderer;
-  }
-
   window_config load_window_configuration(const std::string& filename);
 
   inline const mgl::window::context& current_context()
   {
-    return window::current().context();
+    return window::current().current_context();
   }
 
   inline window& current_window()

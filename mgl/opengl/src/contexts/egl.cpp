@@ -148,9 +148,14 @@ namespace mgl::opengl
           return;
         }
 
-        eglMakeCurrent(res->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, res->ctx);
+        if(!eglMakeCurrent(res->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, res->ctx))
+        {
+          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          delete res;
+          return;
+        }
+        break;
       }
-      break;
       case context_mode::SHARE: {
         res->standalone = false;
 
@@ -226,15 +231,55 @@ namespace mgl::opengl
           return;
         }
 
-        eglMakeCurrent(res->dpy, res->wnd, res->wnd, res->ctx);
+        if(!eglMakeCurrent(res->dpy, res->wnd, res->wnd, res->ctx))
+        {
+          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          delete res;
+          return;
+        }
+        break;
       }
-      break;
+      case context_mode::ATTACHED: {
+        res->standalone = false;
+
+        EGLContext ctx_share = eglGetCurrentContext();
+        if(!ctx_share)
+        {
+          MGL_CORE_ERROR("(share) eglGetCurrentContext: cannot detect OpenGL context");
+          delete res;
+          return;
+        }
+
+        res->wnd = eglGetCurrentSurface(EGL_DRAW);
+        if(!res->wnd)
+        {
+          MGL_CORE_ERROR("(share) m_eglGetCurrentSurface failed (0x%x)", eglGetError());
+          delete res;
+          return;
+        }
+
+        res->dpy = eglGetCurrentDisplay();
+        if(res->dpy == EGL_NO_DISPLAY)
+        {
+          MGL_CORE_ERROR("eglGetCurrentDisplay failed (0x%x)", eglGetError());
+          delete res;
+          return;
+        }
+
+        res->ctx = ctx_share;
+        if(!eglMakeCurrent(res->dpy, res->wnd, res->wnd, res->ctx))
+        {
+          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          delete res;
+          return;
+        }
+        break;
+      }
       default: {
         MGL_CORE_ERROR("Detect mode not supported");
         delete res;
         return;
       }
-      break;
     }
 
     int gl_version = gladLoaderLoadGL();

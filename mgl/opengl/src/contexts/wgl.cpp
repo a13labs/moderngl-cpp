@@ -124,7 +124,6 @@ namespace mgl::opengl
           delete res;
           return;
         }
-
         break;
       }
       case context_mode::SHARE: {
@@ -175,7 +174,38 @@ namespace mgl::opengl
           delete res;
           return;
         }
+        break;
+      }
+      case context_mode::ATTACHED: {
+        res->standalone = false;
+        res->wnd = nullptr;
 
+        HGLRC ctx_share = wglGetCurrentContext();
+
+        if(!ctx_share)
+        {
+          MGL_CORE_ERROR("(share) wglGetCurrentContext: cannot detect OpenGL context");
+          delete res;
+          return;
+        }
+
+        res->dc = wglGetCurrentDC();
+
+        if(!res->dc)
+        {
+          MGL_CORE_ERROR("(share) wglGetCurrentDC: cannot detect OpenGL context");
+          delete res;
+          return;
+        }
+
+        res->ctx = ctx_share;
+
+        if(!wglMakeCurrent(res->dc, res->ctx))
+        {
+          MGL_CORE_ERROR("(share) wglMakeCurrent failed (0x%x)", GetLastError());
+          delete res;
+          return;
+        }
         break;
       }
       default: {

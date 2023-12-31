@@ -84,8 +84,15 @@ namespace mgl::window::imgui
     MGL_CORE_ASSERT(io.BackendRendererUserData == nullptr,
                     "Backend already initialized, shutdown first");
 
-    mgl::window::current_context()->enter();
     auto bd = new imgui_render_data();
+
+    if(!mgl::window::is_window_available())
+    {
+      MGL_CORE_ERROR("No window available");
+      delete bd;
+      return;
+    }
+
     auto ctx = mgl::window::current_context();
 
     bd->prg = ctx->program({ s_vertex_shader, s_fragment_shader });
@@ -232,7 +239,6 @@ namespace mgl::window::imgui
 
     auto bd = static_cast<imgui_render_data*>(io.BackendRendererUserData);
 
-    mgl::window::current_context()->enter();
     bd->ib->release();
     bd->vb->release();
     bd->prg->release();

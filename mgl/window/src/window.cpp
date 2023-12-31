@@ -27,7 +27,7 @@
 namespace mgl::window
 {
 
-  window* window::s_instance = nullptr;
+  static window* s_instance = nullptr;
 
   window::window(const window_config& config)
   {
@@ -82,7 +82,7 @@ namespace mgl::window
       return;
     }
 
-    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::SHARE, 330);
+    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::ATTACHED, 330);
 
     if(!m_context)
     {
@@ -127,4 +127,25 @@ namespace mgl::window
     // TODO: Implement load from JSON
     return window_config();
   }
+
+  const mgl::window::context& window::current_context() const
+  {
+    return m_context;
+  }
+
+  const mgl::window::renderer_ref& window::current_renderer() const
+  {
+    return m_renderer;
+  }
+
+  window& window::current()
+  {
+    return *s_instance;
+  }
+
+  bool window::is_available()
+  {
+    return s_instance != nullptr;
+  }
+
 } // namespace  mgl::window

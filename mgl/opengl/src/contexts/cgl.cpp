@@ -140,23 +140,43 @@ namespace mgl::opengl
 
         res->ctx = cgl_context;
 
-        res->ctx = cgl_context;
-
-        if(CGLSetCurrentContext(cgl_context) != kCGLNoError)
+        if(CGLSetCurrentContext(res->ctx) != kCGLNoError)
         {
           MGL_CORE_ERROR("CGLSetCurrentContext failed");
-          CGLDestroyContext(cgl_context);
+          CGLDestroyContext(res->ctx);
           delete res;
           return;
         }
+        break;
       }
-      break;
+      case context_mode::ATTACHED: {
+        res->standalone = false;
+
+        CGLContextObj ctx_share = CGLGetCurrentContext();
+        if(!ctx_share)
+        {
+          MGL_CORE_ERROR("(share) CGLGetCurrentContext: cannot detect OpenGL context");
+          delete res;
+          return;
+        }
+
+        res->ctx = ctx_share;
+
+        if(CGLSetCurrentContext(res->ctx) != kCGLNoError)
+        {
+          MGL_CORE_ERROR("CGLSetCurrentContext failed");
+          CGLDestroyContext(res->ctx);
+          delete res;
+          return;
+        }
+        break;
+      }
       default: {
         MGL_CORE_ERROR("Detect mode not supported");
         delete res;
         return;
+        break;
       }
-      break;
     }
 
     int gl_version = gladLoaderLoadGL();

@@ -19,7 +19,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_uniforms_and_attributes PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_uniforms_and_attributes PRIVATE mgl::core-static mgl::opengl-static mgl::window-static)
-
-# Link statically to the external projects
-target_link_libraries(basic_uniforms_and_attributes PRIVATE m)
+target_link_libraries(basic_uniforms_and_attributes PRIVATE mgl::window-static)
