@@ -15,9 +15,6 @@ namespace mgl::opengl
     "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",
   };
 
-  static const std::regex
-      s_layout_regex("(layout\\(.+\\)\\))?(\\s+)?(out)(\\s+)(\\w+)(\\s+)(\\w+)");
-
   shader::shader(const std::string& source, shader::type type)
   {
     auto src = mgl::trim(source);
@@ -77,6 +74,9 @@ namespace mgl::opengl
 
   const mgl::string_list shader::outputs()
   {
+    static const std::regex s_layout_regex(
+        "(layout\\(.+\\)\\))?(\\s+)?(out)(\\s+)(\\w+)(\\s+)(\\w+)");
+
     mgl::string_list outputs = {};
 
     std::regex_iterator<std::string::iterator> it(m_source.begin(), m_source.end(), s_layout_regex);
