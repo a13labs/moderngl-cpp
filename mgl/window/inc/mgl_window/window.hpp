@@ -131,7 +131,7 @@ public:
 
     void toggle_full_screen() { m_native_window->toggle_full_screen(); }
 
-    const mgl::window::context& current_context() const;
+    const context_ref& current_context() const;
 
     const window_config& config() const { return m_config; }
 
@@ -163,7 +163,7 @@ protected:
 
 private:
     bool m_running;
-    mgl::window::context m_context;
+    context_ref m_context;
     mgl::Timer m_timer;
     mgl::scope<native_window> m_native_window;
     window_config m_config;
@@ -171,7 +171,7 @@ private:
 
   window_config load_window_configuration(const std::string& filename);
 
-  inline const mgl::window::context& current_context()
+  inline const context_ref& current_context()
   {
     return window::current().current_context();
   }

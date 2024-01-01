@@ -11,8 +11,6 @@ namespace mgl::engine
 
     ctx->enter();
 
-    ctx->clear(m_clear_color.r, m_clear_color.g, m_clear_color.b);
-
     for(auto& command : m_render_queue)
     {
       command->execute();
@@ -21,12 +19,12 @@ namespace mgl::engine
     ctx->exit();
   }
 
-  void renderer::begin_scene()
+  void renderer::begin()
   {
     m_render_queue.clear();
   }
 
-  void renderer::end_scene()
+  void renderer::end()
   {
     flush();
   }
@@ -41,7 +39,7 @@ namespace mgl::engine
     submit(mgl::create_ref<mgl::engine::disable_state>(state));
   }
 
-  void renderer::enable_texture(uint32_t slot, mgl::window::texture t)
+  void renderer::enable_texture(uint32_t slot, const mgl::window::texture_ref& t)
   {
     submit(mgl::create_ref<mgl::engine::enable_texture>(slot, t));
   }
@@ -54,11 +52,6 @@ namespace mgl::engine
   void renderer::clear(const glm::vec4& color)
   {
     submit(mgl::create_ref<mgl::engine::clear_command>(color));
-  }
-
-  void renderer::set_viewport(const glm::vec2& position, const glm::vec2& size)
-  {
-    submit(mgl::create_ref<mgl::engine::set_viewport_command>(position, size));
   }
 
   void renderer::set_view(const glm::mat4& view)
@@ -89,9 +82,9 @@ namespace mgl::engine
 
   void renderer::set_polygon_offset(float factor, float units) { }
 
-  void renderer::draw(const mgl::window::vertex_array& vertex_array, uint32_t count) { }
+  void renderer::draw(const mgl::window::vertex_array_ref& vertex_array, uint32_t count) { }
 
-  void renderer::enable_material(material material) { }
+  void renderer::enable_material(material_ref material) { }
 
   void renderer::disable_material() { }
 

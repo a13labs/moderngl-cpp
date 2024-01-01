@@ -1,4 +1,5 @@
 #pragma once
+#include "material.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
@@ -30,7 +31,6 @@ public:
       ENABLE_TEXTURE,
       DISABLE_TEXTURE,
       CLEAR,
-      SET_VIEWPORT,
       SET_VIEW,
       SET_PROJECTION,
       SET_BLEND_FUNC,
@@ -69,20 +69,8 @@ private:
     renderer_ref m_renderer;
   };
 
-  class base_material
-  {
-    friend class renderer;
-
-public:
-    virtual ~base_material() = default;
-    virtual void use() = 0;
-  };
-
-  using material = mgl::ref<base_material>;
-
   class renderer
   {
-    friend class window;
 
 public:
     enum class state
@@ -163,24 +151,33 @@ public:
       FRONT_AND_BACK = 0x0408
     };
 
-    renderer(mgl::window::context context)
+    struct render_state_data
+    {
+      mgl::window::program_ref current_program;
+
+      glm::mat4 view_matrix;
+      mgl::window::uniform_ref view_uniform;
+
+      glm::mat4 projection_matrix;
+      mgl::window::uniform_ref projection_uniform;
+    };
+
+    renderer(const mgl::window::context_ref& context)
         : m_context(context)
         , m_render_queue()
     { }
 
     ~renderer() { m_render_queue.clear(); }
 
-    void set_clear_color(const glm::vec4& color) { m_clear_color = color; }
+    void begin();
 
-    void begin_scene();
-
-    void end_scene();
+    void end();
 
     void enable_state(state state);
 
     void disable_state(state state);
 
-    void enable_texture(uint32_t slot, mgl::window::texture t);
+    void enable_texture(uint32_t slot, const mgl::window::texture_ref& t);
 
     void disable_texture(uint32_t slot);
 
@@ -210,21 +207,24 @@ public:
 
     void set_polygon_offset(float factor, float units);
 
-    void draw(const mgl::window::vertex_array& vertex_array, uint32_t count);
+    void draw(const mgl::window::vertex_array_ref& vertex_array, uint32_t count);
 
-    void enable_material(material material);
+    void enable_material(material_ref material);
 
     void disable_material();
 
-    const mgl::window::context& context() const { return m_context; }
+    render_state_data& current_state() { return m_state_data; }
+
+    const mgl::window::context_ref& context() const { return m_context; }
 
 private:
     void submit(const render_command_ref& command) { m_render_queue.push_back(command); }
     void flush();
 
-    mgl::window::context m_context;
+    mgl::window::context_ref m_context;
     mgl::list<render_command_ref> m_render_queue;
-    glm::vec3 m_clear_color;
+
+    render_state_data m_state_data;
   };
 
 } // namespace mgl::engine

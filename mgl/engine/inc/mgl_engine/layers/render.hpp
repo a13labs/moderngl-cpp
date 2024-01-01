@@ -15,7 +15,9 @@ public:
 
     virtual void on_detach() override;
 
-    virtual void on_draw(float time, float frame_time) override;
+    virtual void on_draw(float time, float frame_time) override final;
+
+    virtual void render_prepare() = 0;
 
     void on_event(mgl::window::event& event) override;
   };
@@ -29,7 +31,7 @@ public:
 
     virtual ~null_render_layer() override = default;
 
-    virtual void on_draw(float time, float frame_time) override { }
+    virtual void render_prepare() override { }
   };
 
 } // namespace mgl::engine::layers

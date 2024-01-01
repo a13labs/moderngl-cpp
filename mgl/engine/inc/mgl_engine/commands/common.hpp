@@ -13,26 +13,10 @@ public:
         , m_color(color)
     { }
 
-    void execute() override;
+    void execute() override final;
 
 private:
     glm::vec4 m_color;
-  };
-
-  class set_viewport_command : public render_command
-  {
-public:
-    set_viewport_command(const glm::vec2& position, const glm::vec2& size)
-        : render_command(type::SET_VIEWPORT)
-        , m_position(position)
-        , m_size(size)
-    { }
-
-    void execute() override;
-
-private:
-    glm::vec2 m_position;
-    glm::vec2 m_size;
   };
 
   class set_view_command : public render_command
@@ -43,7 +27,7 @@ public:
         , m_view(view)
     { }
 
-    void execute() override;
+    void execute() override final;
 
 private:
     glm::mat4 m_view;
@@ -57,7 +41,7 @@ public:
         , m_projection(projection)
     { }
 
-    void execute() override;
+    void execute() override final;
 
 private:
     glm::mat4 m_projection;
