@@ -2,7 +2,7 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_window/window.hpp"
 
-class game_window : public mgl::window::window
+class example : public mgl::window::window
 {
 
   public:
@@ -17,14 +17,14 @@ class game_window : public mgl::window::window
   mgl::opengl::vertex_array_ref m_vao;
 };
 
-void game_window::on_draw(float time, float frame_time)
+void example::on_draw(float time, float frame_time)
 {
   const auto ctx = current_context();
   ctx->clear(1.0, 1.0, 1.0);
   m_vao->render();
 }
 
-bool game_window::on_load()
+bool example::on_load()
 {
   set_title("Index Buffer");
 
@@ -72,7 +72,7 @@ bool game_window::on_load()
   return true;
 }
 
-void game_window::on_unload()
+void example::on_unload()
 {
   m_ibo->release();
   m_vao->release();
@@ -82,7 +82,7 @@ void game_window::on_unload()
 
 int main(int argc, char* argv[])
 {
-  game_window app;
+  example app;
   app.run();
 
   return 0;

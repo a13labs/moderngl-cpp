@@ -18,7 +18,9 @@ class imgui_game_layer : public mgl::engine::layers::imgui_layer
 class game : public mgl::engine::application
 {
   public:
-  virtual bool on_load() override;
+  game()
+      : mgl::engine::application({ mgl::create_ref<imgui_game_layer>() })
+  { }
 };
 
 static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -56,16 +58,6 @@ void imgui_game_layer::draw_ui(float time, float frame_time)
         "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
   }
-}
-
-bool game::on_load()
-{
-  application::on_load();
-
-  set_title("Layers Example");
-  layers().push_back(mgl::create_ref<imgui_game_layer>());
-
-  return true;
 }
 
 int main(int argc, char* argv[])

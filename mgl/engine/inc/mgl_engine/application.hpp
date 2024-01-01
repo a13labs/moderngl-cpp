@@ -11,8 +11,9 @@ namespace mgl::engine
   class application : public mgl::window::window
   {
 public:
-    application(const mgl::window::window_config& settings = mgl::window::window_config());
-    ~application() override;
+    application(const std::initializer_list<layer_ref>& layers = {},
+                const mgl::window::window_config& settings = mgl::window::window_config());
+    ~application();
 
     layer_stack& layers() { return m_layers; }
 
@@ -26,6 +27,7 @@ public:
 private:
     renderer_ref m_renderer;
     layer_stack m_layers;
+    mgl::ref_list<layer> m_startup_layers;
   };
 
 } // namespace mgl::engine

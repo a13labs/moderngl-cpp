@@ -44,6 +44,15 @@ private:
 public:
     layer_stack() = default;
 
+    layer_stack(const std::initializer_list<layer_ref>& layers)
+    {
+      m_layers.insert(m_layers.begin(), layers);
+    }
+
+    layer_stack(const layer_stack&) = delete;
+
+    layer_stack& operator=(const layer_stack&) = delete;
+
     ~layer_stack();
 
     void push_back(layer_ref layer);

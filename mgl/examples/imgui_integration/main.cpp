@@ -5,7 +5,7 @@
 
 #include "imgui/imgui.h"
 
-class game_window : public mgl::window::window
+class example : public mgl::window::window
 {
 
   public:
@@ -24,7 +24,7 @@ class game_window : public mgl::window::window
 
 static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-void game_window::on_draw(float time, float frame_time)
+void example::on_draw(float time, float frame_time)
 {
   ImGuiIO& io = ImGui::GetIO();
 
@@ -65,7 +65,7 @@ void game_window::on_draw(float time, float frame_time)
   mgl::window::imgui::render();
 }
 
-bool game_window::on_load()
+bool example::on_load()
 {
   mgl::window::imgui::init();
   set_title("ImGUI Integration Example");
@@ -114,13 +114,13 @@ bool game_window::on_load()
   return true;
 }
 
-void game_window::on_event(mgl::window::event& event)
+void example::on_event(mgl::window::event& event)
 {
   mgl::window::window::on_event(event);
   mgl::window::imgui::on_event(event);
 }
 
-void game_window::on_unload()
+void example::on_unload()
 {
   mgl::window::imgui::shutdown();
   m_ibo->release();
@@ -131,7 +131,7 @@ void game_window::on_unload()
 
 int main(int argc, char* argv[])
 {
-  game_window app;
+  example app;
   app.run();
 
   return 0;

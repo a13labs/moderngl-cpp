@@ -4,7 +4,7 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_window/window.hpp"
 
-class game_window : public mgl::window::window
+class example : public mgl::window::window
 {
 
   public:
@@ -20,7 +20,7 @@ class game_window : public mgl::window::window
   float m_time = 0;
 };
 
-void game_window::on_draw(float time, float frame_time)
+void example::on_draw(float time, float frame_time)
 {
   const auto ctx = current_context();
 
@@ -34,7 +34,7 @@ void game_window::on_draw(float time, float frame_time)
   m_scale->set_value({ sin_scale * 0.75, 0.75 });
 }
 
-bool game_window::on_load()
+bool example::on_load()
 {
   set_title("Uniforms and Attributes Example");
 
@@ -84,7 +84,7 @@ bool game_window::on_load()
   return true;
 }
 
-void game_window::on_unload()
+void example::on_unload()
 {
   m_vao->release();
   m_vbo->release();
@@ -93,7 +93,7 @@ void game_window::on_unload()
 
 int main(int argc, char* argv[])
 {
-  game_window app;
+  example app;
   app.run();
 
   return 0;
