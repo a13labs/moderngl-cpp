@@ -6,14 +6,14 @@
 
 namespace mgl::engine::layers
 {
-  class imgui_layer : public layer
+  class gui_layer : public layer
   {
 public:
-    imgui_layer(const std::string& name = "ImGui Layer")
+    gui_layer(const std::string& name = "ImGui Layer")
         : layer(name)
     { }
 
-    virtual ~imgui_layer() override = default;
+    virtual ~gui_layer() override = default;
 
     void on_attach() override
     {
@@ -21,7 +21,7 @@ public:
         mgl::window::imgui::init();
     };
 
-    virtual void on_detach() override{};
+    virtual void on_detach() override { }
 
     virtual void on_draw(float time, float frame_time) override
     {
@@ -32,5 +32,17 @@ public:
     virtual void draw_ui(float time, float frame_time) = 0;
 
     void on_event(mgl::window::event& event) override { mgl::window::imgui::on_event(event); }
+  };
+
+  class null_gui_layer : public gui_layer
+  {
+public:
+    null_gui_layer(const std::string& name = "Null ImGui Layer")
+        : gui_layer(name)
+    { }
+
+    virtual ~null_gui_layer() override = default;
+
+    virtual void draw_ui(float time, float frame_time) override { }
   };
 } // namespace mgl::engine::layers

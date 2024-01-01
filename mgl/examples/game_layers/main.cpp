@@ -2,15 +2,15 @@
 #include "mgl_core/memory.hpp"
 
 #include "mgl_engine/application.hpp"
-#include "mgl_engine/layers/imgui_layer.hpp"
+#include "mgl_engine/layers/gui.hpp"
 
 #include "imgui/imgui.h"
 
-class imgui_game_layer : public mgl::engine::layers::imgui_layer
+class imgui_game_layer : public mgl::engine::layers::gui_layer
 {
   public:
   imgui_game_layer()
-      : mgl::engine::layers::imgui_layer("ImGui Layer")
+      : mgl::engine::layers::gui_layer("Example GUI Layer")
   { }
   virtual void draw_ui(float time, float frame_time) override;
 };
@@ -19,8 +19,10 @@ class game : public mgl::engine::application
 {
   public:
   game()
-      : mgl::engine::application({ mgl::create_ref<imgui_game_layer>() })
-  { }
+      : mgl::engine::application()
+  {
+    config().gui_layer = mgl::create_ref<imgui_game_layer>();
+  }
 };
 
 static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

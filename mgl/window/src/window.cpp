@@ -18,6 +18,7 @@
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
+#include "mgl_window/integrations/imgui.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -25,12 +26,11 @@
 
 namespace mgl::window
 {
-
   static window* s_instance = nullptr;
 
   window::window(const window_config& config)
   {
-    MGL_CORE_ASSERT(!s_instance, "BaseWindow already running!");
+    MGL_CORE_ASSERT(!s_instance, "Window already running!");
     mgl::log::init();
 
     m_native_window = mgl::create_scope<sdl_window>(config);
@@ -74,7 +74,7 @@ namespace mgl::window
 
     if(!m_native_window->create_window())
     {
-      MGL_CORE_TRACE("BaseWindow: Error creating Window");
+      MGL_CORE_TRACE("Window: Error creating Window");
       return;
     }
 
@@ -82,7 +82,7 @@ namespace mgl::window
 
     if(!m_context)
     {
-      MGL_CORE_TRACE("BaseWindow: Error initializing GL shared context.");
+      MGL_CORE_TRACE("Window: Error initializing GL shared context.");
       m_native_window->destroy_window();
       return;
     }
@@ -93,7 +93,7 @@ namespace mgl::window
 
     if(!on_load())
     {
-      MGL_CORE_TRACE("BaseWindow: Error loading application.");
+      MGL_CORE_TRACE("Window: Error loading application.");
       m_native_window->destroy_window();
       return;
     }
@@ -108,6 +108,9 @@ namespace mgl::window
       m_native_window->swap_buffers();
     }
     on_unload();
+
+    if(mgl::window::imgui::is_initialized())
+      mgl::window::imgui::shutdown();
 
     m_context->release();
     m_native_window->destroy_window();
@@ -133,6 +136,7 @@ namespace mgl::window
 
   window& window::current()
   {
+    MGL_CORE_ASSERT(s_instance, "Window not running!");
     return *s_instance;
   }
 

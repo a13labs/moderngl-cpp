@@ -60,8 +60,6 @@ namespace mgl::window
         , fullscreen_key(fullscreen_key)
     { }
 
-    ~window_config() = default;
-
     window_config(const window_config& other)
     {
       title = other.title;
@@ -135,9 +133,13 @@ public:
 
     const mgl::window::context& current_context() const;
 
+    const window_config& config() const { return m_config; }
+
     static window& current();
+
     static bool is_available();
 
+protected:
     // Events
     virtual void on_event(event& event);
 
@@ -158,8 +160,6 @@ public:
     virtual void on_draw(float time, float frame_time) { }
     virtual bool on_load() { return false; }
     virtual void on_unload() { }
-
-    const window_config& config() const { return m_config; }
 
 private:
     bool m_running;
