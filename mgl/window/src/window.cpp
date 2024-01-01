@@ -18,7 +18,6 @@
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
-#include "mgl_window/renderer.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -60,9 +59,6 @@ namespace mgl::window
         MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_pressed));
     dispatcher.dispatch<mouse_button_released_event>(
         MGL_CLS_BIND_EVENT_FN(window::on_mouse_button_released));
-
-    // Propagate events to the layers
-    m_layers.on_event(event);
   }
 
   bool window::on_window_close(window_close_event& event)
@@ -91,13 +87,17 @@ namespace mgl::window
       return;
     }
 
-    m_renderer = mgl::create_ref<mgl::window::renderer>(m_context);
-
     m_native_window->initialize_event_handler(MGL_CLS_BIND_EVENT_FN(window::on_event));
 
     m_running = true;
 
-    on_load();
+    if(!on_load())
+    {
+      MGL_CORE_TRACE("BaseWindow: Error loading application.");
+      m_native_window->destroy_window();
+      return;
+    }
+
     m_timer.start();
 
     while(m_running)
@@ -105,12 +105,10 @@ namespace mgl::window
       m_native_window->process_events();
       auto frame_time = m_timer.next_frame();
       on_draw(frame_time.current, frame_time.delta);
-      m_layers.on_draw(frame_time.current, frame_time.delta);
       m_native_window->swap_buffers();
     }
     on_unload();
 
-    m_layers.clear();
     m_context->release();
     m_native_window->destroy_window();
   }
@@ -131,11 +129,6 @@ namespace mgl::window
   const mgl::window::context& window::current_context() const
   {
     return m_context;
-  }
-
-  const mgl::window::renderer_ref& window::current_renderer() const
-  {
-    return m_renderer;
   }
 
   window& window::current()

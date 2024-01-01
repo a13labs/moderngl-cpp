@@ -22,10 +22,10 @@ set (DEFAULT_INCLUDE_DIRS
 # Add include directories
 target_include_directories(mgl_window PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
-# Link simplelog library to the unit test executable
+# Link library to required libraries
 target_link_libraries(mgl_window PRIVATE mgl::core-static mgl::opengl-static)
 
-# Link simplelog library to the unit test executable
+# Link library to required external libraries
 target_link_libraries(mgl_window PRIVATE SDL2::SDL2-static ImGUI::static)
 
 # compiler and OS definitions

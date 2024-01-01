@@ -20,7 +20,7 @@ set (DEFAULT_INCLUDE_DIRS
 # Add include directories
 target_include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
-# Link simplelog library to the unit test executable
+# Link library to required libraries
 target_link_libraries(mgl_opengl PRIVATE mgl::core-static glm::glm_static glad::static)
 
 # Find OpenGL package

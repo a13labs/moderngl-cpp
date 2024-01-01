@@ -1,6 +1,6 @@
-#include "mgl_window/commands/texture.hpp"
+#include "mgl_engine/commands/texture.hpp"
 
-namespace mgl::window
+namespace mgl::engine
 {
   void enable_texture::execute()
   {
@@ -9,7 +9,7 @@ namespace mgl::window
 
     auto ctx = renderer()->context();
 
-    ctx->bind_texture(m_texture);
+    ctx->bind_texture(m_texture, m_slot);
   }
 
   void disable_texture::execute()
@@ -19,6 +19,6 @@ namespace mgl::window
 
     auto ctx = renderer()->context();
 
-    ctx->unbind_texture();
+    ctx->unbind_texture(m_slot);
   }
-} // namespace mgl::window
+} // namespace mgl::engine

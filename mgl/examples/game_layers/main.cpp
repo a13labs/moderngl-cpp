@@ -1,25 +1,24 @@
 
 #include "mgl_core/memory.hpp"
-#include "mgl_window/layers/imgui_layer.hpp"
-#include "mgl_window/window.hpp"
-#include "mgl_opengl/context.hpp"
+
+#include "mgl_engine/application.hpp"
+#include "mgl_engine/layers/imgui_layer.hpp"
 
 #include "imgui/imgui.h"
 
-class imgui_game_layer : public mgl::window::layers::imgui_layer
+class imgui_game_layer : public mgl::engine::layers::imgui_layer
 {
   public:
   imgui_game_layer()
-      : mgl::window::layers::imgui_layer("ImGui Layer")
+      : mgl::engine::layers::imgui_layer("ImGui Layer")
   { }
   virtual void draw_ui(float time, float frame_time) override;
 };
 
-class game_window : public mgl::window::window
+class game : public mgl::engine::application
 {
   public:
-  virtual void on_load() override;
-  virtual void on_unload() override;
+  virtual bool on_load() override;
 };
 
 static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -59,17 +58,19 @@ void imgui_game_layer::draw_ui(float time, float frame_time)
   }
 }
 
-void game_window::on_load()
+bool game::on_load()
 {
+  application::on_load();
+
   set_title("Layers Example");
   layers().push_back(mgl::create_ref<imgui_game_layer>());
-}
 
-void game_window::on_unload() { }
+  return true;
+}
 
 int main(int argc, char* argv[])
 {
-  game_window app;
+  game app;
   app.run();
 
   return 0;

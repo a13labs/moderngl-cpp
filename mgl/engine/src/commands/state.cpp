@@ -1,7 +1,6 @@
-#include "mgl_window/commands/state.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_engine/commands/state.hpp"
 
-namespace mgl::window
+namespace mgl::engine
 {
 
   void enable_state::execute()
@@ -44,4 +43,4 @@ namespace mgl::window
     }
   }
 
-} // namespace mgl::window
+} // namespace mgl::engine

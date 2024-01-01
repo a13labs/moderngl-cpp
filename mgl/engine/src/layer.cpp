@@ -1,7 +1,7 @@
-#include "mgl_window/layer.hpp"
+#include "mgl_engine/layer.hpp"
 #include "mgl_window/integrations/imgui.hpp"
 
-namespace mgl::window
+namespace mgl::engine
 {
   layer_stack::~layer_stack()
   {
@@ -56,7 +56,7 @@ namespace mgl::window
     }
   }
 
-  void layer_stack::on_event(event& event)
+  void layer_stack::on_event(mgl::window::event& event)
   {
     for(auto it = m_layers.rbegin(); it != m_layers.rend(); ++it)
     {
@@ -91,4 +91,4 @@ namespace mgl::window
     if(mgl::window::imgui::is_initialized())
       mgl::window::imgui::shutdown();
   }
-} // namespace mgl::window
+} // namespace mgl::engine

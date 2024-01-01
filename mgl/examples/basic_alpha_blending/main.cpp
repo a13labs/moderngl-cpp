@@ -6,7 +6,7 @@ class game_window : public mgl::window::window
 
   public:
   virtual void on_draw(float time, float frame_time) override;
-  virtual void on_load() override;
+  virtual bool on_load() override;
   virtual void on_unload() override;
 
   private:
@@ -26,7 +26,7 @@ void game_window::on_draw(float time, float frame_time)
   m_vao->render(10);
 }
 
-void game_window::on_load()
+bool game_window::on_load()
 {
   set_title("Alpha Blending");
 
@@ -80,6 +80,8 @@ void game_window::on_load()
 
   m_vbo = ctx->buffer(vertices);
   m_vao = ctx->vertex_array(m_program, { { m_vbo, "2f 4f", { "vert", "vert_color" } } });
+
+  return true;
 }
 
 void game_window::on_unload()

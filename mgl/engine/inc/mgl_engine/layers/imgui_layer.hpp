@@ -1,10 +1,10 @@
 #pragma once
 
-#include "mgl_window/layer.hpp"
+#include "mgl_engine/layer.hpp"
 
 #include "mgl_window/integrations/imgui.hpp"
 
-namespace mgl::window::layers
+namespace mgl::engine::layers
 {
   class imgui_layer : public layer
   {
@@ -31,6 +31,6 @@ public:
 
     virtual void draw_ui(float time, float frame_time) = 0;
 
-    void on_event(event& event) override { mgl::window::imgui::on_event(event); }
+    void on_event(mgl::window::event& event) override { mgl::window::imgui::on_event(event); }
   };
-} // namespace mgl::window::layers
+} // namespace mgl::engine::layers

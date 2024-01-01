@@ -14,10 +14,9 @@
    limitations under the License.
 */
 #pragma once
+#include "api.hpp"
 #include "event.hpp"
 #include "input.hpp"
-#include "layer.hpp"
-#include "renderer.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"
@@ -135,7 +134,6 @@ public:
     void toggle_full_screen() { m_native_window->toggle_full_screen(); }
 
     const mgl::window::context& current_context() const;
-    const mgl::window::renderer_ref& current_renderer() const;
 
     static window& current();
     static bool is_available();
@@ -158,20 +156,16 @@ public:
     virtual bool on_mouse_button_released(mouse_button_released_event& event) { return false; }
 
     virtual void on_draw(float time, float frame_time) { }
-    virtual void on_load(){};
-    virtual void on_unload(){};
-
-    layer_stack& layers() { return m_layers; }
+    virtual bool on_load() { return false; }
+    virtual void on_unload() { }
 
     const window_config& config() const { return m_config; }
 
 private:
     bool m_running;
+    mgl::window::context m_context;
     mgl::Timer m_timer;
     mgl::scope<native_window> m_native_window;
-    mgl::window::context m_context;
-    mgl::window::renderer_ref m_renderer;
-    layer_stack m_layers;
     window_config m_config;
   };
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "event.hpp"
+#include "mgl_window/event.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-namespace mgl::window
+namespace mgl::engine
 {
   class layer
   {
@@ -22,7 +22,7 @@ public:
 
     virtual void on_draw(float time, float frame_time) = 0;
 
-    virtual void on_event(event& event) = 0;
+    virtual void on_event(mgl::window::event& event) = 0;
 
     void enable() { m_enabled = true; }
 
@@ -56,7 +56,7 @@ public:
 
     void remove_layer(layer_ref layer);
 
-    void on_event(event& event);
+    void on_event(mgl::window::event& event);
 
     void on_draw(float time, float frame_time);
 
@@ -83,4 +83,4 @@ public:
 private:
     mgl::ref_list<layer> m_layers;
   };
-} // namespace mgl::window
+} // namespace mgl::engine

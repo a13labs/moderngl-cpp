@@ -7,7 +7,7 @@ class game_window : public mgl::window::window
 
   public:
   virtual void on_draw(float time, float frame_time) override;
-  virtual void on_load() override;
+  virtual bool on_load() override;
   virtual void on_unload() override;
 
   private:
@@ -24,7 +24,7 @@ void game_window::on_draw(float time, float frame_time)
   m_vao->render();
 }
 
-void game_window::on_load()
+bool game_window::on_load()
 {
   set_title("Index Buffer");
 
@@ -68,6 +68,8 @@ void game_window::on_load()
   mgl::opengl::vertex_buffer_list m_content = { { m_vbo, "2f", { "in_vert" } } };
 
   m_vao = ctx->vertex_array(m_program, m_content, m_ibo);
+
+  return true;
 }
 
 void game_window::on_unload()
