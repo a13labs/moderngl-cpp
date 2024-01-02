@@ -32,7 +32,7 @@ namespace mgl::engine
     m_render_layer->on_event(event);
   }
 
-  const renderer_ref& application::current_renderer() const
+  const renderer_ref& application::current_renderer()
   {
     return m_renderer;
   }

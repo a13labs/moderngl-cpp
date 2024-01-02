@@ -1,8 +1,10 @@
 #include "mgl_engine/renderer.hpp"
+#include "mgl_core/debug.hpp"
+#include "mgl_engine/application.hpp"
 #include "mgl_engine/commands/common.hpp"
+#include "mgl_engine/commands/draw.hpp"
 #include "mgl_engine/commands/state.hpp"
 #include "mgl_engine/commands/texture.hpp"
-
 namespace mgl::engine
 {
   void renderer::flush()
@@ -10,6 +12,12 @@ namespace mgl::engine
     for(auto& command : m_render_queue)
     {
       command->execute();
+    }
+
+    if(m_state_data.current_batch != nullptr)
+    {
+      m_state_data.current_batch->commit();
+      m_state_data.current_batch = nullptr;
     }
 
     m_render_queue.clear();
@@ -78,10 +86,72 @@ namespace mgl::engine
 
   void renderer::set_polygon_offset(float factor, float units) { }
 
-  void renderer::draw(const mgl::window::vertex_array_ref& vertex_array, uint32_t count) { }
+  void renderer::draw(const vertex_buffer_ref& vertex_array,
+                      index_buffer_ref index_buffer,
+                      draw_mode mode)
+  {
+    submit(mgl::create_ref<mgl::engine::draw_command>(vertex_array, index_buffer, mode));
+  }
 
   void renderer::enable_material(material_ref material) { }
 
   void renderer::disable_material() { }
+
+  void
+  batch_list::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
+  {
+    if(m_batch_data.size() == 0)
+    {
+      m_batch_data.push_back({ vb, ib, m });
+      return;
+    }
+
+    auto& last = m_batch_data.back();
+    if(last.vertex_buffer == vb && last.index_buffer == ib && last.mode == m)
+    {
+      commit();
+    }
+
+    m_batch_data.push_back({ vb, ib, m });
+  }
+
+  void batch_list::commit()
+  {
+    auto renderer = mgl::engine::current_renderer();
+    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    auto ctx = renderer->context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    if(m_batch_data.size() == 0)
+    {
+      return;
+    }
+
+    shader_ref shader = renderer->current_state().current_shader;
+    MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
+    mgl::window::program_ref program = shader->program();
+    MGL_CORE_ASSERT(program != nullptr, "Program is null");
+
+    mgl::window::uniform_ref transform_uniform = program->uniform("model");
+
+    mgl::opengl::vertex_buffer_list m_content = { { m_batch_data[0].vertex_buffer->buffer(),
+                                                    m_batch_data[0].vertex_buffer->layout(),
+                                                    shader->attributes() } };
+    mgl::window::vertex_array_ref vao =
+        ctx->vertex_array(program, m_content, m_batch_data[0].index_buffer->buffer());
+
+    for(auto& draw_call : m_batch_data)
+    {
+      if(transform_uniform != nullptr)
+      {
+        transform_uniform->set_value(draw_call.transform);
+      }
+
+      vao->render((mgl::opengl::render_mode)draw_call.mode);
+    }
+    vao->release();
+
+    m_batch_data.clear();
+  }
 
 } // namespace mgl::engine

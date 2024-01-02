@@ -1,4 +1,5 @@
 #pragma once
+#include "buffers.hpp"
 #include "material.hpp"
 #include "shader.hpp"
 
@@ -15,9 +16,11 @@ namespace mgl::engine
 
   class renderer;
   class render_command;
+  class batch_list;
 
   using renderer_ref = mgl::ref<renderer>;
   using render_command_ref = mgl::ref<render_command>;
+  using batch_list_ref = mgl::ref<batch_list>;
 
   class render_command
   {
@@ -83,77 +86,94 @@ public:
     enum class blend_func : uint32_t
     {
       ZERO = 0,
-      ONE = 1,
-      SRC_COLOR = 0x0300,
-      ONE_MINUS_SRC_COLOR = 0x0301,
-      DST_COLOR = 0x0306,
-      ONE_MINUS_DST_COLOR = 0x0307,
-      SRC_ALPHA = 0x0302,
-      ONE_MINUS_SRC_ALPHA = 0x0303,
-      DST_ALPHA = 0x0304,
-      ONE_MINUS_DST_ALPHA = 0x0305,
-      CONSTANT_COLOR = 0x8001,
-      ONE_MINUS_CONSTANT_COLOR = 0x8002,
-      CONSTANT_ALPHA = 0x8003,
-      ONE_MINUS_CONSTANT_ALPHA = 0x8004,
-      SRC_ALPHA_SATURATE = 0x0308,
-      SRC1_COLOR = 0x88F9,
-      ONE_MINUS_SRC1_COLOR = 0x88FA,
-      SRC1_ALPHA = 0x8589,
-      ONE_MINUS_SRC1_ALPHA = 0x88FB
+      ONE,
+      SRC_COLOR,
+      ONE_MINUS_SRC_COLOR,
+      DST_COLOR,
+      ONE_MINUS_DST_COLOR,
+      SRC_ALPHA,
+      ONE_MINUS_SRC_ALPHA,
+      DST_ALPHA,
+      ONE_MINUS_DST_ALPHA,
+      CONSTANT_COLOR,
+      ONE_MINUS_CONSTANT_COLOR,
+      CONSTANT_ALPHA,
+      ONE_MINUS_CONSTANT_ALPHA,
+      SRC_ALPHA_SATURATE,
+      SRC1_COLOR,
+      ONE_MINUS_SRC1_COLOR,
+      SRC1_ALPHA,
+      ONE_MINUS_SRC1_ALPHAB
     };
 
     enum class depth_func : uint32_t
     {
-      NEVER = 0x0200,
-      LESS = 0x0201,
-      EQUAL = 0x0202,
-      LEQUAL = 0x0203,
-      GREATER = 0x0204,
-      NOTEQUAL = 0x0205,
-      GEQUAL = 0x0206,
-      ALWAYS = 0x0207
+      NEVER,
+      LESS,
+      EQUAL,
+      LEQUAL,
+      GREATER,
+      NOTEQUAL,
+      GEQUAL,
+      ALWAYS7
     };
 
     enum class stencil_func : uint32_t
     {
-      NEVER = 0x0200,
-      LESS = 0x0201,
-      EQUAL = 0x0202,
-      LEQUAL = 0x0203,
-      GREATER = 0x0204,
-      NOTEQUAL = 0x0205,
-      GEQUAL = 0x0206,
-      ALWAYS = 0x0207
+      NEVER,
+      LESS,
+      EQUAL,
+      LEQUAL,
+      GREATER,
+      NOTEQUAL,
+      GEQUAL,
+      ALWAYS7
     };
 
     enum class stencil_op : uint32_t
     {
-      KEEP = 0x1E00,
-      ZERO = 0,
-      REPLACE = 0x1E01,
-      INCR = 0x1E02,
-      INCR_WRAP = 0x8507,
-      DECR = 0x1E03,
-      DECR_WRAP = 0x8508,
-      INVERT = 0x150A
+      KEEP,
+      ZERO,
+      REPLACE,
+      INCR,
+      INCR_WRAP,
+      DECR,
+      DECR_WRAP,
+      INVERTA
     };
 
     enum class cull_face : uint32_t
     {
-      FRONT = 0x0404,
-      BACK = 0x0405,
-      FRONT_AND_BACK = 0x0408
+      FRONT,
+      BACK,
+      FRONT_AND_BACK
     };
 
-    struct render_state_data
+    enum class draw_mode : uint32_t
     {
-      render_state_data()
+      POINTS = 0x0000,
+      LINES = 0x0001,
+      LINE_LOOP = 0x0002,
+      LINE_STRIP = 0x0003,
+      TRIANGLES = 0x0004,
+      TRIANGLE_STRIP = 0x0005,
+      TRIANGLE_FAN = 0x0006,
+      LINES_ADJACENCY = 0x000A,
+      LINE_STRIP_ADJACENCY = 0x000B,
+      TRIANGLES_ADJACENCY = 0x000C,
+      TRIANGLE_STRIP_ADJACENCY = 0x000D,
+      PATCHES = 0x000E,
+    };
+
+    struct render_state
+    {
+      render_state()
           : current_shader(nullptr)
           , view_matrix(1.0f)
           , view_uniform(nullptr)
           , projection_matrix(1.0f)
           , projection_uniform(nullptr)
+          , current_batch(nullptr)
       { }
 
       // The current shader, view and projection matrices are stored in the renderer, as they are
@@ -165,6 +185,9 @@ public:
 
       glm::mat4 projection_matrix;
       mgl::window::uniform_ref projection_uniform;
+
+      // The current batch is stored in the renderer, as it is used by multiple commands
+      batch_list_ref current_batch;
     };
 
     renderer(const mgl::window::context_ref& context)
@@ -214,13 +237,13 @@ public:
 
     void set_polygon_offset(float factor, float units);
 
-    void draw(const mgl::window::vertex_array_ref& vertex_array, uint32_t count);
+    void draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode);
 
     void enable_material(material_ref material);
 
     void disable_material();
 
-    render_state_data& current_state() { return m_state_data; }
+    render_state& current_state() { return m_state_data; }
 
     const mgl::window::context_ref& context() const { return m_context; }
 
@@ -231,7 +254,54 @@ private:
     mgl::window::context_ref m_context;
     mgl::list<render_command_ref> m_render_queue;
 
-    render_state_data m_state_data;
+    render_state m_state_data;
+  };
+
+  class batch_list
+  {
+    struct data
+    {
+      data()
+          : vertex_buffer(nullptr)
+          , index_buffer(nullptr)
+          , mode(renderer::draw_mode::TRIANGLES)
+      { }
+
+      data(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
+          : vertex_buffer(vb)
+          , index_buffer(ib)
+          , mode(m)
+      { }
+
+      data(const data& other)
+          : vertex_buffer(other.vertex_buffer)
+          , index_buffer(other.index_buffer)
+          , mode(other.mode)
+      { }
+
+      bool operator==(const data& other) const
+      {
+        return vertex_buffer == other.vertex_buffer && index_buffer == other.index_buffer &&
+               mode == other.mode;
+      }
+
+      bool operator!=(const data& other) const { return !(*this == other); }
+
+      vertex_buffer_ref vertex_buffer;
+      index_buffer_ref index_buffer;
+      renderer::draw_mode mode;
+      glm::mat4 transform;
+    };
+
+public:
+    void push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m);
+
+    void clear() { m_batch_data.clear(); }
+
+    void commit();
+
+private:
+    mgl::list<data> m_batch_data;
   };
 
 } // namespace mgl::engine

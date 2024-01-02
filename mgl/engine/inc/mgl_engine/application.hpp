@@ -58,7 +58,7 @@ public:
     application(const application_config& settings = application_config());
     ~application();
 
-    const renderer_ref& current_renderer() const;
+    const renderer_ref& current_renderer();
 
     layer_stack& layers() { return m_layers; }
 

@@ -1,5 +1,6 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_window/window.hpp"
+#include <iostream>
 
 class example : public mgl::window::window
 {
@@ -32,7 +33,6 @@ bool example::on_load()
                 #version 330
 
                 in vec2 in_vert;
-
                 in vec3 in_color;
                 out vec3 v_color;    // Goes to the fragment shader
 

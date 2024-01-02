@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 #include "mgl_window/api.hpp"
 
 namespace mgl::engine
@@ -13,6 +14,7 @@ public:
     virtual void disable();
     virtual void prepare() = 0;
     virtual const mgl::window::program_ref& program() = 0;
+    virtual const mgl::string_list& attributes() = 0;
   };
 
   using shader_ref = mgl::ref<shader>;

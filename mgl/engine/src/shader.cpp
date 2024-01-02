@@ -11,11 +11,13 @@ namespace mgl::engine
     auto renderer = mgl::engine::current_renderer();
     MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
     MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
+    auto prg = program();
+    MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     // Set the state of the renderer, including the current program, view and projection matrices
-    renderer->current_state().view_uniform = program()->uniform("view");
-    renderer->current_state().projection_uniform = program()->uniform("projection");
-    renderer->context()->bind_program(program());
+    renderer->current_state().view_uniform = prg->uniform("view");
+    renderer->current_state().projection_uniform = prg->uniform("projection");
+    renderer->context()->bind_program(prg);
 
     // Set the view and projection matrices if the uniforms exist
     if(renderer->current_state().view_uniform != nullptr)
