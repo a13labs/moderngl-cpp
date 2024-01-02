@@ -8,7 +8,7 @@ namespace mgl::engine
   {
 public:
     enable_material(mgl::engine::material_ref material)
-        : render_command(type::ENABLE_MATERIAL)
+        : render_command(type::ENABLE_SHADER)
         , m_material(material)
     { }
 
@@ -22,7 +22,7 @@ private:
   {
 public:
     disable_material()
-        : render_command(type::DISABLE_MATERIAL)
+        : render_command(type::DISABLE_SHADER)
     { }
 
     void execute() override final;

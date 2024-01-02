@@ -1,8 +1,7 @@
 #include "mgl_engine/commands/material.hpp"
+#include "mgl_engine/application.hpp"
 
 #include "mgl_core/debug.hpp"
-
-#include "mgl_engine/application.hpp"
 
 namespace mgl::engine
 {
@@ -11,25 +10,9 @@ namespace mgl::engine
     auto renderer = mgl::engine::current_renderer();
     MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
     MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
-
-    // Set the state of the renderer, including the current program, view and projection matrices
-    renderer->current_state().current_program = m_material->program();
-    renderer->current_state().view_uniform = m_material->program()->uniform("view");
-    renderer->current_state().projection_uniform = m_material->program()->uniform("projection");
-    renderer->context()->bind_program(m_material->program());
-
-    // Set the view and projection matrices if the uniforms exist
-    if(renderer->current_state().view_uniform != nullptr)
-    {
-      renderer->current_state().view_uniform->set_value(renderer->current_state().view_matrix);
-    }
-
-    if(renderer->current_state().projection_uniform != nullptr)
-    {
-      renderer->current_state().projection_uniform->set_value(
-          renderer->current_state().projection_matrix);
-    }
-
+    // Enable the material, which will set the current program, view and projection matrices
+    renderer->current_state().current_shader = m_material;
+    m_material->enable();
     // Prepare the material, which will set the material specific uniforms and textures
     m_material->prepare();
   }
@@ -38,11 +21,15 @@ namespace mgl::engine
   {
     auto renderer = mgl::engine::current_renderer();
     MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
-    // Unbind the program, and set the current program to null and the view and projection uniforms to
-    // null
-    renderer->context()->unbind_program();
-    renderer->current_state().current_program = nullptr;
-    renderer->current_state().view_uniform = nullptr;
-    renderer->current_state().projection_uniform = nullptr;
+    MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
+
+    if(renderer->current_state().current_shader == nullptr)
+    {
+      return;
+    }
+
+    // Disable the material, which will unbind the current program
+    renderer->current_state().current_shader->disable();
+    renderer->current_state().current_shader = nullptr;
   }
 } // namespace mgl::engine

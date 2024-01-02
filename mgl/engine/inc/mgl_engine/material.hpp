@@ -1,18 +1,15 @@
 #pragma once
+#include "shader.hpp"
 
 #include "mgl_core/memory.hpp"
 #include "mgl_window/api.hpp"
 
 namespace mgl::engine
 {
-  class material
+  class material : public shader
   {
 public:
     virtual ~material() = default;
-
-    virtual void prepare() = 0;
-
-    virtual const mgl::window::program_ref& program() = 0;
   };
 
   using material_ref = mgl::ref<material>;

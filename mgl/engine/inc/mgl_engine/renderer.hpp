@@ -1,5 +1,6 @@
 #pragma once
 #include "material.hpp"
+#include "shader.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
@@ -43,8 +44,8 @@ public:
       SET_CULL_FACE,
       SET_POLYGON_OFFSET,
       DRAW,
-      ENABLE_MATERIAL,
-      DISABLE_MATERIAL,
+      ENABLE_SHADER,
+      DISABLE_SHADER,
 
       SET_RENDER_TARGET,
       COUNT
@@ -147,7 +148,17 @@ public:
 
     struct render_state_data
     {
-      mgl::window::program_ref current_program;
+      render_state_data()
+          : current_shader(nullptr)
+          , view_matrix(1.0f)
+          , view_uniform(nullptr)
+          , projection_matrix(1.0f)
+          , projection_uniform(nullptr)
+      { }
+
+      // The current shader, view and projection matrices are stored in the renderer, as they are
+      // used by multiple commands
+      shader_ref current_shader;
 
       glm::mat4 view_matrix;
       mgl::window::uniform_ref view_uniform;
