@@ -68,7 +68,7 @@ public:
 
 protected:
     virtual void on_event(mgl::window::event& event) override final;
-    virtual void on_draw(float time, float frame_time) override final;
+    virtual void on_update(float time, float frame_time) override final;
     virtual bool on_load() override final;
     virtual void on_unload() override final;
 

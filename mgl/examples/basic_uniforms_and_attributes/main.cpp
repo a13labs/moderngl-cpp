@@ -8,7 +8,7 @@ class example : public mgl::window::window
 {
 
   public:
-  virtual void on_draw(float time, float frame_time) override;
+  virtual void on_update(float time, float frame_time) override;
   virtual bool on_load() override;
   virtual void on_unload() override;
 
@@ -20,7 +20,7 @@ class example : public mgl::window::window
   float m_time = 0;
 };
 
-void example::on_draw(float time, float frame_time)
+void example::on_update(float time, float frame_time)
 {
   const auto ctx = current_context();
 

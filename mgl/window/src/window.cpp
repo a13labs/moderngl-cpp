@@ -104,7 +104,7 @@ namespace mgl::window
     {
       m_native_window->process_events();
       auto frame_time = m_timer.next_frame();
-      on_draw(frame_time.current, frame_time.delta);
+      on_update(frame_time.current, frame_time.delta);
       m_native_window->swap_buffers();
     }
     on_unload();

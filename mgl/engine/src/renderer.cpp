@@ -7,16 +7,12 @@ namespace mgl::engine
 {
   void renderer::flush()
   {
-    auto ctx = context();
-
-    ctx->enter();
-
     for(auto& command : m_render_queue)
     {
       command->execute();
     }
 
-    ctx->exit();
+    m_render_queue.clear();
   }
 
   void renderer::begin()

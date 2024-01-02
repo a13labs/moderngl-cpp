@@ -57,16 +57,10 @@ public:
 protected:
     render_command(type type)
         : m_type(type)
-        , m_renderer(nullptr)
     { }
-
-    void set_renderer(renderer_ref renderer) { m_renderer = renderer; }
-
-    const renderer_ref& renderer() const { return m_renderer; }
 
 private:
     type m_type;
-    renderer_ref m_renderer;
   };
 
   class renderer
@@ -182,6 +176,8 @@ public:
     void disable_texture(uint32_t slot);
 
     void clear(const glm::vec4& color);
+
+    void clear(float r, float g, float b, float a) { clear(glm::vec4(r, g, b, a)); }
 
     void set_viewport(const glm::vec2& position, const glm::vec2& size);
 

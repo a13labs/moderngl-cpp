@@ -20,7 +20,7 @@ public:
 
     virtual void on_detach() = 0;
 
-    virtual void on_draw(float time, float frame_time) = 0;
+    virtual void on_update(float time, float frame_time) = 0;
 
     virtual void on_event(mgl::window::event& event) = 0;
 
@@ -67,7 +67,7 @@ public:
 
     void on_event(mgl::window::event& event);
 
-    void on_draw(float time, float frame_time);
+    void on_update(float time, float frame_time);
 
     mgl::ref_list<layer>::iterator begin() { return m_layers.begin(); }
 

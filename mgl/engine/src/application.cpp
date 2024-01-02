@@ -37,11 +37,11 @@ namespace mgl::engine
     return m_renderer;
   }
 
-  void application::on_draw(float time, float frame_time)
+  void application::on_update(float time, float frame_time)
   {
-    m_render_layer->on_draw(time, frame_time);
-    m_layers.on_draw(time, frame_time);
-    m_gui_layer->on_draw(time, frame_time);
+    m_render_layer->on_update(time, frame_time);
+    m_layers.on_update(time, frame_time);
+    m_gui_layer->on_update(time, frame_time);
   }
 
   bool application::on_load()

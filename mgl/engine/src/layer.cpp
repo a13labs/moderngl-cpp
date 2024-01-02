@@ -70,13 +70,13 @@ namespace mgl::engine
     }
   }
 
-  void layer_stack::on_draw(float time, float frame_time)
+  void layer_stack::on_update(float time, float frame_time)
   {
     for(auto& layer : m_layers)
     {
       if(!layer->is_enabled())
         continue;
-      layer->on_draw(time, frame_time);
+      layer->on_update(time, frame_time);
     }
   }
 

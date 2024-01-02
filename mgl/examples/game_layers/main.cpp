@@ -3,13 +3,30 @@
 
 #include "mgl_engine/application.hpp"
 #include "mgl_engine/layers/gui.hpp"
+#include "mgl_engine/layers/render.hpp"
 
 #include "imgui/imgui.h"
 
-class imgui_game_layer : public mgl::engine::layers::gui_layer
+static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+class render_layer : public mgl::engine::layers::render_layer
 {
   public:
-  imgui_game_layer()
+  render_layer()
+      : mgl::engine::layers::render_layer("Example Render Layer")
+  { }
+
+  virtual void on_attach() override;
+
+  virtual void on_detach() override;
+
+  virtual void render_prepare() override;
+};
+
+class gui_layer : public mgl::engine::layers::gui_layer
+{
+  public:
+  gui_layer()
       : mgl::engine::layers::gui_layer("Example GUI Layer")
   { }
   virtual void draw_ui(float time, float frame_time) override;
@@ -21,19 +38,17 @@ class game : public mgl::engine::application
   game()
       : mgl::engine::application()
   {
-    config().gui_layer = mgl::create_ref<imgui_game_layer>();
+    config().gui_layer = mgl::create_ref<gui_layer>();
+    config().render_layer = mgl::create_ref<render_layer>();
   }
 };
 
-static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-void imgui_game_layer::draw_ui(float time, float frame_time)
+void gui_layer::draw_ui(float time, float frame_time)
 {
   ImGuiIO& io = ImGui::GetIO();
 
   static bool show_demo_window = true;
   static bool show_another_window = false;
-  static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
   ImGui::NewFrame();
   {
@@ -61,6 +76,16 @@ void imgui_game_layer::draw_ui(float time, float frame_time)
     ImGui::End();
   }
 }
+
+void render_layer::render_prepare()
+{
+  auto renderer = mgl::engine::current_renderer();
+  renderer->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+}
+
+void render_layer::on_attach() { }
+
+void render_layer::on_detach() { }
 
 int main(int argc, char* argv[])
 {

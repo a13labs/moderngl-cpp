@@ -1,4 +1,5 @@
 #include "mgl_engine/commands/state.hpp"
+#include "mgl_engine/application.hpp"
 
 #include "mgl_core/debug.hpp"
 namespace mgl::engine
@@ -6,10 +7,11 @@ namespace mgl::engine
 
   void enable_state::execute()
   {
-    MGL_CORE_ASSERT(renderer() != nullptr, "Renderer is null");
-    MGL_CORE_ASSERT(renderer()->context() != nullptr, "Context is null");
+    auto renderer = mgl::engine::current_renderer();
+    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
 
-    auto ctx = renderer()->context();
+    auto ctx = renderer->context();
 
     switch(m_state)
     {
@@ -26,10 +28,11 @@ namespace mgl::engine
 
   void disable_state::execute()
   {
-    MGL_CORE_ASSERT(renderer() != nullptr, "Renderer is null");
-    MGL_CORE_ASSERT(renderer()->context() != nullptr, "Context is null");
+    auto renderer = mgl::engine::current_renderer();
+    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
 
-    auto ctx = renderer()->context();
+    auto ctx = renderer->context();
 
     switch(m_state)
     {

@@ -13,7 +13,7 @@ namespace mgl::engine::layers
 
   void render_layer::on_detach() { }
 
-  void render_layer::on_draw(float time, float frame_time)
+  void render_layer::on_update(float time, float frame_time)
   {
     MGL_CORE_ASSERT(mgl::engine::current_renderer() != nullptr, "Renderer is null");
     auto renderer = mgl::engine::current_renderer();

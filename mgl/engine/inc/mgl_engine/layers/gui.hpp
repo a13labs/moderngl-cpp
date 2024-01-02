@@ -23,7 +23,7 @@ public:
 
     virtual void on_detach() override { }
 
-    virtual void on_draw(float time, float frame_time) override
+    virtual void on_update(float time, float frame_time) override
     {
       draw_ui(time, frame_time);
       mgl::window::imgui::render();

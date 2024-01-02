@@ -157,7 +157,7 @@ protected:
     virtual bool on_mouse_button_pressed(mouse_button_pressed_event& event) { return false; }
     virtual bool on_mouse_button_released(mouse_button_released_event& event) { return false; }
 
-    virtual void on_draw(float time, float frame_time) { }
+    virtual void on_update(float time, float frame_time) { }
     virtual bool on_load() { return false; }
     virtual void on_unload() { }
 

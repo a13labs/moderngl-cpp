@@ -15,7 +15,7 @@ public:
 
     virtual void on_detach() override;
 
-    virtual void on_draw(float time, float frame_time) override final;
+    virtual void on_update(float time, float frame_time) override final;
 
     virtual void render_prepare() = 0;
 
