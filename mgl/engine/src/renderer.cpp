@@ -132,8 +132,11 @@ namespace mgl::engine
     mgl::window::program_ref program = shader->program();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
+    // We get the uniform for the transform matrix
     mgl::window::uniform_ref transform_uniform = program->uniform("model");
 
+    // We create a vertex array from the first batch data since all the batches have the same
+    // vertex buffer data, index buffer data and draw mode
     mgl::opengl::vertex_buffer_list m_content = { { m_batch_data[0].vertex_buffer->buffer(),
                                                     m_batch_data[0].vertex_buffer->layout(),
                                                     shader->attributes() } };
