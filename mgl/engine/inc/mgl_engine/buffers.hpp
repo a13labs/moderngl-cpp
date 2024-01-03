@@ -24,6 +24,8 @@ public:
 
     bool is_dynamic() const { return m_dynamic; }
 
+    void release();
+
 protected:
     mgl::window::buffer_ref m_buffer;
     std::string m_layout;
@@ -45,6 +47,8 @@ public:
     void orphan(size_t size);
 
     bool is_dynamic() const { return m_dynamic; }
+
+    void release();
 
 protected:
     mgl::window::buffer_ref m_buffer;

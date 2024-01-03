@@ -296,6 +296,12 @@ private:
     };
 
 public:
+    batch_render()
+        : m_batch_data()
+    { }
+
+    ~batch_render() { m_batch_data.clear(); }
+
     void push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m);
 
     void clear() { m_batch_data.clear(); }

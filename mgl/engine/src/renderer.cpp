@@ -3,6 +3,7 @@
 #include "mgl_engine/application.hpp"
 #include "mgl_engine/commands/common.hpp"
 #include "mgl_engine/commands/draw.hpp"
+#include "mgl_engine/commands/material.hpp"
 #include "mgl_engine/commands/state.hpp"
 #include "mgl_engine/commands/texture.hpp"
 namespace mgl::engine
@@ -93,9 +94,15 @@ namespace mgl::engine
     submit(mgl::create_ref<mgl::engine::draw_command>(vertex_array, index_buffer, mode));
   }
 
-  void renderer::enable_material(material_ref material) { }
+  void renderer::enable_material(material_ref material)
+  {
+    submit(mgl::create_ref<mgl::engine::enable_material>(material));
+  }
 
-  void renderer::disable_material() { }
+  void renderer::disable_material()
+  {
+    submit(mgl::create_ref<mgl::engine::disable_material>());
+  }
 
   void
   batch_render::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
@@ -142,8 +149,18 @@ namespace mgl::engine
     mgl::opengl::vertex_buffer_list m_content = { { m_batch_data[0].vertex_buffer->buffer(),
                                                     m_batch_data[0].vertex_buffer->layout(),
                                                     shader->attributes() } };
-    mgl::window::vertex_array_ref vao =
-        ctx->vertex_array(program, m_content, m_batch_data[0].index_buffer->buffer());
+
+    index_buffer_ref index_buffer = m_batch_data[0].index_buffer;
+    mgl::window::vertex_array_ref vao = nullptr;
+
+    if(index_buffer != nullptr)
+    {
+      vao = ctx->vertex_array(program, m_content, index_buffer->buffer());
+    }
+    else
+    {
+      vao = ctx->vertex_array(program, m_content);
+    }
 
     for(auto& draw_call : m_batch_data)
     {

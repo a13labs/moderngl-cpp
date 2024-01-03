@@ -28,6 +28,11 @@ namespace mgl::engine
     m_buffer->release();
   }
 
+  void vertex_buffer::release()
+  {
+    m_buffer->release();
+  }
+
   index_buffer::index_buffer(const mgl::buffer<float>& data, bool dynamic)
       : m_dynamic(dynamic)
   {
@@ -42,6 +47,16 @@ namespace mgl::engine
   void index_buffer::orphan(size_t size)
   {
     m_buffer->orphan(size);
+  }
+
+  index_buffer::~index_buffer()
+  {
+    m_buffer->release();
+  }
+
+  void index_buffer::release()
+  {
+    m_buffer->release();
   }
 
 } // namespace mgl::engine

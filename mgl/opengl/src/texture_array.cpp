@@ -28,20 +28,19 @@ namespace mgl::opengl
 {
   void texture_array::release()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
     if(m_released)
     {
       return;
     }
 
+    MGL_CORE_ASSERT(m_context, "No context");
+    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+
     m_released = true;
     glDeleteTextures(1, (GLuint*)&m_texture_obj);
   }
 
-  bool
-  texture_array::read_into(mgl::buffer<uint8_t>& dst, int alignment, size_t write_offset)
+  bool texture_array::read_into(mgl::buffer<uint8_t>& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -92,9 +91,8 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_array::write(const mgl::buffer<uint8_t>& src,
-                            const mgl::cube& viewport,
-                            int alignment)
+  bool
+  texture_array::write(const mgl::buffer<uint8_t>& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");

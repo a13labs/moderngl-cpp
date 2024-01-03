@@ -25,11 +25,11 @@ namespace mgl::opengl
 {
   void compute_shader::release()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
     if(m_released)
       return;
+
+    MGL_CORE_ASSERT(m_context, "No context");
+    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
     m_released = true;
 

@@ -88,7 +88,6 @@ namespace mgl::opengl
 
   uniform::data_type* uniform_lookup_table(int gl_type)
   {
-
     switch(gl_type)
     {
       case GL_BOOL: return &gl_bool;

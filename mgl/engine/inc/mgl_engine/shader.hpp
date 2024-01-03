@@ -10,11 +10,15 @@ namespace mgl::engine
   {
 public:
     virtual ~shader() = default;
-    virtual void enable();
-    virtual void disable();
+
+    virtual void bind();
+    virtual void unbind();
+
     virtual void prepare() = 0;
     virtual const mgl::window::program_ref& program() = 0;
     virtual const mgl::string_list& attributes() = 0;
+
+    virtual void release() = 0;
   };
 
   using shader_ref = mgl::ref<shader>;

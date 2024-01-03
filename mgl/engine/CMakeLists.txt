@@ -7,21 +7,29 @@ include(ShadersHeaderGenerator)
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Use GLOB to find all shader files in the specified directory
-file(GLOB_RECURSE SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.glsl")
+file(GLOB_RECURSE VS_SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vertex/*.vs")
+file(GLOB_RECURSE FS_SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/fragment/*.fs")
 
 # Create an empty list to store generated headers
 set(SHADER_HEADERS "")
 
 # Create a directory to store generated headers
-file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/vertex")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/fragment")
 
 # Generate header files for each shader using the custom script
-foreach(SHADER_SOURCE ${SHADER_SOURCES})
+foreach(SHADER_SOURCE ${VS_SHADER_SOURCES})
     get_filename_component(SHADER_NAME ${SHADER_SOURCE} NAME_WE)
-    set(SHADER_HEADER "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/${SHADER_NAME}_glsl.h")
+    set(SHADER_HEADER "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/vertex/${SHADER_NAME}.h")
+    generate_shader_header(${SHADER_SOURCE} vert ${SHADER_HEADER})
+    list(APPEND MGL_SHADER_HEADERS ${SHADER_HEADER})
+endforeach()
 
-    generate_shader_header(${SHADER_SOURCE} ${SHADER_HEADER})
-
+# Generate header files for each shader using the custom script
+foreach(SHADER_SOURCE ${FS_SHADER_SOURCES})
+    get_filename_component(SHADER_NAME ${SHADER_SOURCE} NAME_WE)
+    set(SHADER_HEADER "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/fragment/${SHADER_NAME}.h")
+    generate_shader_header(${SHADER_SOURCE} frag ${SHADER_HEADER})
     list(APPEND MGL_SHADER_HEADERS ${SHADER_HEADER})
 endforeach()
 

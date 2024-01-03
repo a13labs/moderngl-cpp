@@ -26,13 +26,13 @@ namespace mgl::opengl
 {
   void renderbuffer::release()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
     if(m_released)
     {
       return;
     }
+
+    MGL_CORE_ASSERT(m_context, "No context");
+    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
     m_released = true;
     glDeleteRenderbuffers(1, (GLuint*)&m_renderbuffer_obj);

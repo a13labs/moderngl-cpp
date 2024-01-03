@@ -5,7 +5,7 @@
 
 namespace mgl::engine
 {
-  void shader::enable()
+  void shader::bind()
   {
     auto prg = program();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
@@ -44,7 +44,7 @@ namespace mgl::engine
     }
   }
 
-  void shader::disable()
+  void shader::unbind()
   {
     auto prg = program();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");

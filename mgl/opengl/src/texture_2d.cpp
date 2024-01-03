@@ -29,13 +29,13 @@ namespace mgl::opengl
 {
   void texture_2d::release()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
     if(m_released)
     {
       return;
     }
+
+    MGL_CORE_ASSERT(m_context, "No context");
+    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
     m_released = true;
     glDeleteTextures(1, (GLuint*)&m_texture_obj);
@@ -51,10 +51,8 @@ namespace mgl::opengl
     return texture::TEXTURE_2D;
   }
 
-  bool texture_2d::read_into(mgl::buffer<uint8_t>& dst,
-                             int level,
-                             int alignment,
-                             size_t write_offset)
+  bool
+  texture_2d::read_into(mgl::buffer<uint8_t>& dst, int level, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -196,10 +194,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_2d::write(const buffer_ref& src,
-                         const mgl::rect& viewport,
-                         int level,
-                         int alignment)
+  bool texture_2d::write(const buffer_ref& src, const mgl::rect& viewport, int level, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");

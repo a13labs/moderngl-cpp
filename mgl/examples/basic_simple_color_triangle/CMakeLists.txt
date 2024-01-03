@@ -7,7 +7,6 @@ file(GLOB_RECURSE APP_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 add_executable(basic_simple_color_triangle ${APP_SOURCES})
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${CMAKE_SOURCE_DIR}/inc
     ${MGL_CORE_INCLUDE_DIR}
     ${MGL_OPENGL_INCLUDE_DIR}
     ${MGL_WINDOW_INCLUDE_DIR}

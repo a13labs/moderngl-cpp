@@ -12,7 +12,7 @@ namespace mgl::engine
     MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
     // Enable the material, which will set the current program, view and projection matrices
     renderer->current_state().current_shader = m_material;
-    m_material->enable();
+    m_material->bind();
     // Prepare the material, which will set the material specific uniforms and textures
     m_material->prepare();
   }
@@ -29,7 +29,7 @@ namespace mgl::engine
     }
 
     // Disable the material, which will unbind the current program
-    renderer->current_state().current_shader->disable();
+    renderer->current_state().current_shader->unbind();
     renderer->current_state().current_shader = nullptr;
   }
 } // namespace mgl::engine
