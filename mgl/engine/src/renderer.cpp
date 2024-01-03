@@ -98,7 +98,7 @@ namespace mgl::engine
   void renderer::disable_material() { }
 
   void
-  batch_list::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
+  batch_render::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
   {
     if(m_batch_data.size() == 0)
     {
@@ -109,31 +109,33 @@ namespace mgl::engine
     auto& last = m_batch_data.back();
     if(last.vertex_buffer == vb && last.index_buffer == ib && last.mode == m)
     {
-      commit();
+      m_batch_data.push_back({ vb, ib, m });
     }
 
-    m_batch_data.push_back({ vb, ib, m });
+    commit();
   }
 
-  void batch_list::commit()
+  void batch_render::commit()
   {
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
-    auto ctx = renderer->context();
-    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
-
     if(m_batch_data.size() == 0)
     {
       return;
     }
 
+    auto renderer = mgl::engine::current_renderer();
+    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+
+    auto ctx = renderer->context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
     shader_ref shader = renderer->current_state().current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
+
     mgl::window::program_ref program = shader->program();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
     // We get the uniform for the transform matrix
-    mgl::window::uniform_ref transform_uniform = program->uniform("model");
+    mgl::window::uniform_ref transform_uniform = renderer->current_state().model_uniform;
 
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode

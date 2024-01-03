@@ -16,11 +16,11 @@ namespace mgl::engine
 
   class renderer;
   class render_command;
-  class batch_list;
+  class batch_render;
 
   using renderer_ref = mgl::ref<renderer>;
   using render_command_ref = mgl::ref<render_command>;
-  using batch_list_ref = mgl::ref<batch_list>;
+  using batch_render_ref = mgl::ref<batch_render>;
 
   class render_command
   {
@@ -181,13 +181,15 @@ public:
       shader_ref current_shader;
 
       glm::mat4 view_matrix;
-      mgl::window::uniform_ref view_uniform;
-
       glm::mat4 projection_matrix;
+
+      // Program uniforms
+      mgl::window::uniform_ref view_uniform;
       mgl::window::uniform_ref projection_uniform;
+      mgl::window::uniform_ref model_uniform;
 
       // The current batch is stored in the renderer, as it is used by multiple commands
-      batch_list_ref current_batch;
+      batch_render_ref current_batch;
     };
 
     renderer(const mgl::window::context_ref& context)
@@ -257,7 +259,7 @@ private:
     render_state m_state_data;
   };
 
-  class batch_list
+  class batch_render
   {
     struct data
     {
@@ -299,6 +301,8 @@ public:
     void clear() { m_batch_data.clear(); }
 
     void commit();
+
+    bool empty() const { return m_batch_data.empty(); }
 
 private:
     mgl::list<data> m_batch_data;
