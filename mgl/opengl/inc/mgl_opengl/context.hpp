@@ -284,10 +284,6 @@ public:
 
     void unbind_texture(int unit = 0);
 
-    void bind_program(program_ref program);
-
-    void unbind_program();
-
 private:
     buffer_ref buffer(void* data, size_t size, bool dynamic);
 

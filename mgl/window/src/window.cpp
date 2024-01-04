@@ -19,6 +19,7 @@
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
 #include "mgl_window/integrations/imgui.hpp"
+#include "mgl_window/resources/registry.hpp"
 
 #include "mgl_opengl/context.hpp"
 

@@ -28,4 +28,5 @@ namespace mgl
   using output_file = std::ofstream;
   using openmode = std::ifstream::openmode;
   extern const path null_path;
+
 } // namespace  mgl

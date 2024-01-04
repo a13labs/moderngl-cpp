@@ -4,18 +4,50 @@
 #include "stb/stb_image.hpp"
 
 #include "mgl_core/debug.hpp"
-
+#include "mgl_core/zip.hpp"
 #include "mgl_opengl/texture_2d.hpp"
 
 namespace mgl::window
 {
   namespace resources
   {
+    struct location
+    {
+      mgl::path path;
+      bool is_zip;
+
+      location(const std::string& path, bool is_zip)
+          : path(path)
+          , is_zip(is_zip)
+      { }
+
+      location(const mgl::path& path, bool is_zip)
+          : path(path.string())
+          , is_zip(is_zip)
+      { }
+
+      location(const location& other)
+          : path(other.path)
+          , is_zip(other.is_zip)
+      { }
+
+      bool operator==(const location& other) const
+      {
+        return path == other.path && is_zip == other.is_zip;
+      }
+
+      bool is_null() const { return path == mgl::null_path; }
+    };
+
+    location null_location = { mgl::null_path, false };
+
     struct settings
     {
-      mgl::path_list textures_dirs;
-      mgl::path_list programs_dirs;
+      mgl::list<location> textures_dirs;
+      mgl::list<location> programs_dirs;
     };
+
+    static bool s_phyfs_initialized = false;
 
     static settings s_settings;
 
@@ -24,7 +56,7 @@ namespace mgl::window
     program_load_opts program_load_defaults = { {}, {} };
     data_load_opts data_load_defaults = { mgl::input_file::in | mgl::input_file::binary };
 
-    bool append_unique_path(const std::string& value, mgl::path_list& list)
+    bool append_unique_path(const std::string& value, mgl::list<location>& list)
     {
       auto path = mgl::path(value);
 
@@ -40,26 +72,42 @@ namespace mgl::window
         return false;
       }
 
+      bool is_zip = false;
+
       if(!std::filesystem::is_directory(path))
       {
-        MGL_CORE_ERROR("resources: path is not a directory: {0}", value);
-        return false;
+        if(!mgl::zip_file::is_zip_file(path))
+        {
+          MGL_CORE_ERROR("resources: path is not a directory neither zip file: {0}", value);
+          return false;
+        }
+        is_zip = true;
       }
 
-      auto it = std::find(list.begin(), list.end(), path);
+      auto it = std::find(list.begin(), list.end(), (location){ path, is_zip });
 
       if(it == list.end())
-        return true;
+        list.push_back({ path, is_zip });
 
-      list.push_back(path);
       return true;
     }
 
-    const mgl::path& find(const std::string& value, mgl::path_list& list)
+    const location& find(const std::string& value, mgl::list<location>& list)
     {
       for(auto&& base : list)
       {
-        auto path = std::filesystem::path() / value;
+
+        if(base.is_zip)
+        {
+          mgl::zip_file zip(base.path);
+          if(!zip.exists(value))
+          {
+            continue;
+          }
+          return base;
+        }
+
+        auto path = base.path / value;
 
         if(std::filesystem::exists(path))
         {
@@ -67,7 +115,7 @@ namespace mgl::window
         }
       }
 
-      return mgl::null_path;
+      return null_location;
     }
 
     bool register_dir(const std::string& path)
@@ -127,20 +175,32 @@ namespace mgl::window
       MGL_CORE_ASSERT(mgl::window::current_context(), "No context!");
       const auto ctx = mgl::window::current_context();
 
-      auto base_path = find(path, s_settings.textures_dirs);
+      auto base_location = find(path, s_settings.textures_dirs);
 
-      if(base_path.empty())
+      if(base_location.is_null())
       {
         MGL_CORE_ERROR("load_texture_2d: path not found: {0}", path);
         return nullptr;
       }
 
-      auto full_path = base_path / path;
-
       int width, height, components;
       stbi_set_flip_vertically_on_load(opts.flip_y);
-      unsigned char* data =
-          stbi_load((const char*)full_path.c_str(), &width, &height, &components, 0);
+
+      unsigned char* data = nullptr;
+
+      if(base_location.is_zip)
+      {
+        mgl::zip_file zip(base_location.path);
+        mgl::buffer<uint8_t> buffer;
+        zip.read(path, buffer);
+        data = stbi_load_from_memory(buffer.data(), buffer.size(), &width, &height, &components, 0);
+      }
+      else
+      {
+        auto full_path = base_location.path / path;
+
+        data = stbi_load((const char*)full_path.c_str(), &width, &height, &components, 0);
+      }
 
       if(opts.flip_x)
       {
@@ -162,15 +222,21 @@ namespace mgl::window
 
     bool load_data_file(const std::string& path, mgl::input_file& file, const data_load_opts& opts)
     {
-      auto base_path = find(path, s_settings.textures_dirs);
+      auto base_location = find(path, s_settings.textures_dirs);
 
-      if(base_path.empty())
+      if(base_location.is_null())
       {
         MGL_CORE_ERROR("load_data_file: path not found: {0}", path);
         return false;
       }
 
-      auto full_path = base_path / path;
+      if(base_location.is_zip)
+      {
+        MGL_CORE_ERROR("load_data_file: zip files not supported: {0}", path);
+        return false;
+      }
+
+      auto full_path = base_location.path / path;
 
       file.open(full_path, opts.mode);
       return true;
@@ -182,21 +248,39 @@ namespace mgl::window
       MGL_CORE_ASSERT(mgl::window::current_context(), "No context!");
       const auto ctx = mgl::window::current_context();
 
-      auto base_path = find(path, s_settings.textures_dirs);
+      auto base_location = find(path, s_settings.textures_dirs);
 
-      if(base_path.empty())
+      if(base_location.is_null())
       {
         MGL_CORE_ERROR("load_program: path not found: {0}", path);
         return nullptr;
       }
 
-      auto full_path = base_path / path;
+      std::string shader_code;
 
-      mgl::input_file shader_file(full_path, mgl::input_file::in);
-      std::string shader_text((std::istreambuf_iterator<char>(shader_file)),
-                              std::istreambuf_iterator<char>());
+      if(base_location.is_zip)
+      {
+        mgl::zip_ifsteam zip_file(base_location.path, path);
+        std::string shader_text((std::istreambuf_iterator<char>(zip_file)),
+                                std::istreambuf_iterator<char>());
 
-      mgl::opengl::shader shader_source(shader_text);
+        std::string data((std::istreambuf_iterator<char>(zip_file)),
+                         std::istreambuf_iterator<char>());
+
+        shader_code = data;
+      }
+      else
+      {
+        auto full_path = base_location.path / path;
+
+        mgl::input_file shader_file(full_path, mgl::input_file::in);
+        std::string data((std::istreambuf_iterator<char>(shader_file)),
+                         std::istreambuf_iterator<char>());
+
+        shader_code = data;
+      }
+
+      mgl::opengl::shader shader_source(shader_code);
       mgl::opengl::shaders glsl = { shader_source };
       mgl::opengl::shaders_outputs outputs = opts.outputs;
 

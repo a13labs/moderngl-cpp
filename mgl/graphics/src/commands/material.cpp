@@ -12,8 +12,8 @@ namespace mgl::graphics
     MGL_CORE_ASSERT(render->context() != nullptr, "Context is null");
     // Enable the material, which will set the current program, view and projection matrices
     render->current_state().current_shader = m_material;
-    m_material->bind();
     // Prepare the material, which will set the material specific uniforms and textures
+    m_material->bind();
     m_material->prepare();
   }
 

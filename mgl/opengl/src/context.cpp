@@ -2293,16 +2293,4 @@ namespace mgl::opengl
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
   }
 
-  void context::bind_program(program_ref program)
-  {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    program->bind();
-  }
-
-  void context::unbind_program()
-  {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    glUseProgram(0);
-  }
-
 } // namespace  mgl::opengl
