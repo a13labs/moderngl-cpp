@@ -24,5 +24,8 @@ add_subdirectory(glad)
 # imgui
 add_subdirectory(imgui)
 
+# physfs
+add_subdirectory(physfs)
+
 # entt
 add_subdirectory(entt)
