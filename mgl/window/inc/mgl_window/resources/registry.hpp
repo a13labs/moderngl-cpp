@@ -62,18 +62,20 @@ namespace mgl::window
     bool register_scene_dir(const std::string& path);
     bool register_data_dir(const std::string& path);
 
-    texture_ref load_texture_2d(const std::string& path,
-                                const texture_2d_load_opts& opts = texture_2d_load_defaults);
+    mgl::window::api::texture_ref
+    load_texture_2d(const std::string& path,
+                    const texture_2d_load_opts& opts = texture_2d_load_defaults);
 
     bool load_data_file(const std::string& path,
                         mgl::input_file& file,
                         const data_load_opts& opts = data_load_defaults);
 
-    program_ref load_program(const std::string& path,
-                             const program_load_opts& opts = program_load_defaults);
+    mgl::window::api::program_ref
+    load_program(const std::string& path, const program_load_opts& opts = program_load_defaults);
 
-    program_ref load_program(mgl::opengl::shader& source,
-                             const program_load_opts& opts = program_load_defaults);
+    mgl::window::api::program_ref
+    load_program(mgl::opengl::shader& source,
+                 const program_load_opts& opts = program_load_defaults);
 
   } // namespace resources
 } // namespace  mgl::window

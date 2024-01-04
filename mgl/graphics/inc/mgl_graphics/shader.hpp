@@ -15,7 +15,7 @@ public:
     virtual void unbind();
 
     virtual void prepare() = 0;
-    virtual const mgl::window::program_ref& program() = 0;
+    virtual const mgl::window::api::program_ref& program() = 0;
     virtual const mgl::string_list& attributes() = 0;
 
     virtual void release() = 0;

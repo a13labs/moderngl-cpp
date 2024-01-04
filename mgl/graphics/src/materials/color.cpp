@@ -8,8 +8,8 @@
 #include "shaders/vertex/simple.h"
 namespace mgl::graphics
 {
-  static mgl::window::program_ref s_program;
-  static mgl::window::uniform_ref s_color;
+  static mgl::window::api::program_ref s_program;
+  static mgl::window::api::uniform_ref s_color;
 
   color_material::color_material(const glm::vec4& color)
       : material()
@@ -34,7 +34,7 @@ namespace mgl::graphics
     s_color->set_value(m_color);
   }
 
-  const mgl::window::program_ref& color_material::program()
+  const mgl::window::api::program_ref& color_material::program()
   {
     return s_program;
   }

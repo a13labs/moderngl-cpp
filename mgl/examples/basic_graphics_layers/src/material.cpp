@@ -3,7 +3,7 @@
 #include "mgl_graphics/render.hpp"
 #include "mgl_window/api.hpp"
 
-static mgl::window::program_ref s_program;
+static mgl::window::api::program_ref s_program;
 static mgl::string_list s_attributes = { "in_vert", "in_color" };
 
 custom_material::custom_material()
@@ -50,7 +50,7 @@ void custom_material::release()
   }
 }
 
-mgl::window::program_ref& custom_material::program()
+mgl::window::api::program_ref& custom_material::program()
 {
   return s_program;
 }

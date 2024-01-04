@@ -16,7 +16,7 @@ public:
 
     const std::string& layout() const { return m_layout; }
 
-    const mgl::window::buffer_ref& buffer() const { return m_buffer; }
+    const mgl::window::api::buffer_ref& buffer() const { return m_buffer; }
 
     void upload(const mgl::buffer<float>& data);
 
@@ -27,7 +27,7 @@ public:
     void release();
 
 protected:
-    mgl::window::buffer_ref m_buffer;
+    mgl::window::api::buffer_ref m_buffer;
     std::string m_layout;
     bool m_dynamic;
   };
@@ -40,7 +40,7 @@ public:
     index_buffer(const mgl::buffer<float>& data = {}, bool dynamic = false);
     ~index_buffer();
 
-    const mgl::window::buffer_ref& buffer() const { return m_buffer; }
+    const mgl::window::api::buffer_ref& buffer() const { return m_buffer; }
 
     void upload(const mgl::buffer<float>& data);
 
@@ -51,7 +51,7 @@ public:
     void release();
 
 protected:
-    mgl::window::buffer_ref m_buffer;
+    mgl::window::api::buffer_ref m_buffer;
     bool m_dynamic;
   };
 

@@ -129,7 +129,7 @@ namespace mgl::window
     return window_config();
   }
 
-  const context_ref& window::current_context() const
+  const api::context_ref& window::current_context() const
   {
     return m_context;
   }

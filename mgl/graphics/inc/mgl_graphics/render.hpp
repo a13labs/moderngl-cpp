@@ -184,15 +184,15 @@ public:
       glm::mat4 projection_matrix;
 
       // Program uniforms
-      mgl::window::uniform_ref view_uniform;
-      mgl::window::uniform_ref projection_uniform;
-      mgl::window::uniform_ref model_uniform;
+      mgl::window::api::uniform_ref view_uniform;
+      mgl::window::api::uniform_ref projection_uniform;
+      mgl::window::api::uniform_ref model_uniform;
 
       // The current batch is stored in the render, as it is used by multiple commands
       batch_render_ref current_batch;
     };
 
-    render(const mgl::window::context_ref& context)
+    render(const mgl::window::api::context_ref& context)
         : m_context(context)
         , m_render_queue()
     { }
@@ -207,7 +207,7 @@ public:
 
     void disable_state(state state);
 
-    void enable_texture(uint32_t slot, const mgl::window::texture_ref& t);
+    void enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t);
 
     void disable_texture(uint32_t slot);
 
@@ -247,13 +247,13 @@ public:
 
     render_state& current_state() { return m_state_data; }
 
-    const mgl::window::context_ref& context() const { return m_context; }
+    const mgl::window::api::context_ref& context() const { return m_context; }
 
 private:
     void submit(const render_command_ref& command) { m_render_queue.push_back(command); }
     void flush();
 
-    mgl::window::context_ref m_context;
+    mgl::window::api::context_ref m_context;
     mgl::list<render_command_ref> m_render_queue;
 
     render_state m_state_data;

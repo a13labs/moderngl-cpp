@@ -44,7 +44,7 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::disable_state>(state));
   }
 
-  void render::enable_texture(uint32_t slot, const mgl::window::texture_ref& t)
+  void render::enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t)
   {
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, t));
   }
@@ -137,11 +137,11 @@ namespace mgl::graphics
     shader_ref shader = render->current_state().current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
 
-    mgl::window::program_ref program = shader->program();
+    mgl::window::api::program_ref program = shader->program();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
     // We get the uniform for the transform matrix
-    mgl::window::uniform_ref transform_uniform = render->current_state().model_uniform;
+    mgl::window::api::uniform_ref transform_uniform = render->current_state().model_uniform;
 
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode
@@ -150,7 +150,7 @@ namespace mgl::graphics
                                                     shader->attributes() } };
 
     index_buffer_ref index_buffer = m_batch_data[0].index_buffer;
-    mgl::window::vertex_array_ref vao = nullptr;
+    mgl::opengl::vertex_array_ref vao = nullptr;
 
     if(index_buffer != nullptr)
     {
