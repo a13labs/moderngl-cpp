@@ -7,42 +7,42 @@ namespace mgl::engine
 
   void enable_state::execute()
   {
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
-    MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
+    MGL_CORE_ASSERT(render->context() != nullptr, "Context is null");
 
-    auto ctx = renderer->context();
+    auto ctx = render->context();
 
     switch(m_state)
     {
-      case renderer::state::DEPTH_TEST: break;
-      case renderer::state::SCISSOR_TEST: break;
-      case renderer::state::STENCIL_TEST: break;
-      case renderer::state::ALPHA_TEST: break;
-      case renderer::state::BLEND: break;
-      case renderer::state::CULL_FACE: break;
-      case renderer::state::POLYGON_OFFSET_FILL: break;
+      case render::state::DEPTH_TEST: break;
+      case render::state::SCISSOR_TEST: break;
+      case render::state::STENCIL_TEST: break;
+      case render::state::ALPHA_TEST: break;
+      case render::state::BLEND: break;
+      case render::state::CULL_FACE: break;
+      case render::state::POLYGON_OFFSET_FILL: break;
       default: break;
     }
   }
 
   void disable_state::execute()
   {
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
-    MGL_CORE_ASSERT(renderer->context() != nullptr, "Context is null");
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
+    MGL_CORE_ASSERT(render->context() != nullptr, "Context is null");
 
-    auto ctx = renderer->context();
+    auto ctx = render->context();
 
     switch(m_state)
     {
-      case renderer::state::DEPTH_TEST: break;
-      case renderer::state::SCISSOR_TEST: break;
-      case renderer::state::STENCIL_TEST: break;
-      case renderer::state::ALPHA_TEST: break;
-      case renderer::state::BLEND: break;
-      case renderer::state::CULL_FACE: break;
-      case renderer::state::POLYGON_OFFSET_FILL: break;
+      case render::state::DEPTH_TEST: break;
+      case render::state::SCISSOR_TEST: break;
+      case render::state::STENCIL_TEST: break;
+      case render::state::ALPHA_TEST: break;
+      case render::state::BLEND: break;
+      case render::state::CULL_FACE: break;
+      case render::state::POLYGON_OFFSET_FILL: break;
       default: break;
     }
   }

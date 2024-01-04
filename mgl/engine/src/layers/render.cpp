@@ -15,11 +15,11 @@ namespace mgl::engine::layers
 
   void render_layer::on_update(float time, float frame_time)
   {
-    MGL_CORE_ASSERT(mgl::engine::current_renderer() != nullptr, "Renderer is null");
-    auto renderer = mgl::engine::current_renderer();
-    renderer->begin();
+    MGL_CORE_ASSERT(mgl::engine::current_render() != nullptr, "Renderer is null");
+    auto& render = mgl::engine::current_render();
+    render->begin();
     render_prepare();
-    renderer->end();
+    render->end();
   }
 
   void render_layer::on_event(mgl::window::event& event) { }

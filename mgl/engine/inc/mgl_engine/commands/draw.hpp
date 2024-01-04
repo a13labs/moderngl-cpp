@@ -2,7 +2,7 @@
 
 #include "mgl_core/containers.hpp"
 #include "mgl_engine/buffers.hpp"
-#include "mgl_engine/renderer.hpp"
+#include "mgl_engine/render.hpp"
 
 namespace mgl::engine
 {
@@ -11,7 +11,7 @@ namespace mgl::engine
 public:
     draw_command(const vertex_buffer_ref& vertex_buffer,
                  const index_buffer_ref& index_buffer,
-                 renderer::draw_mode mode)
+                 render::draw_mode mode)
         : render_command(type::DRAW)
         , m_vertex_buffer(vertex_buffer)
         , m_index_buffer(index_buffer)
@@ -23,6 +23,6 @@ public:
 private:
     vertex_buffer_ref m_vertex_buffer;
     index_buffer_ref m_index_buffer;
-    renderer::draw_mode m_mode;
+    render::draw_mode m_mode;
   };
 } // namespace mgl::engine

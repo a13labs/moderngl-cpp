@@ -1,6 +1,6 @@
 #include "material.hpp"
 #include "mgl_engine/application.hpp"
-#include "mgl_engine/renderer.hpp"
+#include "mgl_engine/render.hpp"
 #include "mgl_window/api.hpp"
 
 static mgl::window::program_ref s_program;
@@ -11,8 +11,8 @@ custom_material::custom_material()
 {
   if(s_program == nullptr)
   {
-    auto renderer = mgl::engine::current_renderer();
-    auto ctx = renderer->context();
+    auto& render = mgl::engine::current_render();
+    auto ctx = render->context();
     s_program = ctx->program({
         R"(
                     #version 330

@@ -4,17 +4,17 @@
 #include "imgui/imgui.h"
 #include "mgl_engine/application.hpp"
 #include "mgl_engine/buffers.hpp"
-#include "mgl_engine/renderer.hpp"
+#include "mgl_engine/render.hpp"
 
 static mgl::engine::vertex_buffer_ref s_vbo = nullptr;
 static mgl::engine::material_ref mat = nullptr;
 
 void render_layer::render_prepare()
 {
-  auto renderer = mgl::engine::current_renderer();
+  auto& renderer = mgl::engine::current_render();
   renderer->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
   renderer->enable_material(mat);
-  renderer->draw(s_vbo, nullptr, mgl::engine::renderer::draw_mode::TRIANGLES);
+  renderer->draw(s_vbo, nullptr, mgl::engine::render::draw_mode::TRIANGLES);
   renderer->disable_material();
 }
 

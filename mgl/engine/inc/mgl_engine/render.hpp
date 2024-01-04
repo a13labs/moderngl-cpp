@@ -14,17 +14,17 @@
 namespace mgl::engine
 {
 
-  class renderer;
+  class render;
   class render_command;
   class batch_render;
 
-  using renderer_ref = mgl::ref<renderer>;
+  using render_ref = mgl::scope<render>;
   using render_command_ref = mgl::ref<render_command>;
   using batch_render_ref = mgl::ref<batch_render>;
 
   class render_command
   {
-    friend class renderer;
+    friend class render;
 
 public:
     enum class type
@@ -67,7 +67,7 @@ private:
     type m_type;
   };
 
-  class renderer
+  class render
   {
 
 public:
@@ -176,7 +176,7 @@ public:
           , current_batch(nullptr)
       { }
 
-      // The current shader, view and projection matrices are stored in the renderer, as they are
+      // The current shader, view and projection matrices are stored in the render, as they are
       // used by multiple commands
       shader_ref current_shader;
 
@@ -188,16 +188,16 @@ public:
       mgl::window::uniform_ref projection_uniform;
       mgl::window::uniform_ref model_uniform;
 
-      // The current batch is stored in the renderer, as it is used by multiple commands
+      // The current batch is stored in the render, as it is used by multiple commands
       batch_render_ref current_batch;
     };
 
-    renderer(const mgl::window::context_ref& context)
+    render(const mgl::window::context_ref& context)
         : m_context(context)
         , m_render_queue()
     { }
 
-    ~renderer() { m_render_queue.clear(); }
+    ~render() { m_render_queue.clear(); }
 
     void begin();
 
@@ -266,10 +266,10 @@ private:
       data()
           : vertex_buffer(nullptr)
           , index_buffer(nullptr)
-          , mode(renderer::draw_mode::TRIANGLES)
+          , mode(render::draw_mode::TRIANGLES)
       { }
 
-      data(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
+      data(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render::draw_mode m)
           : vertex_buffer(vb)
           , index_buffer(ib)
           , mode(m)
@@ -291,7 +291,7 @@ private:
 
       vertex_buffer_ref vertex_buffer;
       index_buffer_ref index_buffer;
-      renderer::draw_mode mode;
+      render::draw_mode mode;
       glm::mat4 transform;
     };
 
@@ -302,7 +302,7 @@ public:
 
     ~batch_render() { m_batch_data.clear(); }
 
-    void push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m);
+    void push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render::draw_mode m);
 
     void clear() { m_batch_data.clear(); }
 

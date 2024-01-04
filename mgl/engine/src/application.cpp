@@ -16,7 +16,7 @@ namespace mgl::engine
       , m_render_layer(settings.render_layer)
       , m_gui_layer(settings.gui_layer)
       , m_layers()
-      , m_renderer(nullptr)
+      , m_render(nullptr)
   {
     MGL_CORE_ASSERT(s_instance == nullptr, "Application already exists!");
     s_instance = this;
@@ -32,9 +32,9 @@ namespace mgl::engine
     m_render_layer->on_event(event);
   }
 
-  const renderer_ref& application::current_renderer()
+  const render_ref& application::current_render()
   {
-    return m_renderer;
+    return m_render;
   }
 
   void application::on_update(float time, float frame_time)
@@ -46,8 +46,8 @@ namespace mgl::engine
 
   bool application::on_load()
   {
-    // Create the renderer
-    m_renderer = mgl::create_ref<mgl::engine::renderer>(this->current_context());
+    // Create the render
+    m_render = mgl::create_scope<mgl::engine::render>(this->current_context());
 
     if(config().gui_layer == nullptr)
     {

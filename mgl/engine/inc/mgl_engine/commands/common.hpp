@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl_engine/renderer.hpp"
+#include "mgl_engine/render.hpp"
 
 namespace mgl::engine
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "layer.hpp"
-#include "renderer.hpp"
+#include "render.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_window/window.hpp"
@@ -58,7 +58,7 @@ public:
     application(const application_config& settings = application_config());
     ~application();
 
-    const renderer_ref& current_renderer();
+    const render_ref& current_render();
 
     layer_stack& layers() { return m_layers; }
 
@@ -73,7 +73,7 @@ protected:
     virtual void on_unload() override final;
 
 private:
-    renderer_ref m_renderer;
+    render_ref m_render;
     layer_ref m_gui_layer;
     layer_ref m_render_layer;
     application_config m_config;
@@ -85,9 +85,9 @@ private:
     return application::current();
   }
 
-  inline renderer_ref current_renderer()
+  inline const render_ref& current_render()
   {
-    return current_application().current_renderer();
+    return current_application().current_render();
   }
 
 } // namespace mgl::engine

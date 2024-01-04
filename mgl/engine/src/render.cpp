@@ -1,4 +1,4 @@
-#include "mgl_engine/renderer.hpp"
+#include "mgl_engine/render.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_engine/application.hpp"
 #include "mgl_engine/commands/common.hpp"
@@ -8,7 +8,7 @@
 #include "mgl_engine/commands/texture.hpp"
 namespace mgl::engine
 {
-  void renderer::flush()
+  void render::flush()
   {
     for(auto& command : m_render_queue)
     {
@@ -24,88 +24,87 @@ namespace mgl::engine
     m_render_queue.clear();
   }
 
-  void renderer::begin()
+  void render::begin()
   {
     m_render_queue.clear();
   }
 
-  void renderer::end()
+  void render::end()
   {
     flush();
   }
 
-  void renderer::enable_state(state state)
+  void render::enable_state(state state)
   {
     submit(mgl::create_ref<mgl::engine::enable_state>(state));
   }
 
-  void renderer::disable_state(state state)
+  void render::disable_state(state state)
   {
     submit(mgl::create_ref<mgl::engine::disable_state>(state));
   }
 
-  void renderer::enable_texture(uint32_t slot, const mgl::window::texture_ref& t)
+  void render::enable_texture(uint32_t slot, const mgl::window::texture_ref& t)
   {
     submit(mgl::create_ref<mgl::engine::enable_texture>(slot, t));
   }
 
-  void renderer::disable_texture(uint32_t slot)
+  void render::disable_texture(uint32_t slot)
   {
     submit(mgl::create_ref<mgl::engine::disable_texture>(slot));
   }
 
-  void renderer::clear(const glm::vec4& color)
+  void render::clear(const glm::vec4& color)
   {
     submit(mgl::create_ref<mgl::engine::clear_command>(color));
   }
 
-  void renderer::set_view(const glm::mat4& view)
+  void render::set_view(const glm::mat4& view)
   {
     submit(mgl::create_ref<mgl::engine::set_view_command>(view));
   }
 
-  void renderer::set_projection(const glm::mat4& projection)
+  void render::set_projection(const glm::mat4& projection)
   {
     submit(mgl::create_ref<mgl::engine::set_projection_command>(projection));
   }
 
-  void renderer::set_blend_func(blend_func src, blend_func dst) { }
+  void render::set_blend_func(blend_func src, blend_func dst) { }
 
-  void renderer::set_color_mask(bool r, bool g, bool b, bool a) { }
+  void render::set_color_mask(bool r, bool g, bool b, bool a) { }
 
-  void renderer::set_depth_mask(bool mask) { }
+  void render::set_depth_mask(bool mask) { }
 
-  void renderer::set_depth_func(depth_func func) { }
+  void render::set_depth_func(depth_func func) { }
 
-  void renderer::set_stencil_mask(uint32_t mask) { }
+  void render::set_stencil_mask(uint32_t mask) { }
 
-  void renderer::set_stencil_func(stencil_func func, int32_t ref, uint32_t mask) { }
+  void render::set_stencil_func(stencil_func func, int32_t ref, uint32_t mask) { }
 
-  void renderer::set_stencil_op(stencil_op sfail, stencil_op dpfail, stencil_op dppass) { }
+  void render::set_stencil_op(stencil_op sfail, stencil_op dpfail, stencil_op dppass) { }
 
-  void renderer::set_cull_face(cull_face face) { }
+  void render::set_cull_face(cull_face face) { }
 
-  void renderer::set_polygon_offset(float factor, float units) { }
+  void render::set_polygon_offset(float factor, float units) { }
 
-  void renderer::draw(const vertex_buffer_ref& vertex_array,
-                      index_buffer_ref index_buffer,
-                      draw_mode mode)
+  void
+  render::draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode)
   {
     submit(mgl::create_ref<mgl::engine::draw_command>(vertex_array, index_buffer, mode));
   }
 
-  void renderer::enable_material(material_ref material)
+  void render::enable_material(material_ref material)
   {
     submit(mgl::create_ref<mgl::engine::enable_material>(material));
   }
 
-  void renderer::disable_material()
+  void render::disable_material()
   {
     submit(mgl::create_ref<mgl::engine::disable_material>());
   }
 
   void
-  batch_render::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, renderer::draw_mode m)
+  batch_render::push(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render::draw_mode m)
   {
     if(m_batch_data.size() == 0)
     {
@@ -129,20 +128,20 @@ namespace mgl::engine
       return;
     }
 
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
 
-    auto ctx = renderer->context();
+    auto ctx = render->context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
 
-    shader_ref shader = renderer->current_state().current_shader;
+    shader_ref shader = render->current_state().current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
 
     mgl::window::program_ref program = shader->program();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
     // We get the uniform for the transform matrix
-    mgl::window::uniform_ref transform_uniform = renderer->current_state().model_uniform;
+    mgl::window::uniform_ref transform_uniform = render->current_state().model_uniform;
 
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode

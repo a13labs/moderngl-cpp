@@ -10,12 +10,12 @@ namespace mgl::engine
     auto prg = program();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
 
-    auto& state = renderer->current_state();
+    auto& state = render->current_state();
 
-    // Set the state of the renderer, including the current program, view and projection matrices
+    // Set the state of the render, including the current program, view and projection matrices
     state.view_uniform = prg->uniform("view");
     state.projection_uniform = prg->uniform("projection");
     state.model_uniform = prg->uniform("model");
@@ -49,12 +49,12 @@ namespace mgl::engine
     auto prg = program();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
 
-    if(renderer->current_state().current_batch != nullptr)
+    if(render->current_state().current_batch != nullptr)
     {
-      renderer->current_state().current_batch->commit();
+      render->current_state().current_batch->commit();
     }
 
     // Unbind the program, and set the current program to null and the view and projection uniforms to
@@ -62,9 +62,9 @@ namespace mgl::engine
     prg->unbind();
 
     // clean-up the current shader, view and projection uniforms
-    renderer->current_state().current_shader = nullptr;
-    renderer->current_state().view_uniform = nullptr;
-    renderer->current_state().projection_uniform = nullptr;
-    renderer->current_state().model_uniform = nullptr;
+    render->current_state().current_shader = nullptr;
+    render->current_state().view_uniform = nullptr;
+    render->current_state().projection_uniform = nullptr;
+    render->current_state().model_uniform = nullptr;
   }
 } // namespace mgl::engine

@@ -9,9 +9,9 @@ namespace mgl::engine
 {
   void draw_command::execute()
   {
-    auto renderer = mgl::engine::current_renderer();
-    MGL_CORE_ASSERT(renderer != nullptr, "Renderer is null");
-    renderer->current_state().current_batch->push(m_vertex_buffer, m_index_buffer, m_mode);
+    auto& render = mgl::engine::current_render();
+    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
+    render->current_state().current_batch->push(m_vertex_buffer, m_index_buffer, m_mode);
   }
 
 } // namespace mgl::engine
