@@ -1,7 +1,7 @@
 #include "layers.hpp"
 
 #include "imgui/imgui.h"
-#include "mgl_engine/layers/gui.hpp"
+#include "mgl_graphics/layers/gui.hpp"
 
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 

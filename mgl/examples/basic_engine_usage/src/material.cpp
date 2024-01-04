@@ -1,17 +1,17 @@
 #include "material.hpp"
-#include "mgl_engine/application.hpp"
-#include "mgl_engine/render.hpp"
+#include "mgl_graphics/application.hpp"
+#include "mgl_graphics/render.hpp"
 #include "mgl_window/api.hpp"
 
 static mgl::window::program_ref s_program;
 static mgl::string_list s_attributes = { "in_vert", "in_color" };
 
 custom_material::custom_material()
-    : mgl::engine::material()
+    : mgl::graphics::material()
 {
   if(s_program == nullptr)
   {
-    auto& render = mgl::engine::current_render();
+    auto& render = mgl::graphics::current_render();
     auto ctx = render->context();
     s_program = ctx->program({
         R"(

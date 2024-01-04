@@ -1,7 +1,7 @@
 #pragma once
-#include "mgl_engine/material.hpp"
+#include "mgl_graphics/material.hpp"
 
-class custom_material : public mgl::engine::material
+class custom_material : public mgl::graphics::material
 {
   public:
   custom_material();

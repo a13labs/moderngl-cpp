@@ -21,4 +21,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_engine_usage PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_engine_usage PRIVATE mgl::engine-static)
+target_link_libraries(basic_engine_usage PRIVATE mgl::graphics-static)
