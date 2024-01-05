@@ -19,13 +19,14 @@ set (DEFAULT_INCLUDE_DIRS
     ${LIBZIP_INCLUDE_DIR}
     ${LIBZIP_BINARY_DIR}
     ${MGL_WINDOW_INCLUDE_DIR}
+    ${MGL_REGISTRY_INCLUDE_DIR}
 )
 
 # Add include directories
 target_include_directories(mgl_window PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_window PRIVATE mgl::core-static mgl::opengl-static)
+target_link_libraries(mgl_window PRIVATE mgl::core-static mgl::opengl-static mgl::registry-static)
 
 # Link library to required external libraries
 target_link_libraries(mgl_window PRIVATE SDL2::SDL2-static ImGUI::static)

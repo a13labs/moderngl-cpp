@@ -15,11 +15,11 @@
    limitations under the License.
 */
 #include "mgl_window/window.hpp"
+#include "mgl_registry/registry.hpp"
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
 #include "mgl_window/integrations/imgui.hpp"
-#include "mgl_window/resources/registry.hpp"
 
 #include "mgl_opengl/context.hpp"
 
@@ -28,11 +28,16 @@
 namespace mgl::window
 {
   static window* s_instance = nullptr;
+  static mgl::registry::registry_ref s_registry = nullptr;
 
   window::window(const window_config& config)
   {
     MGL_CORE_ASSERT(!s_instance, "Window already running!");
+
+    // Initialize logging and registry (for loading resources)
     mgl::log::init();
+    auto registry = mgl::create_scope<mgl::registry::registry>();
+    s_registry = std::move(registry);
 
     m_native_window = mgl::create_scope<sdl_window>(config);
 

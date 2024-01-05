@@ -1,7 +1,3 @@
-/**
- * @file   phong.fs
- * @brief  A fragment shader that outputs a phong shaded surface.
-*/
 #version 330 core
 
 in vec3 normal;
