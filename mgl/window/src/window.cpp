@@ -33,17 +33,17 @@ namespace mgl::window
   window::window(const window_config& config)
   {
     MGL_CORE_ASSERT(!s_instance, "Window already running!");
+    s_instance = this;
+    m_running = false;
+    m_config = config;
 
     // Initialize logging and registry (for loading resources)
     mgl::log::init();
     auto registry = mgl::create_scope<mgl::registry::registry>();
     s_registry = std::move(registry);
 
+    // Create native window (SDL)
     m_native_window = mgl::create_scope<sdl_window>(config);
-
-    s_instance = this;
-    m_running = false;
-    m_config = config;
   }
 
   void window::on_event(event& event)
