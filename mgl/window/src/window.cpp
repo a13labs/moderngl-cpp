@@ -15,15 +15,12 @@
    limitations under the License.
 */
 #include "mgl_window/window.hpp"
+#include "mgl_core/debug.hpp"
+#include "mgl_opengl/context.hpp"
 #include "mgl_registry/registry.hpp"
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
-#include "mgl_window/integrations/imgui.hpp"
-
-#include "mgl_opengl/context.hpp"
-
-#include "mgl_core/debug.hpp"
 
 namespace mgl::window
 {
@@ -114,9 +111,6 @@ namespace mgl::window
       m_native_window->swap_buffers();
     }
     on_unload();
-
-    if(mgl::window::imgui::is_initialized())
-      mgl::window::imgui::shutdown();
 
     m_context->release();
     m_native_window->destroy_window();

@@ -1,5 +1,4 @@
 #include "mgl_graphics/layer.hpp"
-#include "mgl_window/integrations/imgui.hpp"
 
 namespace mgl::graphics
 {
@@ -87,8 +86,5 @@ namespace mgl::graphics
       layer->on_detach();
     }
     m_layers.clear();
-
-    if(mgl::window::imgui::is_initialized())
-      mgl::window::imgui::shutdown();
   }
 } // namespace mgl::graphics
