@@ -85,9 +85,4 @@ private:
     return application::current();
   }
 
-  inline const render_ref& current_render()
-  {
-    return current_application().current_render();
-  }
-
 } // namespace mgl::graphics

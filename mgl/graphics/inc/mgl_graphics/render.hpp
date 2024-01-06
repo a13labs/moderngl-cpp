@@ -16,55 +16,44 @@ namespace mgl::graphics
 
   class render;
   class render_command;
+  class render_script;
   class batch_render;
 
   using render_ref = mgl::scope<render>;
   using render_command_ref = mgl::ref<render_command>;
   using batch_render_ref = mgl::ref<batch_render>;
+  using render_script_ref = mgl::ref<render_script>;
 
   class render_command
   {
-    friend class render;
-
 public:
-    enum class type
-    {
-      NONE,
-      ENABLE_STATE,
-      DISABLE_STATE,
-      ENABLE_TEXTURE,
-      DISABLE_TEXTURE,
-      CLEAR,
-      SET_VIEW,
-      SET_PROJECTION,
-      SET_BLEND_FUNC,
-      SET_COLOR_MASK,
-      SET_DEPTH_MASK,
-      SET_DEPTH_FUNC,
-      SET_STENCIL_MASK,
-      SET_STENCIL_FUNC,
-      SET_STENCIL_OP,
-      SET_CULL_FACE,
-      SET_POLYGON_OFFSET,
-      DRAW,
-      ENABLE_SHADER,
-      DISABLE_SHADER,
-
-      SET_RENDER_TARGET,
-      COUNT
-    };
-
     virtual void execute() = 0;
+  };
 
-    type get_type() const { return m_type; }
+  class render_script : public render_command
 
-protected:
-    render_command(type type)
-        : m_type(type)
+  {
+public:
+    render_script()
+        : m_render_target(nullptr)
+        , m_commands()
     { }
 
+    render_script(const mgl::window::api::framebuffer_ref& target)
+        : m_render_target(target)
+        , m_commands()
+    { }
+    ~render_script() { m_commands.clear(); }
+
+    void push(const render_command_ref& command) { m_commands.push_back(command); }
+
+    void clear() { m_commands.clear(); }
+
+    void execute();
+
 private:
-    type m_type;
+    mgl::list<render_command_ref> m_commands;
+    mgl::window::api::framebuffer_ref m_render_target;
   };
 
   class render
@@ -73,14 +62,12 @@ private:
 public:
     enum class state
     {
-      DEPTH_TEST,
-      SCISSOR_TEST,
-      STENCIL_TEST,
-      ALPHA_TEST,
-      BLEND,
-      CULL_FACE,
-      POLYGON_OFFSET_FILL,
-      COUNT
+      BLEND = BIT(1),
+      DEPTH_TEST = BIT(2),
+      CULL_FACE = BIT(3),
+      STENCIL_TEST = BIT(4),
+      RASTERIZER_DISCARD = BIT(5),
+      PROGRAM_POINT_SIZE = BIT(6),
     };
 
     enum class blend_func : uint32_t
@@ -106,47 +93,36 @@ public:
       ONE_MINUS_SRC1_ALPHAB
     };
 
-    enum class depth_func : uint32_t
+    enum blend_equation_mode
     {
-      NEVER,
-      LESS,
-      EQUAL,
-      LEQUAL,
-      GREATER,
-      NOTEQUAL,
-      GEQUAL,
-      ALWAYS7
+      ADD,
+      SUBTRACT,
+      REVERSE_SUBTRACT,
+      MIN,
+      MAX,
     };
 
-    enum class stencil_func : uint32_t
+    enum blend_factor
     {
-      NEVER,
-      LESS,
-      EQUAL,
-      LEQUAL,
-      GREATER,
-      NOTEQUAL,
-      GEQUAL,
-      ALWAYS7
-    };
-
-    enum class stencil_op : uint32_t
-    {
-      KEEP,
-      ZERO,
-      REPLACE,
-      INCR,
-      INCR_WRAP,
-      DECR,
-      DECR_WRAP,
-      INVERTA
-    };
-
-    enum class cull_face : uint32_t
-    {
-      FRONT,
-      BACK,
-      FRONT_AND_BACK
+      ZERO = 0,
+      ONE,
+      SRC_COLOR,
+      ONE_MINUS_SRC_COLOR,
+      DST_COLOR,
+      ONE_MINUS_DST_COLOR,
+      SRC_ALPHA,
+      ONE_MINUS_SRC_ALPHA,
+      DST_ALPHA,
+      ONE_MINUS_DST_ALPHA,
+      CONSTANT_COLOR,
+      ONE_MINUS_CONSTANT_COLOR,
+      CONSTANT_ALPHA,
+      ONE_MINUS_CONSTANT_ALPHA,
+      SRC_ALPHA_SATURATE,
+      SRC1_COLOR,
+      ONE_MINUS_SRC1_COLOR,
+      SRC1_ALPHA,
+      ONE_MINUS_SRC1_ALPHA,
     };
 
     enum class draw_mode : uint32_t
@@ -190,30 +166,26 @@ public:
 
       // The current batch is stored in the render, as it is used by multiple commands
       batch_render_ref current_batch;
+
+      // Used textures
+      mgl::list<mgl::window::api::texture_ref> textures;
     };
 
-    render(const mgl::window::api::context_ref& context)
-        : m_context(context)
-        , m_render_queue()
-    { }
+    render(const mgl::window::api::context_ref& context);
 
-    ~render() { m_render_queue.clear(); }
+    ~render();
 
     void begin();
 
     void end();
 
-    void enable_state(state state);
+    void enable_state(int state);
 
-    void disable_state(state state);
+    void disable_state(int state);
 
     void enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t);
 
-    void disable_texture(uint32_t slot);
-
     void clear(const glm::vec4& color);
-
-    void clear(float r, float g, float b, float a) { clear(glm::vec4(r, g, b, a)); }
 
     void set_viewport(const glm::vec2& position, const glm::vec2& size);
 
@@ -221,23 +193,16 @@ public:
 
     void set_projection(const glm::mat4& projection);
 
-    void set_blend_func(blend_func src, blend_func dst);
+    void clear_samplers(int start = 0, int end = -1);
 
-    void set_color_mask(bool r, bool g, bool b, bool a);
+    void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha);
 
-    void set_depth_mask(bool mask);
+    void set_blend_func(blend_factor srcRGB,
+                        blend_factor dstRGB,
+                        blend_factor srcAlpha,
+                        blend_factor dstAlpha);
 
-    void set_depth_func(depth_func func);
-
-    void set_stencil_mask(uint32_t mask);
-
-    void set_stencil_func(stencil_func func, int32_t ref, uint32_t mask);
-
-    void set_stencil_op(stencil_op sfail, stencil_op dpfail, stencil_op dppass);
-
-    void set_cull_face(cull_face face);
-
-    void set_polygon_offset(float factor, float units);
+    void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
 
     void draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode);
 
@@ -245,16 +210,22 @@ public:
 
     void disable_material();
 
+    void push_render_script(const render_script_ref& script);
+
     render_state& current_state() { return m_state_data; }
 
     const mgl::window::api::context_ref& context() const { return m_context; }
 
+    void clear(float r, float g, float b, float a) { clear(glm::vec4(r, g, b, a)); }
+
+    static render& current_render();
+
 private:
-    void submit(const render_command_ref& command) { m_render_queue.push_back(command); }
+    void submit(const render_command_ref& command) { m_render_queue.push(command); }
     void flush();
 
     mgl::window::api::context_ref m_context;
-    mgl::list<render_command_ref> m_render_queue;
+    render_script m_render_queue;
 
     render_state m_state_data;
   };
@@ -313,5 +284,10 @@ public:
 private:
     mgl::list<data> m_batch_data;
   };
+
+  inline render& current_render()
+  {
+    return render::current_render();
+  }
 
 } // namespace mgl::graphics

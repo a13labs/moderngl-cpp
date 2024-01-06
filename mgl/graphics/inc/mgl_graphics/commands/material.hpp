@@ -8,8 +8,7 @@ namespace mgl::graphics
   {
 public:
     enable_material(mgl::graphics::material_ref material)
-        : render_command(type::ENABLE_SHADER)
-        , m_material(material)
+        : m_material(material)
     { }
 
     void execute() override final;
@@ -21,9 +20,7 @@ private:
   class disable_material : public render_command
   {
 public:
-    disable_material()
-        : render_command(type::DISABLE_SHADER)
-    { }
+    disable_material() { }
 
     void execute() override final;
   };

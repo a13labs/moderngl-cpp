@@ -15,11 +15,10 @@ namespace mgl::graphics::layers
 
   void render_layer::on_update(float time, float frame_time)
   {
-    MGL_CORE_ASSERT(mgl::graphics::current_render() != nullptr, "Renderer is null");
     auto& render = mgl::graphics::current_render();
-    render->begin();
+    render.begin();
     render_prepare();
-    render->end();
+    render.end();
   }
 
   void render_layer::on_event(mgl::window::event& event) { }

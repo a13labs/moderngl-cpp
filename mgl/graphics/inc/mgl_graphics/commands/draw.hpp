@@ -12,8 +12,7 @@ public:
     draw_command(const vertex_buffer_ref& vertex_buffer,
                  const index_buffer_ref& index_buffer,
                  render::draw_mode mode)
-        : render_command(type::DRAW)
-        , m_vertex_buffer(vertex_buffer)
+        : m_vertex_buffer(vertex_buffer)
         , m_index_buffer(index_buffer)
         , m_mode(mode)
     { }

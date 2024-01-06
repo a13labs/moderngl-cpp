@@ -12,7 +12,7 @@ custom_material::custom_material()
   if(s_program == nullptr)
   {
     auto& render = mgl::graphics::current_render();
-    auto ctx = render->context();
+    auto ctx = render.context();
     s_program = ctx->program({
         R"(
                     #version 330

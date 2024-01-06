@@ -79,7 +79,6 @@ namespace mgl::window::imgui
     MGL_CORE_ASSERT(ImGui::GetCurrentContext() == nullptr, "Already initialized");
 
     ImGui::CreateContext();
-
     ImGuiIO& io = ImGui::GetIO();
     MGL_CORE_ASSERT(io.BackendRendererUserData == nullptr,
                     "Backend already initialized, shutdown first");

@@ -18,6 +18,11 @@ namespace mgl::graphics
     m_buffer->write(data);
   }
 
+  void vertex_buffer::upload(const void* src, size_t size)
+  {
+    m_buffer->write(src, size);
+  }
+
   void vertex_buffer::orphan(size_t size)
   {
     m_buffer->orphan(size);
@@ -42,6 +47,11 @@ namespace mgl::graphics
   void index_buffer::upload(const mgl::buffer<float>& data)
   {
     m_buffer->write(data);
+  }
+
+  void index_buffer::upload(const void* src, size_t size)
+  {
+    m_buffer->write(src, size);
   }
 
   void index_buffer::orphan(size_t size)

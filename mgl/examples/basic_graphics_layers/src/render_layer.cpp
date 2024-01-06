@@ -11,11 +11,11 @@ static mgl::graphics::material_ref mat = nullptr;
 
 void render_layer::render_prepare()
 {
-  auto& renderer = mgl::graphics::current_render();
-  renderer->clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-  renderer->enable_material(mat);
-  renderer->draw(s_vbo, nullptr, mgl::graphics::render::draw_mode::TRIANGLES);
-  renderer->disable_material();
+  auto& render = mgl::graphics::current_render();
+  render.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+  render.enable_material(mat);
+  render.draw(s_vbo, nullptr, mgl::graphics::render::draw_mode::TRIANGLES);
+  render.disable_material();
 }
 
 void render_layer::on_attach()

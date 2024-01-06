@@ -10,5 +10,7 @@ namespace mgl::window::api
   using program_ref = mgl::opengl::program_ref;
   using uniform_ref = mgl::opengl::uniform_ref;
   using buffer_ref = mgl::opengl::buffer_ref;
+  using texture_2d_ref = mgl::opengl::texture_2d_ref;
+  using framebuffer_ref = mgl::opengl::framebuffer_ref;
 
 }; // namespace mgl::window::api

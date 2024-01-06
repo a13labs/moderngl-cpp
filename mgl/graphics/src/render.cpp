@@ -1,19 +1,33 @@
 #include "mgl_graphics/render.hpp"
 #include "mgl_core/debug.hpp"
-#include "mgl_graphics/application.hpp"
-#include "mgl_graphics/commands/common.hpp"
 #include "mgl_graphics/commands/draw.hpp"
+#include "mgl_graphics/commands/functions.hpp"
 #include "mgl_graphics/commands/material.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
 namespace mgl::graphics
 {
+  render* s_instance = nullptr;
+
+  render::render(const mgl::window::api::context_ref& context)
+      : m_render_queue()
+      , m_state_data()
+      , m_context(context)
+  {
+    MGL_CORE_ASSERT(s_instance == nullptr, "Render already exists");
+    s_instance = this;
+  }
+
+  render::~render()
+  {
+    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
+    m_render_queue.clear();
+    s_instance = nullptr;
+  }
+
   void render::flush()
   {
-    for(auto& command : m_render_queue)
-    {
-      command->execute();
-    }
+    m_render_queue.execute();
 
     if(m_state_data.current_batch != nullptr)
     {
@@ -34,12 +48,12 @@ namespace mgl::graphics
     flush();
   }
 
-  void render::enable_state(state state)
+  void render::enable_state(int state)
   {
     submit(mgl::create_ref<mgl::graphics::enable_state>(state));
   }
 
-  void render::disable_state(state state)
+  void render::disable_state(int state)
   {
     submit(mgl::create_ref<mgl::graphics::disable_state>(state));
   }
@@ -47,11 +61,6 @@ namespace mgl::graphics
   void render::enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t)
   {
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, t));
-  }
-
-  void render::disable_texture(uint32_t slot)
-  {
-    submit(mgl::create_ref<mgl::graphics::disable_texture>(slot));
   }
 
   void render::clear(const glm::vec4& color)
@@ -69,23 +78,24 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::set_projection_command>(projection));
   }
 
-  void render::set_blend_func(blend_func src, blend_func dst) { }
+  void render::set_blend_func(blend_factor srcRGB,
+                              blend_factor dstRGB,
+                              blend_factor srcAlpha,
+                              blend_factor dstAlpha)
+  {
+    submit(
+        mgl::create_ref<mgl::graphics::set_blend_func_command>(srcRGB, dstRGB, srcAlpha, dstAlpha));
+  }
 
-  void render::set_color_mask(bool r, bool g, bool b, bool a) { }
+  void render::clear_samplers(int start, int end)
+  {
+    submit(mgl::create_ref<mgl::graphics::clear_samplers_command>(start, end));
+  }
 
-  void render::set_depth_mask(bool mask) { }
-
-  void render::set_depth_func(depth_func func) { }
-
-  void render::set_stencil_mask(uint32_t mask) { }
-
-  void render::set_stencil_func(stencil_func func, int32_t ref, uint32_t mask) { }
-
-  void render::set_stencil_op(stencil_op sfail, stencil_op dpfail, stencil_op dppass) { }
-
-  void render::set_cull_face(cull_face face) { }
-
-  void render::set_polygon_offset(float factor, float units) { }
+  void render::set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_blend_equation_command>(modeRGB, modeAlpha));
+  }
 
   void
   render::draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode)
@@ -101,6 +111,11 @@ namespace mgl::graphics
   void render::disable_material()
   {
     submit(mgl::create_ref<mgl::graphics::disable_material>());
+  }
+
+  void render::push_render_script(const render_script_ref& script)
+  {
+    submit(script);
   }
 
   void
@@ -129,19 +144,18 @@ namespace mgl::graphics
     }
 
     auto& render = mgl::graphics::current_render();
-    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
 
-    auto ctx = render->context();
+    auto ctx = render.context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
 
-    shader_ref shader = render->current_state().current_shader;
+    shader_ref shader = render.current_state().current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
 
     mgl::window::api::program_ref program = shader->program();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
     // We get the uniform for the transform matrix
-    mgl::window::api::uniform_ref transform_uniform = render->current_state().model_uniform;
+    mgl::window::api::uniform_ref transform_uniform = render.current_state().model_uniform;
 
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode
@@ -175,4 +189,32 @@ namespace mgl::graphics
     m_batch_data.clear();
   }
 
+  void render_script::execute()
+  {
+    auto& render = mgl::graphics::current_render();
+    auto ctx = render.context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    if(m_render_target != nullptr)
+    {
+      m_render_target->use();
+    }
+    else
+    {
+      ctx->screen()->use();
+    }
+
+    for(auto& command : m_commands)
+    {
+      command->execute();
+    }
+
+    ctx->screen()->use();
+  }
+
+  render& render::current_render()
+  {
+    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
+    return *s_instance;
+  }
 } // namespace mgl::graphics

@@ -20,6 +20,8 @@ public:
 
     void upload(const mgl::buffer<float>& data);
 
+    void upload(const void* src, size_t size);
+
     void orphan(size_t size);
 
     bool is_dynamic() const { return m_dynamic; }
@@ -43,6 +45,8 @@ public:
     const mgl::window::api::buffer_ref& buffer() const { return m_buffer; }
 
     void upload(const mgl::buffer<float>& data);
+
+    void upload(const void* src, size_t size);
 
     void orphan(size_t size);
 

@@ -11,9 +11,7 @@ namespace mgl::graphics
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     auto& render = mgl::graphics::current_render();
-    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
-
-    auto& state = render->current_state();
+    auto& state = render.current_state();
 
     // Set the state of the render, including the current program, view and projection matrices
     state.view_uniform = prg->uniform("view");
@@ -50,11 +48,10 @@ namespace mgl::graphics
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     auto& render = mgl::graphics::current_render();
-    MGL_CORE_ASSERT(render != nullptr, "Renderer is null");
 
-    if(render->current_state().current_batch != nullptr)
+    if(render.current_state().current_batch != nullptr)
     {
-      render->current_state().current_batch->commit();
+      render.current_state().current_batch->commit();
     }
 
     // Unbind the program, and set the current program to null and the view and projection uniforms to
@@ -62,9 +59,9 @@ namespace mgl::graphics
     prg->unbind();
 
     // clean-up the current shader, view and projection uniforms
-    render->current_state().current_shader = nullptr;
-    render->current_state().view_uniform = nullptr;
-    render->current_state().projection_uniform = nullptr;
-    render->current_state().model_uniform = nullptr;
+    render.current_state().current_shader = nullptr;
+    render.current_state().view_uniform = nullptr;
+    render.current_state().projection_uniform = nullptr;
+    render.current_state().model_uniform = nullptr;
   }
 } // namespace mgl::graphics

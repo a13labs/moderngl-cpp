@@ -2141,6 +2141,11 @@ namespace mgl::opengl
       glEnable(GL_CULL_FACE);
     }
 
+    if(flags & mgl::opengl::enable_flag::STENCIL_TEST)
+    {
+      glEnable(GL_STENCIL_TEST);
+    }
+
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
       glEnable(GL_RASTERIZER_DISCARD);
@@ -2171,6 +2176,11 @@ namespace mgl::opengl
     if(flags & mgl::opengl::enable_flag::CULL_FACE)
     {
       glDisable(GL_CULL_FACE);
+    }
+
+    if(flags & mgl::opengl::enable_flag::STENCIL_TEST)
+    {
+      glDisable(GL_STENCIL_TEST);
     }
 
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
@@ -2271,26 +2281,6 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
-  }
-
-  void context::bind_texture(texture_ref texture, int unit)
-  {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(unit >= 0 && unit < m_max_texture_units, "Invalid texture unit");
-
-    texture->use(unit);
-  }
-
-  void context::unbind_texture(int unit)
-  {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(unit >= 0 && unit < m_max_texture_units, "Invalid texture unit");
-
-    glActiveTexture(GL_TEXTURE0 + unit);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindTexture(GL_TEXTURE_3D, 0);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
   }
 
 } // namespace  mgl::opengl

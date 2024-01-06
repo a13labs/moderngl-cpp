@@ -7,29 +7,27 @@ namespace mgl::graphics
   class enable_state : public render_command
   {
 public:
-    enable_state(mgl::graphics::render::state state)
-        : render_command(type::ENABLE_STATE)
-        , m_state(state)
+    enable_state(int flags)
+        : m_flags(flags)
     { }
 
     void execute() override;
 
 private:
-    mgl::graphics::render::state m_state;
+    int m_flags;
   };
 
   class disable_state : public render_command
   {
 public:
-    disable_state(mgl::graphics::render::state state)
-        : render_command(type::DISABLE_STATE)
-        , m_state(state)
+    disable_state(int flags)
+        : m_flags(flags)
     { }
 
     void execute() override;
 
 private:
-    mgl::graphics::render::state m_state;
+    int m_flags;
   };
 
 } // namespace mgl::graphics

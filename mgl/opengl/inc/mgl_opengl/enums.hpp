@@ -41,8 +41,9 @@ namespace mgl::opengl
     BLEND = BIT(1),
     DEPTH_TEST = BIT(2),
     CULL_FACE = BIT(3),
-    RASTERIZER_DISCARD = BIT(4),
-    PROGRAM_POINT_SIZE = BIT(5),
+    STENCIL_TEST = BIT(4),
+    RASTERIZER_DISCARD = BIT(5),
+    PROGRAM_POINT_SIZE = BIT(6),
     INVALID = 0x40000000
   };
 
