@@ -53,4 +53,7 @@ private:
 
     zip_file_buffer m_buffer;
   };
+
+  using zip_ifsteam_ptr = mgl::ref<zip_ifsteam>;
+
 } // namespace mgl

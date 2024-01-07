@@ -26,7 +26,8 @@ public:
 
     virtual mgl::string_list get_extensions() const override;
 
-    virtual resource_ref
-    load(const location& location, const std::string& path, const loader_options& options) override;
+    virtual resource_ref load(const location_ref& location,
+                              const std::string& path,
+                              const loader_options& options) override;
   };
 } // namespace mgl::registry::loaders

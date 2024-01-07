@@ -7,7 +7,6 @@
 
 TEST(mgl_test_load_image, load_image)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::image, "data/images");
   auto image = mgl::registry::load_image("test.png", mgl::registry::loader_options());
   EXPECT_NE(image, nullptr);
   EXPECT_EQ(image->get_type(), mgl::registry::resource::type::image);
@@ -19,7 +18,6 @@ TEST(mgl_test_load_image, load_image)
 
 TEST(mgl_test_load_image, load_image_with_options)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::image, "data/images");
   mgl::registry::loaders::image_loader_options options;
   options.flip_vertically = true;
   auto image = mgl::registry::load_image("test.png", options);
@@ -33,7 +31,6 @@ TEST(mgl_test_load_image, load_image_with_options)
 
 TEST(mgl_test_load_text, load_text)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::text, "data/text");
   auto text = mgl::registry::load_text("test.txt", mgl::registry::loader_options());
   EXPECT_NE(text, nullptr);
   EXPECT_EQ(text->get_type(), mgl::registry::resource::type::text);
@@ -42,7 +39,6 @@ TEST(mgl_test_load_text, load_text)
 
 TEST(mgl_test_load_text, load_text_with_options)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::text, "data/text");
   mgl::registry::loaders::text_loader_options options;
   auto text = mgl::registry::load_text("test.txt", options);
   EXPECT_NE(text, nullptr);
@@ -52,7 +48,6 @@ TEST(mgl_test_load_text, load_text_with_options)
 
 TEST(mgl_test_loadt_shader, load_shader)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::shader, "data/shaders");
   auto shader = mgl::registry::load_shader("test.glsl", mgl::registry::loader_options());
   EXPECT_NE(shader, nullptr);
   EXPECT_EQ(shader->get_type(), mgl::registry::resource::type::shader);
@@ -60,7 +55,6 @@ TEST(mgl_test_loadt_shader, load_shader)
 
 TEST(mgl_test_loadt_shader, load_shader_with_options)
 {
-  mgl::registry::register_dir(mgl::registry::resource::type::shader, "data/shaders");
   mgl::registry::loaders::shader_loader_options options;
   options.type = mgl::registry::shader::type::FRAGMENT_SHADER;
   auto shader = mgl::registry::load_shader("test.fs", options);
@@ -73,5 +67,8 @@ int main(int argc, char** argv)
   ::testing::InitGoogleTest(&argc, argv);
   mgl::log::init();
   mgl::registry::registry_ref registry = mgl::create_scope<mgl::registry::registry>();
+  mgl::registry::register_dir(mgl::registry::resource::type::image, "file://data/images");
+  mgl::registry::register_dir(mgl::registry::resource::type::text, "file://data/text");
+  mgl::registry::register_dir(mgl::registry::resource::type::shader, "file://data/shaders");
   return RUN_ALL_TESTS();
 }

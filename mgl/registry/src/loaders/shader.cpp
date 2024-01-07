@@ -23,7 +23,7 @@ namespace mgl::registry::loaders
     return { ".vs", ".fs", ".gs", ".cs", ".ts", ".glsl" };
   }
 
-  resource_ref shader_loader::load(const location& location,
+  resource_ref shader_loader::load(const location_ref& location,
                                    const std::string& path,
                                    const loader_options& options)
   {
@@ -34,32 +34,15 @@ namespace mgl::registry::loaders
       opts = &default_shader_loader_options;
     }
 
-    std::string src = "";
-    if(location.is_compressed)
-    {
-      mgl::zip_file zip(location.path);
-      if(!zip.exists(path))
-      {
-        MGL_CORE_ERROR("Failed to read shader file: {}", path);
-        return nullptr;
-      }
-      mgl::buffer<uint8_t> buffer;
-      zip.read(path, buffer);
-      src = std::string(buffer.begin(), buffer.end());
-    }
-    else
-    {
-      auto full_path = mgl::path(location.path) / path;
-      if(!std::filesystem::exists(full_path))
-      {
-        MGL_CORE_ERROR("Failed to read image file: {}", path);
-        return nullptr;
-      }
+    mgl::ifsteam_ptr file = location->open(path, mgl::input_file::in);
 
-      mgl::input_file file(full_path, mgl::input_file::in);
-      src = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if(!file)
+    {
+      MGL_CORE_ERROR("Failed to read shader file: {}", path);
+      return nullptr;
     }
 
+    std::string src((std::istreambuf_iterator<char>(*file)), std::istreambuf_iterator<char>());
     return mgl::create_ref<shader>(src, opts->type);
   }
 

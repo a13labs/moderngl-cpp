@@ -51,7 +51,7 @@ public:
     const std::string tess_evaluation(const shader_defines& defines = {});
 
 private:
-    bool handle_includes(const location& location, int depth = 0, int source_id = 0);
+    bool handle_includes(const location_ref& location, int depth = 0, int source_id = 0);
 
     std::string m_source;
     int m_version_code;

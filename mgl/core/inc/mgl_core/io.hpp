@@ -16,6 +16,7 @@
 #pragma once
 
 #include "containers.hpp"
+#include "memory.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -27,6 +28,12 @@ namespace mgl
   using input_file = std::ifstream;
   using output_file = std::ofstream;
   using openmode = std::ifstream::openmode;
+  using ifsteam = std::istream;
+  using ofsteam = std::ostream;
+
+  using ifsteam_ptr = mgl::ref<ifsteam>;
+  using ofsteam_ptr = mgl::ref<ofsteam>;
+
   extern const path null_path;
 
 } // namespace  mgl

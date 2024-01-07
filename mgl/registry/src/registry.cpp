@@ -1,11 +1,11 @@
 #include "mgl_registry/registry.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_core/zip.hpp"
+#include "mgl_registry/locations/local.hpp"
+#include "mgl_registry/locations/zip.hpp"
 
 namespace mgl::registry
 {
-  location null_location = { mgl::null_path, false, false };
-
   static registry* s_registry = nullptr;
 
   static const std::string types_names[] = { "image", "shader", "font",   "sound", "music",
@@ -18,6 +18,13 @@ namespace mgl::registry
       s_registry = this;
 
     {
+      // Register location factories
+      location_factory_ref local_factory = mgl::create_scope<local_location>();
+      register_location_factory(local_factory);
+
+      location_factory_ref zip_factory = mgl::create_scope<zip_location>();
+      register_location_factory(zip_factory);
+
       // Register loaders
       loader_ref image_loader = mgl::create_scope<loaders::image_loader>();
       register_loader(image_loader);
@@ -37,49 +44,58 @@ namespace mgl::registry
     m_locations.clear();
   }
 
-  bool registry::register_dir(resource::type type, const std::string& path)
+  bool registry::register_location_factory(location_factory_ref& factory)
   {
-    auto p = mgl::path(path);
-
-    if(p.is_relative())
+    if(factory == nullptr)
     {
-      p = std::filesystem::current_path() / path;
-    }
-
-    if(!std::filesystem::exists(p))
-    {
-      MGL_CORE_ERROR("registry: path does not exist: {0}", path);
+      MGL_CORE_ERROR("registry: factory is null");
       return false;
     }
 
-    bool is_zip = false;
-    if(std::filesystem::is_regular_file(path))
+    if(m_locations_factories.find(factory->name()) != m_locations_factories.end())
     {
-      // Must be a zip file or it is not supported
-      if(!mgl::zip_file::is_zip_file(path))
-      {
-        MGL_CORE_ERROR("registry: path is not a zip file: {0}", path);
-        return false;
-      }
-      is_zip = true;
-    }
-    else if(!std::filesystem::is_directory(path))
-    {
-      MGL_CORE_ERROR("registry: path is not a directory: {0}", path);
+      MGL_CORE_ERROR("registry: factory with name {} already registered", factory->name());
       return false;
     }
 
-    if(m_locations.find(type) == m_locations.end())
-      m_locations[type] = locations();
+    location_factory_info_ref info = mgl::create_ref<location_factory_info>();
+    info->factory = std::move(factory);
 
-    auto& locations = m_locations[type];
-
-    auto it = std::find(locations.begin(), locations.end(), (location){ path, is_zip });
-
-    if(it == locations.end())
-      locations.push_back({ path, is_zip });
-
+    m_locations_factories[info->factory->name()] = info;
     return true;
+  }
+
+  bool registry::register_dir(resource::type type, const url& url)
+  {
+    for(auto& [name, factory] : m_locations_factories)
+    {
+      auto& f = factory->factory;
+
+      if(!f->can_handle(url))
+        continue;
+
+      auto location = f->factory(url);
+
+      if(m_locations.find(type) == m_locations.end())
+        m_locations[type] = locations();
+
+      auto& locations = m_locations[type];
+
+      for(auto&& l : locations)
+      {
+        if(l->path() == location->path())
+        {
+          MGL_CORE_ERROR("Location already registered: {}", location->path().string());
+          return false;
+        }
+      }
+
+      locations.push_back(location);
+      return true;
+    }
+
+    MGL_CORE_ERROR("No location factory registered for url: {}", url.path.string());
+    return false;
   }
 
   bool registry::register_loader(loader_ref& loader)
@@ -121,39 +137,25 @@ namespace mgl::registry
     return true;
   }
 
-  const location& registry::find(resource::type type, const std::string& path)
+  const location_ref registry::find(resource::type type, const std::string& path)
   {
-    auto p = mgl::path(path);
-
     if(m_locations.find(type) == m_locations.end())
     {
       MGL_CORE_ERROR("No locations registered for type: {}", types_names[(int)type]);
-      return null_location;
+      return nullptr;
     }
 
     auto& locations = m_locations[type];
 
     for(auto&& base : locations)
     {
-      if(base.is_compressed)
-      {
-        mgl::zip_file zip(base.path);
-        if(!zip.exists(p))
-        {
-          continue;
-        }
-        return base;
-      }
-
-      auto absolute_path = mgl::path(base.path) / path;
-
-      if(std::filesystem::exists(absolute_path))
+      if(base->exists(path))
       {
         return base;
       }
     }
 
-    return null_location;
+    return nullptr;
   }
 
   resource_ref
@@ -161,7 +163,7 @@ namespace mgl::registry
   {
     auto& location = find(type, path);
 
-    if(location.path == mgl::null_path)
+    if(location == nullptr)
     {
       MGL_CORE_ERROR("Failed to find resource: {}", path);
       return nullptr;
@@ -181,18 +183,13 @@ namespace mgl::registry
 
   bool registry::exists(const std::string& path) const
   {
-    if(!std::filesystem::exists(path))
-      return false;
-
-    if(!std::filesystem::is_regular_file(path))
-      return false;
-
-    for(const auto& loader : m_loaders)
+    for(auto&& [type, locations] : m_locations)
     {
-      if(!in(path, loader.second->loader->get_extensions()))
-        continue;
-
-      return true;
+      for(auto&& location : locations)
+      {
+        if(location->exists(path))
+          return true;
+      }
     }
 
     return false;

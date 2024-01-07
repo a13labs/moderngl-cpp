@@ -21,11 +21,12 @@ public:
     registry();
     ~registry();
 
-    bool register_dir(resource::type type, const std::string& path);
+    bool register_location_factory(location_factory_ref& factory);
+    bool register_dir(resource::type type, const url& url);
     bool register_loader(loader_ref& loader);
 
     resource_ref load(resource::type type, const std::string& path, const loader_options& options);
-    const location& find(resource::type type, const std::string& path);
+    const location_ref find(resource::type type, const std::string& path);
 
     bool exists(const std::string& path) const;
 
@@ -37,9 +38,16 @@ private:
       loader_ref loader;
     };
 
+    struct location_factory_info
+    {
+      location_factory_ref factory;
+    };
+
     using loader_info_ref = mgl::ref<loader_info>;
+    using location_factory_info_ref = mgl::ref<location_factory_info>;
 
     std::unordered_map<std::string, loader_info_ref> m_loaders;
+    std::unordered_map<std::string, location_factory_info_ref> m_locations_factories;
     std::unordered_map<resource::type, locations> m_locations;
   };
 
@@ -94,7 +102,7 @@ private:
     return current_registry().load(resource::type::json, path, options);
   }
 
-  inline const location& find(resource::type type, const std::string& path)
+  inline const location_ref find(resource::type type, const std::string& path)
   {
     return current_registry().find(type, path);
   }

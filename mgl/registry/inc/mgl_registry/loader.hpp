@@ -18,7 +18,7 @@ public:
     virtual resource::type get_type() const = 0;
     virtual mgl::string_list get_extensions() const = 0;
     virtual resource_ref
-    load(const location& location, const std::string& path, const loader_options& options) = 0;
+    load(const location_ref& location, const std::string& path, const loader_options& options) = 0;
   };
 
   using loader_ref = mgl::scope<loader>;

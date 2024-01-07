@@ -28,7 +28,7 @@ namespace mgl::registry
     m_source = mgl::join('\n', lines, 1);
   }
 
-  bool shader::handle_includes(const location& location, int depth, int source_id)
+  bool shader::handle_includes(const location_ref& location, int depth, int source_id)
   {
     if(depth > 10)
     {
@@ -53,36 +53,16 @@ namespace mgl::registry
 
       std::string include_path = source.substr(start + 1, end - start - 1);
 
-      std::string include_source = "";
+      mgl::ifsteam_ptr file = location->open(include_path, mgl::input_file::in);
 
-      if(location.is_compressed)
+      if(!file)
       {
-        mgl::zip_file zip(location.path);
-
-        if(!zip.exists(include_path))
-        {
-          MGL_CORE_ERROR("Failed to read include file: {}", include_path);
-          return false;
-        }
-
-        mgl::buffer<uint8_t> buffer;
-        zip.read(include_path, buffer);
-        std::string src(buffer.begin(), buffer.end());
-        include_source = src;
+        MGL_CORE_ERROR("Failed to read include file: {}", include_path);
+        return false;
       }
-      else
-      {
-        if(!std::filesystem::exists(include_path))
-        {
-          MGL_CORE_ERROR("Failed to read include file: {}", include_path);
-          return false;
-        }
 
-        mgl::input_file include_file(include_path, mgl::input_file::in);
-        std::string src((std::istreambuf_iterator<char>(include_file)),
-                        std::istreambuf_iterator<char>());
-        include_source = src;
-      }
+      std::string include_source((std::istreambuf_iterator<char>(*file)),
+                                 std::istreambuf_iterator<char>());
 
       if(include_source.empty())
       {

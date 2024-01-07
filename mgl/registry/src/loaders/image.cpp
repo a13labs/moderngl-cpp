@@ -37,7 +37,7 @@ namespace mgl::registry::loaders
     return { ".png", ".jpg", ".jpeg", ".bmp", ".tga", ".psd", ".gif", ".hdr", ".pic" };
   }
 
-  resource_ref image_loader::load(const location& location,
+  resource_ref image_loader::load(const location_ref& location,
                                   const std::string& path,
                                   const loader_options& options)
   {
@@ -51,29 +51,27 @@ namespace mgl::registry::loaders
     int width, height, components;
     stbi_set_flip_vertically_on_load(opts->flip_vertically);
 
-    unsigned char* data = nullptr;
+    mgl::ifsteam_ptr file = location->open(path, std::ios::in | std::ios::binary);
 
-    if(location.is_compressed)
+    if(!file)
     {
-      mgl::zip_file zip(location.path);
-      if(!zip.exists(path))
-      {
-        MGL_CORE_ERROR("Failed to read image file: {}", path);
-        return nullptr;
-      }
-      mgl::buffer<uint8_t> buffer;
-      zip.read(path, buffer);
-      data = stbi_load_from_memory(buffer.data(), buffer.size(), &width, &height, &components, 0);
+      MGL_CORE_ERROR("Failed to read image file: {}", path);
+      return nullptr;
     }
-    else
+
+    file->seekg(0, std::ios::end);
+    size_t size = file->tellg();
+    file->seekg(0, std::ios::beg);
+
+    unsigned char* raw = new unsigned char[size];
+    file->read((char*)raw, size);
+    auto data = stbi_load_from_memory(raw, size, &width, &height, &components, 0);
+    delete[] raw;
+
+    if(!data)
     {
-      auto full_path = mgl::path(location.path) / path;
-      if(!std::filesystem::exists(full_path))
-      {
-        MGL_CORE_ERROR("Failed to read image file: {}", path);
-        return nullptr;
-      }
-      data = stbi_load((const char*)full_path.c_str(), &width, &height, &components, 0);
+      MGL_CORE_ERROR("Failed to read image file: {}", path);
+      return nullptr;
     }
 
     if(opts->flip_vertically)
