@@ -1,8 +1,5 @@
 #include "mgl_graphics/commands/functions.hpp"
-#include "mgl_graphics/application.hpp"
-
 #include "mgl_core/debug.hpp"
-
 #include <glm/gtx/string_cast.hpp>
 
 namespace mgl::graphics

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "layer.hpp"
-#include "render.hpp"
+#include "mgl_graphics/layer.hpp"
+#include "mgl_graphics/render.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_window/window.hpp"
 
-namespace mgl::graphics
+namespace mgl::application
 {
 
   struct application_config : public mgl::window::window_config
   {
-    layer_ref gui_layer = nullptr;
-    layer_ref render_layer = nullptr;
-    mgl::ref_list<layer> extra_layers;
+    mgl::graphics::layer_ref gui_layer = nullptr;
+    mgl::graphics::layer_ref render_layer = nullptr;
+    mgl::ref_list<mgl::graphics::layer> extra_layers;
 
     application_config()
         : mgl::window::window_config()
@@ -58,9 +58,9 @@ public:
     application(const application_config& settings = application_config());
     ~application();
 
-    const render_ref& current_render();
+    const mgl::graphics::render_ref& current_render();
 
-    layer_stack& layers() { return m_layers; }
+    mgl::graphics::layer_stack& layers() { return m_layers; }
 
     static application& current();
 
@@ -73,11 +73,11 @@ protected:
     virtual void on_unload() override final;
 
 private:
-    render_ref m_render;
-    layer_ref m_gui_layer;
-    layer_ref m_render_layer;
+    mgl::graphics::render_ref m_render;
+    mgl::graphics::layer_ref m_gui_layer;
+    mgl::graphics::layer_ref m_render_layer;
     application_config m_config;
-    layer_stack m_layers;
+    mgl::graphics::layer_stack m_layers;
   };
 
   inline application& current_application()
@@ -85,4 +85,4 @@ private:
     return application::current();
   }
 
-} // namespace mgl::graphics
+} // namespace mgl::application

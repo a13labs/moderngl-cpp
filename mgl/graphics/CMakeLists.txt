@@ -37,7 +37,7 @@ endforeach()
 add_library(mgl_graphics STATIC ${LIB_SOURCES})
 add_library(mgl::graphics-static ALIAS mgl_graphics)
 
-set(MGL_ENGINE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::graphics include directory")
+set(MGL_GRAPHICS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::graphics include directory")
 
 set (DEFAULT_INCLUDE_DIRS 
     ${MGL_CORE_INCLUDE_DIR}
@@ -47,7 +47,7 @@ set (DEFAULT_INCLUDE_DIRS
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${SDL2_INCLUDE_DIR}
     ${IMGUI_INCLUDE_DIR}
-    ${MGL_ENGINE_INCLUDE_DIR}
+    ${MGL_GRAPHICS_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/inc
 )
 

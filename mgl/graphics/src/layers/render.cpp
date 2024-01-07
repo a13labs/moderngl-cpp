@@ -1,7 +1,6 @@
 #include "mgl_graphics/layers/render.hpp"
-#include "mgl_graphics/application.hpp"
-
 #include "mgl_core/debug.hpp"
+#include "mgl_graphics/render.hpp"
 
 namespace mgl::graphics::layers
 {

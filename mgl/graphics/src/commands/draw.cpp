@@ -1,9 +1,6 @@
 #include "mgl_graphics/commands/draw.hpp"
-#include "mgl_graphics/application.hpp"
-
-#include "mgl_core/debug.hpp"
-
 #include "glm/glm.hpp"
+#include "mgl_core/debug.hpp"
 
 namespace mgl::graphics
 {

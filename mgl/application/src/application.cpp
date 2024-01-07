@@ -1,4 +1,4 @@
-#include "mgl_graphics/application.hpp"
+#include "mgl_application/application.hpp"
 #include "mgl_graphics/layers/gui.hpp"
 #include "mgl_graphics/layers/render.hpp"
 
@@ -7,7 +7,7 @@
 
 #include "mgl_core/debug.hpp"
 
-namespace mgl::graphics
+namespace mgl::application
 {
   static application* s_instance = nullptr;
 
@@ -32,7 +32,7 @@ namespace mgl::graphics
     m_render_layer->on_event(event);
   }
 
-  const render_ref& application::current_render()
+  const mgl::graphics::render_ref& application::current_render()
   {
     return m_render;
   }
@@ -91,4 +91,4 @@ namespace mgl::graphics
     return *s_instance;
   }
 
-} // namespace mgl::graphics
+} // namespace mgl::application
