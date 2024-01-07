@@ -3,6 +3,7 @@
 #include "mgl_graphics/commands/draw.hpp"
 #include "mgl_graphics/commands/functions.hpp"
 #include "mgl_graphics/commands/material.hpp"
+#include "mgl_graphics/commands/shader.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
 namespace mgl::graphics
@@ -101,6 +102,16 @@ namespace mgl::graphics
   render::draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode)
   {
     submit(mgl::create_ref<mgl::graphics::draw_command>(vertex_array, index_buffer, mode));
+  }
+
+  void render::enable_shader(shader_ref shader)
+  {
+    submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
+  }
+
+  void render::disable_shader()
+  {
+    submit(mgl::create_ref<mgl::graphics::disable_shader>());
   }
 
   void render::enable_material(material_ref material)

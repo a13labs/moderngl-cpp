@@ -1,4 +1,4 @@
-#include "material.hpp"
+#include "shader.hpp"
 #include "mgl_application/application.hpp"
 #include "mgl_graphics/render.hpp"
 #include "mgl_window/api.hpp"
@@ -6,8 +6,8 @@
 static mgl::window::api::program_ref s_program;
 static mgl::string_list s_attributes = { "in_vert", "in_color" };
 
-custom_material::custom_material()
-    : mgl::graphics::material()
+custom_shader::custom_shader()
+    : mgl::graphics::shader()
 {
   if(s_program == nullptr)
   {
@@ -42,7 +42,7 @@ custom_material::custom_material()
   }
 }
 
-void custom_material::release()
+void custom_shader::release()
 {
   if(s_program != nullptr)
   {
@@ -50,14 +50,14 @@ void custom_material::release()
   }
 }
 
-mgl::window::api::program_ref& custom_material::program()
+mgl::window::api::program_ref& custom_shader::program()
 {
   return s_program;
 }
 
-mgl::string_list& custom_material::attributes()
+mgl::string_list& custom_shader::attributes()
 {
   return s_attributes;
 }
 
-void custom_material::prepare() { }
+void custom_shader::prepare() { }

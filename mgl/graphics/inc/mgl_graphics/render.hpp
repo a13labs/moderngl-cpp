@@ -206,7 +206,11 @@ public:
 
     void draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode);
 
-    void enable_material(material_ref material);
+    void enable_shader(shader_ref shader);
+
+    void disable_shader();
+
+    void enable_material(material_ref shader);
 
     void disable_material();
 
