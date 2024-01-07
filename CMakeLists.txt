@@ -12,7 +12,6 @@ include(FetchContent)
 
 # Build options
 option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
-option(MGL_VENDOR_MOJOAL_BUILD_TESTS "Enable MojoAL unit tests" OFF)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 
