@@ -24,15 +24,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# Set the location for external projects
-set(EXTERNAL_PROJECTS_DIR "${CMAKE_CURRENT_BINARY_DIR}/external")
-
-# Set the location for downloaded projects
-set(SCRIPTS_DIR "${CMAKE_SOURCE_DIR}/scripts")
-
-# Game data file
-set(MGL_DATA_FILE "data.mgz")
-
 # Detect the compiler and set MGL_COMPILER_DEFINITION
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_GNU")
