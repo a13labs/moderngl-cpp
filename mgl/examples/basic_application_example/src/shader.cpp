@@ -6,39 +6,23 @@
 static mgl::window::api::program_ref s_program;
 static mgl::string_list s_attributes = { "in_vert", "in_color" };
 
+#include "shaders/fragment/fragment.hpp"
+#include "shaders/vertex/vertex.hpp"
+
 custom_shader::custom_shader()
     : mgl::graphics::shader()
 {
+
   if(s_program == nullptr)
   {
+
     auto& render = mgl::graphics::current_render();
     auto ctx = render.context();
-    s_program = ctx->program({
-        R"(
-                    #version 330
+    // Load vertex and fragment shaders from generated source
+    mgl::opengl::shaders glsl = { reinterpret_cast<const char*>(vertex_shader_source),
+                                  reinterpret_cast<const char*>(fragment_shader_source) };
 
-                    in vec2 in_vert;
-                    in vec3 in_color;
-                    out vec3 v_color;    // Goes to the fragment shader
-
-                    void main() {
-                        gl_Position = vec4(in_vert, 0.0, 1.0);
-                        v_color = in_color;
-                    }
-                  )",
-        R"(
-                    #version 330
-
-                    in vec3 v_color;
-                    out vec4 f_color;
-
-                    void main() {
-                        // We're not interested in changing the alpha value
-                        f_color = vec4(v_color, 1.0);
-                    }
-                )",
-
-    });
+    s_program = ctx->program(glsl);
   }
 }
 

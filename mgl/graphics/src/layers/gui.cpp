@@ -7,6 +7,9 @@
 #include "mgl_window/window.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "shaders/fragment/imgui.hpp"
+#include "shaders/vertex/imgui.hpp"
+
 namespace mgl::graphics::layers
 {
   gui_layer::gui_layer(const std::string& name)
@@ -88,9 +91,6 @@ namespace mgl::graphics::layers
     auto& render = mgl::graphics::current_render();
     auto ctx = render.context();
     ctx->enter();
-
-#include "shaders/fragment/imgui.hpp"
-#include "shaders/vertex/imgui.hpp"
 
     // Load vertex and fragment shaders from generated source
     mgl::opengl::shaders glsl = { reinterpret_cast<const char*>(vertex_shader_source),
