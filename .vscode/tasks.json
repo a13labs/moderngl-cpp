@@ -1,0 +1,28 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "configure",
+			"command": "configure",
+			"problemMatcher": [],
+		},
+		{
+			"type": "cmake",
+			"label": "build",
+			"command": "build",
+			"problemMatcher": [],
+		},
+		{
+			"label": "cmake_configure_build",
+			"dependsOn": [
+				"configure",
+				"build"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+	]
+}

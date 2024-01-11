@@ -50,6 +50,11 @@ namespace mgl::opengl
     GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER,
   };
 
+  static const char* SHADER_NAME[] = {
+    "vertex_shader",       "fragment_shader",        "geometry_shader",
+    "tess_control_shader", "tess_evaluation_shader",
+  };
+
   inline void clean_glsl_name(char* name, int& name_len)
   {
     if(name_len && name[name_len - 1] == ']')
@@ -779,29 +784,14 @@ namespace mgl::opengl
 
       if(!compiled)
       {
-        const char* SHADER_NAME[] = {
-          "vertex_shader",       "fragment_shader",        "geometry_shader",
-          "tess_control_shader", "tess_evaluation_shader",
-        };
-
-        const char* SHADER_NAME_UNDERLINE[] = {
-          "=============",       "===============",        "===============",
-          "===================", "======================",
-        };
-
-        const char* message = "GLSL Compiler failed";
-        const char* title = SHADER_NAME[i];
-        const char* underline = SHADER_NAME_UNDERLINE[i];
-
         int log_len = 0;
         glGetShaderiv(shader_obj, GL_INFO_LOG_LENGTH, &log_len);
 
         char* log = new char[log_len];
         glGetShaderInfoLog(shader_obj, log_len, &log_len, log);
-
         glDeleteShader(shader_obj);
 
-        MGL_CORE_ERROR("{0}\n\n{1}\n{2}\n{3}\n", message, title, underline, log);
+        MGL_CORE_ERROR("GLSL Compiler failed ({0}):{1}", SHADER_NAME[i], log);
 
         delete[] log;
         delete program;

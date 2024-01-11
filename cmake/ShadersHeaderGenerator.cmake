@@ -1,4 +1,7 @@
 # generate_shader_headers.cmake
+
+find_package(Python3 REQUIRED)
+
 # This script will be used to convert GLSL files to C arrays using xxd
 set(SHADER_TYPES 
     vertex
@@ -27,14 +30,12 @@ endfunction()
 function(generate_shader_header INPUT_SHADER SHADER_TYPE OUTPUT_HEADER)
     set(VARIABLE_NAME "${SHADER_TYPE}_shader_source")
     execute_process(
-        COMMAND xxd -i -n "${VARIABLE_NAME}" "${INPUT_SHADER}"
+        COMMAND ${Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_FILE ${OUTPUT_HEADER}
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     file(READ ${OUTPUT_HEADER} FILE_CONTENT)
-    string(REPLACE "unsigned char" "static unsigned char" FILE_CONTENT "${FILE_CONTENT}")
-    string(REPLACE "unsigned int" "static unsigned int" FILE_CONTENT "${FILE_CONTENT}")
     file(WRITE ${OUTPUT_HEADER} "${FILE_CONTENT}")    
 endfunction()
 

@@ -4,8 +4,11 @@ project(mgl
         LANGUAGES CXX C
        )
 
+# Set scripts directory
+set(MGL_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts" CACHE PATH "Path to scripts directory")
+
 # Add paths to modules
-list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )       
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )       
 
 # Enable the FetchContent module
 include(FetchContent)

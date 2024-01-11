@@ -9,7 +9,6 @@
 
 #include "shaders/fragment/imgui.hpp"
 #include "shaders/vertex/imgui.hpp"
-
 namespace mgl::graphics::layers
 {
   gui_layer::gui_layer(const std::string& name)
@@ -93,8 +92,7 @@ namespace mgl::graphics::layers
     ctx->enter();
 
     // Load vertex and fragment shaders from generated source
-    mgl::opengl::shaders glsl = { reinterpret_cast<const char*>(vertex_shader_source),
-                                  reinterpret_cast<const char*>(fragment_shader_source) };
+    mgl::opengl::shaders glsl = { vertex_shader_source, fragment_shader_source };
 
     bd->prg = ctx->program(glsl);
     if(!bd->prg)

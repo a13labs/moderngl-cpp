@@ -23,7 +23,7 @@ namespace mgl
 {
   namespace log
   {
-    ref<spdlog::logger> logger;
+    static ref<spdlog::logger> logger;
 
     void init(const std::string& logfile)
     {

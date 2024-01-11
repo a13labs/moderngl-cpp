@@ -19,8 +19,7 @@ custom_shader::custom_shader()
     auto& render = mgl::graphics::current_render();
     auto ctx = render.context();
     // Load vertex and fragment shaders from generated source
-    mgl::opengl::shaders glsl = { reinterpret_cast<const char*>(vertex_shader_source),
-                                  reinterpret_cast<const char*>(fragment_shader_source) };
+    mgl::opengl::shaders glsl = { vertex_shader_source, fragment_shader_source };
 
     s_program = ctx->program(glsl);
   }
