@@ -22,7 +22,7 @@ namespace mgl::registry
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<mgl::zip_ifsteam>(this->path() / path, path);
+    return mgl::create_ref<mgl::zip_ifsteam>(this->path().string(), path);
   }
 
   bool zip_location::exists(const std::string& path) const
@@ -30,7 +30,7 @@ namespace mgl::registry
     if(is_null())
       return false;
 
-    zip_file zip(this->path());
+    zip_file zip(this->path().string());
     return zip.exists(path);
   }
 

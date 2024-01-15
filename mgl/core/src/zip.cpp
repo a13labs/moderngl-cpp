@@ -33,7 +33,7 @@ namespace mgl
     }
 
     zip_stat_t z_stat;
-    auto err = zip_stat(z_file, path.c_str(), 0, &z_stat);
+    auto err = zip_stat(z_file, path.string().c_str(), 0, &z_stat);
 
     zip_close(z_file);
 
@@ -63,7 +63,7 @@ namespace mgl
 
     zip_stat_t z_stat;
 
-    auto err = zip_stat(z_file, path.c_str(), 0, &z_stat);
+    auto err = zip_stat(z_file, path.string().c_str(), 0, &z_stat);
 
     if(err != 0)
     {
@@ -71,7 +71,7 @@ namespace mgl
       return;
     }
 
-    auto z_entry = zip_fopen(z_file, path.c_str(), 0);
+    auto z_entry = zip_fopen(z_file, path.string().c_str(), 0);
 
     if(!z_entry)
     {
