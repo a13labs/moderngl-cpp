@@ -33,7 +33,7 @@ namespace mgl::opengl
 public:
     ~texture_3d() = default;
 
-    void release();
+    virtual void release() override;
     bool released();
 
     virtual texture::type texture_type() override;

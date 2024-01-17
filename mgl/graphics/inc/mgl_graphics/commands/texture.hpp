@@ -7,7 +7,7 @@ namespace mgl::graphics
   class enable_texture : public render_command
   {
 public:
-    enable_texture(uint32_t slot, const mgl::window::api::texture_ref& texture)
+    enable_texture(uint32_t slot, const texture_ref& texture)
         : m_slot(slot)
         , m_texture(texture)
     { }
@@ -15,7 +15,8 @@ public:
     void execute() override final;
 
 private:
-    mgl::window::api::texture_ref m_texture;
+    texture_ref m_texture;
     uint32_t m_slot;
   };
+
 } // namespace mgl::graphics

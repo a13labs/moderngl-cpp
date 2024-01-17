@@ -6,6 +6,6 @@ namespace mgl::graphics
   void enable_texture::execute()
   {
     auto& render = mgl::graphics::current_render();
-    m_texture->use(m_slot);
+    m_texture->bind(m_slot);
   }
 } // namespace mgl::graphics

@@ -11,13 +11,7 @@ set(MGL_REGISTRY_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path 
 
 set (DEFAULT_INCLUDE_DIRS 
     ${MGL_CORE_INCLUDE_DIR}
-    ${MGL_OPENGL_INCLUDE_DIR}
-    ${GLM_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
-    ${SDL2_INCLUDE_DIR}
-    ${IMGUI_INCLUDE_DIR}
-    ${LIBZIP_INCLUDE_DIR}
-    ${LIBZIP_BINARY_DIR}
     ${MGL_REGISTRY_INCLUDE_DIR}
 )
 
@@ -25,10 +19,7 @@ set (DEFAULT_INCLUDE_DIRS
 target_include_directories(mgl_registry PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_registry PRIVATE mgl::core-static mgl::opengl-static)
-
-# Link library to required external libraries
-target_link_libraries(mgl_registry PRIVATE SDL2::SDL2-static ImGUI::static)
+target_link_libraries(mgl_registry PRIVATE mgl::core-static)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_registry 

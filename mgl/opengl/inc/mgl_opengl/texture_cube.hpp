@@ -34,7 +34,7 @@ public:
     ~texture_cube() = default;
     virtual texture::type texture_type() override;
 
-    void release();
+    virtual void release() override;
     bool released();
 
     int width();

@@ -11,7 +11,7 @@ public:
 
     virtual void prepare() override final;
 
-    virtual const mgl::window::api::program_ref& program() override final;
+    virtual const mgl::window::api::program_ref& native() override final;
 
 private:
     glm::vec4 m_color;

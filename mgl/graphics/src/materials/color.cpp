@@ -34,7 +34,7 @@ namespace mgl::graphics
     s_color->set_value(m_color);
   }
 
-  const mgl::window::api::program_ref& color_material::program()
+  const mgl::window::api::program_ref& color_material::native()
   {
     return s_program;
   }

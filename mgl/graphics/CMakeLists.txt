@@ -19,6 +19,7 @@ set (DEFAULT_INCLUDE_DIRS
     ${MGL_CORE_INCLUDE_DIR}
     ${MGL_OPENGL_INCLUDE_DIR}
     ${MGL_WINDOW_INCLUDE_DIR}
+    ${MGL_REGISTRY_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${SDL2_INCLUDE_DIR}
@@ -31,7 +32,7 @@ set (DEFAULT_INCLUDE_DIRS
 target_include_directories(mgl_graphics PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_graphics PRIVATE mgl::window-static)
+target_link_libraries(mgl_graphics PRIVATE mgl::window-static mgl::registry-static)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_graphics 

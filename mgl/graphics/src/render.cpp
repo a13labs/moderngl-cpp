@@ -22,7 +22,6 @@ namespace mgl::graphics
   render::~render()
   {
     MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
-    m_render_queue.clear();
     s_instance = nullptr;
   }
 
@@ -59,9 +58,9 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::disable_state>(state));
   }
 
-  void render::enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t)
+  void render::enable_texture(uint32_t slot, const texture_ref& tex)
   {
-    submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, t));
+    submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, tex));
   }
 
   void render::clear(const glm::vec4& color)
@@ -162,7 +161,7 @@ namespace mgl::graphics
     shader_ref shader = render.current_state().current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
 
-    mgl::window::api::program_ref program = shader->program();
+    mgl::window::api::program_ref program = shader->native();
     MGL_CORE_ASSERT(program != nullptr, "Program is null");
 
     // We get the uniform for the transform matrix
@@ -227,5 +226,12 @@ namespace mgl::graphics
   {
     MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
     return *s_instance;
+  }
+
+  void render::release()
+  {
+    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
+    m_shader_manager.clear();
+    m_render_queue.clear();
   }
 } // namespace mgl::graphics

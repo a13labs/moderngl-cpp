@@ -1,15 +1,15 @@
 #pragma once
 #include "buffers.hpp"
+#include "glm/glm.hpp"
+#include "managers/shader.hpp"
+#include "managers/texture.hpp"
 #include "material.hpp"
-#include "shader.hpp"
-
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
-
 #include "mgl_window/api.hpp"
 #include "mgl_window/window.hpp"
-
-#include "glm/glm.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
 
 namespace mgl::graphics
 {
@@ -183,7 +183,17 @@ public:
 
     void disable_state(int state);
 
-    void enable_texture(uint32_t slot, const mgl::window::api::texture_ref& t);
+    void enable_texture(uint32_t slot, const texture_ref& tex);
+
+    void enable_texture(uint32_t slot, const std::string& name)
+    {
+      enable_texture(slot, m_texture_manager.get_item(name));
+    }
+
+    void enable_texture(uint32_t slot, uint32_t idx)
+    {
+      enable_texture(slot, m_texture_manager.get_item(idx));
+    }
 
     void clear(const glm::vec4& color);
 
@@ -208,6 +218,10 @@ public:
 
     void enable_shader(shader_ref shader);
 
+    void enable_shader(const std::string& name) { enable_shader(m_shader_manager.get_item(name)); }
+
+    void enable_shader(uint32_t idx) { enable_shader(m_shader_manager.get_item(idx)); }
+
     void disable_shader();
 
     void enable_material(material_ref shader);
@@ -224,14 +238,33 @@ public:
 
     static render& current_render();
 
+    void register_shader(const std::string& name, const shader_ref& shader)
+    {
+      m_shader_manager.add_item(name, shader);
+    }
+
+    void unregister_shader(const std::string& name) { m_shader_manager.remove_item(name); }
+
+    void register_texture(const std::string& name, const texture_ref& texture)
+    {
+      m_texture_manager.add_item(name, texture);
+    }
+
+    void unregister_texture(const std::string& name) { m_texture_manager.remove_item(name); }
+
+    const shader_manager& shaders() const { return m_shader_manager; }
+
+    void release();
+
 private:
     void submit(const render_command_ref& command) { m_render_queue.push(command); }
     void flush();
 
     mgl::window::api::context_ref m_context;
     render_script m_render_queue;
-
     render_state m_state_data;
+    shader_manager m_shader_manager;
+    texture_manager m_texture_manager;
   };
 
   class batch_render

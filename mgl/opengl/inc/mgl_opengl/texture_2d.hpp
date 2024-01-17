@@ -33,7 +33,7 @@ namespace mgl::opengl
 public:
     ~texture_2d() = default;
 
-    void release();
+    virtual void release() override;
     bool released();
 
     virtual attachment::type attachment_type() override;

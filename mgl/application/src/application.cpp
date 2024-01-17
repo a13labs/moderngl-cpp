@@ -83,6 +83,8 @@ namespace mgl::application
     m_gui_layer->on_detach();
     m_render_layer->on_detach();
     m_layers.clear();
+    m_render->release();
+    m_render = nullptr;
   }
 
   application& application::current()

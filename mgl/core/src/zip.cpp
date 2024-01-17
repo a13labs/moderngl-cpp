@@ -3,6 +3,8 @@
 #include "mgl_core/io.hpp"
 #include "mgl_core/log.hpp"
 
+#include "zip.h"
+
 namespace mgl
 {
 

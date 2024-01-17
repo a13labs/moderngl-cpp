@@ -6,7 +6,7 @@ namespace mgl::graphics
 {
   void shader::bind()
   {
-    auto prg = program();
+    auto prg = native();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     auto& render = mgl::graphics::current_render();
@@ -43,7 +43,7 @@ namespace mgl::graphics
 
   void shader::unbind()
   {
-    auto prg = program();
+    auto prg = native();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     auto& render = mgl::graphics::current_render();

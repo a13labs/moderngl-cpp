@@ -224,6 +224,25 @@ public:
                              const std::string& dtype = "f1",
                              int internal_format_override = 0);
 
+    texture_2d_ref texture2d(int width,
+                             int height,
+                             int components,
+                             const mgl::buffer<uint8_t>& data,
+                             int samples = 0,
+                             int alignment = 1,
+                             const std::string& dtype = "f1",
+                             int internal_format_override = 0)
+    {
+      return texture2d(width,
+                       height,
+                       components,
+                       data.data(),
+                       samples,
+                       alignment,
+                       dtype,
+                       internal_format_override);
+    }
+
     texture_2d_ref depth_texture2d(
         int width, int height, const void* data = nullptr, int samples = 0, int alignment = 0);
 

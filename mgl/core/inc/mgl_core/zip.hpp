@@ -4,7 +4,10 @@
 #include "memory.hpp"
 #include "string.hpp"
 
-#include "zip.h"
+struct zip;
+struct zip_file;
+typedef struct zip zip_t;
+typedef struct zip_file zip_file_t;
 
 namespace mgl
 {
