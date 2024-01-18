@@ -51,7 +51,7 @@ bool example::on_load()
 
   });
 
-  mgl::buffer<float> vertices = {
+  mgl::float_buffer vertices = {
     0.0,  0.0, //
 
     -0.6, -0.8, //
@@ -61,7 +61,7 @@ bool example::on_load()
     -0.6, 0.8, //
   };
 
-  mgl::buffer<uint32_t> indices = { 0, 1, 2, 0, 3, 4 };
+  mgl::uint_buffer indices = { 0, 1, 2, 0, 3, 4 };
 
   m_vbo = ctx->buffer(vertices);
   m_ibo = ctx->buffer(indices);

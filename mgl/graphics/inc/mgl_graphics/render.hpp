@@ -1,6 +1,9 @@
 #pragma once
-#include "buffers.hpp"
+#include "buffer.hpp"
+#include "buffers/index.hpp"
+#include "buffers/vertex.hpp"
 #include "glm/glm.hpp"
+#include "managers/buffer.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
 #include "material.hpp"
@@ -181,6 +184,8 @@ public:
 
     void enable_state(int state);
 
+    void enable_state(state state) { enable_state(static_cast<int>(state)); }
+
     void disable_state(int state);
 
     void enable_texture(uint32_t slot, const texture_ref& tex);
@@ -207,6 +212,8 @@ public:
 
     void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha);
 
+    void set_blend_equation(blend_equation_mode mode) { set_blend_equation(mode, mode); }
+
     void set_blend_func(blend_factor srcRGB,
                         blend_factor dstRGB,
                         blend_factor srcAlpha,
@@ -214,7 +221,9 @@ public:
 
     void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
 
-    void draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode);
+    void draw(const vertex_buffer_ref& vertex_array,
+              const index_buffer_ref& index_buffer,
+              draw_mode mode);
 
     void enable_shader(shader_ref shader);
 
@@ -245,6 +254,8 @@ public:
 
     void unregister_shader(const std::string& name) { m_shader_manager.remove_item(name); }
 
+    shader_ref get_shader(const std::string& name) { return m_shader_manager.get_item(name); }
+
     void register_texture(const std::string& name, const texture_ref& texture)
     {
       m_texture_manager.add_item(name, texture);
@@ -252,7 +263,16 @@ public:
 
     void unregister_texture(const std::string& name) { m_texture_manager.remove_item(name); }
 
-    const shader_manager& shaders() const { return m_shader_manager; }
+    texture_ref get_texture(const std::string& name) { return m_texture_manager.get_item(name); }
+
+    void register_buffer(const std::string& name, const buffer_ref& buffer)
+    {
+      m_buffer_manager.add_item(name, buffer);
+    }
+
+    void unregister_buffer(const std::string& name) { m_buffer_manager.remove_item(name); }
+
+    buffer_ref get_buffer(const std::string& name) { return m_buffer_manager.get_item(name); }
 
     void release();
 
@@ -265,6 +285,7 @@ private:
     render_state m_state_data;
     shader_manager m_shader_manager;
     texture_manager m_texture_manager;
+    buffer_manager m_buffer_manager;
   };
 
   class batch_render

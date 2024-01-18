@@ -35,4 +35,10 @@ namespace mgl
 
   template <typename T>
   using buffer = std::vector<T>;
+
+  using byte_buffer = buffer<uint8_t>;
+  using float_buffer = buffer<float>;
+  using int_buffer = buffer<int>;
+  using uint_buffer = buffer<uint32_t>;
+
 } // namespace mgl

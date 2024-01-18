@@ -10,7 +10,7 @@ namespace mgl::graphics
   class vertex_buffer
   {
 public:
-    vertex_buffer(const mgl::buffer<float>& data, const std::string& layout, bool dynamic = false);
+    vertex_buffer(const mgl::float_buffer& data, const std::string& layout, bool dynamic = false);
 
     ~vertex_buffer();
 
@@ -18,7 +18,7 @@ public:
 
     const mgl::window::api::buffer_ref& buffer() const { return m_buffer; }
 
-    void upload(const mgl::buffer<float>& data);
+    void upload(const mgl::float_buffer& data);
 
     void upload(const void* src, size_t size);
 
@@ -39,12 +39,12 @@ protected:
   class index_buffer
   {
 public:
-    index_buffer(const mgl::buffer<float>& data = {}, bool dynamic = false);
+    index_buffer(const mgl::float_buffer& data = {}, bool dynamic = false);
     ~index_buffer();
 
     const mgl::window::api::buffer_ref& buffer() const { return m_buffer; }
 
-    void upload(const mgl::buffer<float>& data);
+    void upload(const mgl::float_buffer& data);
 
     void upload(const void* src, size_t size);
 

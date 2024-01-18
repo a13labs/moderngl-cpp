@@ -121,6 +121,11 @@ private:
   using uniform_ref = mgl::ref<uniform>;
   using uniforms_dict = mgl::dict<std::string, uniform_ref>;
 
+  inline void uniform::get_value(bool& value)
+  {
+    get_value((void*)&value, sizeof(bool));
+  }
+
   inline void uniform::get_value(uint8_t& value)
   {
     get_value((void*)&value, sizeof(uint8_t));
@@ -235,6 +240,24 @@ private:
   {
     auto tmp = value;
     set_value((void*)&tmp, sizeof(bool));
+  }
+
+  inline void uniform::set_value(uint8_t value)
+  {
+    auto tmp = value;
+    set_value((void*)&tmp, sizeof(uint8_t));
+  }
+
+  inline void uniform::set_value(uint16_t value)
+  {
+    auto tmp = value;
+    set_value((void*)&tmp, sizeof(uint16_t));
+  }
+
+  inline void uniform::set_value(uint32_t value)
+  {
+    auto tmp = value;
+    set_value((void*)&tmp, sizeof(uint32_t));
   }
 
   inline void uniform::set_value(int value)

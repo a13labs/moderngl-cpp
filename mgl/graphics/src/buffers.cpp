@@ -4,7 +4,7 @@
 
 namespace mgl::graphics
 {
-  vertex_buffer::vertex_buffer(const mgl::buffer<float>& data,
+  vertex_buffer::vertex_buffer(const mgl::float_buffer& data,
                                const std::string& layout,
                                bool dynamic)
       : m_layout(layout)
@@ -13,7 +13,7 @@ namespace mgl::graphics
     m_buffer = mgl::window::current_context()->buffer(data, dynamic);
   }
 
-  void vertex_buffer::upload(const mgl::buffer<float>& data)
+  void vertex_buffer::upload(const mgl::float_buffer& data)
   {
     m_buffer->write(data);
   }
@@ -38,13 +38,13 @@ namespace mgl::graphics
     m_buffer->release();
   }
 
-  index_buffer::index_buffer(const mgl::buffer<float>& data, bool dynamic)
+  index_buffer::index_buffer(const mgl::float_buffer& data, bool dynamic)
       : m_dynamic(dynamic)
   {
     m_buffer = mgl::window::current_context()->buffer(data, false);
   }
 
-  void index_buffer::upload(const mgl::buffer<float>& data)
+  void index_buffer::upload(const mgl::float_buffer& data)
   {
     m_buffer->write(data);
   }

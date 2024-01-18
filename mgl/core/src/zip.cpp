@@ -47,7 +47,7 @@ namespace mgl
     return true;
   }
 
-  void zip_file::read(const mgl::path& path, mgl::buffer<uint8_t>& buffer) const
+  void zip_file::read(const mgl::path& path, mgl::byte_buffer& buffer) const
   {
     if(m_source.empty())
     {

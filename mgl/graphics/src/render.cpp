@@ -97,8 +97,9 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::set_blend_equation_command>(modeRGB, modeAlpha));
   }
 
-  void
-  render::draw(const vertex_buffer_ref& vertex_array, index_buffer_ref index_buffer, draw_mode mode)
+  void render::draw(const vertex_buffer_ref& vertex_array,
+                    const index_buffer_ref& index_buffer,
+                    draw_mode mode)
   {
     submit(mgl::create_ref<mgl::graphics::draw_command>(vertex_array, index_buffer, mode));
   }
@@ -169,7 +170,7 @@ namespace mgl::graphics
 
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode
-    mgl::opengl::vertex_buffer_list m_content = { { m_batch_data[0].vertex_buffer->buffer(),
+    mgl::opengl::vertex_buffer_list m_content = { { m_batch_data[0].vertex_buffer->native(),
                                                     m_batch_data[0].vertex_buffer->layout(),
                                                     shader->attributes() } };
 
@@ -178,7 +179,7 @@ namespace mgl::graphics
 
     if(index_buffer != nullptr)
     {
-      vao = ctx->vertex_array(program, m_content, index_buffer->buffer());
+      vao = ctx->vertex_array(program, m_content, index_buffer->native());
     }
     else
     {

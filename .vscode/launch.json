@@ -8,8 +8,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_simple_color_triangle/basic_simple_color_triangle",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_simple_color_triangle",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/basic_index_buffer",
@@ -18,8 +17,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_index_buffer/basic_index_buffer",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_index_buffer",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/basic_perspective_projection",
@@ -28,8 +26,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_perspective_projection/basic_perspective_projection",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_perspective_projection",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/basic_alpha_blending",
@@ -38,8 +35,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_alpha_blending/basic_alpha_blending",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_alpha_blending",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/basic_uniforms_and_attributes",
@@ -48,8 +44,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_uniforms_and_attributes/basic_uniforms_and_attributes",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_uniforms_and_attributes",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/basic_application_example",
@@ -58,8 +53,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/basic_application_example/basic_application_example",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/basic_application_example",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         },
         {
             "name": "example/compute_shader",
@@ -68,8 +62,7 @@
             "program": "${workspaceFolder}/build/mgl/examples/compute_shader/compute_shader",
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/compute_shader",
-            "MIMode": "lldb",
-            "preLaunchTask": "cmake_configure_build",
+            "MIMode": "gdb",
         }
     ],
     "compounds": []

@@ -55,7 +55,7 @@ bool example::on_load()
 
   });
 
-  mgl::buffer<float> vertices = {
+  mgl::float_buffer vertices = {
     // x, y, red, green, blue
     0.0,  0.8,  1.0, 0.0, 0.0, //
     -0.6, -0.8, 0.0, 1.0, 0.0, //

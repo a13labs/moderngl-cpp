@@ -22,7 +22,7 @@ public:
 
     bool is_valid() const { return !m_source.empty(); }
 
-    void read(const mgl::path& path, mgl::buffer<uint8_t>& buffer) const;
+    void read(const mgl::path& path, mgl::byte_buffer& buffer) const;
 
     static bool is_zip_file(const std::string& source);
 

@@ -10,7 +10,7 @@ TEST(mgl_core, zip_test)
 
   EXPECT_TRUE(zip.exists("test.txt"));
 
-  mgl::buffer<uint8_t> buffer;
+  mgl::byte_buffer buffer;
   zip.read("test.txt", buffer);
 
   EXPECT_TRUE(buffer.size() > 0);

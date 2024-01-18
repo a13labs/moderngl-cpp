@@ -46,7 +46,7 @@ namespace mgl::opengl
   }
 
   bool
-  texture_cube::read_into(mgl::buffer<uint8_t>& dst, int face, int alignment, size_t write_offset)
+  texture_cube::read_into(mgl::byte_buffer& dst, int face, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "TextureCube already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -100,7 +100,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_cube::write(const mgl::buffer<uint8_t>& src,
+  bool texture_cube::write(const mgl::byte_buffer& src,
                            int face,
                            const mgl::rect& viewport,
                            int alignment)
@@ -143,7 +143,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_cube::write(const mgl::buffer<uint8_t>& src, int face, int alignment)
+  bool texture_cube::write(const mgl::byte_buffer& src, int face, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureCube already released");
     MGL_CORE_ASSERT(m_context, "No context");

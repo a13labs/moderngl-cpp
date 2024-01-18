@@ -79,7 +79,7 @@ namespace mgl::registry::loaders
       horizontal_flip(data, width, height, components);
     }
 
-    auto img_data = mgl::buffer<uint8_t>(data, data + width * height * components);
+    auto img_data = mgl::byte_buffer(data, data + width * height * components);
 
     stbi_image_free(data);
 

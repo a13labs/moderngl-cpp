@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mgl_core/containers.hpp"
-#include "mgl_graphics/buffers.hpp"
+#include "mgl_graphics/buffer.hpp"
 #include "mgl_graphics/render.hpp"
 
 namespace mgl::graphics
