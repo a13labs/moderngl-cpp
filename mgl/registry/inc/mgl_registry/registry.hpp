@@ -46,9 +46,9 @@ private:
     using loader_info_ref = mgl::ref<loader_info>;
     using location_factory_info_ref = mgl::ref<location_factory_info>;
 
-    std::unordered_map<std::string, loader_info_ref> m_loaders;
-    std::unordered_map<std::string, location_factory_info_ref> m_locations_factories;
-    std::unordered_map<resource::type, locations> m_locations;
+    mgl::unordered_map<std::string, loader_info_ref> m_loaders;
+    mgl::unordered_map<std::string, location_factory_info_ref> m_locations_factories;
+    mgl::unordered_map<resource::type, locations> m_locations;
   };
 
   using registry_ref = mgl::scope<registry>;

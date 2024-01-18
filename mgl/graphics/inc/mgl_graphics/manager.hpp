@@ -10,13 +10,13 @@ namespace mgl::graphics
   {
     struct database
     {
-      std::unordered_map<std::string, T> items_by_name;
-      std::unordered_map<uint32_t, T> items_by_idx;
-      std::unordered_map<std::string, uint32_t> item_idx_by_name;
-      std::unordered_map<uint32_t, std::string> item_name_by_idx;
-      uint32_t item_idx = 0;
+      mgl::unordered_map<std::string, T> items_by_name;
+      mgl::unordered_map<size_t, T> items_by_idx;
+      mgl::unordered_map<std::string, size_t> item_idx_by_name;
+      mgl::unordered_map<size_t, std::string> item_name_by_idx;
+      size_t item_idx = 1;
 
-      uint32_t add_item(const std::string& name, const T& item)
+      size_t add_item(const std::string& name, const T& item)
       {
         if(items_by_name.find(name) != items_by_name.end())
           return item_idx_by_name[name];
@@ -39,7 +39,7 @@ namespace mgl::graphics
         item_idx_by_name.erase(name);
       }
 
-      void remove_item(uint32_t idx)
+      void remove_item(size_t idx)
       {
         if(items_by_idx.find(idx) == items_by_idx.end())
           return;
@@ -58,12 +58,17 @@ namespace mgl::graphics
         return items_by_name[name];
       }
 
-      T get_item(uint32_t idx)
+      T get_item(size_t idx)
       {
         if(items_by_idx.find(idx) == items_by_idx.end())
           return nullptr;
 
         return items_by_idx[idx];
+      }
+
+      bool has_item(const std::string& name)
+      {
+        return items_by_name.find(name) != items_by_name.end();
       }
 
       void clear()
@@ -77,11 +82,12 @@ namespace mgl::graphics
     };
 
 public:
-    uint32_t add_item(const std::string& name, const T& item);
+    size_t add_item(const std::string& name, const T& item);
     void remove_item(const std::string& name);
-    void remove_item(uint32_t idx);
+    void remove_item(size_t idx);
     T get_item(const std::string& name);
-    T get_item(uint32_t idx);
+    T get_item(size_t idx);
+    bool has_item(const std::string& name);
     void clear();
 
 protected:
@@ -93,7 +99,7 @@ private:
   };
 
   template <typename T>
-  uint32_t manager<T>::add_item(const std::string& name, const T& item)
+  size_t manager<T>::add_item(const std::string& name, const T& item)
   {
     m_database.add_item(name, item);
     on_add(item);
@@ -112,7 +118,7 @@ private:
   }
 
   template <typename T>
-  void manager<T>::remove_item(uint32_t idx)
+  void manager<T>::remove_item(size_t idx)
   {
     auto item = m_database.get_item(idx);
     if(item == nullptr)
@@ -129,7 +135,7 @@ private:
   }
 
   template <typename T>
-  T manager<T>::get_item(uint32_t idx)
+  T manager<T>::get_item(size_t idx)
   {
     return m_database.get_item(idx);
   }
@@ -142,6 +148,12 @@ private:
       on_remove(item.second);
     }
     m_database.clear();
+  }
+
+  template <typename T>
+  bool manager<T>::has_item(const std::string& name)
+  {
+    return m_database.has_item(name);
   }
 
 } // namespace mgl::graphics

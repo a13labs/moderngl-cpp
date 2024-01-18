@@ -247,32 +247,44 @@ public:
 
     static render& current_render();
 
-    void register_shader(const std::string& name, const shader_ref& shader)
+    size_t register_shader(const std::string& name, const shader_ref& shader)
     {
-      m_shader_manager.add_item(name, shader);
+      return m_shader_manager.add_item(name, shader);
     }
 
     void unregister_shader(const std::string& name) { m_shader_manager.remove_item(name); }
 
+    bool has_shader(const std::string& name) { return m_shader_manager.has_item(name); }
+
     shader_ref get_shader(const std::string& name) { return m_shader_manager.get_item(name); }
 
-    void register_texture(const std::string& name, const texture_ref& texture)
+    shader_ref get_shader(size_t idx) { return m_shader_manager.get_item(idx); }
+
+    size_t register_texture(const std::string& name, const texture_ref& texture)
     {
-      m_texture_manager.add_item(name, texture);
+      return m_texture_manager.add_item(name, texture);
     }
 
     void unregister_texture(const std::string& name) { m_texture_manager.remove_item(name); }
 
+    bool has_texture(const std::string& name) { return m_texture_manager.has_item(name); }
+
     texture_ref get_texture(const std::string& name) { return m_texture_manager.get_item(name); }
 
-    void register_buffer(const std::string& name, const buffer_ref& buffer)
+    texture_ref get_texture(size_t idx) { return m_texture_manager.get_item(idx); }
+
+    size_t register_buffer(const std::string& name, const buffer_ref& buffer)
     {
-      m_buffer_manager.add_item(name, buffer);
+      return m_buffer_manager.add_item(name, buffer);
     }
 
     void unregister_buffer(const std::string& name) { m_buffer_manager.remove_item(name); }
 
+    bool has_buffer(const std::string& name) { return m_buffer_manager.has_item(name); }
+
     buffer_ref get_buffer(const std::string& name) { return m_buffer_manager.get_item(name); }
+
+    buffer_ref get_buffer(size_t idx) { return m_buffer_manager.get_item(idx); }
 
     void release();
 

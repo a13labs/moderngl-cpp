@@ -16,6 +16,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace mgl
@@ -28,4 +29,7 @@ namespace mgl
 
   template <typename T, typename U>
   using dict = std::map<T, U>;
+
+  template <typename T, typename U>
+  using unordered_map = std::unordered_map<T, U>;
 } // namespace  mgl

@@ -20,6 +20,7 @@ public:
         , m_channels(channels)
         , m_data(std::move(data))
     { }
+    image(int width, int height, int channels, unsigned char* data);
     image(const image&) = delete;
     image(image&&) = delete;
     image& operator=(const image&) = delete;
