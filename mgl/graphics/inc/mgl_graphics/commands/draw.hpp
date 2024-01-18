@@ -11,7 +11,7 @@ namespace mgl::graphics
 public:
     draw_command(const vertex_buffer_ref& vertex_buffer,
                  const index_buffer_ref& index_buffer,
-                 render::draw_mode mode)
+                 draw_mode mode)
         : m_vertex_buffer(vertex_buffer)
         , m_index_buffer(index_buffer)
         , m_mode(mode)
@@ -22,6 +22,6 @@ public:
 private:
     vertex_buffer_ref m_vertex_buffer;
     index_buffer_ref m_index_buffer;
-    render::draw_mode m_mode;
+    draw_mode m_mode;
   };
 } // namespace mgl::graphics

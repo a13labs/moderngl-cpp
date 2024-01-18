@@ -258,8 +258,6 @@ namespace mgl::graphics::layers
     ctx->set_blend_func(mgl::opengl::blend_factor::SRC_ALPHA,
                         mgl::opengl::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    // font->bind(0);
-
     ctx->enable_scissor();
 
     // Create temporary vertex array
@@ -273,11 +271,8 @@ namespace mgl::graphics::layers
     {
       const ImDrawList* cmd_list = draw_data->CmdLists[n];
 
-      if(cmd_list->VtxBuffer.Size * sizeof(ImDrawVert) > vb->size())
-        vb->orphan(cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-
-      if(cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx) > ib->size())
-        ib->orphan(cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+      vb->orphan(cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+      ib->orphan(cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
 
       vb->upload(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
       ib->upload(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
@@ -301,9 +296,8 @@ namespace mgl::graphics::layers
           auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          vao->render(mgl::opengl::render_mode::TRIANGLES,
-                      pcmd->ElemCount,
-                      pcmd->IdxOffset * sizeof(ImDrawIdx));
+          vao->render(mgl::opengl::render_mode::TRIANGLES, pcmd->ElemCount, idx_buffer_offset);
+          idx_buffer_offset += pcmd->ElemCount;
         }
       }
     }

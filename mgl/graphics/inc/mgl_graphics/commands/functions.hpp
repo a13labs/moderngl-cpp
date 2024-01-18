@@ -46,10 +46,10 @@ private:
   class set_blend_func_command : public render_command
   {
 public:
-    set_blend_func_command(render::blend_factor srcRGB,
-                           render::blend_factor dstRGB,
-                           render::blend_factor srcAlpha,
-                           render::blend_factor dstAlpha)
+    set_blend_func_command(blend_factor srcRGB,
+                           blend_factor dstRGB,
+                           blend_factor srcAlpha,
+                           blend_factor dstAlpha)
         : m_srcRGB(srcRGB)
         , m_dstRGB(dstRGB)
         , m_srcAlpha(srcAlpha)
@@ -59,17 +59,16 @@ public:
     void execute() override final;
 
 private:
-    render::blend_factor m_srcRGB;
-    render::blend_factor m_dstRGB;
-    render::blend_factor m_srcAlpha;
-    render::blend_factor m_dstAlpha;
+    blend_factor m_srcRGB;
+    blend_factor m_dstRGB;
+    blend_factor m_srcAlpha;
+    blend_factor m_dstAlpha;
   };
 
   class set_blend_equation_command : public render_command
   {
 public:
-    set_blend_equation_command(render::blend_equation_mode modeRGB,
-                               render::blend_equation_mode modeAlpha)
+    set_blend_equation_command(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
         : m_modeRGB(modeRGB)
         , m_modeAlpha(modeAlpha)
     { }
@@ -77,8 +76,8 @@ public:
     void execute() override final;
 
 private:
-    render::blend_equation_mode m_modeRGB;
-    render::blend_equation_mode m_modeAlpha;
+    blend_equation_mode m_modeRGB;
+    blend_equation_mode m_modeAlpha;
   };
 
   class clear_samplers_command : public render_command

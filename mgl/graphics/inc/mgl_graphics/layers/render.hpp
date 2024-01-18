@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgl_graphics/layer.hpp"
+#include "mgl_graphics/render_script.hpp"
 
 namespace mgl::graphics::layers
 {
@@ -17,7 +18,7 @@ public:
 
     virtual void on_update(float time, float frame_time) override final;
 
-    virtual void render_prepare() = 0;
+    virtual void render_prepare(render_script& script) = 0;
 
     void on_event(mgl::window::event& event) override;
   };
@@ -31,7 +32,7 @@ public:
 
     virtual ~null_render_layer() override = default;
 
-    virtual void render_prepare() override { }
+    virtual void render_prepare(render_script& script) override { }
   };
 
 } // namespace mgl::graphics::layers

@@ -8,13 +8,12 @@
 
 static mgl::graphics::vertex_buffer_ref s_vbo = nullptr;
 
-void render_layer::render_prepare()
+void render_layer::render_prepare(mgl::graphics::render_script& script)
 {
-  auto& render = mgl::graphics::current_render();
-  render.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-  render.enable_shader("custom_shader");
-  render.draw(s_vbo, nullptr, mgl::graphics::render::draw_mode::TRIANGLES);
-  render.disable_shader();
+  script.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+  script.enable_shader("custom_shader");
+  script.draw(s_vbo, nullptr, mgl::graphics::draw_mode::TRIANGLES);
+  script.disable_shader();
 }
 
 void render_layer::on_attach()
