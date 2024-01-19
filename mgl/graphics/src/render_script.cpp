@@ -76,9 +76,13 @@ namespace mgl::graphics
 
   void render_script::draw(const vertex_buffer_ref& vertex_array,
                            const index_buffer_ref& index_buffer,
-                           draw_mode mode)
+                           render_mode mode,
+                           glm::mat4 transform,
+                           size_t count,
+                           size_t offset)
   {
-    submit(mgl::create_ref<mgl::graphics::draw_command>(vertex_array, index_buffer, mode));
+    submit(mgl::create_ref<mgl::graphics::draw_command>(
+        vertex_array, index_buffer, mode, transform, count, offset));
   }
 
   void render_script::enable_shader(shader_ref shader)

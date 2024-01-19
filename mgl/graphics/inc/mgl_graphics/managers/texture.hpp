@@ -10,7 +10,7 @@ namespace mgl::graphics
   {
 public:
     texture_manager();
-    ~texture_manager() = default;
+    ~texture_manager();
 
     virtual void on_add(const texture_ref& texture) override final;
     virtual void on_remove(const texture_ref& texture) override final;

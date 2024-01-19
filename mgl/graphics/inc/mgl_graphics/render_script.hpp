@@ -45,8 +45,6 @@ public:
 
     void enable_state(int state);
 
-    void enable_state(state state) { enable_state(static_cast<int>(state)); }
-
     void disable_state(int state);
 
     void enable_texture(uint32_t slot, const texture_ref& tex);
@@ -79,8 +77,11 @@ public:
     void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
 
     void draw(const vertex_buffer_ref& vertex_array,
-              const index_buffer_ref& index_buffer,
-              draw_mode mode);
+              const index_buffer_ref& index_buffer = nullptr,
+              render_mode mode = render_mode::TRIANGLES,
+              glm::mat4 model_view = glm::mat4(1.0f),
+              size_t count = 0,
+              size_t offset = 0);
 
     void enable_shader(shader_ref shader);
 

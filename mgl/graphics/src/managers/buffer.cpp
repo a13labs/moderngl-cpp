@@ -5,17 +5,17 @@
 namespace mgl::graphics
 {
 
-  static buffer_manager* s_instance = nullptr;
+  static mgl::scope<buffer_manager> s_instance = nullptr;
 
   buffer_manager::buffer_manager()
   {
     MGL_CORE_ASSERT(s_instance == nullptr, "Only one buffer manager can exist at a time");
-    s_instance = this;
+    s_instance = mgl::scope<buffer_manager>(this);
   }
 
   buffer_manager::~buffer_manager()
   {
-    s_instance = nullptr;
+    s_instance.release();
   }
 
   void buffer_manager::on_add(const buffer_ref& buffer)
@@ -26,6 +26,12 @@ namespace mgl::graphics
   void buffer_manager::on_remove(const buffer_ref& buffer)
   {
     buffer->free();
+  }
+
+  buffer_manager& buffer_manager::instance()
+  {
+    MGL_CORE_ASSERT(s_instance != nullptr, "Buffer manager does not exists");
+    return *s_instance;
   }
 
 } // namespace mgl::graphics

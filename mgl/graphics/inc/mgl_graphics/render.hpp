@@ -17,10 +17,8 @@ namespace mgl::graphics
 {
   class render;
   using render_ref = mgl::scope<render>;
-
   class render
   {
-
 public:
     struct render_state
     {
@@ -62,6 +60,8 @@ public:
 
     const mgl::window::api::context_ref& context() const { return m_context; }
 
+    void release();
+
     size_t register_shader(const std::string& name, const shader_ref& shader)
     {
       return m_shader_manager.add_item(name, shader);
@@ -101,7 +101,37 @@ public:
 
     buffer_ref get_buffer(size_t idx) { return m_buffer_manager.get_item(idx); }
 
-    void release();
+    void enable_state(int state);
+
+    void disable_state(int state);
+
+    void clear(const glm::vec4& color);
+
+    void clear(float r, float g, float b, float a) { clear(glm::vec4(r, g, b, a)); }
+
+    void set_viewport(const glm::vec2& position, const glm::vec2& size);
+
+    void clear_samplers(int start = 0, int end = -1);
+
+    void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha);
+
+    void set_blend_equation(blend_equation_mode mode) { set_blend_equation(mode, mode); }
+
+    void set_blend_func(blend_factor srcRGB,
+                        blend_factor dstRGB,
+                        blend_factor srcAlpha,
+                        blend_factor dstAlpha);
+
+    void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
+
+    void draw(const vertex_buffer_ref& vb,
+              const index_buffer_ref& ib = nullptr,
+              render_mode mode = render_mode::TRIANGLES,
+              const glm::mat4& transform = glm::mat4(1.0f),
+              size_t count = 0,
+              size_t offset = 0);
+
+    void draw_list(const mgl::list<render_data>& data);
 
 private:
     mgl::window::api::context_ref m_context;

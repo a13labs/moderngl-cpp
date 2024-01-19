@@ -17,6 +17,21 @@ private:
     glm::vec4 m_color;
   };
 
+  class viewport_command : public render_command
+  {
+public:
+    viewport_command(const glm::vec2& position, const glm::vec2& size)
+        : m_position(position)
+        , m_size(size)
+    { }
+
+    void execute() override final;
+
+private:
+    glm::vec2 m_position;
+    glm::vec2 m_size;
+  };
+
   class set_view_command : public render_command
   {
 public:

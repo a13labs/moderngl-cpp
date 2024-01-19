@@ -12,7 +12,7 @@ void render_layer::render_prepare(mgl::graphics::render_script& script)
 {
   script.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
   script.enable_shader("custom_shader");
-  script.draw(s_vbo, nullptr, mgl::graphics::draw_mode::TRIANGLES);
+  script.draw(s_vbo);
   script.disable_shader();
 }
 
