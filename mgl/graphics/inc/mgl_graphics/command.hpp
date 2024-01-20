@@ -1,5 +1,5 @@
 #pragma once
-#include "batch_render.hpp"
+#include "batch.hpp"
 #include "buffers/index.hpp"
 #include "buffers/vertex.hpp"
 #include "enums.hpp"
@@ -83,7 +83,7 @@ public:
               size_t count = 0,
               size_t offset = 0);
 
-    void draw_batch(const batch_render_ref& batch);
+    void draw_batch(const batch_ref& batch);
 
     void enable_shader(shader_ref shader);
 

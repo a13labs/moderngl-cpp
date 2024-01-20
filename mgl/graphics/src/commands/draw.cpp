@@ -13,8 +13,7 @@ namespace mgl::graphics
   void draw_batch_command::execute()
   {
     auto& render = mgl::graphics::current_render();
-    render.draw_batch(
-        m_batch->vertex_buffer(), m_batch->index_buffer(), m_batch->mode(), m_batch->data());
+    render.draw_batch(m_batch);
   }
 
 } // namespace mgl::graphics

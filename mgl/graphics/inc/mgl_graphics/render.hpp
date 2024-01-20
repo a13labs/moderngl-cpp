@@ -1,14 +1,14 @@
 #pragma once
-#include "batch_render.hpp"
+#include "batch.hpp"
 #include "buffer.hpp"
 #include "buffers/index.hpp"
 #include "buffers/vertex.hpp"
+#include "command.hpp"
 #include "enums.hpp"
 #include "glm/glm.hpp"
 #include "managers/buffer.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "render_script.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 
@@ -122,14 +122,11 @@ public:
     void draw(const vertex_buffer_ref& vb,
               const index_buffer_ref& ib = nullptr,
               render_mode mode = render_mode::TRIANGLES,
-              const glm::mat4& transform = glm::mat4(1.0f),
+              const glm::mat4& model_view = glm::mat4(1.0f),
               size_t count = 0,
               size_t offset = 0);
 
-    void draw_batch(const vertex_buffer_ref& vb,
-                    const index_buffer_ref& ib,
-                    render_mode mode,
-                    const mgl::list<render_data>& data);
+    void draw_batch(const batch_ref& batch);
 
 private:
     mgl::window::api::context_ref m_context;

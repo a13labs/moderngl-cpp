@@ -93,7 +93,7 @@ private:
 
   inline void vertex_array::render(int instances)
   {
-    render(mgl::opengl::TRIANGLES, -1, 0, instances);
+    render(mgl::opengl::TRIANGLES, 0, 0, instances);
   }
 
   inline int vertex_array::vertices()

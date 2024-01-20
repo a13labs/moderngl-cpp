@@ -1,7 +1,7 @@
 #pragma once
 
+#include "mgl_graphics/command.hpp"
 #include "mgl_graphics/layer.hpp"
-#include "mgl_graphics/render_script.hpp"
 
 namespace mgl::graphics::layers
 {

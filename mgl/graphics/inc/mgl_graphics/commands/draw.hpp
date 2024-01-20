@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mgl_core/containers.hpp"
-#include "mgl_graphics/batch_render.hpp"
+#include "mgl_graphics/batch.hpp"
 #include "mgl_graphics/buffer.hpp"
 #include "mgl_graphics/render.hpp"
 
@@ -38,14 +38,14 @@ private:
   class draw_batch_command : public render_command
   {
 public:
-    draw_batch_command(const batch_render_ref& batch)
+    draw_batch_command(const batch_ref& batch)
         : m_batch(batch)
     { }
 
     void execute() override;
 
 private:
-    batch_render_ref m_batch;
+    batch_ref m_batch;
   };
 
 } // namespace mgl::graphics

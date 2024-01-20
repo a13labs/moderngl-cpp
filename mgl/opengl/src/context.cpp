@@ -1921,7 +1921,7 @@ namespace mgl::opengl
     {
       if(v_data.buffer == nullptr)
       {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: verempty vertex buffer", i);
+        MGL_CORE_ERROR("vertex_buffers[{0}]: empty vertex buffer", i);
         return nullptr;
       }
 
