@@ -23,23 +23,27 @@ public:
           : model_view(1.0f)
           , count(0)
           , offset(0)
+          , instance_count(1)
       { }
 
-      data(glm::mat4 t, size_t count, size_t offset)
+      data(glm::mat4 t, size_t count, size_t offset, size_t instance_count)
           : model_view(t)
           , count(count)
           , offset(offset)
+          , instance_count(instance_count)
       { }
 
       data(const data& other)
           : model_view(other.model_view)
           , count(other.count)
           , offset(other.offset)
+          , instance_count(other.instance_count)
       { }
 
       glm::mat4 model_view;
       size_t count;
       size_t offset;
+      size_t instance_count;
     };
 
     batch(const vertex_buffer_ref& vb = nullptr,
@@ -53,7 +57,10 @@ public:
 
     ~batch() { m_batch_data.clear(); }
 
-    void push(glm::mat4 t = glm::mat4(1.0f), size_t count = 0, size_t offset = 0);
+    void push(glm::mat4 t = glm::mat4(1.0f),
+              size_t count = 0,
+              size_t offset = 0,
+              size_t instance_count = 1);
 
     void reset(const vertex_buffer_ref& vb,
                const index_buffer_ref& ib = nullptr,

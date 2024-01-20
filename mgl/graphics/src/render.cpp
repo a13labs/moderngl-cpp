@@ -35,6 +35,21 @@ namespace mgl::graphics
     m_shader_manager.clear();
   }
 
+  void render::enable_scissor()
+  {
+    m_context->enable_scissor();
+  }
+
+  void render::disable_scissor()
+  {
+    m_context->disable_scissor();
+  }
+
+  void render::set_scissor(const glm::vec2& position, const glm::vec2& size)
+  {
+    m_context->set_scissor(position.x, position.y, size.x, size.y);
+  }
+
   void render::enable_state(int state)
   {
     m_context->enable(state);
@@ -78,7 +93,8 @@ namespace mgl::graphics
                     render_mode mode,
                     const glm::mat4& model_view,
                     size_t count,
-                    size_t offset)
+                    size_t offset,
+                    size_t instance_count)
   {
     shader_ref shader = m_state_data.current_shader;
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
@@ -109,7 +125,7 @@ namespace mgl::graphics
       vao = m_context->vertex_array(program, m_content);
     }
 
-    vao->render((mgl::opengl::render_mode)mode, count, offset);
+    vao->render((mgl::opengl::render_mode)mode, count, offset, instance_count);
     vao->release();
   }
 
@@ -156,7 +172,10 @@ namespace mgl::graphics
         transform_uniform->set_value(draw_call.model_view);
       }
 
-      vao->render((mgl::opengl::render_mode)batch->mode(), draw_call.count, draw_call.offset);
+      vao->render((mgl::opengl::render_mode)batch->mode(),
+                  draw_call.count,
+                  draw_call.offset,
+                  draw_call.instance_count);
     }
     vao->release();
   }

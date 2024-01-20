@@ -96,6 +96,16 @@ public:
 
     buffer_ref get_buffer(size_t idx) { return m_buffer_manager.get_item(idx); }
 
+    void enable_scissor();
+
+    void disable_scissor();
+
+    void set_scissor(const glm::vec2& position, const glm::vec2& size);
+
+    void set_scissor(const glm::vec4& rect) { set_scissor(glm::vec2(rect), glm::vec2(rect.z, rect.w)); }
+
+    void set_scissor(float x, float y, float width, float height) { set_scissor(glm::vec4(x, y, width, height)); }
+    
     void enable_state(int state);
 
     void disable_state(int state);
@@ -124,7 +134,8 @@ public:
               render_mode mode = render_mode::TRIANGLES,
               const glm::mat4& model_view = glm::mat4(1.0f),
               size_t count = 0,
-              size_t offset = 0);
+              size_t offset = 0,
+              size_t instance_count = 1);
 
     void draw_batch(const batch_ref& batch);
 

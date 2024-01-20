@@ -4,9 +4,9 @@
 
 namespace mgl::graphics
 {
-  void batch::push(glm::mat4 t, size_t count, size_t offset)
+  void batch::push(glm::mat4 t, size_t count, size_t offset, size_t instance_count)
   {
-    m_batch_data.push_back({ t, count, offset });
+    m_batch_data.push_back({ t, count, offset, instance_count });
   }
 
   void batch::reset(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render_mode m)

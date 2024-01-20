@@ -4,6 +4,7 @@
 #include "mgl_graphics/textures/texture2d.hpp"
 
 #include "mgl_core/debug.hpp"
+#include "mgl_core/memory.hpp"
 #include "mgl_registry/resources/image.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
@@ -238,34 +239,26 @@ namespace mgl::graphics::layers
       return;
 
     auto& render = mgl::graphics::current_render();
-    auto ctx = render.context();
-    MGL_CORE_ASSERT(ctx != nullptr, "No context available");
 
     auto prg = render.get_shader("gui");
-    auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
-    auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
-    auto font = render.get_texture("gui_font");
 
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
 
+    render.current_state().current_shader = prg;
     prg->set_uniform_value("ProjMtx",
                            glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    ctx->enable(mgl::opengl::enable_flag::BLEND);
-    ctx->set_blend_equation(mgl::opengl::blend_equation_mode::ADD);
-    ctx->set_blend_func(mgl::opengl::blend_factor::SRC_ALPHA,
-                        mgl::opengl::blend_factor::ONE_MINUS_SRC_ALPHA);
+    render.enable_state(mgl::graphics::enable_flag::BLEND);
+    render.set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
+    render.set_blend_func(mgl::graphics::blend_factor::SRC_ALPHA,
+                          mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    ctx->enable_scissor();
+    render.enable_scissor();
 
-    // Create temporary vertex array
-    mgl::opengl::vertex_array_ref vao =
-        ctx->vertex_array(prg->native(),
-                          { { vb->native(), vb->layout(), prg->attributes() } },
-                          ib->native(),
-                          ib->element_size());
+    auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
+    auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
 
     for(int n = 0; n < draw_data->CmdListsCount; ++n)
     {
@@ -288,24 +281,30 @@ namespace mgl::graphics::layers
         }
         else
         {
-          ctx->set_scissor(static_cast<int>(pcmd->ClipRect.x),
-                           static_cast<int>(fb_height - pcmd->ClipRect.w),
-                           static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
-                           static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
+          render.set_scissor(static_cast<int>(pcmd->ClipRect.x),
+                             static_cast<int>(fb_height - pcmd->ClipRect.w),
+                             static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
+                             static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
           auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          vao->render(mgl::opengl::render_mode::TRIANGLES, pcmd->ElemCount, idx_buffer_offset);
+          render.draw(vb,
+                      ib,
+                      mgl::graphics::render_mode::TRIANGLES,
+                      glm::mat4(1.0f),
+                      pcmd->ElemCount,
+                      idx_buffer_offset);
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
     }
 
-    ctx->disable_scissor();
+    render.clear_samplers(0, 1);
 
-    // Cleanup temporary vertex array
-    vao->release();
+    prg->unbind();
+
+    render.disable_scissor();
   }
 
   bool gui_layer::on_window_close(mgl::window::window_close_event& event)

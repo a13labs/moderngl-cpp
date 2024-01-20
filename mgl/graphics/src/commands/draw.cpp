@@ -7,7 +7,8 @@ namespace mgl::graphics
   void draw_command::execute()
   {
     auto& render = mgl::graphics::current_render();
-    render.draw(m_vertex_buffer, m_index_buffer, m_mode, m_model_view, m_count, m_offset);
+    render.draw(
+        m_vertex_buffer, m_index_buffer, m_mode, m_model_view, m_count, m_offset, m_instance_count);
   }
 
   void draw_batch_command::execute()
