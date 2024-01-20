@@ -28,17 +28,6 @@ namespace mgl::graphics
     {
       state.projection_uniform->set_value(state.projection_matrix);
     }
-
-    // If the current batch is empty, we create a new batch
-    if(state.current_batch == nullptr)
-    {
-      state.current_batch = mgl::create_ref<batch_render>();
-    }
-    else
-    {
-      // If the current batch is not empty, we commit all the draw calls in the batch
-      state.current_batch->commit();
-    }
   }
 
   void shader::unbind()
@@ -47,11 +36,6 @@ namespace mgl::graphics
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
 
     auto& render = mgl::graphics::current_render();
-
-    if(render.current_state().current_batch != nullptr)
-    {
-      render.current_state().current_batch->commit();
-    }
 
     // Unbind the program, and set the current program to null and the view and projection uniforms to
     // null

@@ -46,13 +46,13 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
-    if(vertices < 0)
+    if(vertices == 0)
     {
-      MGL_CORE_ASSERT(m_num_vertices >= 0, "cannot detect the number of vertices");
+      MGL_CORE_ASSERT(m_num_vertices > 0, "cannot detect the number of vertices");
       vertices = m_num_vertices;
     }
 
-    if(instances < 0)
+    if(instances == 0)
     {
       instances = m_num_instances;
     }

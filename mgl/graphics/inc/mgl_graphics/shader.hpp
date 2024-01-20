@@ -27,7 +27,6 @@ public:
     virtual void unbind();
 
     virtual void prepare() = 0;
-    virtual const mgl::window::api::program_ref& native() = 0;
     virtual const mgl::string_list& attributes() = 0;
     virtual void load() = 0;
     virtual void unload() = 0;
@@ -79,6 +78,10 @@ public:
     void set_uniform_value(const std::string& name, uint32_t* value, size_t size);
     void set_uniform_value(const std::string& name, int* value, size_t size);
     void set_uniform_value(const std::string& name, float* value, size_t size);
+
+    virtual const mgl::window::api::program_ref& native() = 0;
+
+protected:
   };
 
   using shader_ref = mgl::ref<shader>;

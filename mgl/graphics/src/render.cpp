@@ -2,7 +2,6 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_graphics/commands/draw.hpp"
 #include "mgl_graphics/commands/functions.hpp"
-#include "mgl_graphics/commands/material.hpp"
 #include "mgl_graphics/commands/shader.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
@@ -81,10 +80,13 @@ namespace mgl::graphics
                     size_t count,
                     size_t offset)
   {
-    draw_list({ { vb, ib, mode, transform, count, offset } });
+    draw_batch(vb, ib, mode, { { transform, count, offset } });
   }
 
-  void render::draw_list(const mgl::list<render_data>& data)
+  void render::draw_batch(const vertex_buffer_ref& vb,
+                          const index_buffer_ref& ib,
+                          render_mode mode,
+                          const mgl::list<render_data>& data)
   {
     if(data.size() == 0)
     {
@@ -103,15 +105,14 @@ namespace mgl::graphics
     // We create a vertex array from the first batch data since all the batches have the same
     // vertex buffer data, index buffer data and draw mode
     mgl::opengl::vertex_buffer_list m_content = {
-      { data[0].vertex_buffer->native(), data[0].vertex_buffer->layout(), shader->attributes() }
+      { vb->native(), vb->layout(), shader->attributes() }
     };
 
-    index_buffer_ref index_buffer = data[0].index_buffer;
     mgl::opengl::vertex_array_ref vao = nullptr;
 
-    if(index_buffer != nullptr)
+    if(ib != nullptr)
     {
-      vao = m_context->vertex_array(program, m_content, index_buffer->native());
+      vao = m_context->vertex_array(program, m_content, ib->native(), ib->element_size());
     }
     else
     {
@@ -125,7 +126,7 @@ namespace mgl::graphics
         transform_uniform->set_value(draw_call.model_view);
       }
 
-      vao->render((mgl::opengl::render_mode)draw_call.mode);
+      vao->render((mgl::opengl::render_mode)mode, draw_call.count, draw_call.offset);
     }
     vao->release();
   }

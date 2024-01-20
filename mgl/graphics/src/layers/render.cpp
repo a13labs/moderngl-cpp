@@ -15,6 +15,7 @@ namespace mgl::graphics::layers
   void render_layer::on_update(float time, float frame_time)
   {
     render_script script;
+    auto& render = mgl::graphics::current_render();
     render_prepare(script);
     script.execute();
   }

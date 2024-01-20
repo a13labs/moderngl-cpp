@@ -88,8 +88,8 @@ namespace mgl::graphics::layers
 
     auto& render = mgl::graphics::current_render();
     render.register_shader("gui", mgl::create_ref<shaders::gui>());
-    render.register_buffer("gui_vb", mgl::create_ref<mgl::graphics::vertex_buffer>("2f 2f 4f1"));
-    render.register_buffer("gui_ib", mgl::create_ref<mgl::graphics::index_buffer>());
+    render.register_buffer("gui_vb", mgl::create_ref<vertex_buffer>("2f 2f 4f1", 0, true));
+    render.register_buffer("gui_ib", mgl::create_ref<index_buffer>(0, sizeof(ImDrawIdx), true));
 
     refresh_font();
 
@@ -243,7 +243,7 @@ namespace mgl::graphics::layers
 
     auto prg = render.get_shader("gui");
     auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
-    auto ib = render.get_buffer("gui_ib");
+    auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
     auto font = render.get_texture("gui_font");
 
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
@@ -265,7 +265,7 @@ namespace mgl::graphics::layers
         ctx->vertex_array(prg->native(),
                           { { vb->native(), vb->layout(), prg->attributes() } },
                           ib->native(),
-                          sizeof(ImDrawIdx));
+                          ib->element_size());
 
     for(int n = 0; n < draw_data->CmdListsCount; ++n)
     {

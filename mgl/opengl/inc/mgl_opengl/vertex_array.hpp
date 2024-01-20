@@ -35,9 +35,9 @@ public:
     bool released();
 
     void render(render_mode mode = render_mode::TRIANGLES,
-                int vertices = -1,
+                int vertices = 0,
                 int first = 0,
-                int instances = -1);
+                int instances = 0);
     void render(int instances);
     void
     render_indirect(const buffer_ref& buffer, render_mode mode, int count = -1, int first = -1);

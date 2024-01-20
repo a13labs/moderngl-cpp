@@ -8,7 +8,6 @@
 #include "managers/buffer.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "material.hpp"
 #include "render_script.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -28,7 +27,6 @@ public:
           , view_uniform(nullptr)
           , projection_matrix(1.0f)
           , projection_uniform(nullptr)
-          , current_batch(nullptr)
       { }
 
       // The current shader, view and projection matrices are stored in the render, as they are
@@ -42,9 +40,6 @@ public:
       mgl::window::api::uniform_ref view_uniform;
       mgl::window::api::uniform_ref projection_uniform;
       mgl::window::api::uniform_ref model_uniform;
-
-      // The current batch is stored in the render, as it is used by multiple commands
-      batch_render_ref current_batch;
 
       // Used textures
       mgl::list<mgl::window::api::texture_ref> textures;
@@ -131,7 +126,10 @@ public:
               size_t count = 0,
               size_t offset = 0);
 
-    void draw_list(const mgl::list<render_data>& data);
+    void draw_batch(const vertex_buffer_ref& vb,
+                    const index_buffer_ref& ib,
+                    render_mode mode,
+                    const mgl::list<render_data>& data);
 
 private:
     mgl::window::api::context_ref m_context;

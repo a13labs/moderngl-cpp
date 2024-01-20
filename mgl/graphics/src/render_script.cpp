@@ -1,7 +1,6 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_graphics/commands/draw.hpp"
 #include "mgl_graphics/commands/functions.hpp"
-#include "mgl_graphics/commands/material.hpp"
 #include "mgl_graphics/commands/shader.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
@@ -85,6 +84,11 @@ namespace mgl::graphics
         vertex_array, index_buffer, mode, transform, count, offset));
   }
 
+  void render_script::draw_batch(const batch_render_ref& batch)
+  {
+    submit(mgl::create_ref<mgl::graphics::draw_batch_command>(batch));
+  }
+
   void render_script::enable_shader(shader_ref shader)
   {
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
@@ -109,16 +113,6 @@ namespace mgl::graphics
   void render_script::disable_shader()
   {
     submit(mgl::create_ref<mgl::graphics::disable_shader>());
-  }
-
-  void render_script::enable_material(material_ref material)
-  {
-    submit(mgl::create_ref<mgl::graphics::enable_material>(material));
-  }
-
-  void render_script::disable_material()
-  {
-    submit(mgl::create_ref<mgl::graphics::disable_material>());
   }
 
   void render_script::execute()

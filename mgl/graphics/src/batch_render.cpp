@@ -7,31 +7,21 @@ namespace mgl::graphics
   void batch_render::commit()
   {
     auto& render = render::current_render();
-    render.draw_list(m_batch_data);
+    render.draw_batch(m_vb, m_ib, m_mode, m_batch_data);
     m_batch_data.clear();
   }
 
-  void batch_render::push(const vertex_buffer_ref& vb,
-                          const index_buffer_ref& ib,
-                          render_mode m,
-                          glm::mat4 t,
-                          size_t count,
-                          size_t offset)
+  void batch_render::push(glm::mat4 t, size_t count, size_t offset)
   {
-    if(m_batch_data.size() == 0)
-    {
-      m_batch_data.push_back({ vb, ib, m, t, count, offset });
-      return;
-    }
+    m_batch_data.push_back({ t, count, offset });
+  }
 
-    auto& last = m_batch_data.back();
-    if(last.vertex_buffer == vb && last.index_buffer == ib)
-    {
-      m_batch_data.push_back({ vb, ib, m, t, count, offset });
-      return;
-    }
-
-    commit();
+  void batch_render::reset(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render_mode m)
+  {
+    m_batch_data.clear();
+    m_mode = m;
+    m_vb = vb;
+    m_ib = ib;
   }
 
 } // namespace mgl::graphics

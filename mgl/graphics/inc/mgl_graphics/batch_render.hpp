@@ -16,48 +16,23 @@ namespace mgl::graphics
   struct render_data
   {
     render_data()
-        : vertex_buffer(nullptr)
-        , index_buffer(nullptr)
-        , mode(render_mode::TRIANGLES)
-        , model_view(1.0f)
+        : model_view(1.0f)
         , count(0)
         , offset(0)
     { }
 
-    render_data(const vertex_buffer_ref& vb,
-                const index_buffer_ref& ib,
-                render_mode m,
-                glm::mat4 t,
-                size_t count,
-                size_t offset)
-        : vertex_buffer(vb)
-        , index_buffer(ib)
-        , mode(m)
-        , model_view(t)
+    render_data(glm::mat4 t, size_t count, size_t offset)
+        : model_view(t)
         , count(count)
         , offset(offset)
     { }
 
     render_data(const render_data& other)
-        : vertex_buffer(other.vertex_buffer)
-        , index_buffer(other.index_buffer)
-        , mode(other.mode)
-        , model_view(other.model_view)
+        : model_view(other.model_view)
         , count(other.count)
         , offset(other.offset)
     { }
 
-    bool operator==(const render_data& other) const
-    {
-      return vertex_buffer == other.vertex_buffer && index_buffer == other.index_buffer &&
-             mode == other.mode && model_view == other.model_view && count == other.count;
-    }
-
-    bool operator!=(const render_data& other) const { return !(*this == other); }
-
-    vertex_buffer_ref vertex_buffer;
-    index_buffer_ref index_buffer;
-    render_mode mode;
     glm::mat4 model_view;
     size_t count;
     size_t offset;
@@ -67,20 +42,30 @@ namespace mgl::graphics
   {
 
 public:
-    batch_render()
+    batch_render(const vertex_buffer_ref& vb = nullptr,
+                 const index_buffer_ref& ib = nullptr,
+                 render_mode m = render_mode::TRIANGLES)
         : m_batch_data()
+        , m_mode(m)
+        , m_vb(vb)
+        , m_ib(ib)
     { }
 
     ~batch_render() { m_batch_data.clear(); }
 
-    void push(const vertex_buffer_ref& vb,
-              const index_buffer_ref& ib = nullptr,
-              render_mode m = render_mode::TRIANGLES,
-              glm::mat4 t = glm::mat4(1.0f),
-              size_t count = 0,
-              size_t offset = 0);
+    void push(glm::mat4 t = glm::mat4(1.0f), size_t count = 0, size_t offset = 0);
 
-    void clear() { m_batch_data.clear(); }
+    void reset(const vertex_buffer_ref& vb,
+               const index_buffer_ref& ib = nullptr,
+               render_mode m = render_mode::TRIANGLES);
+
+    const vertex_buffer_ref& vertex_buffer() const { return m_vb; }
+
+    const index_buffer_ref& index_buffer() const { return m_ib; }
+
+    render_mode mode() const { return m_mode; }
+
+    const mgl::list<render_data>& data() const { return m_batch_data; }
 
     void commit();
 
@@ -88,5 +73,8 @@ public:
 
 private:
     mgl::list<render_data> m_batch_data;
+    render_mode m_mode;
+    vertex_buffer_ref m_vb;
+    index_buffer_ref m_ib;
   };
 } // namespace mgl::graphics

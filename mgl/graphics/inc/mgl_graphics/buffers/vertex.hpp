@@ -12,6 +12,8 @@ public:
         , m_layout(layout)
     { }
 
+    vertex_buffer(const vertex_buffer&) = delete;
+
     ~vertex_buffer() = default;
 
     const std::string& layout() const { return m_layout; }
