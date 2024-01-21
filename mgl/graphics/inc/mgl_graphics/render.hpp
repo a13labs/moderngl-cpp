@@ -9,7 +9,7 @@
 #include "managers/buffer.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "mgl_window/api.hpp"
+#include "mgl_window/api/opengl.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 

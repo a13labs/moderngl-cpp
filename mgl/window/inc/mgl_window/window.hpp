@@ -14,7 +14,7 @@
    limitations under the License.
 */
 #pragma once
-#include "api.hpp"
+#include "api/opengl.hpp"
 #include "event.hpp"
 #include "input.hpp"
 

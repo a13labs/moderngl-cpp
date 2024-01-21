@@ -1,4 +1,4 @@
-#include "mgl_window/api.hpp"
+#include "mgl_window/api/opengl.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_window/window.hpp"
 

@@ -2,7 +2,7 @@
 
 #include "mgl_graphics/layer.hpp"
 #include "mgl_graphics/shader.hpp"
-#include "mgl_window/api.hpp"
+#include "mgl_window/api/opengl.hpp"
 #include "mgl_window/event.hpp"
 
 namespace mgl::graphics::layers

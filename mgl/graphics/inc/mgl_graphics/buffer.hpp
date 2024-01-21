@@ -3,7 +3,7 @@
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
-#include "mgl_window/api.hpp"
+#include "mgl_window/api/opengl.hpp"
 
 namespace mgl::graphics
 {
