@@ -1,5 +1,6 @@
 #include "mgl_graphics/layers/render.hpp"
 #include "mgl_core/debug.hpp"
+#include "mgl_core/profiling.hpp"
 #include "mgl_graphics/render.hpp"
 
 namespace mgl::graphics::layers
@@ -14,8 +15,8 @@ namespace mgl::graphics::layers
 
   void render_layer::on_update(float time, float frame_time)
   {
+    MGL_PROFILE_FUNCTION("RENDER_LAYER");
     render_script script;
-    auto& render = mgl::graphics::current_render();
     render_prepare(script);
     script.execute();
   }

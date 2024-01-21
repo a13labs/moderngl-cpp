@@ -117,7 +117,7 @@ public:
 
 public:
     window(const window_config& config = window_config());
-    virtual ~window() = default;
+    virtual ~window();
 
 public:
     void run();

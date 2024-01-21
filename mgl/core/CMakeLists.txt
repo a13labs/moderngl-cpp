@@ -14,7 +14,9 @@ set (DEFAULT_INCLUDE_DIRS
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${LIBZIP_INCLUDE_DIR}
     ${LIBZIP_BINARY_DIR}
+    ${JSON_INCLUDE_DIR}
     ${MGL_CORE_INCLUDE_DIR}
+    ${CMAKE_BINARY_DIR}/inc
 )
 
 # Add include directories
@@ -25,7 +27,7 @@ PRIVATE
 )
 
 # Link library to required libraries
-target_link_libraries(mgl_core PRIVATE spdlog::spdlog libzip::zip)
+target_link_libraries(mgl_core PRIVATE spdlog::spdlog libzip::zip nlohmann_json::nlohmann_json)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_core 

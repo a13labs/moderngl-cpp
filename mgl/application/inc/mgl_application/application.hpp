@@ -58,8 +58,6 @@ public:
     application(const application_config& settings = application_config());
     ~application();
 
-    const mgl::graphics::render_ref& current_render();
-
     mgl::graphics::layer_stack& layers() { return m_layers; }
 
     static application& current();
@@ -73,7 +71,6 @@ protected:
     virtual void on_unload() override final;
 
 private:
-    mgl::graphics::render_ref m_render;
     mgl::graphics::layer_ref m_gui_layer;
     mgl::graphics::layer_ref m_render_layer;
     application_config m_config;

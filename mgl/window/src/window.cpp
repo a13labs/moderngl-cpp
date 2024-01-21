@@ -16,6 +16,7 @@
 */
 #include "mgl_window/window.hpp"
 #include "mgl_core/debug.hpp"
+#include "mgl_core/profiling.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_registry/registry.hpp"
 #include "mgl_window/context/sdl_window.hpp"
@@ -24,13 +25,13 @@
 
 namespace mgl::window
 {
-  static window* s_instance = nullptr;
+  static mgl::scope<window> s_instance = nullptr;
   static mgl::registry::registry_ref s_registry = nullptr;
 
   window::window(const window_config& config)
   {
     MGL_CORE_ASSERT(!s_instance, "Window already running!");
-    s_instance = this;
+    s_instance = mgl::scope<window>(this);
     m_running = false;
     m_config = config;
 
@@ -41,6 +42,11 @@ namespace mgl::window
 
     // Create api window (SDL)
     m_api_window = mgl::create_scope<sdl_window>(config);
+  }
+
+  window::~window()
+  {
+    s_instance.release();
   }
 
   void window::on_event(event& event)
@@ -94,6 +100,8 @@ namespace mgl::window
 
     m_running = true;
 
+    MGL_PROFILE_BEGIN_SESSION();
+
     if(!on_load())
     {
       MGL_CORE_TRACE("Window: Error loading application.");
@@ -109,8 +117,15 @@ namespace mgl::window
       auto frame_time = m_timer.next_frame();
       on_update(frame_time.current, frame_time.delta);
       m_api_window->swap_buffers();
+
+#if MGL_PROFILING
+      // Since we are profiling we just render one frame
+      m_running = false;
+#endif
     }
     on_unload();
+
+    MGL_PROFILE_END_SESSION();
 
     m_context->release();
     m_api_window->destroy_window();

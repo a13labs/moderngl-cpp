@@ -20,11 +20,15 @@ namespace mgl::graphics
   class render
   {
 public:
-    render();
+    render() = default;
 
-    ~render();
+    ~render() = default;
 
-    static render& current_render();
+    static render& current_render()
+    {
+      static render s_render;
+      return s_render;
+    }
 
     void release();
 

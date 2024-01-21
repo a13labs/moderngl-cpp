@@ -1,7 +1,8 @@
 #include "mgl_window/api/opengl.hpp"
-#include "mgl_core/debug.hpp"
 #include "mgl_window/window.hpp"
 
+#include "mgl_core/debug.hpp"
+#include "mgl_core/profiling.hpp"
 namespace mgl::window::api
 {
   static render_state s_state_data;
@@ -243,6 +244,7 @@ namespace mgl::window::api
             int offset,
             int instance_count)
   {
+    MGL_PROFILE_FUNCTION("API_DRAW_CALL");
     auto& ctx = mgl::window::current_context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
 
@@ -279,6 +281,7 @@ namespace mgl::window::api
                   int mode,
                   const mgl::list<batch_data>& data)
   {
+    MGL_PROFILE_FUNCTION("API_DRAW_CALL");
     auto& ctx = mgl::window::current_context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
 

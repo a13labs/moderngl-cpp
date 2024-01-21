@@ -2,6 +2,10 @@
     "files.associations": {
         "functional": "cpp",
         "string": "cpp",
-        "*.in": "cpp"
+        "*.in": "cpp",
+        "fstream": "cpp",
+        "chrono": "cpp",
+        "system_error": "cpp",
+        "__locale": "cpp"
     }
 }

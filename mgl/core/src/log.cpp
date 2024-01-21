@@ -23,7 +23,7 @@ namespace mgl
 {
   namespace log
   {
-    static ref<spdlog::logger> logger;
+    static ref<spdlog::logger> s_logger = nullptr;
 
     void init(const std::string& logfile)
     {
@@ -40,15 +40,21 @@ namespace mgl
       logSinks[1]->set_pattern("%^[%T] %n: %v%$");
 #endif
 
-      logger = std::make_shared<spdlog::logger>("mgl_core", begin(logSinks), end(logSinks));
-      spdlog::register_logger(logger);
-      logger->set_level(spdlog::level::trace);
-      logger->flush_on(spdlog::level::trace);
+      s_logger = std::make_shared<spdlog::logger>("mgl_core", begin(logSinks), end(logSinks));
+      spdlog::register_logger(s_logger);
+      s_logger->set_level(spdlog::level::trace);
+      s_logger->flush_on(spdlog::level::trace);
     }
 
     void log(level lvl, const std::string& msg)
     {
-      logger->log(static_cast<spdlog::level::level_enum>(lvl), msg);
+      s_logger->log(static_cast<spdlog::level::level_enum>(lvl), msg);
     }
+
+    bool is_initialized()
+    {
+      return s_logger != nullptr;
+    }
+
   } // namespace log
 } // namespace  mgl

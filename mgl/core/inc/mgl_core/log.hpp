@@ -77,6 +77,8 @@ namespace mgl::log
     log(level::critical, msg);
   }
 
+  bool is_initialized();
+
 } // namespace mgl::log
 
 // log macros

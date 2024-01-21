@@ -7,29 +7,9 @@
 #include "mgl_graphics/commands/texture.hpp"
 namespace mgl::graphics
 {
-  static mgl::scope<render> s_instance = nullptr;
-
-  render::render()
-  {
-    MGL_CORE_ASSERT(s_instance == nullptr, "Render already exists");
-    s_instance = mgl::scope<render>(this);
-  }
-
-  render::~render()
-  {
-    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
-    s_instance.release();
-  }
-
-  render& render::current_render()
-  {
-    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
-    return *s_instance;
-  }
 
   void render::release()
   {
-    MGL_CORE_ASSERT(s_instance != nullptr, "Render does not exists");
     m_buffer_manager.clear();
     m_shader_manager.clear();
     m_texture_manager.clear();

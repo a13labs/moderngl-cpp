@@ -5,6 +5,7 @@
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
+#include "mgl_core/profiling.hpp"
 #include "mgl_registry/resources/image.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
@@ -32,6 +33,7 @@ namespace mgl::graphics::layers
 
   void gui_layer::on_update(float time, float frame_time)
   {
+    MGL_PROFILE_FUNCTION("GUI_LAYER");
     draw_ui(time, frame_time);
     render_subsystem();
   }
@@ -221,6 +223,7 @@ namespace mgl::graphics::layers
 
   void gui_layer::render_subsystem()
   {
+    MGL_PROFILE_FUNCTION("GUI_LAYER");
     MGL_CORE_ASSERT(ImGui::GetCurrentContext() != nullptr, "ImGui Context not initialized");
 
     ImGuiIO& io = ImGui::GetIO();

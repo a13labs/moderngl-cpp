@@ -1,10 +1,12 @@
-#include "mgl_core/debug.hpp"
 #include "mgl_graphics/commands/draw.hpp"
 #include "mgl_graphics/commands/functions.hpp"
 #include "mgl_graphics/commands/shader.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
 #include "mgl_graphics/render.hpp"
+
+#include "mgl_core/debug.hpp"
+#include "mgl_core/profiling.hpp"
 namespace mgl::graphics
 {
 
@@ -117,6 +119,7 @@ namespace mgl::graphics
 
   void render_script::execute()
   {
+    MGL_PROFILE_FUNCTION("RENDER_SCRIPT");
     if(m_render_target != nullptr)
     {
       m_render_target->use();

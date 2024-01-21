@@ -15,6 +15,9 @@ add_subdirectory(mojoAL)
 # spdlog
 add_subdirectory(spdlog)
 
+# json
+add_subdirectory(json)
+
 # glm
 add_subdirectory(glm)
 

@@ -9,20 +9,22 @@
 
 namespace mgl::application
 {
-  static application* s_instance = nullptr;
+  static mgl::scope<application> s_instance = nullptr;
 
   application::application(const application_config& settings)
       : mgl::window::window(settings)
       , m_render_layer(settings.render_layer)
       , m_gui_layer(settings.gui_layer)
       , m_layers()
-      , m_render(nullptr)
   {
     MGL_CORE_ASSERT(s_instance == nullptr, "Application already exists!");
-    s_instance = this;
+    s_instance = mgl::scope<application>(this);
   }
 
-  application::~application() { }
+  application::~application()
+  {
+    s_instance.release();
+  }
 
   void application::on_event(mgl::window::event& event)
   {
@@ -30,11 +32,6 @@ namespace mgl::application
     m_gui_layer->on_event(event);
     m_layers.on_event(event);
     m_render_layer->on_event(event);
-  }
-
-  const mgl::graphics::render_ref& application::current_render()
-  {
-    return m_render;
   }
 
   void application::on_update(float time, float frame_time)
@@ -46,9 +43,6 @@ namespace mgl::application
 
   bool application::on_load()
   {
-    // Create the render
-    m_render = mgl::create_scope<mgl::graphics::render>();
-
     if(config().gui_layer == nullptr)
     {
       m_gui_layer = mgl::create_ref<mgl::graphics::layers::null_gui_layer>();
@@ -83,8 +77,6 @@ namespace mgl::application
     m_gui_layer->on_detach();
     m_render_layer->on_detach();
     m_layers.clear();
-    m_render->release();
-    m_render = nullptr;
   }
 
   application& application::current()
