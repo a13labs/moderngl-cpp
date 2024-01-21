@@ -31,7 +31,7 @@ namespace mgl::window
     int height;
   };
 
-  class sdl_window : public native_window
+  class sdl_window : public api_window
   {
 
 public:
@@ -58,7 +58,7 @@ public:
 private:
     SDL_GLContext m_context;
     std::string m_title;
-    SDL_Window* m_native_window = nullptr;
+    SDL_Window* m_api_window = nullptr;
     window_state m_state;
   };
 } // namespace  mgl::window

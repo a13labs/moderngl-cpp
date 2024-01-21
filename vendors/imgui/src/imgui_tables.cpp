@@ -1648,7 +1648,7 @@ const char* ImGui::TableGetColumnName(const ImGuiTable* table, int column_n)
 // - Require table to have the ImGuiTableFlags_Hideable flag because we are manipulating user accessible state.
 // - Request will be applied during next layout, which happens on the first call to TableNextRow() after BeginTable().
 // - For the getter you can test (TableGetColumnFlags() & ImGuiTableColumnFlags_IsEnabled) != 0.
-// - Alternative: the ImGuiTableColumnFlags_Disabled is an overriding/master disable flag which will also hide the column from context menu.
+// - Alterapi: the ImGuiTableColumnFlags_Disabled is an overriding/master disable flag which will also hide the column from context menu.
 void ImGui::TableSetColumnEnabled(int column_n, bool enabled)
 {
     ImGuiContext& g = *GImGui;

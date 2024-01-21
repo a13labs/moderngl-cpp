@@ -6,7 +6,6 @@
 
 namespace mgl::graphics
 {
-
   class texture;
   using texture_ref = mgl::ref<texture>;
 
@@ -31,14 +30,17 @@ public:
     };
 
     ~texture() = default;
+
     void bind(int index);
-    static void unbind(int index);
+    void unload();
+    const mgl::window::api::texture_ref& api() { return m_texture; }
 
     virtual texture::type texture_type() = 0;
-    virtual const mgl::window::api::texture_ref& native() = 0;
     virtual void prepare() = 0;
     virtual void load() = 0;
-    virtual void unload() = 0;
+
+protected:
+    mgl::window::api::texture_ref m_texture = nullptr;
   };
 
   struct texture_opts
@@ -46,6 +48,7 @@ public:
     bool generate_mipmaps = false;
     texture::filter min_filter = texture::filter::LINEAR;
     texture::filter mag_filter = texture::filter::LINEAR;
+    int samples = 0;
   };
 
 } // namespace mgl::graphics

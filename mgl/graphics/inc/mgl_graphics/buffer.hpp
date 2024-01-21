@@ -51,7 +51,7 @@ public:
 
     bool is_dynamic() const { return m_dynamic; }
 
-    mgl::window::api::buffer_ref& native() { return m_buffer; }
+    mgl::window::api::buffer_ref& api() { return m_buffer; }
 
 private:
     bool m_dynamic;

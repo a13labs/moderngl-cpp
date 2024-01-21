@@ -32,7 +32,7 @@ int GLAD_VK_AMDX_shader_enqueue = 0;
 #endif
 int GLAD_VK_AMD_buffer_marker = 0;
 int GLAD_VK_AMD_device_coherent_memory = 0;
-int GLAD_VK_AMD_display_native_hdr = 0;
+int GLAD_VK_AMD_display_api_hdr = 0;
 int GLAD_VK_AMD_draw_indirect_count = 0;
 int GLAD_VK_AMD_gcn_shader = 0;
 int GLAD_VK_AMD_gpu_shader_half_float = 0;
@@ -1467,8 +1467,8 @@ static void glad_vk_load_VK_AMD_buffer_marker( GLADuserptrloadfunc load, void* u
     if(!GLAD_VK_AMD_buffer_marker) return;
     glad_vkCmdWriteBufferMarkerAMD = (PFN_vkCmdWriteBufferMarkerAMD) load(userptr, "vkCmdWriteBufferMarkerAMD");
 }
-static void glad_vk_load_VK_AMD_display_native_hdr( GLADuserptrloadfunc load, void* userptr) {
-    if(!GLAD_VK_AMD_display_native_hdr) return;
+static void glad_vk_load_VK_AMD_display_api_hdr( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_VK_AMD_display_api_hdr) return;
     glad_vkSetLocalDimmingAMD = (PFN_vkSetLocalDimmingAMD) load(userptr, "vkSetLocalDimmingAMD");
 }
 static void glad_vk_load_VK_AMD_draw_indirect_count( GLADuserptrloadfunc load, void* userptr) {
@@ -2594,7 +2594,7 @@ static int glad_vk_find_extensions_vulkan( VkPhysicalDevice physical_device) {
 #endif
     GLAD_VK_AMD_buffer_marker = glad_vk_has_extension("VK_AMD_buffer_marker", extension_count, extensions);
     GLAD_VK_AMD_device_coherent_memory = glad_vk_has_extension("VK_AMD_device_coherent_memory", extension_count, extensions);
-    GLAD_VK_AMD_display_native_hdr = glad_vk_has_extension("VK_AMD_display_native_hdr", extension_count, extensions);
+    GLAD_VK_AMD_display_api_hdr = glad_vk_has_extension("VK_AMD_display_api_hdr", extension_count, extensions);
     GLAD_VK_AMD_draw_indirect_count = glad_vk_has_extension("VK_AMD_draw_indirect_count", extension_count, extensions);
     GLAD_VK_AMD_gcn_shader = glad_vk_has_extension("VK_AMD_gcn_shader", extension_count, extensions);
     GLAD_VK_AMD_gpu_shader_half_float = glad_vk_has_extension("VK_AMD_gpu_shader_half_float", extension_count, extensions);
@@ -3089,7 +3089,7 @@ int gladLoadVulkanUserPtr( VkPhysicalDevice physical_device, GLADuserptrloadfunc
 
 #endif
     glad_vk_load_VK_AMD_buffer_marker(load, userptr);
-    glad_vk_load_VK_AMD_display_native_hdr(load, userptr);
+    glad_vk_load_VK_AMD_display_api_hdr(load, userptr);
     glad_vk_load_VK_AMD_draw_indirect_count(load, userptr);
     glad_vk_load_VK_AMD_shader_info(load, userptr);
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)

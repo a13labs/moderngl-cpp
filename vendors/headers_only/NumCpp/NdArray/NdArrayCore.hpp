@@ -3202,7 +3202,7 @@ namespace nc
         {
             STATIC_ASSERT_INTEGER(dtype);
 
-            const bool nativeIsLittle = endian::isLittleEndian();
+            const bool apiIsLittle = endian::isLittleEndian();
 
             switch (endianess_)
             {
@@ -3216,7 +3216,7 @@ namespace nc
                         }
                         case Endian::BIG:
                         {
-                            if (nativeIsLittle)
+                            if (apiIsLittle)
                             {
                                 self_type outArray(shape_);
 
@@ -3234,7 +3234,7 @@ namespace nc
                         }
                         case Endian::LITTLE:
                         {
-                            if (nativeIsLittle)
+                            if (apiIsLittle)
                             {
                                 auto outArray       = NdArray(*this);
                                 outArray.endianess_ = Endian::LITTLE;
@@ -3264,7 +3264,7 @@ namespace nc
                     {
                         case Endian::NATIVE:
                         {
-                            if (nativeIsLittle)
+                            if (apiIsLittle)
                             {
                                 self_type outArray(shape_);
 
@@ -3307,7 +3307,7 @@ namespace nc
                     {
                         case Endian::NATIVE:
                         {
-                            if (nativeIsLittle)
+                            if (apiIsLittle)
                             {
                                 auto outArray       = NdArray(*this);
                                 outArray.endianess_ = Endian::NATIVE;

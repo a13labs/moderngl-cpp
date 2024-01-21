@@ -10,26 +10,11 @@ namespace mgl::graphics::shaders
 
   void gui::load()
   {
-    auto& render = mgl::graphics::current_render();
-    auto ctx = render.context();
-    // Load vertex and fragment shaders from generated source
-    mgl::opengl::shaders glsl = { vertex_shader_source, fragment_shader_source };
-
-    m_program = ctx->program(glsl);
+    m_program = mgl::window::api::create_program(vertex_shader_source, fragment_shader_source);
     set_uniform_value("Texture", 0);
   }
 
-  void gui::unload()
-  {
-    m_program->release();
-  }
-
   void gui::prepare() { }
-
-  mgl::window::api::program_ref& gui::native()
-  {
-    return m_program;
-  }
 
   mgl::string_list& gui::attributes()
   {

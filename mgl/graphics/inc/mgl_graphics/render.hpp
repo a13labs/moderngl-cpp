@@ -20,13 +20,11 @@ namespace mgl::graphics
   class render
   {
 public:
-    render(const mgl::window::api::context_ref& context);
+    render();
 
     ~render();
 
     static render& current_render();
-
-    const mgl::window::api::context_ref& context() const { return m_context; }
 
     void release();
 
@@ -70,7 +68,6 @@ public:
     buffer_ref get_buffer(size_t idx) { return m_buffer_manager.get_item(idx); }
 
 private:
-    mgl::window::api::context_ref m_context;
     shader_manager m_shader_manager;
     texture_manager m_texture_manager;
     buffer_manager m_buffer_manager;

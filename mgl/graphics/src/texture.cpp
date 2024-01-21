@@ -6,8 +6,13 @@ namespace mgl::graphics
 
   void texture::bind(int index)
   {
-    MGL_CORE_ASSERT(this->native() != nullptr, "Texture is not loaded")
-    this->native()->use(index);
+    MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
+    m_texture->use(index);
   }
 
+  void texture::unload()
+  {
+    MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
+    m_texture->release();
+  }
 } // namespace mgl::graphics

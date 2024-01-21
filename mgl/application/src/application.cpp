@@ -47,7 +47,7 @@ namespace mgl::application
   bool application::on_load()
   {
     // Create the render
-    m_render = mgl::create_scope<mgl::graphics::render>(this->current_context());
+    m_render = mgl::create_scope<mgl::graphics::render>();
 
     if(config().gui_layer == nullptr)
     {

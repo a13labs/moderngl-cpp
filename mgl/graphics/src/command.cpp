@@ -117,25 +117,19 @@ namespace mgl::graphics
 
   void render_script::execute()
   {
-    auto& render = mgl::graphics::current_render();
-    auto ctx = render.context();
-    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
-
     if(m_render_target != nullptr)
     {
       m_render_target->use();
     }
     else
     {
-      ctx->screen()->use();
+      mgl::window::api::bind_screen_framebuffer();
     }
 
     for(auto& command : m_commands)
     {
       command->execute();
     }
-
-    ctx->screen()->use();
   }
 
 } // namespace mgl::graphics

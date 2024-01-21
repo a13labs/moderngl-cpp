@@ -8,9 +8,9 @@ namespace mgl::graphics
   {
     if(m_index_buffer)
     {
-      mgl::window::api::draw(m_vertex_buffer->native(),
+      mgl::window::api::draw(m_vertex_buffer->api(),
                              m_vertex_buffer->layout(),
-                             m_index_buffer->native(),
+                             m_index_buffer->api(),
                              m_index_buffer->element_size(),
                              m_mode,
                              m_model_view,
@@ -20,7 +20,7 @@ namespace mgl::graphics
     }
     else
     {
-      mgl::window::api::draw(m_vertex_buffer->native(),
+      mgl::window::api::draw(m_vertex_buffer->api(),
                              m_vertex_buffer->layout(),
                              nullptr,
                              4,
@@ -36,16 +36,16 @@ namespace mgl::graphics
   {
     if(m_batch->index_buffer())
     {
-      mgl::window::api::draw_batch(m_batch->vertex_buffer()->native(),
+      mgl::window::api::draw_batch(m_batch->vertex_buffer()->api(),
                                    m_batch->vertex_buffer()->layout(),
-                                   m_batch->index_buffer()->native(),
+                                   m_batch->index_buffer()->api(),
                                    m_batch->index_buffer()->element_size(),
                                    m_batch->mode(),
                                    m_batch->get());
     }
     else
     {
-      mgl::window::api::draw_batch(m_batch->vertex_buffer()->native(),
+      mgl::window::api::draw_batch(m_batch->vertex_buffer()->api(),
                                    m_batch->vertex_buffer()->layout(),
                                    nullptr,
                                    4,

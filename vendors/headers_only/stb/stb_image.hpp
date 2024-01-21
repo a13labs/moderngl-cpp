@@ -5680,7 +5680,7 @@ static int stbi__create_png_image_raw(
   }
   else if(depth == 16)
   {
-    // force the image data from big-endian to platform-native.
+    // force the image data from big-endian to platform-api.
     // this is done in a separate pass due to the decoding relying
     // on the data being untouched, but could probably be done
     // per-line during decode if care is taken.

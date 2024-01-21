@@ -288,7 +288,7 @@ namespace glm
 	// so that the compiler does not have any ambiguity to choosing how to handle
 	// the function.
 	//
-	// The alternative is to use the operator()() when calling the function in order
+	// The alterapi is to use the operator()() when calling the function in order
 	// to explicitly convert the swizzled type to the unswizzled type.
 	//
 

@@ -39,8 +39,8 @@ namespace mgl::window
     auto registry = mgl::create_scope<mgl::registry::registry>();
     s_registry = std::move(registry);
 
-    // Create native window (SDL)
-    m_native_window = mgl::create_scope<sdl_window>(config);
+    // Create api window (SDL)
+    m_api_window = mgl::create_scope<sdl_window>(config);
   }
 
   void window::on_event(event& event)
@@ -75,7 +75,7 @@ namespace mgl::window
     if(m_running)
       return;
 
-    if(!m_native_window->create_window())
+    if(!m_api_window->create_window())
     {
       MGL_CORE_TRACE("Window: Error creating Window");
       return;
@@ -86,18 +86,18 @@ namespace mgl::window
     if(!m_context)
     {
       MGL_CORE_TRACE("Window: Error initializing GL shared context.");
-      m_native_window->destroy_window();
+      m_api_window->destroy_window();
       return;
     }
 
-    m_native_window->initialize_event_handler(MGL_CLS_BIND_EVENT_FN(window::on_event));
+    m_api_window->initialize_event_handler(MGL_CLS_BIND_EVENT_FN(window::on_event));
 
     m_running = true;
 
     if(!on_load())
     {
       MGL_CORE_TRACE("Window: Error loading application.");
-      m_native_window->destroy_window();
+      m_api_window->destroy_window();
       return;
     }
 
@@ -105,20 +105,20 @@ namespace mgl::window
 
     while(m_running)
     {
-      m_native_window->process_events();
+      m_api_window->process_events();
       auto frame_time = m_timer.next_frame();
       on_update(frame_time.current, frame_time.delta);
-      m_native_window->swap_buffers();
+      m_api_window->swap_buffers();
     }
     on_unload();
 
     m_context->release();
-    m_native_window->destroy_window();
+    m_api_window->destroy_window();
   }
 
   bool window::on_window_resize(window_resize_event& event)
   {
-    auto size = m_native_window->get_drawable_size();
+    auto size = m_api_window->get_drawable_size();
     m_context->screen()->set_viewport({ 0, 0, size.width, size.height });
     return true;
   }

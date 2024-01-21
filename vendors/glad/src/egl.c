@@ -31,13 +31,13 @@ int GLAD_EGL_VERSION_1_4 = 0;
 int GLAD_EGL_VERSION_1_5 = 0;
 int GLAD_EGL_ANDROID_GLES_layers = 0;
 int GLAD_EGL_ANDROID_blob_cache = 0;
-int GLAD_EGL_ANDROID_create_native_client_buffer = 0;
+int GLAD_EGL_ANDROID_create_api_client_buffer = 0;
 int GLAD_EGL_ANDROID_framebuffer_target = 0;
 int GLAD_EGL_ANDROID_front_buffer_auto_refresh = 0;
 int GLAD_EGL_ANDROID_get_frame_timestamps = 0;
-int GLAD_EGL_ANDROID_get_native_client_buffer = 0;
-int GLAD_EGL_ANDROID_image_native_buffer = 0;
-int GLAD_EGL_ANDROID_native_fence_sync = 0;
+int GLAD_EGL_ANDROID_get_api_client_buffer = 0;
+int GLAD_EGL_ANDROID_image_api_buffer = 0;
+int GLAD_EGL_ANDROID_api_fence_sync = 0;
 int GLAD_EGL_ANDROID_presentation_time = 0;
 int GLAD_EGL_ANDROID_recordable = 0;
 int GLAD_EGL_ANGLE_d3d_share_handle_client_buffer = 0;
@@ -157,7 +157,7 @@ int GLAD_EGL_NV_coverage_sample_resolve = 0;
 int GLAD_EGL_NV_cuda_event = 0;
 int GLAD_EGL_NV_depth_nonlinear = 0;
 int GLAD_EGL_NV_device_cuda = 0;
-int GLAD_EGL_NV_native_query = 0;
+int GLAD_EGL_NV_api_query = 0;
 int GLAD_EGL_NV_post_convert_rounding = 0;
 int GLAD_EGL_NV_post_sub_buffer = 0;
 int GLAD_EGL_NV_quadruple_buffer = 0;
@@ -186,10 +186,10 @@ int GLAD_EGL_NV_stream_sync = 0;
 int GLAD_EGL_NV_sync = 0;
 int GLAD_EGL_NV_system_time = 0;
 int GLAD_EGL_NV_triple_buffer = 0;
-int GLAD_EGL_QNX_image_native_buffer = 0;
+int GLAD_EGL_QNX_image_api_buffer = 0;
 int GLAD_EGL_QNX_platform_screen = 0;
-int GLAD_EGL_TIZEN_image_native_buffer = 0;
-int GLAD_EGL_TIZEN_image_native_surface = 0;
+int GLAD_EGL_TIZEN_image_api_buffer = 0;
+int GLAD_EGL_TIZEN_image_api_surface = 0;
 int GLAD_EGL_WL_bind_wayland_display = 0;
 int GLAD_EGL_WL_create_wayland_buffer_from_image = 0;
 
@@ -417,8 +417,8 @@ static void glad_egl_load_EGL_ANDROID_blob_cache( GLADuserptrloadfunc load, void
     if(!GLAD_EGL_ANDROID_blob_cache) return;
     glad_eglSetBlobCacheFuncsANDROID = (PFNEGLSETBLOBCACHEFUNCSANDROIDPROC) load(userptr, "eglSetBlobCacheFuncsANDROID");
 }
-static void glad_egl_load_EGL_ANDROID_create_native_client_buffer( GLADuserptrloadfunc load, void* userptr) {
-    if(!GLAD_EGL_ANDROID_create_native_client_buffer) return;
+static void glad_egl_load_EGL_ANDROID_create_api_client_buffer( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_ANDROID_create_api_client_buffer) return;
     glad_eglCreateNativeClientBufferANDROID = (PFNEGLCREATENATIVECLIENTBUFFERANDROIDPROC) load(userptr, "eglCreateNativeClientBufferANDROID");
 }
 static void glad_egl_load_EGL_ANDROID_get_frame_timestamps( GLADuserptrloadfunc load, void* userptr) {
@@ -429,12 +429,12 @@ static void glad_egl_load_EGL_ANDROID_get_frame_timestamps( GLADuserptrloadfunc 
     glad_eglGetFrameTimestampsANDROID = (PFNEGLGETFRAMETIMESTAMPSANDROIDPROC) load(userptr, "eglGetFrameTimestampsANDROID");
     glad_eglGetNextFrameIdANDROID = (PFNEGLGETNEXTFRAMEIDANDROIDPROC) load(userptr, "eglGetNextFrameIdANDROID");
 }
-static void glad_egl_load_EGL_ANDROID_get_native_client_buffer( GLADuserptrloadfunc load, void* userptr) {
-    if(!GLAD_EGL_ANDROID_get_native_client_buffer) return;
+static void glad_egl_load_EGL_ANDROID_get_api_client_buffer( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_ANDROID_get_api_client_buffer) return;
     glad_eglGetNativeClientBufferANDROID = (PFNEGLGETNATIVECLIENTBUFFERANDROIDPROC) load(userptr, "eglGetNativeClientBufferANDROID");
 }
-static void glad_egl_load_EGL_ANDROID_native_fence_sync( GLADuserptrloadfunc load, void* userptr) {
-    if(!GLAD_EGL_ANDROID_native_fence_sync) return;
+static void glad_egl_load_EGL_ANDROID_api_fence_sync( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_ANDROID_api_fence_sync) return;
     glad_eglDupNativeFenceFDANDROID = (PFNEGLDUPNATIVEFENCEFDANDROIDPROC) load(userptr, "eglDupNativeFenceFDANDROID");
 }
 static void glad_egl_load_EGL_ANDROID_presentation_time( GLADuserptrloadfunc load, void* userptr) {
@@ -646,8 +646,8 @@ static void glad_egl_load_EGL_NOK_swap_region2( GLADuserptrloadfunc load, void* 
     if(!GLAD_EGL_NOK_swap_region2) return;
     glad_eglSwapBuffersRegion2NOK = (PFNEGLSWAPBUFFERSREGION2NOKPROC) load(userptr, "eglSwapBuffersRegion2NOK");
 }
-static void glad_egl_load_EGL_NV_native_query( GLADuserptrloadfunc load, void* userptr) {
-    if(!GLAD_EGL_NV_native_query) return;
+static void glad_egl_load_EGL_NV_api_query( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_NV_api_query) return;
     glad_eglQueryNativeDisplayNV = (PFNEGLQUERYNATIVEDISPLAYNVPROC) load(userptr, "eglQueryNativeDisplayNV");
     glad_eglQueryNativePixmapNV = (PFNEGLQUERYNATIVEPIXMAPNVPROC) load(userptr, "eglQueryNativePixmapNV");
     glad_eglQueryNativeWindowNV = (PFNEGLQUERYNATIVEWINDOWNVPROC) load(userptr, "eglQueryNativeWindowNV");
@@ -748,13 +748,13 @@ static int glad_egl_find_extensions_egl(EGLDisplay display) {
 
     GLAD_EGL_ANDROID_GLES_layers = glad_egl_has_extension(extensions, "EGL_ANDROID_GLES_layers");
     GLAD_EGL_ANDROID_blob_cache = glad_egl_has_extension(extensions, "EGL_ANDROID_blob_cache");
-    GLAD_EGL_ANDROID_create_native_client_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_create_native_client_buffer");
+    GLAD_EGL_ANDROID_create_api_client_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_create_api_client_buffer");
     GLAD_EGL_ANDROID_framebuffer_target = glad_egl_has_extension(extensions, "EGL_ANDROID_framebuffer_target");
     GLAD_EGL_ANDROID_front_buffer_auto_refresh = glad_egl_has_extension(extensions, "EGL_ANDROID_front_buffer_auto_refresh");
     GLAD_EGL_ANDROID_get_frame_timestamps = glad_egl_has_extension(extensions, "EGL_ANDROID_get_frame_timestamps");
-    GLAD_EGL_ANDROID_get_native_client_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_get_native_client_buffer");
-    GLAD_EGL_ANDROID_image_native_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_image_native_buffer");
-    GLAD_EGL_ANDROID_native_fence_sync = glad_egl_has_extension(extensions, "EGL_ANDROID_native_fence_sync");
+    GLAD_EGL_ANDROID_get_api_client_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_get_api_client_buffer");
+    GLAD_EGL_ANDROID_image_api_buffer = glad_egl_has_extension(extensions, "EGL_ANDROID_image_api_buffer");
+    GLAD_EGL_ANDROID_api_fence_sync = glad_egl_has_extension(extensions, "EGL_ANDROID_api_fence_sync");
     GLAD_EGL_ANDROID_presentation_time = glad_egl_has_extension(extensions, "EGL_ANDROID_presentation_time");
     GLAD_EGL_ANDROID_recordable = glad_egl_has_extension(extensions, "EGL_ANDROID_recordable");
     GLAD_EGL_ANGLE_d3d_share_handle_client_buffer = glad_egl_has_extension(extensions, "EGL_ANGLE_d3d_share_handle_client_buffer");
@@ -874,7 +874,7 @@ static int glad_egl_find_extensions_egl(EGLDisplay display) {
     GLAD_EGL_NV_cuda_event = glad_egl_has_extension(extensions, "EGL_NV_cuda_event");
     GLAD_EGL_NV_depth_nonlinear = glad_egl_has_extension(extensions, "EGL_NV_depth_nonlinear");
     GLAD_EGL_NV_device_cuda = glad_egl_has_extension(extensions, "EGL_NV_device_cuda");
-    GLAD_EGL_NV_native_query = glad_egl_has_extension(extensions, "EGL_NV_native_query");
+    GLAD_EGL_NV_api_query = glad_egl_has_extension(extensions, "EGL_NV_api_query");
     GLAD_EGL_NV_post_convert_rounding = glad_egl_has_extension(extensions, "EGL_NV_post_convert_rounding");
     GLAD_EGL_NV_post_sub_buffer = glad_egl_has_extension(extensions, "EGL_NV_post_sub_buffer");
     GLAD_EGL_NV_quadruple_buffer = glad_egl_has_extension(extensions, "EGL_NV_quadruple_buffer");
@@ -903,10 +903,10 @@ static int glad_egl_find_extensions_egl(EGLDisplay display) {
     GLAD_EGL_NV_sync = glad_egl_has_extension(extensions, "EGL_NV_sync");
     GLAD_EGL_NV_system_time = glad_egl_has_extension(extensions, "EGL_NV_system_time");
     GLAD_EGL_NV_triple_buffer = glad_egl_has_extension(extensions, "EGL_NV_triple_buffer");
-    GLAD_EGL_QNX_image_native_buffer = glad_egl_has_extension(extensions, "EGL_QNX_image_native_buffer");
+    GLAD_EGL_QNX_image_api_buffer = glad_egl_has_extension(extensions, "EGL_QNX_image_api_buffer");
     GLAD_EGL_QNX_platform_screen = glad_egl_has_extension(extensions, "EGL_QNX_platform_screen");
-    GLAD_EGL_TIZEN_image_native_buffer = glad_egl_has_extension(extensions, "EGL_TIZEN_image_native_buffer");
-    GLAD_EGL_TIZEN_image_native_surface = glad_egl_has_extension(extensions, "EGL_TIZEN_image_native_surface");
+    GLAD_EGL_TIZEN_image_api_buffer = glad_egl_has_extension(extensions, "EGL_TIZEN_image_api_buffer");
+    GLAD_EGL_TIZEN_image_api_surface = glad_egl_has_extension(extensions, "EGL_TIZEN_image_api_surface");
     GLAD_EGL_WL_bind_wayland_display = glad_egl_has_extension(extensions, "EGL_WL_bind_wayland_display");
     GLAD_EGL_WL_create_wayland_buffer_from_image = glad_egl_has_extension(extensions, "EGL_WL_create_wayland_buffer_from_image");
 
@@ -979,10 +979,10 @@ int gladLoadEGLUserPtr(EGLDisplay display, GLADuserptrloadfunc load, void* userp
 
     if (!glad_egl_find_extensions_egl(display)) return 0;
     glad_egl_load_EGL_ANDROID_blob_cache(load, userptr);
-    glad_egl_load_EGL_ANDROID_create_native_client_buffer(load, userptr);
+    glad_egl_load_EGL_ANDROID_create_api_client_buffer(load, userptr);
     glad_egl_load_EGL_ANDROID_get_frame_timestamps(load, userptr);
-    glad_egl_load_EGL_ANDROID_get_native_client_buffer(load, userptr);
-    glad_egl_load_EGL_ANDROID_native_fence_sync(load, userptr);
+    glad_egl_load_EGL_ANDROID_get_api_client_buffer(load, userptr);
+    glad_egl_load_EGL_ANDROID_api_fence_sync(load, userptr);
     glad_egl_load_EGL_ANDROID_presentation_time(load, userptr);
     glad_egl_load_EGL_ANGLE_query_surface_pointer(load, userptr);
     glad_egl_load_EGL_ANGLE_sync_control_rate(load, userptr);
@@ -1023,7 +1023,7 @@ int gladLoadEGLUserPtr(EGLDisplay display, GLADuserptrloadfunc load, void* userp
     glad_egl_load_EGL_MESA_query_driver(load, userptr);
     glad_egl_load_EGL_NOK_swap_region(load, userptr);
     glad_egl_load_EGL_NOK_swap_region2(load, userptr);
-    glad_egl_load_EGL_NV_native_query(load, userptr);
+    glad_egl_load_EGL_NV_api_query(load, userptr);
     glad_egl_load_EGL_NV_post_sub_buffer(load, userptr);
     glad_egl_load_EGL_NV_stream_consumer_eglimage(load, userptr);
     glad_egl_load_EGL_NV_stream_consumer_gltexture_yuv(load, userptr);

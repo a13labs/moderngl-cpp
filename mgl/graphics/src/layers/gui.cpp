@@ -189,7 +189,7 @@ namespace mgl::graphics::layers
     if(render.has_texture("gui_font"))
       render.unregister_texture("gui_font");
 
-    uint32_t id =
+    size_t id =
         render.register_texture("gui_font", mgl::create_ref<mgl::graphics::texture2d>(image));
     io.Fonts->TexID = reinterpret_cast<void*>(id);
   }
@@ -244,7 +244,7 @@ namespace mgl::graphics::layers
 
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
 
-    mgl::window::api::enable_program(prg->native());
+    mgl::window::api::enable_program(prg->api());
     mgl::window::api::set_program_attributes(prg->attributes());
 
     prg->set_uniform_value("ProjMtx",
@@ -291,9 +291,9 @@ namespace mgl::graphics::layers
           auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          mgl::window::api::draw(vb->native(),
+          mgl::window::api::draw(vb->api(),
                                  vb->layout(),
-                                 ib->native(),
+                                 ib->api(),
                                  ib->element_size(),
                                  mgl::graphics::render_mode::TRIANGLES,
                                  glm::mat4(1.0f),

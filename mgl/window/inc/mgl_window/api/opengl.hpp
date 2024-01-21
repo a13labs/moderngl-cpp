@@ -6,6 +6,16 @@
 
 namespace mgl::window::api
 {
+  // Map the opengl namespace to the api namespace, eventually we might have a vulkan api
+  using context_ref = mgl::opengl::context_ref;
+  using texture_ref = mgl::opengl::texture_ref;
+  using texture_2d_ref = mgl::opengl::texture_2d_ref;
+  using program_ref = mgl::opengl::program_ref;
+  using uniform_ref = mgl::opengl::uniform_ref;
+  using buffer_ref = mgl::opengl::buffer_ref;
+  using texture_2d_ref = mgl::opengl::texture_2d_ref;
+  using framebuffer_ref = mgl::opengl::framebuffer_ref;
+
   enum render_mode
   {
     POINTS,
@@ -87,15 +97,6 @@ namespace mgl::window::api
 
   mgl::opengl::compare_func to_api(compare_func func);
 
-  // Map the opengl namespace to the api namespace, eventually we might have a vulkan api
-  using context_ref = mgl::opengl::context_ref;
-  using texture_ref = mgl::opengl::texture_ref;
-  using program_ref = mgl::opengl::program_ref;
-  using uniform_ref = mgl::opengl::uniform_ref;
-  using buffer_ref = mgl::opengl::buffer_ref;
-  using texture_2d_ref = mgl::opengl::texture_2d_ref;
-  using framebuffer_ref = mgl::opengl::framebuffer_ref;
-
   struct render_state
   {
     render_state()
@@ -149,6 +150,17 @@ namespace mgl::window::api
     size_t offset;
     size_t instance_count;
   };
+
+  program_ref create_program(const std::string& vs_source,
+                             const std::string& fs_source,
+                             const std::string& gs_source = "",
+                             const std::string& tes_source = "",
+                             const std::string& tcs_source = "");
+
+  texture_2d_ref create_texture_2d(
+      int width, int height, int components, const mgl::byte_buffer& data, int samples = 0);
+
+  void bind_screen_framebuffer();
 
   void enable_scissor();
 

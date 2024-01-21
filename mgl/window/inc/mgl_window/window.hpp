@@ -90,11 +90,11 @@ namespace mgl::window
     }
   };
 
-  class native_window
+  class api_window
   {
 public:
-    native_window(const window_config& config = window_config()){};
-    virtual ~native_window() = default;
+    api_window(const window_config& config = window_config()){};
+    virtual ~api_window() = default;
 
     virtual bool create_window() = 0;
     virtual void destroy_window() = 0;
@@ -122,14 +122,14 @@ public:
 public:
     void run();
 
-    int width() { return m_native_window->width(); }
-    int height() { return m_native_window->height(); }
-    float aspect_ratio() { return m_native_window->aspect_ratio(); }
+    int width() { return m_api_window->width(); }
+    int height() { return m_api_window->height(); }
+    float aspect_ratio() { return m_api_window->aspect_ratio(); }
 
-    const std::string& title() const { return m_native_window->title(); }
-    void set_title(const std::string& value) { m_native_window->set_title(value); }
+    const std::string& title() const { return m_api_window->title(); }
+    void set_title(const std::string& value) { m_api_window->set_title(value); }
 
-    void toggle_full_screen() { m_native_window->toggle_full_screen(); }
+    void toggle_full_screen() { m_api_window->toggle_full_screen(); }
 
     const api::context_ref& current_context() const;
 
@@ -165,7 +165,7 @@ private:
     bool m_running;
     api::context_ref m_context;
     mgl::Timer m_timer;
-    mgl::scope<native_window> m_native_window;
+    mgl::scope<api_window> m_api_window;
     window_config m_config;
   };
 

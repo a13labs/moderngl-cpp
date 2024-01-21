@@ -499,7 +499,7 @@ CODE
                               Begin(...) + SetCursorScreenPos(GetCursorScreenPos() + ImVec2(200,200)) + End();
                          - instead, please submit an item:
                               Begin(...) + SetCursorScreenPos(GetCursorScreenPos() + ImVec2(200,200)) + Dummy(ImVec2(0,0)) + End();
-                         - alternative:
+                         - alterapi:
                               Begin(...) + Dummy(ImVec2(200,200)) + End();
                          - content size is now only extended when submitting an item!
                          - with '#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS' this will now be detected and assert.
@@ -536,7 +536,7 @@ CODE
                         - IsKeyPressed(GetKeyIndex(ImGuiKey_XXX))      -> use IsKeyPressed(ImGuiKey_XXX)
                         - Backend writing to io.KeyMap[],io.KeysDown[] -> backend should call io.AddKeyEvent() (+ call io.SetKeyEventNativeData() if you want legacy user code to stil function with legacy key codes).
                         - Backend writing to io.KeyCtrl, io.KeyShift.. -> backend should call io.AddKeyEvent() with ImGuiMod_XXX values. *IF YOU PULLED CODE BETWEEN 2021/01/10 and 2021/01/27: We used to have a io.AddKeyModsEvent() function which was now replaced by io.AddKeyEvent() with ImGuiMod_XXX values.*
-                     - one case won't work with backward compatibility: if your custom backend used ImGuiKey as mock native indices (e.g. "io.KeyMap[ImGuiKey_A] = ImGuiKey_A") because those values are now larger than the legacy KeyDown[] array. Will assert.
+                     - one case won't work with backward compatibility: if your custom backend used ImGuiKey as mock api indices (e.g. "io.KeyMap[ImGuiKey_A] = ImGuiKey_A") because those values are now larger than the legacy KeyDown[] array. Will assert.
                      - inputs: added ImGuiKey_ModCtrl/ImGuiKey_ModShift/ImGuiKey_ModAlt/ImGuiKey_ModSuper values to submit keyboard modifiers using io.AddKeyEvent(), instead of writing directly to io.KeyCtrl, io.KeyShift, io.KeyAlt, io.KeySuper.
  - 2022/01/05 (1.87) - inputs: renamed ImGuiKey_KeyPadEnter to ImGuiKey_KeypadEnter to align with new symbols. Kept redirection enum.
  - 2022/01/05 (1.87) - removed io.ImeSetInputScreenPosFn() in favor of more flexible io.SetPlatformImeDataFn(). Removed 'void* io.ImeWindowHandle' in favor of writing to 'void* ImGuiViewport::PlatformHandleRaw'.
@@ -599,7 +599,7 @@ CODE
                       - removed redirecting functions names that were marked obsolete in 1.61 (May 2018):
                         - InputFloat (... int decimal_precision ...) -> use InputFloat (... const char* format ...) with format = "%.Xf" where X is your value for decimal_precision.
                         - same for InputFloat2()/InputFloat3()/InputFloat4() variants taking a `int decimal_precision` parameter.
- - 2020/10/05 (1.79) - removed ImGuiListClipper: Renamed constructor parameters which created an ambiguous alternative to using the ImGuiListClipper::Begin() function, with misleading edge cases (note: imgui_memory_editor <0.40 from imgui_club/ used this old clipper API. Update your copy if needed).
+ - 2020/10/05 (1.79) - removed ImGuiListClipper: Renamed constructor parameters which created an ambiguous alterapi to using the ImGuiListClipper::Begin() function, with misleading edge cases (note: imgui_memory_editor <0.40 from imgui_club/ used this old clipper API. Update your copy if needed).
  - 2020/09/25 (1.79) - renamed ImGuiSliderFlags_ClampOnInput to ImGuiSliderFlags_AlwaysClamp. Kept redirection enum (will obsolete sooner because previous name was added recently).
  - 2020/09/25 (1.79) - renamed style.TabMinWidthForUnselectedCloseButton to style.TabMinWidthForCloseButton.
  - 2020/09/21 (1.79) - renamed OpenPopupContextItem() back to OpenPopupOnItemClick(), reverting the change from 1.77. For varieties of reason this is more self-explanatory.
@@ -1460,7 +1460,7 @@ void ImGuiIO::AddKeyAnalogEvent(ImGuiKey key, bool down, float analog_value)
     if (key == ImGuiKey_None || !AppAcceptingEvents)
         return;
     ImGuiContext& g = *Ctx;
-    IM_ASSERT(ImGui::IsNamedKeyOrModKey(key)); // Backend needs to pass a valid ImGuiKey_ constant. 0..511 values are legacy native key codes which are not accepted by this API.
+    IM_ASSERT(ImGui::IsNamedKeyOrModKey(key)); // Backend needs to pass a valid ImGuiKey_ constant. 0..511 values are legacy api key codes which are not accepted by this API.
     IM_ASSERT(ImGui::IsAliasKey(key) == false); // Backend cannot submit ImGuiKey_MouseXXX values they are automatically inferred from AddMouseXXX() events.
     IM_ASSERT(key != ImGuiMod_Shortcut); // We could easily support the translation here but it seems saner to not accept it (TestEngine perform a translation itself)
 
@@ -1502,31 +1502,31 @@ void ImGuiIO::AddKeyEvent(ImGuiKey key, bool down)
 }
 
 // [Optional] Call after AddKeyEvent().
-// Specify native keycode, scancode + Specify index for legacy <1.87 IsKeyXXX() functions with native indices.
-// If you are writing a backend in 2022 or don't use IsKeyXXX() with native values that are not ImGuiKey values, you can avoid calling this.
-void ImGuiIO::SetKeyEventNativeData(ImGuiKey key, int native_keycode, int native_scancode, int native_legacy_index)
+// Specify api keycode, scancode + Specify index for legacy <1.87 IsKeyXXX() functions with api indices.
+// If you are writing a backend in 2022 or don't use IsKeyXXX() with api values that are not ImGuiKey values, you can avoid calling this.
+void ImGuiIO::SetKeyEventNativeData(ImGuiKey key, int api_keycode, int api_scancode, int api_legacy_index)
 {
     if (key == ImGuiKey_None)
         return;
     IM_ASSERT(ImGui::IsNamedKey(key)); // >= 512
-    IM_ASSERT(native_legacy_index == -1 || ImGui::IsLegacyKey((ImGuiKey)native_legacy_index)); // >= 0 && <= 511
-    IM_UNUSED(native_keycode);  // Yet unused
-    IM_UNUSED(native_scancode); // Yet unused
+    IM_ASSERT(api_legacy_index == -1 || ImGui::IsLegacyKey((ImGuiKey)api_legacy_index)); // >= 0 && <= 511
+    IM_UNUSED(api_keycode);  // Yet unused
+    IM_UNUSED(api_scancode); // Yet unused
 
-    // Build native->imgui map so old user code can still call key functions with native 0..511 values.
+    // Build api->imgui map so old user code can still call key functions with api 0..511 values.
 #ifndef IMGUI_DISABLE_OBSOLETE_KEYIO
-    const int legacy_key = (native_legacy_index != -1) ? native_legacy_index : native_keycode;
+    const int legacy_key = (api_legacy_index != -1) ? api_legacy_index : api_keycode;
     if (!ImGui::IsLegacyKey((ImGuiKey)legacy_key))
         return;
     KeyMap[legacy_key] = key;
     KeyMap[key] = legacy_key;
 #else
     IM_UNUSED(key);
-    IM_UNUSED(native_legacy_index);
+    IM_UNUSED(api_legacy_index);
 #endif
 }
 
-// Set master flag for accepting key/mouse/text events (default to true). Useful if you have native dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.
+// Set master flag for accepting key/mouse/text events (default to true). Useful if you have api dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.
 void ImGuiIO::SetAppAcceptingEvents(bool accepting_events)
 {
     AppAcceptingEvents = accepting_events;
@@ -5491,7 +5491,7 @@ bool ImGui::BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, I
 
     // Forward size
     // Important: Begin() has special processing to switch condition to ImGuiCond_FirstUseEver for a given axis when ImGuiChildFlags_ResizeXXX is set.
-    // (the alternative would to store conditional flags per axis, which is possible but more code)
+    // (the alterapi would to store conditional flags per axis, which is possible but more code)
     const ImVec2 size_avail = GetContentRegionAvail();
     const ImVec2 size_default((child_flags & ImGuiChildFlags_AutoResizeX) ? 0.0f : size_avail.x, (child_flags & ImGuiChildFlags_AutoResizeY) ? 0.0f : size_avail.y);
     const ImVec2 size = CalcItemSize(size_arg, size_default.x, size_default.y);
@@ -8094,7 +8094,7 @@ ImGuiKeyData* ImGui::GetKeyData(ImGuiContext* ctx, ImGuiKey key)
 #ifndef IMGUI_DISABLE_OBSOLETE_KEYIO
     IM_ASSERT(key >= ImGuiKey_LegacyNativeKey_BEGIN && key < ImGuiKey_NamedKey_END);
     if (IsLegacyKey(key) && g.IO.KeyMap[key] != -1)
-        key = (ImGuiKey)g.IO.KeyMap[key];  // Remap native->imgui or imgui->native
+        key = (ImGuiKey)g.IO.KeyMap[key];  // Remap api->imgui or imgui->api
 #else
     IM_ASSERT(IsNamedKey(key) && "Support for user key indices was dropped in favor of ImGuiKey. Please update backend & user code.");
 #endif
@@ -8405,7 +8405,7 @@ bool ImGui::TestShortcutRouting(ImGuiKeyChord key_chord, ImGuiID owner_id)
     return routing_data->RoutingCurr == routing_id;
 }
 
-// Note that Dear ImGui doesn't know the meaning/semantic of ImGuiKey from 0..511: they are legacy native keycodes.
+// Note that Dear ImGui doesn't know the meaning/semantic of ImGuiKey from 0..511: they are legacy api keycodes.
 // Consider transitioning from 'IsKeyDown(MY_ENGINE_KEY_A)' (<1.87) to IsKeyDown(ImGuiKey_A) (>= 1.87)
 bool ImGui::IsKeyDown(ImGuiKey key)
 {
@@ -9363,7 +9363,7 @@ bool ImGui::DebugCheckVersionAndDataLayout(const char* version, size_t sz_io, si
 //    Begin(...) + SetCursorScreenPos(GetCursorScreenPos() + ImVec2(200,200)) + End();  // NOT OK
 //  Instead, please submit an item:
 //    Begin(...) + SetCursorScreenPos(GetCursorScreenPos() + ImVec2(200,200)) + Dummy(ImVec2(0,0)) + End(); // OK
-//  Alternative:
+//  Alterapi:
 //    Begin(...) + Dummy(ImVec2(200,200)) + End(); // OK
 // [Scenario 2]
 //  For reference this is one of the issue what we aim to fix with this change:
@@ -9439,7 +9439,7 @@ static void ImGui::ErrorCheckEndFrameSanityChecks()
 
     // Verify that io.KeyXXX fields haven't been tampered with. Key mods should not be modified between NewFrame() and EndFrame()
     // One possible reason leading to this assert is that your backends update inputs _AFTER_ NewFrame().
-    // It is known that when some modal native windows called mid-frame takes focus away, some backends such as GLFW will
+    // It is known that when some modal api windows called mid-frame takes focus away, some backends such as GLFW will
     // send key release events mid-frame. This would normally trigger this assertion and lead to sheared inputs.
     // We silently accommodate for this case by ignoring the case where all io.KeyXXX modifiers were released (aka key_mod_flags == 0),
     // while still correctly asserting on mid-frame key press events.
@@ -14271,7 +14271,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     {
         Text("KEYBOARD/GAMEPAD/MOUSE KEYS");
         {
-            // We iterate both legacy native range and named ImGuiKey ranges, which is a little odd but this allows displaying the data for old/new backends.
+            // We iterate both legacy api range and named ImGuiKey ranges, which is a little odd but this allows displaying the data for old/new backends.
             // User code should never have to go through such hoops! You can generally iterate between ImGuiKey_NamedKey_BEGIN and ImGuiKey_NamedKey_END.
             Indent();
 #ifdef IMGUI_DISABLE_OBSOLETE_KEYIO

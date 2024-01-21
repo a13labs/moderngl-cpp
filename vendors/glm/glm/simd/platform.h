@@ -27,7 +27,7 @@
 #	define GLM_PLATFORM GLM_PLATFORM_WINCE
 #elif defined(_WIN32)
 #	define GLM_PLATFORM GLM_PLATFORM_WINDOWS
-#elif defined(__native_client__)
+#elif defined(__api_client__)
 #	define GLM_PLATFORM GLM_PLATFORM_CHROME_NACL
 #elif defined(__ANDROID__)
 #	define GLM_PLATFORM GLM_PLATFORM_ANDROID

@@ -71,6 +71,36 @@ namespace mgl::window::api
     return s_render_mode[static_cast<int>(mode)];
   }
 
+  program_ref create_program(const std::string& vs_source,
+                             const std::string& fs_source,
+                             const std::string& gs_source,
+                             const std::string& tes_source,
+                             const std::string& tcs_source)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    mgl::opengl::shaders glsl(vs_source, fs_source, gs_source, tes_source, tcs_source);
+
+    return ctx->program(glsl);
+  }
+
+  texture_2d_ref create_texture_2d(
+      int width, int height, int components, const mgl::byte_buffer& data, int samples)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    return ctx->texture2d(width, height, components, data);
+  }
+
+  void bind_screen_framebuffer()
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->screen()->use();
+  }
+
   void enable_scissor()
   {
     auto& ctx = mgl::window::current_context();

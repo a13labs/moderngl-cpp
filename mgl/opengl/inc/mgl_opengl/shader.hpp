@@ -102,6 +102,18 @@ private:
                    source.tess_evaluation(defines) }
     { }
 
+    shaders(const mgl::string_list& sources)
+        : sources{ sources }
+    { }
+
+    shaders(const shaders& other)
+        : sources{ other.sources }
+    { }
+
+    shaders(shaders&& other)
+        : sources{ std::move(other.sources) }
+    { }
+
     inline bool empty() { return mgl::all_empty(sources); }
     inline const std::string& vertex() { return sources[shader::type::VERTEX_SHADER]; }
     inline const std::string& fragment() { return sources[shader::type::FRAGMENT_SHADER]; }

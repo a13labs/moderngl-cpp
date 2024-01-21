@@ -23,13 +23,14 @@ namespace mgl::graphics
 public:
     virtual ~shader() = default;
 
-    virtual void bind();
-    virtual void unbind();
+    void bind();
+    void unbind();
+    void unload();
+    mgl::window::api::program_ref& api() { return m_program; }
 
     virtual void prepare() = 0;
     virtual const mgl::string_list& attributes() = 0;
     virtual void load() = 0;
-    virtual void unload() = 0;
 
     void get_uniform_value(const std::string& name, bool& value);
     void get_uniform_value(const std::string& name, uint8_t& value);
@@ -79,9 +80,9 @@ public:
     void set_uniform_value(const std::string& name, int* value, size_t size);
     void set_uniform_value(const std::string& name, float* value, size_t size);
 
-    virtual const mgl::window::api::program_ref& native() = 0;
 
 protected:
+    mgl::window::api::program_ref m_program = nullptr;
   };
 
   using shader_ref = mgl::ref<shader>;

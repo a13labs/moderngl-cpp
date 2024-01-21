@@ -275,14 +275,14 @@ namespace mgl::window
     MGL_CORE_INFO("Window: Creating window {0},{1} with OpenGL support",
                   m_state.current_config.width,
                   m_state.current_config.height);
-    m_native_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
+    m_api_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
                                        m_state.current_config.width,
                                        m_state.current_config.height,
                                        flags);
 
-    if(!m_native_window)
+    if(!m_api_window)
     {
       auto error = SDL_GetError();
       MGL_CORE_TRACE("Window: Error creating window, '{0}'.", error);
@@ -290,13 +290,13 @@ namespace mgl::window
       return false;
     }
 
-    m_context = SDL_GL_CreateContext(m_native_window);
+    m_context = SDL_GL_CreateContext(m_api_window);
     if(!m_context)
     {
       auto error = SDL_GetError();
       MGL_CORE_TRACE("Window: Error creating OpenGL context, '{0}'.", error);
-      SDL_DestroyWindow(m_native_window);
-      m_native_window = nullptr;
+      SDL_DestroyWindow(m_api_window);
+      m_api_window = nullptr;
       SDL_Quit();
       return false;
     }
@@ -306,14 +306,14 @@ namespace mgl::window
     SDL_SysWMinfo wmi;
     SDL_VERSION(&wmi.version);
 
-    if(!SDL_GetWindowWMInfo(m_native_window, &wmi))
+    if(!SDL_GetWindowWMInfo(m_api_window, &wmi))
     {
       auto error = SDL_GetError();
       MGL_CORE_TRACE("Window: Error retrieving window information: {0}.", error);
       SDL_GL_DeleteContext(m_context);
-      SDL_DestroyWindow(m_native_window);
+      SDL_DestroyWindow(m_api_window);
       m_context = nullptr;
-      m_native_window = nullptr;
+      m_api_window = nullptr;
       return false;
     }
 
@@ -327,21 +327,21 @@ namespace mgl::window
   void sdl_window::destroy_window()
   {
     SDL_GL_DeleteContext(m_context);
-    SDL_DestroyWindow(m_native_window);
+    SDL_DestroyWindow(m_api_window);
     m_context = nullptr;
-    m_native_window = nullptr;
+    m_api_window = nullptr;
     SDL_Quit();
   }
 
   void sdl_window::swap_buffers()
   {
-    SDL_GL_SwapWindow(m_native_window);
+    SDL_GL_SwapWindow(m_api_window);
   }
 
   void sdl_window::set_title(const std::string& value)
   {
     m_title = value;
-    SDL_SetWindowTitle(m_native_window, m_title.c_str());
+    SDL_SetWindowTitle(m_api_window, m_title.c_str());
   }
 
   const std::string& sdl_window::title() const
@@ -411,14 +411,14 @@ namespace mgl::window
     m_state.fullscreen = !m_state.fullscreen;
     if(m_state.fullscreen)
     {
-      SDL_SetWindowFullscreen(m_native_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+      SDL_SetWindowFullscreen(m_api_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
       return;
     }
 
-    SDL_RestoreWindow(m_native_window);
-    SDL_SetWindowSize(m_native_window, m_state.current_config.width, m_state.current_config.height);
-    SDL_SetWindowPosition(m_native_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_SetWindowFullscreen(m_native_window, 0);
+    SDL_RestoreWindow(m_api_window);
+    SDL_SetWindowSize(m_api_window, m_state.current_config.width, m_state.current_config.height);
+    SDL_SetWindowPosition(m_api_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_SetWindowFullscreen(m_api_window, 0);
   }
 
   void sdl_window::process_events()
@@ -445,7 +445,7 @@ namespace mgl::window
   mgl::size sdl_window::get_drawable_size()
   {
     int x, y;
-    SDL_GL_GetDrawableSize(m_native_window, &x, &y);
+    SDL_GL_GetDrawableSize(m_api_window, &x, &y);
     return { x, y };
   }
 

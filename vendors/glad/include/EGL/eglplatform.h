@@ -91,10 +91,10 @@ typedef void               *EGLNativeWindowType;
 #elif defined(__ANDROID__) || defined(ANDROID)
 
 struct ANativeWindow;
-struct egl_native_pixmap_t;
+struct egl_api_pixmap_t;
 
 typedef void*                           EGLNativeDisplayType;
-typedef struct egl_native_pixmap_t*     EGLNativePixmapType;
+typedef struct egl_api_pixmap_t*     EGLNativePixmapType;
 typedef struct ANativeWindow*           EGLNativeWindowType;
 
 #elif defined(USE_OZONE)
