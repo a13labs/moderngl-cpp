@@ -15,37 +15,7 @@ namespace mgl::graphics
 
   class batch
   {
-
 public:
-    struct data
-    {
-      data()
-          : model_view(1.0f)
-          , count(0)
-          , offset(0)
-          , instance_count(1)
-      { }
-
-      data(glm::mat4 t, size_t count, size_t offset, size_t instance_count)
-          : model_view(t)
-          , count(count)
-          , offset(offset)
-          , instance_count(instance_count)
-      { }
-
-      data(const data& other)
-          : model_view(other.model_view)
-          , count(other.count)
-          , offset(other.offset)
-          , instance_count(other.instance_count)
-      { }
-
-      glm::mat4 model_view;
-      size_t count;
-      size_t offset;
-      size_t instance_count;
-    };
-
     batch(const vertex_buffer_ref& vb = nullptr,
           const index_buffer_ref& ib = nullptr,
           render_mode m = render_mode::TRIANGLES)
@@ -72,12 +42,12 @@ public:
 
     render_mode mode() const { return m_mode; }
 
-    const mgl::list<batch::data>& get() const { return m_batch_data; }
+    const mgl::list<batch_data>& get() const { return m_batch_data; }
 
     bool empty() const { return m_batch_data.empty(); }
 
 private:
-    mgl::list<batch::data> m_batch_data;
+    mgl::list<batch_data> m_batch_data;
     render_mode m_mode;
     vertex_buffer_ref m_vb;
     index_buffer_ref m_ib;

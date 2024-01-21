@@ -5,23 +5,12 @@ namespace mgl::graphics
 {
   void enable_shader::execute()
   {
-    auto& render = mgl::graphics::current_render();
-    render.current_state().current_shader = m_material;
-    m_material->bind();
-    m_material->prepare();
+    m_shader->bind();
+    m_shader->prepare();
   }
 
   void disable_shader::execute()
   {
-    auto& render = mgl::graphics::current_render();
-
-    if(render.current_state().current_shader == nullptr)
-    {
-      return;
-    }
-
-    // Disable the material, which will unbind the current program
-    render.current_state().current_shader->unbind();
-    render.current_state().current_shader = nullptr;
+    mgl::window::api::disable_program();
   }
 } // namespace mgl::graphics

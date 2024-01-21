@@ -244,18 +244,20 @@ namespace mgl::graphics::layers
 
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
 
-    render.current_state().current_shader = prg;
+    mgl::window::api::enable_program(prg->native());
+    mgl::window::api::set_program_attributes(prg->attributes());
+
     prg->set_uniform_value("ProjMtx",
                            glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    render.enable_state(mgl::graphics::enable_flag::BLEND);
-    render.set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
-    render.set_blend_func(mgl::graphics::blend_factor::SRC_ALPHA,
-                          mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
+    mgl::window::api::enable_state(mgl::graphics::enable_flag::BLEND);
+    mgl::window::api::set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
+    mgl::window::api::set_blend_func(mgl::graphics::blend_factor::SRC_ALPHA,
+                                     mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    render.enable_scissor();
+    mgl::window::api::enable_scissor();
 
     auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
     auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
@@ -281,30 +283,32 @@ namespace mgl::graphics::layers
         }
         else
         {
-          render.set_scissor(static_cast<int>(pcmd->ClipRect.x),
-                             static_cast<int>(fb_height - pcmd->ClipRect.w),
-                             static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
-                             static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
+          mgl::window::api::set_scissor(static_cast<int>(pcmd->ClipRect.x),
+                                        static_cast<int>(fb_height - pcmd->ClipRect.w),
+                                        static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
+                                        static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
           auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          render.draw(vb,
-                      ib,
-                      mgl::graphics::render_mode::TRIANGLES,
-                      glm::mat4(1.0f),
-                      pcmd->ElemCount,
-                      idx_buffer_offset);
+          mgl::window::api::draw(vb->native(),
+                                 vb->layout(),
+                                 ib->native(),
+                                 ib->element_size(),
+                                 mgl::graphics::render_mode::TRIANGLES,
+                                 glm::mat4(1.0f),
+                                 pcmd->ElemCount,
+                                 idx_buffer_offset,
+                                 0);
+
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
     }
 
-    render.clear_samplers(0, 1);
-
-    prg->unbind();
-
-    render.disable_scissor();
+    mgl::window::api::clear_samplers(0, 1);
+    mgl::window::api::disable_program();
+    mgl::window::api::disable_scissor();
   }
 
   bool gui_layer::on_window_close(mgl::window::window_close_event& event)

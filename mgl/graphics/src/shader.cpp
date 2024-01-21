@@ -8,44 +8,13 @@ namespace mgl::graphics
   {
     auto prg = native();
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
-
-    auto& render = mgl::graphics::current_render();
-    auto& state = render.current_state();
-
-    // Set the state of the render, including the current program, view and projection matrices
-    state.view_uniform = prg->uniform("view");
-    state.projection_uniform = prg->uniform("projection");
-    state.model_uniform = prg->uniform("model");
-    prg->bind();
-
-    // Set the view and projection matrices if the uniforms exist
-    if(state.view_uniform != nullptr)
-    {
-      state.view_uniform->set_value(state.view_matrix);
-    }
-
-    if(state.projection_uniform != nullptr)
-    {
-      state.projection_uniform->set_value(state.projection_matrix);
-    }
+    mgl::window::api::enable_program(prg);
+    mgl::window::api::set_program_attributes(attributes());
   }
 
   void shader::unbind()
   {
-    auto prg = native();
-    MGL_CORE_ASSERT(prg != nullptr, "Program is null");
-
-    auto& render = mgl::graphics::current_render();
-
-    // Unbind the program, and set the current program to null and the view and projection uniforms to
-    // null
-    prg->unbind();
-
-    // clean-up the current shader, view and projection uniforms
-    render.current_state().current_shader = nullptr;
-    render.current_state().view_uniform = nullptr;
-    render.current_state().projection_uniform = nullptr;
-    render.current_state().model_uniform = nullptr;
+    mgl::window::api::disable_program();
   }
 
   void shader::get_uniform_value(const std::string& name, bool& value)

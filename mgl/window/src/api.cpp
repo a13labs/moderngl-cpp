@@ -1,0 +1,285 @@
+#include "mgl_window/api.hpp"
+#include "mgl_core/debug.hpp"
+#include "mgl_window/window.hpp"
+
+namespace mgl::window::api
+{
+  static render_state s_state_data;
+
+  const static mgl::opengl::blend_factor s_blend_equation_mapping[] = {
+    mgl::opengl::blend_factor::ZERO,
+    mgl::opengl::blend_factor::ONE,
+    mgl::opengl::blend_factor::SRC_COLOR,
+    mgl::opengl::blend_factor::ONE_MINUS_SRC_COLOR,
+    mgl::opengl::blend_factor::DST_COLOR,
+    mgl::opengl::blend_factor::ONE_MINUS_DST_COLOR,
+    mgl::opengl::blend_factor::SRC_ALPHA,
+    mgl::opengl::blend_factor::ONE_MINUS_SRC_ALPHA,
+    mgl::opengl::blend_factor::DST_ALPHA,
+    mgl::opengl::blend_factor::ONE_MINUS_DST_ALPHA,
+    mgl::opengl::blend_factor::CONSTANT_COLOR,
+    mgl::opengl::blend_factor::ONE_MINUS_CONSTANT_COLOR,
+    mgl::opengl::blend_factor::CONSTANT_ALPHA,
+    mgl::opengl::blend_factor::ONE_MINUS_CONSTANT_ALPHA,
+    mgl::opengl::blend_factor::SRC_ALPHA_SATURATE,
+    mgl::opengl::blend_factor::SRC1_COLOR,
+    mgl::opengl::blend_factor::ONE_MINUS_SRC1_COLOR,
+    mgl::opengl::blend_factor::SRC1_ALPHA,
+    mgl::opengl::blend_factor::ONE_MINUS_SRC1_ALPHA,
+  };
+
+  const static mgl::opengl::blend_equation_mode s_blend_equation_mode[] = {
+    mgl::opengl::blend_equation_mode::ADD,
+    mgl::opengl::blend_equation_mode::SUBTRACT,
+    mgl::opengl::blend_equation_mode::REVERSE_SUBTRACT,
+    mgl::opengl::blend_equation_mode::MIN,
+    mgl::opengl::blend_equation_mode::MAX,
+  };
+
+  const static mgl::opengl::compare_func s_compare_func[] = {
+    mgl::opengl::compare_func::NONE,       mgl::opengl::compare_func::NEVER,
+    mgl::opengl::compare_func::LESS,       mgl::opengl::compare_func::EQUAL,
+    mgl::opengl::compare_func::LESS_EQUAL, mgl::opengl::compare_func::GREATER,
+    mgl::opengl::compare_func::NOT_EQUAL,  mgl::opengl::compare_func::GREATER_EQUAL,
+    mgl::opengl::compare_func::ALWAYS,
+  };
+
+  const static mgl::opengl::render_mode s_render_mode[] = {
+    mgl::opengl::render_mode::POINTS,       mgl::opengl::render_mode::LINES,
+    mgl::opengl::render_mode::LINE_LOOP,    mgl::opengl::render_mode::LINE_STRIP,
+    mgl::opengl::render_mode::TRIANGLES,    mgl::opengl::render_mode::TRIANGLE_STRIP,
+    mgl::opengl::render_mode::TRIANGLE_FAN,
+  };
+
+  mgl::opengl::compare_func to_api(compare_func func)
+  {
+    return s_compare_func[static_cast<int>(func)];
+  }
+
+  mgl::opengl::blend_factor to_api(blend_factor factor)
+  {
+    return s_blend_equation_mapping[static_cast<int>(factor)];
+  }
+
+  mgl::opengl::blend_equation_mode to_api(blend_equation_mode mode)
+  {
+    return s_blend_equation_mode[static_cast<int>(mode)];
+  }
+
+  mgl::opengl::render_mode to_api(render_mode mode)
+  {
+    return s_render_mode[static_cast<int>(mode)];
+  }
+
+  void enable_scissor()
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->enable_scissor();
+  }
+
+  void disable_scissor()
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->disable_scissor();
+  }
+
+  void set_scissor(const glm::vec2& position, const glm::vec2& size)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->set_scissor(position.x, position.y, size.x, size.y);
+  }
+
+  void enable_state(int state)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->enable(state);
+  }
+
+  void disable_state(int state)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->disable(state);
+  }
+
+  void clear(const glm::vec4& color)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->clear(color);
+  }
+
+  void set_viewport(const glm::vec2& position, const glm::vec2& size)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->set_viewport(position.x, position.y, size.x, size.y);
+  }
+
+  void clear_samplers(int start, int end)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->clear_samplers(start, end);
+  }
+
+  void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->set_blend_equation(to_api(modeRGB), to_api(modeAlpha));
+  }
+
+  void set_blend_func(blend_factor srcRGB,
+                      blend_factor dstRGB,
+                      blend_factor srcAlpha,
+                      blend_factor dstAlpha)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+    ctx->set_blend_func(to_api(srcRGB), to_api(dstRGB), to_api(srcAlpha), to_api(dstAlpha));
+  }
+
+  void set_view_matrix(const glm::mat4& matrix)
+  {
+    s_state_data.view_matrix = matrix;
+    if(s_state_data.view_uniform != nullptr)
+    {
+      s_state_data.view_uniform->set_value(matrix);
+    }
+  }
+
+  void set_projection_matrix(const glm::mat4& matrix)
+  {
+    s_state_data.projection_matrix = matrix;
+    if(s_state_data.projection_uniform != nullptr)
+    {
+      s_state_data.projection_uniform->set_value(matrix);
+    }
+  }
+
+  void set_program_attributes(const mgl::string_list& attributes)
+  {
+    s_state_data.attributes = attributes;
+  }
+
+  void enable_program(const program_ref& prg)
+  {
+    MGL_CORE_ASSERT(prg != nullptr, "Program is null");
+    s_state_data.current_program = prg;
+    s_state_data.view_uniform = prg->uniform("view");
+    s_state_data.projection_uniform = prg->uniform("projection");
+    s_state_data.model_uniform = prg->uniform("model");
+    prg->bind();
+
+    // Set the view and projection matrices if the uniforms exist
+    if(s_state_data.view_uniform != nullptr)
+    {
+      s_state_data.view_uniform->set_value(s_state_data.view_matrix);
+    }
+
+    if(s_state_data.projection_uniform != nullptr)
+    {
+      s_state_data.projection_uniform->set_value(s_state_data.projection_matrix);
+    }
+  }
+
+  void disable_program()
+  {
+    if(s_state_data.current_program == nullptr)
+    {
+      return;
+    }
+
+    s_state_data.current_program->unbind();
+    s_state_data.current_program = nullptr;
+    s_state_data.view_uniform = nullptr;
+    s_state_data.projection_uniform = nullptr;
+    s_state_data.model_uniform = nullptr;
+    s_state_data.attributes.clear();
+  }
+
+  void draw(const buffer_ref& vb,
+            const std::string& layout,
+            const buffer_ref& ib,
+            int element_size,
+            int mode,
+            const glm::mat4& model_view,
+            int count,
+            int offset,
+            int instance_count)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    // We get the uniform for the transform matrix
+    auto prg = s_state_data.current_program;
+    MGL_CORE_ASSERT(prg != nullptr, "Shader is null");
+    mgl::window::api::uniform_ref transform_uniform = s_state_data.model_uniform;
+
+    mgl::opengl::vertex_buffer_list m_content = { { vb, layout, s_state_data.attributes } };
+    mgl::opengl::vertex_array_ref vao = nullptr;
+
+    if(transform_uniform != nullptr)
+    {
+      transform_uniform->set_value(model_view);
+    }
+
+    if(ib != nullptr)
+    {
+      vao = ctx->vertex_array(prg, m_content, ib, element_size);
+    }
+    else
+    {
+      vao = ctx->vertex_array(prg, m_content);
+    }
+
+    vao->render((mgl::opengl::render_mode)mode, count, offset, instance_count);
+    vao->release();
+  }
+
+  void draw_batch(const buffer_ref& vb,
+                  const std::string& layout,
+                  const buffer_ref& ib,
+                  int element_size,
+                  int mode,
+                  const mgl::list<batch_data>& data)
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    // We get the uniform for the transform matrix
+    auto prg = s_state_data.current_program;
+    MGL_CORE_ASSERT(prg != nullptr, "Shader is null");
+    mgl::window::api::uniform_ref transform_uniform = s_state_data.model_uniform;
+
+    mgl::opengl::vertex_buffer_list m_content = { { vb, layout, s_state_data.attributes } };
+    mgl::opengl::vertex_array_ref vao = nullptr;
+
+    if(ib != nullptr)
+    {
+      vao = ctx->vertex_array(prg, m_content, ib, element_size);
+    }
+    else
+    {
+      vao = ctx->vertex_array(prg, m_content);
+    }
+
+    for(auto& batch : data)
+    {
+      if(s_state_data.model_uniform != nullptr)
+      {
+        s_state_data.model_uniform->set_value(batch.model_view);
+      }
+
+      vao->render((mgl::opengl::render_mode)mode, batch.count, batch.offset, batch.instance_count);
+    }
+
+    vao->release();
+  }
+
+}; // namespace mgl::window::api
