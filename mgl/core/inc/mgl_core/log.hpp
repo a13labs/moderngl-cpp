@@ -1,18 +1,11 @@
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
+/**
+ * @file log.hpp
+ * @brief This file contains the declaration of the logging functionality for the mgl::log namespace.
+ *
+ * The mgl::log namespace provides functions for logging messages at different levels of severity.
+ * It also includes macros for convenient logging.
+ */
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #pragma once
 #include "memory.hpp"
 #include "string.hpp"
@@ -21,20 +14,41 @@
 
 namespace mgl::log
 {
+  /**
+   * @brief Enumeration of log levels.
+   */
   enum class level
   {
-    trace,
-    debug,
-    info,
-    warn,
-    error,
-    critical
+    trace, /**< Trace level */
+    debug, /**< Debug level */
+    info, /**< Info level */
+    warn, /**< Warning level */
+    error, /**< Error level */
+    critical /**< Critical level */
   };
 
+  /**
+   * @brief Initializes the logging system.
+   *
+   * @param file The name of the log file.
+   */
   void init(const std::string& file = "app.log");
 
+  /**
+   * @brief Logs a message at the specified log level.
+   *
+   * @param lvl The log level.
+   * @param msg The message to log.
+   */
   void log(level lvl, const std::string& msg);
 
+  /**
+   * @brief Logs a trace message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void trace(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -42,6 +56,13 @@ namespace mgl::log
     log(level::trace, msg);
   }
 
+  /**
+   * @brief Logs a debug message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void debug(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -49,6 +70,13 @@ namespace mgl::log
     log(level::debug, msg);
   }
 
+  /**
+   * @brief Logs an info message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void info(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -56,6 +84,13 @@ namespace mgl::log
     log(level::info, msg);
   }
 
+  /**
+   * @brief Logs a warning message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void warn(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -63,6 +98,13 @@ namespace mgl::log
     log(level::warn, msg);
   }
 
+  /**
+   * @brief Logs an error message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void error(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -70,6 +112,13 @@ namespace mgl::log
     log(level::error, msg);
   }
 
+  /**
+   * @brief Logs a critical message with formatted arguments.
+   *
+   * @tparam Args The types of the arguments.
+   * @param fmt The format string.
+   * @param args The arguments to format.
+   */
   template <typename... Args>
   void critical(std::format_string<Args...> fmt, Args&&... args)
   {
@@ -77,6 +126,11 @@ namespace mgl::log
     log(level::critical, msg);
   }
 
+  /**
+   * @brief Checks if the logging system has been initialized.
+   *
+   * @return true if the logging system is initialized, false otherwise.
+   */
   bool is_initialized();
 
 } // namespace mgl::log

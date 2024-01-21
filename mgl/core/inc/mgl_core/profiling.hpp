@@ -1,30 +1,22 @@
-/*
-   Copyright 2020 Alexandre Pires (c.alexandre.pires@gmail.com)
+/**
+ * @file profiling.hpp
+ * @brief This file contains the definitions and declarations related to profiling and instrumentation.
+ */
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #pragma once
+
 #ifndef MGL_PROFILING
 #  define MGL_PROFILING 0
 #endif
+
 #if MGL_PROFILING
 #  include "platform.hpp"
 #  include "string.hpp"
 #  include <chrono>
 #  include <fstream>
 #  include <sys/types.h>
-
 #  include <thread>
+
 #  ifdef MGL_PLATFORM_WINDOWS
 #    include <process.h>
 #    define GET_PROCESS_ID _getpid
@@ -35,42 +27,72 @@
 
 namespace mgl::profiling
 {
+  /**
+   * @brief Alias for a floating-point duration in microseconds.
+   */
   using floating_point_microseconds = std::chrono::duration<double, std::micro>;
 
+  /**
+   * @brief Structure representing the result of a profiling session.
+   */
   struct profile_result
   {
-    std::string name;
-
-    floating_point_microseconds start;
-    std::chrono::microseconds elapsed_time;
-    std::thread::id thread_id;
-    int process_id;
-    std::string category;
+    std::string name; ///< The name of the profiled section.
+    floating_point_microseconds start; ///< The start time of the profiled section.
+    std::chrono::microseconds elapsed_time; ///< The elapsed time of the profiled section.
+    std::thread::id thread_id; ///< The ID of the thread executing the profiled section.
+    int process_id; ///< The ID of the process executing the profiled section.
+    std::string category; ///< The category of the profiled section.
   };
 
+  /**
+   * @brief Structure representing an instrumentation session.
+   */
   struct instrumentation_session
   {
-    std::string name;
+    std::string name; ///< The name of the instrumentation session.
   };
 
+  /**
+   * @brief Class for instrumenting code and collecting profiling data.
+   */
   class instrumentor
   {
 private:
-    std::mutex m_mutex;
-    instrumentation_session* m_current_session;
-    std::string m_file_path;
+    std::mutex m_mutex; ///< Mutex for thread-safe access to the instrumentor.
+    instrumentation_session* m_current_session; ///< Pointer to the current instrumentation session.
+    std::string m_file_path; ///< The file path to write the profiling results.
 
 public:
+    /**
+     * @brief Default constructor for the instrumentor class.
+     */
     instrumentor()
         : m_current_session(nullptr)
     { }
 
+    /**
+     * @brief Begins a new instrumentation session.
+     * @param name The name of the instrumentation session.
+     * @param filepath The file path to write the profiling results. Default is "results.json".
+     */
     void begin_session(const std::string& name, const std::string& filepath = "results.json");
 
+    /**
+     * @brief Ends the current instrumentation session.
+     */
     void end_session();
 
+    /**
+     * @brief Writes a profile result to the profiling results file.
+     * @param result The profile result to write.
+     */
     void write_profile(const profile_result& result);
 
+    /**
+     * @brief Gets the singleton instance of the instrumentor class.
+     * @return The instrumentor instance.
+     */
     static instrumentor& get()
     {
       static instrumentor instance;
@@ -78,37 +100,69 @@ public:
     }
 
 private:
+    /**
+     * @brief Writes the trace document to the profiling results file.
+     */
     void write_trace_document();
 
-    // Note: you must already own lock on m_mutex before
-    // calling internal_end_session()
+    /**
+     * @brief Ends the current instrumentation session internally.
+     * @note This function assumes that the caller already owns a lock on m_mutex.
+     */
     void internal_end_session();
   };
 
+  /**
+   * @brief Class for measuring the execution time of a code block.
+   */
   class instrumentation_timer
   {
 public:
+    /**
+     * @brief Constructs an instrumentation timer with the specified name and category.
+     * @param name The name of the timer.
+     * @param category The category of the timer.
+     */
     instrumentation_timer(const char* name, const char* category);
 
+    /**
+     * @brief Destructor for the instrumentation timer.
+     */
     ~instrumentation_timer();
 
+    /**
+     * @brief Stops the instrumentation timer.
+     */
     void stop();
 
 private:
-    const char *m_name, *m_category;
-    std::chrono::time_point<std::chrono::steady_clock> mStartTimepoint;
-    bool m_stopped;
+    const char* m_name; ///< The name of the timer.
+    const char* m_category; ///< The category of the timer.
+    std::chrono::time_point<std::chrono::steady_clock>
+        mStartTimepoint; ///< The start time point of the timer.
+    bool m_stopped; ///< Flag indicating whether the timer has been stopped.
   };
 
   namespace instrumentor_utils
   {
-
+    /**
+     * @brief Helper struct for changing the result type of a function.
+     * @tparam N The size of the result data.
+     */
     template <size_t N>
     struct ChangeResult
     {
-      char Data[N];
+      char Data[N]; ///< The result data.
     };
 
+    /**
+     * @brief Cleans up the output string by removing a specified substring.
+     * @tparam N The size of the expression string.
+     * @tparam K The size of the remove string.
+     * @param expr The expression string.
+     * @param remove The substring to remove.
+     * @return The cleaned up output string.
+     */
     template <size_t N, size_t K>
     constexpr auto cleanup_output_string(const char (&expr)[N], const char (&remove)[K])
     {
@@ -155,12 +209,30 @@ private:
 #    define MGL_CORE_FUNC_SIG "MGL_CORE_FUNC_SIG unknown!"
 #  endif
 
+/**
+ * @brief Macro for beginning a profiling session.
+ */
 #  define MGL_PROFILE_BEGIN_SESSION() ::mgl::profiling::instrumentor::get().begin_session("MGL")
+
+/**
+ * @brief Macro for ending the current profiling session.
+ */
 #  define MGL_PROFILE_END_SESSION() ::mgl::profiling::instrumentor::get().end_session()
+
+/**
+ * @brief Macro for profiling a code block with a specified name and category.
+ * @param name The name of the code block.
+ * @param category The category of the code block.
+ */
 #  define MGL_PROFILE_SCOPE(name, category)                                                        \
     constexpr auto fixedName =                                                                     \
         ::mgl::profiling::instrumentor_utils::cleanup_output_string(name, "__cdecl ");             \
     ::mgl::profiling::instrumentation_timer timer##__LINE__(fixedName.Data, category)
+
+/**
+ * @brief Macro for profiling a function with a specified category.
+ * @param category The category of the function.
+ */
 #  define MGL_PROFILE_FUNCTION(category) MGL_PROFILE_SCOPE(MGL_CORE_FUNC_SIG, category)
 #else
 #  define MGL_PROFILE_BEGIN_SESSION()

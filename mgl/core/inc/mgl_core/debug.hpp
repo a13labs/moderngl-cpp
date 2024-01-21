@@ -1,3 +1,7 @@
+/**
+ * @file debug.hpp
+ * @brief Contains debug-related macros and functions.
+ */
 #pragma once
 
 #include "log.hpp"

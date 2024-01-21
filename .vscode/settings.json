@@ -6,6 +6,9 @@
         "fstream": "cpp",
         "chrono": "cpp",
         "system_error": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp"
     }
 }
