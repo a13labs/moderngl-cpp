@@ -1,6 +1,6 @@
 # Doxyfile
 # The PROJECT_NAME tag is used as a title in the HTML and docsets
-PROJECT_NAME           = "GameLib"
+PROJECT_NAME           = "Modern Game Library"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 PROJECT_NUMBER         = @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@
@@ -9,7 +9,7 @@ PROJECT_NUMBER         = @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJEC
 OUTPUT_DIRECTORY       = @CMAKE_BINARY_DIR@/doc/
 
 # The INPUT tag can be used to specify the files and/or directories that contain documented source files.
-INPUT                  = @CMAKE_SOURCE_DIR@/gamelib/inc @CMAKE_SOURCE_DIR@/inc/cglm
+INPUT                  = @CMAKE_SOURCE_DIR@/mgl/core/inc/mgl_core @CMAKE_SOURCE_DIR@/vendors/glm/glm
 
 # Recursively search for input files in subdirectories
 RECURSIVE              = NO
@@ -18,7 +18,7 @@ RECURSIVE              = NO
 EXCLUDE                =
 
 # Filter the input files based on file patterns
-FILE_PATTERNS          = *.c *.h
+FILE_PATTERNS          = *.hpp
 
 # Generate HTML output
 GENERATE_HTML          = YES

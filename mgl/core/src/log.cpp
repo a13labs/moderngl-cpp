@@ -15,45 +15,18 @@
 */
 #include "mgl_core/log.hpp"
 
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
+extern "C"
+{
+#include <simplelog/log.h>
+}
 
 namespace mgl
 {
   namespace log
   {
-    static ref<spdlog::logger> s_logger = nullptr;
-
-    void init(const std::string& logfile)
-    {
-
-      std::vector<spdlog::sink_ptr> logSinks;
-
-      // By default we have only a file logger
-      logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(logfile, true));
-      logSinks[0]->set_pattern("[%T] [%l] %n: %v");
-
-#ifdef MGL_DEBUG
-      // For debugging purposes we attach a logger to the console
-      logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-      logSinks[1]->set_pattern("%^[%T] %n: %v%$");
-#endif
-
-      s_logger = std::make_shared<spdlog::logger>("mgl_core", begin(logSinks), end(logSinks));
-      spdlog::register_logger(s_logger);
-      s_logger->set_level(spdlog::level::trace);
-      s_logger->flush_on(spdlog::level::trace);
-    }
-
     void log(level lvl, const std::string& msg)
     {
-      s_logger->log(static_cast<spdlog::level::level_enum>(lvl), msg);
-    }
-
-    bool is_initialized()
-    {
-      return s_logger != nullptr;
+      log_log((int)lvl, __FILE__, __LINE__, msg.c_str());
     }
 
   } // namespace log

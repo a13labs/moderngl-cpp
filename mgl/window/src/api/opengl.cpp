@@ -99,7 +99,7 @@ namespace mgl::window::api
   {
     auto& ctx = mgl::window::current_context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
-    ctx->screen()->use();
+    ctx->screen().use();
   }
 
   void enable_scissor()

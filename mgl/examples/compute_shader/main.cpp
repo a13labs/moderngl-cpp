@@ -10,8 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-  mgl::log::init();
-
   // author: minu jeong
   auto code = mgl::opengl::shader(R"(
 #version 440

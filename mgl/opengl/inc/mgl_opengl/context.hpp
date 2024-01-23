@@ -89,7 +89,7 @@ public:
 
     const mgl::string_list& extensions() const;
 
-    const framebuffer_ref& screen() const;
+    framebuffer& screen();
 
     int enable_flags();
 
@@ -329,7 +329,7 @@ private:
     float m_polygon_offset_units;
     mgl::string_list m_extensions;
     framebuffer_ref m_default_framebuffer;
-    framebuffer_ref m_bound_framebuffer;
+    framebuffer_weak_ref m_bound_framebuffer;
   };
 
 #ifdef MGL_OPENGL_EGL
@@ -437,9 +437,9 @@ private:
     return m_extensions;
   }
 
-  inline const framebuffer_ref& context::screen() const
+  inline framebuffer& context::screen()
   {
-    return m_default_framebuffer;
+    return *m_default_framebuffer;
   }
 
   inline int context::enable_flags()

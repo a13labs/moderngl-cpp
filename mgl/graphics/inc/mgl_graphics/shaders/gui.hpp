@@ -10,6 +10,7 @@ namespace mgl::graphics::shaders
   {
 public:
     gui() = default;
+    virtual ~gui() = default;
 
     virtual void prepare() override final;
     virtual mgl::string_list& attributes() override final;

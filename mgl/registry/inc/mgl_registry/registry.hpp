@@ -66,20 +66,17 @@ private:
 
   inline image_ref load_image(const std::string& path, const loader_options& options)
   {
-    return std::dynamic_pointer_cast<image>(
-        current_registry().load(resource::type::image, path, options));
+    return current_registry().load(resource::type::image, path, options);
   }
 
   inline shader_ref load_shader(const std::string& path, const loader_options& options)
   {
-    return std::dynamic_pointer_cast<shader>(
-        current_registry().load(resource::type::shader, path, options));
+    return current_registry().load(resource::type::shader, path, options);
   }
 
   inline text_ref load_text(const std::string& path, const loader_options& options)
   {
-    return std::dynamic_pointer_cast<text>(
-        current_registry().load(resource::type::text, path, options));
+    return current_registry().load(resource::type::text, path, options);
   }
 
   inline resource_ref load_font(const std::string& path, const loader_options& options)

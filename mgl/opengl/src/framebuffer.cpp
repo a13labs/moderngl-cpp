@@ -132,7 +132,7 @@ namespace mgl::opengl
 
     glDepthMask(m_depth_mask);
 
-    m_context->m_bound_framebuffer = shared_from_this();
+    m_context->m_bound_framebuffer = mgl::weak_ref<framebuffer>(this);
   }
 
   bool framebuffer::read_into(mgl::byte_buffer& dst,

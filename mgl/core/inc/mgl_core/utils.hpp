@@ -5,6 +5,8 @@
 #pragma once
 
 #include "containers.hpp"
+#include <initializer_list>
+#include <utility>
 
 #define BIT(x) 1 << x
 
@@ -32,4 +34,28 @@ namespace mgl
 
     return zipped;
   }
-} // namespace  mgl
+
+  /**
+     * @brief Hash function for generic data
+     * 
+     * @param data data to hash
+     * @param size size of data 
+     */
+  size_t hash_func(const void* data, size_t size);
+
+  /**
+     * @brief Creates a new string using printf format
+     * 
+     * @param format format
+     * @param args args
+     * @return string& 
+     */
+  char* sprintf(const char* format, ...);
+
+  // Generic implementation
+  template <typename K>
+  struct hash
+  {
+    static size_t get(const K& k) { return hash_func(&k, sizeof(K)); }
+  };
+} // namespace mgl

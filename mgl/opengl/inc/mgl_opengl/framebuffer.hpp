@@ -26,7 +26,7 @@ namespace mgl::opengl
 {
   class context;
 
-  class framebuffer : public mgl::ref_from_this<framebuffer>
+  class framebuffer
   {
 public:
     ~framebuffer() = default;
@@ -120,6 +120,7 @@ private:
   };
 
   using framebuffer_ref = mgl::ref<mgl::opengl::framebuffer>;
+  using framebuffer_weak_ref = mgl::weak_ref<mgl::opengl::framebuffer>;
 
   inline int framebuffer::glo()
   {

@@ -24,6 +24,7 @@ namespace mgl::graphics
   {
 public:
     virtual void execute() = 0;
+    virtual ~render_command() = default;
   };
 
   class render_script : public render_command

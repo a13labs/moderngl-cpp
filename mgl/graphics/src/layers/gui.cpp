@@ -262,8 +262,8 @@ namespace mgl::graphics::layers
 
     mgl::window::api::enable_scissor();
 
-    auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
-    auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
+    auto vb = static_cast<vertex_buffer*>(render.get_buffer("gui_vb").get());
+    auto ib = static_cast<index_buffer*>(render.get_buffer("gui_ib").get());
 
     for(int n = 0; n < draw_data->CmdListsCount; ++n)
     {

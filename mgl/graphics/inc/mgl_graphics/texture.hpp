@@ -29,7 +29,7 @@ public:
       LINEAR_MIPMAP_LINEAR = 0x2703,
     };
 
-    ~texture() = default;
+    virtual ~texture() = default;
 
     void bind(int index);
     void unload();

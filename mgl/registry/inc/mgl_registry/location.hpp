@@ -39,7 +39,7 @@ public:
   class location
   {
 public:
-    ~location() = default;
+    virtual ~location() = default;
 
     bool is_null() const { return m_path.empty(); }
 

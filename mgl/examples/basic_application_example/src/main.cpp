@@ -7,8 +7,11 @@ class example : public mgl::application::application
   example()
       : mgl::application::application()
   {
-    config().gui_layer = mgl::create_ref<gui_layer>();
-    config().render_layer = mgl::create_ref<render_layer>();
+    auto gui = mgl::create_ref<gui_layer>();
+    auto render = mgl::create_ref<render_layer>();
+
+    config().gui_layer = gui;
+    config().render_layer = render;
   }
 };
 

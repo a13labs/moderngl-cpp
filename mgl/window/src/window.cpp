@@ -36,7 +36,6 @@ namespace mgl::window
     m_config = config;
 
     // Initialize logging and registry (for loading resources)
-    mgl::log::init();
     auto registry = mgl::create_scope<mgl::registry::registry>();
     s_registry = std::move(registry);
 
@@ -134,7 +133,7 @@ namespace mgl::window
   bool window::on_window_resize(window_resize_event& event)
   {
     auto size = m_api_window->get_drawable_size();
-    m_context->screen()->set_viewport({ 0, 0, size.width, size.height });
+    m_context->screen().set_viewport({ 0, 0, size.width, size.height });
     return true;
   }
 

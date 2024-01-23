@@ -485,7 +485,7 @@ namespace mgl::opengl
     {
       if(attachment->attachment_type() == attachment::type::TEXTURE)
       {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
+        const auto texture = dynamic_cast<const texture_2d*>(attachment.get());
         MGL_CORE_ASSERT(texture, "Not a texture2D");
 
         if(texture->m_depth)
@@ -512,10 +512,10 @@ namespace mgl::opengl
       }
       else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
       {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
+        const auto rb = dynamic_cast<const mgl::opengl::renderbuffer*>(attachment.get());
+        MGL_CORE_ASSERT(rb, "Not a Renderbuffer");
 
-        if(renderbuffer->m_depth)
+        if(rb->m_depth)
         {
           MGL_CORE_ERROR("color_attachments[{0}] is a depth attachment", i);
           return nullptr;
@@ -523,14 +523,13 @@ namespace mgl::opengl
 
         if(i == 0)
         {
-          width = renderbuffer->m_width;
-          height = renderbuffer->m_height;
-          samples = renderbuffer->m_samples;
+          width = rb->m_width;
+          height = rb->m_height;
+          samples = rb->m_samples;
         }
         else
         {
-          if(renderbuffer->m_width != width || renderbuffer->m_height != height ||
-             renderbuffer->m_samples != samples)
+          if(rb->m_width != width || rb->m_height != height || rb->m_samples != samples)
           {
             MGL_CORE_ERROR("the color_attachments have different sizes or samples");
             return nullptr;
@@ -544,7 +543,7 @@ namespace mgl::opengl
     {
       if(depth_attachment->attachment_type() == attachment::type::TEXTURE)
       {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
+        auto texture = dynamic_cast<const texture_2d*>(depth_attachment.get());
         MGL_CORE_ASSERT(texture, "Not a texture2D");
 
         if(!texture->m_depth)
@@ -577,16 +576,16 @@ namespace mgl::opengl
       }
       else if(depth_attachment->attachment_type() == attachment::type::RENDERBUFFER)
       {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
+        const auto rb = dynamic_cast<const mgl::opengl::renderbuffer*>(depth_attachment.get());
+        MGL_CORE_ASSERT(rb, "Not a Renderbuffer");
 
-        if(!renderbuffer->m_depth)
+        if(!rb->m_depth)
         {
           MGL_CORE_ERROR("the depth_attachment is a color attachment");
           return nullptr;
         }
 
-        if(renderbuffer->m_context != this)
+        if(rb->m_context != this)
         {
           MGL_CORE_ERROR("the depth_attachment belongs to a different context");
           return nullptr;
@@ -594,8 +593,7 @@ namespace mgl::opengl
 
         if(color_attachments.size())
         {
-          if(renderbuffer->m_width != width || renderbuffer->m_height != height ||
-             renderbuffer->m_samples != samples)
+          if(rb->m_width != width || rb->m_height != height || rb->m_samples != samples)
           {
             MGL_CORE_ERROR("the depth_attachment have different sizes or samples");
             return nullptr;
@@ -603,9 +601,9 @@ namespace mgl::opengl
         }
         else
         {
-          width = renderbuffer->m_width;
-          height = renderbuffer->m_height;
-          samples = renderbuffer->m_samples;
+          width = rb->m_width;
+          height = rb->m_height;
+          samples = rb->m_samples;
         }
       }
       else
@@ -629,7 +627,7 @@ namespace mgl::opengl
 
       if(attachment->attachment_type() == attachment::type::TEXTURE)
       {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
+        auto texture = dynamic_cast<const texture_2d*>(attachment.get());
         MGL_CORE_ASSERT(texture, "Not a texture2D");
         framebuffer->m_color_masks[i] = { texture->m_components >= 1,
                                           texture->m_components >= 2,
@@ -638,12 +636,11 @@ namespace mgl::opengl
       }
       else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
       {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-        framebuffer->m_color_masks[i] = { renderbuffer->m_components >= 1,
-                                          renderbuffer->m_components >= 2,
-                                          renderbuffer->m_components >= 3,
-                                          renderbuffer->m_components >= 4 };
+        auto rb = dynamic_cast<const mgl::opengl::renderbuffer*>(attachment.get());
+        MGL_CORE_ASSERT(rb, "Not a Renderbuffer");
+        framebuffer->m_color_masks[i] = {
+          rb->m_components >= 1, rb->m_components >= 2, rb->m_components >= 3, rb->m_components >= 4
+        };
       }
     }
 
@@ -678,7 +675,7 @@ namespace mgl::opengl
     {
       if(attachment->attachment_type() == attachment::type::TEXTURE)
       {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
+        auto texture = dynamic_cast<const texture_2d*>(attachment.get());
         MGL_CORE_ASSERT(texture, "Not a texture2D");
 
         glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -689,7 +686,7 @@ namespace mgl::opengl
       }
       else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
       {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
+        auto renderbuffer = dynamic_cast<const mgl::opengl::renderbuffer*>(attachment.get());
         MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
 
         glFramebufferRenderbuffer(GL_FRAMEBUFFER,
@@ -703,7 +700,7 @@ namespace mgl::opengl
     {
       if(depth_attachment->attachment_type() == attachment::type::TEXTURE)
       {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
+        auto texture = dynamic_cast<const texture_2d*>(depth_attachment.get());
         MGL_CORE_ASSERT(texture, "Not a texture2D");
 
         glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -714,7 +711,7 @@ namespace mgl::opengl
       }
       else if(depth_attachment->attachment_type() == attachment::type::RENDERBUFFER)
       {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
+        auto renderbuffer = dynamic_cast<const mgl::opengl::renderbuffer*>(depth_attachment.get());
         MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
 
         glFramebufferRenderbuffer(
@@ -1339,7 +1336,7 @@ namespace mgl::opengl
       switch(t.texture->texture_type())
       {
         case texture::type::TEXTURE_2D: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(t.texture);
+          auto texture = dynamic_cast<const texture_2d*>(t.texture.get());
           MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
           texture_type = texture->m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
           texture_obj = texture->m_texture_obj;
@@ -1347,14 +1344,14 @@ namespace mgl::opengl
         /* code */
         break;
         case texture::type::TEXTURE_3D: {
-          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
+          auto texture = dynamic_cast<const texture_3d*>(t.texture.get());
           MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
           texture_type = GL_TEXTURE_3D;
           texture_obj = texture->m_texture_obj;
         }
         break;
         case texture::type::TEXTURE_CUBE: {
-          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
+          auto texture = dynamic_cast<const texture_3d*>(t.texture.get());
           MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
           texture_type = GL_TEXTURE_CUBE_MAP;
           texture_obj = texture->m_texture_obj;

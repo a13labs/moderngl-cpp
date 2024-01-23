@@ -276,11 +276,11 @@ namespace mgl::window
                   m_state.current_config.width,
                   m_state.current_config.height);
     m_api_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
-                                       SDL_WINDOWPOS_CENTERED,
-                                       SDL_WINDOWPOS_CENTERED,
-                                       m_state.current_config.width,
-                                       m_state.current_config.height,
-                                       flags);
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    m_state.current_config.width,
+                                    m_state.current_config.height,
+                                    flags);
 
     if(!m_api_window)
     {

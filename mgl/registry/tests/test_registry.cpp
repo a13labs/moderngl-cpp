@@ -65,7 +65,6 @@ TEST(mgl_test_loadt_shader, load_shader_with_options)
 int main(int argc, char** argv)
 {
   ::testing::InitGoogleTest(&argc, argv);
-  mgl::log::init();
   mgl::registry::registry_ref registry = mgl::create_scope<mgl::registry::registry>();
   mgl::registry::register_dir(mgl::registry::resource::type::image, "file://data/images");
   mgl::registry::register_dir(mgl::registry::resource::type::text, "file://data/text");

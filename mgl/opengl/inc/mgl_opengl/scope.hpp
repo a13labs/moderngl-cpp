@@ -71,8 +71,8 @@ private:
     scope() = default;
 
     context* m_context;
-    framebuffer_ref m_framebuffer;
-    framebuffer_ref m_old_framebuffer;
+    framebuffer_weak_ref m_framebuffer;
+    framebuffer_weak_ref m_old_framebuffer;
     sampler_bindings m_samplers;
     mgl::list<scope::BindingData> m_textures;
     mgl::list<scope::BindingData> m_buffers;

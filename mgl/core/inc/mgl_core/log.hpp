@@ -28,13 +28,6 @@ namespace mgl::log
   };
 
   /**
-   * @brief Initializes the logging system.
-   *
-   * @param file The name of the log file.
-   */
-  void init(const std::string& file = "app.log");
-
-  /**
    * @brief Logs a message at the specified log level.
    *
    * @param lvl The log level.
@@ -125,13 +118,6 @@ namespace mgl::log
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
     log(level::critical, msg);
   }
-
-  /**
-   * @brief Checks if the logging system has been initialized.
-   *
-   * @return true if the logging system is initialized, false otherwise.
-   */
-  bool is_initialized();
 
 } // namespace mgl::log
 

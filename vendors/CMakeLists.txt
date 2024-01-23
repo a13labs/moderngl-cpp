@@ -13,7 +13,7 @@ add_subdirectory(sdl2)
 add_subdirectory(mojoAL)
 
 # spdlog
-add_subdirectory(spdlog)
+add_subdirectory(simplelog)
 
 # json
 add_subdirectory(json)

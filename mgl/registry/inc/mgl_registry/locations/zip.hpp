@@ -12,6 +12,8 @@ public:
         : location(std::string())
     { }
 
+    virtual ~zip_location() = default;
+
     virtual ifsteam_ptr open(const std::string& path,
                              std::ios_base::openmode mode = std::ios_base::in) override final;
 
