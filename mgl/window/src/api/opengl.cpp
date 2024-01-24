@@ -234,16 +234,20 @@ namespace mgl::window::api
     s_state_data.attributes.clear();
   }
 
-  void draw(const buffer_ref& vb,
-            const std::string& layout,
-            const buffer_ref& ib,
-            int element_size,
-            int mode,
-            const glm::mat4& model_view,
-            int count,
-            int offset,
-            int instance_count)
+  geom_data::~geom_data()
   {
+    if(m_vao != nullptr)
+    {
+      m_vao->release();
+    }
+  }
+
+  void geom_data::allocate()
+  {
+    if(m_vao != nullptr)
+    {
+      return;
+    }
     MGL_PROFILE_FUNCTION("API_DRAW_CALL");
     auto& ctx = mgl::window::current_context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
@@ -251,68 +255,51 @@ namespace mgl::window::api
     // We get the uniform for the transform matrix
     auto prg = s_state_data.current_program;
     MGL_CORE_ASSERT(prg != nullptr, "Shader is null");
-    mgl::window::api::uniform_ref transform_uniform = s_state_data.model_uniform;
 
-    mgl::opengl::vertex_buffer_list m_content = { { vb, layout, s_state_data.attributes } };
-    mgl::opengl::vertex_array_ref vao = nullptr;
+    mgl::opengl::vertex_buffer_list content = { { m_vb, m_layout, s_state_data.attributes } };
+    m_vao = nullptr;
+
+    if(m_ib != nullptr)
+    {
+      m_vao = ctx->vertex_array(prg, content, m_ib, m_element_size);
+    }
+    else
+    {
+      m_vao = ctx->vertex_array(prg, content);
+    }
+  }
+
+  void geom_data::deallocate()
+  {
+    if(m_vao == nullptr)
+    {
+      return;
+    }
+    m_vao->release();
+    m_vao = nullptr;
+  }
+
+  void geom_data::draw(const glm::mat4& model_view, int count, int offset, int instance_count)
+  {
+    MGL_CORE_ASSERT(m_vao != nullptr, "VAO is null");
+
+    // We get the uniform for the transform matrix
+    mgl::window::api::uniform_ref transform_uniform = s_state_data.model_uniform;
 
     if(transform_uniform != nullptr)
     {
       transform_uniform->set_value(model_view);
     }
 
-    if(ib != nullptr)
-    {
-      vao = ctx->vertex_array(prg, m_content, ib, element_size);
-    }
-    else
-    {
-      vao = ctx->vertex_array(prg, m_content);
-    }
-
-    vao->render((mgl::opengl::render_mode)mode, count, offset, instance_count);
-    vao->release();
+    m_vao->render((mgl::opengl::render_mode)m_mode, count, offset, instance_count);
   }
 
-  void draw_batch(const buffer_ref& vb,
-                  const std::string& layout,
-                  const buffer_ref& ib,
-                  int element_size,
-                  int mode,
-                  const mgl::list<batch_data>& data)
+  void draw_batch(geom_data& geom, const mgl::list<batch_data>& data)
   {
-    MGL_PROFILE_FUNCTION("API_DRAW_CALL");
-    auto& ctx = mgl::window::current_context();
-    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
-
-    // We get the uniform for the transform matrix
-    auto prg = s_state_data.current_program;
-    MGL_CORE_ASSERT(prg != nullptr, "Shader is null");
-    mgl::window::api::uniform_ref transform_uniform = s_state_data.model_uniform;
-
-    mgl::opengl::vertex_buffer_list m_content = { { vb, layout, s_state_data.attributes } };
-    mgl::opengl::vertex_array_ref vao = nullptr;
-
-    if(ib != nullptr)
-    {
-      vao = ctx->vertex_array(prg, m_content, ib, element_size);
-    }
-    else
-    {
-      vao = ctx->vertex_array(prg, m_content);
-    }
-
     for(auto& batch : data)
     {
-      if(s_state_data.model_uniform != nullptr)
-      {
-        s_state_data.model_uniform->set_value(batch.model_view);
-      }
-
-      vao->render((mgl::opengl::render_mode)mode, batch.count, batch.offset, batch.instance_count);
+      geom.draw(batch.model_view, batch.count, batch.offset, batch.instance_count);
     }
-
-    vao->release();
   }
 
 }; // namespace mgl::window::api

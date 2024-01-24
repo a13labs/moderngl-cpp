@@ -16,7 +16,7 @@ namespace mgl::window::api
   using texture_2d_ref = mgl::opengl::texture_2d_ref;
   using framebuffer_ref = mgl::opengl::framebuffer_ref;
 
-  enum render_mode
+  enum render_mode : uint32_t
   {
     POINTS,
     LINES,
@@ -32,7 +32,7 @@ namespace mgl::window::api
     PATCHES,
   };
 
-  enum enable_flag
+  enum enable_flag : uint32_t
   {
     NOTHING = 0,
     BLEND = BIT(1),
@@ -44,7 +44,7 @@ namespace mgl::window::api
     INVALID = 0x40000000
   };
 
-  enum compare_func
+  enum compare_func : uint32_t
   {
     NONE,
     NEVER,
@@ -57,7 +57,7 @@ namespace mgl::window::api
     ALWAYS,
   };
 
-  enum blend_equation_mode
+  enum blend_equation_mode : uint32_t
   {
     ADD,
     SUBTRACT,
@@ -66,7 +66,7 @@ namespace mgl::window::api
     MAX,
   };
 
-  enum blend_factor
+  enum blend_factor : uint32_t
   {
     ZERO,
     ONE,
@@ -151,6 +151,52 @@ namespace mgl::window::api
     size_t instance_count;
   };
 
+  class geom_data
+  {
+public:
+    geom_data(const buffer_ref& vb, const std::string& layout, uint32_t mode)
+        : m_vb(vb)
+        , m_layout(layout)
+        , m_ib(nullptr)
+        , m_element_size(0)
+        , m_mode(mode)
+        , m_vao(nullptr)
+    { }
+
+    geom_data(const buffer_ref& vb,
+              const std::string& layout,
+              const buffer_ref& ib,
+              uint16_t element_size,
+              uint32_t mode)
+        : m_vb(vb)
+        , m_layout(layout)
+        , m_ib(ib)
+        , m_element_size(element_size)
+        , m_mode(mode)
+        , m_vao(nullptr)
+    { }
+
+    ~geom_data();
+
+    geom_data(const geom_data& other) = delete;
+
+    void allocate();
+
+    void deallocate();
+
+    void draw(const glm::mat4& model_view, int count, int offset, int instance_count);
+
+    bool is_allocated() const { return m_vao != nullptr; }
+
+private:
+    buffer_ref m_vb = nullptr;
+    std::string m_layout = "";
+    buffer_ref m_ib = nullptr;
+    uint16_t m_element_size = 0;
+    uint32_t m_mode = 0;
+    mgl::opengl::vertex_array_ref m_vao = nullptr;
+  };
+
   program_ref create_program(const std::string& vs_source,
                              const std::string& fs_source,
                              const std::string& gs_source = "",
@@ -220,21 +266,12 @@ namespace mgl::window::api
 
   void disable_program();
 
-  void draw(const buffer_ref& vb,
-            const std::string& layout,
-            const buffer_ref& ib,
-            int element_size,
-            int mode,
-            const glm::mat4& model_view,
-            int count,
-            int offset,
-            int instance_count);
+  inline void
+  draw(geom_data& geom, const glm::mat4& model_view, int count, int offset, int instance_count)
+  {
+    geom.draw(model_view, count, offset, instance_count);
+  }
 
-  void draw_batch(const buffer_ref& vb,
-                  const std::string& layout,
-                  const buffer_ref& ib,
-                  int element_size,
-                  int mode,
-                  const mgl::list<batch_data>& data);
+  void draw_batch(geom_data& geom, const mgl::list<batch_data>& data);
 
 }; // namespace mgl::window::api

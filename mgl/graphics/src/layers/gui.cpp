@@ -275,6 +275,16 @@ namespace mgl::graphics::layers
       vb->upload(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
       ib->upload(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
 
+      mgl::window::api::geom_data geom = {
+        vb->api(),
+        vb->layout(),
+        ib->api(),
+        ib->element_size(),
+        (uint32_t)mgl::graphics::render_mode::TRIANGLES,
+      };
+
+      geom.allocate();
+
       int idx_buffer_offset = 0;
       for(int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
       {
@@ -294,19 +304,13 @@ namespace mgl::graphics::layers
           auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          mgl::window::api::draw(vb->api(),
-                                 vb->layout(),
-                                 ib->api(),
-                                 ib->element_size(),
-                                 mgl::graphics::render_mode::TRIANGLES,
-                                 glm::mat4(1.0f),
-                                 pcmd->ElemCount,
-                                 idx_buffer_offset,
-                                 0);
+          mgl::window::api::draw(geom, glm::mat4(1.0f), pcmd->ElemCount, idx_buffer_offset, 0);
 
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
+
+      geom.deallocate();
     }
 
     mgl::window::api::clear_samplers(0, 1);
