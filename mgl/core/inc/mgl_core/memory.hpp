@@ -80,6 +80,35 @@ namespace mgl
   using ref_from_this = std::enable_shared_from_this<T>;
 
   /**
+   * @brief A template alias for a weak pointer.
+   * 
+   * @tparam T The type of the object to be managed.
+   */
+  template <typename T>
+  using weak_ref = std::weak_ptr<T>;
+
+  /**
+   * @brief A template alias for a vector of weak pointers to objects of type T.
+  */
+  template <typename T>
+  using weak_ref_list = std::vector<weak_ref<T>>;
+
+  /**
+   * @brief A template alias for a queue of weak pointers to objects of type T.
+  */
+  template <typename T>
+  using weak_ref_queue = std::queue<weak_ref<T>>;
+
+  /**
+   * @brief Creates a weak pointer to an object of type T.
+  */
+  template <typename T, typename... Args>
+  constexpr weak_ref<T> create_weak_ref(Args&&... args)
+  {
+    return std::weak_ptr<T>(std::make_shared<T>(std::forward<Args>(args)...));
+  }
+
+  /**
    * @brief A template alias for a vector of elements of type T.
    * 
    * @tparam T The type of the elements in the buffer.

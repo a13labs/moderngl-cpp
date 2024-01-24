@@ -120,6 +120,7 @@ private:
   };
 
   using framebuffer_ref = mgl::ref<mgl::opengl::framebuffer>;
+  using framebuffer_weak_ref = mgl::weak_ref<mgl::opengl::framebuffer>;
 
   inline int framebuffer::glo()
   {
