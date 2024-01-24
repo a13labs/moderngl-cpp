@@ -36,7 +36,6 @@ namespace mgl::window
     m_config = config;
 
     // Initialize logging and registry (for loading resources)
-    mgl::log::init();
     auto registry = mgl::create_scope<mgl::registry::registry>();
     s_registry = std::move(registry);
 

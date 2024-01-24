@@ -28,13 +28,6 @@ namespace mgl::log
   };
 
   /**
-   * @brief Initializes the logging system.
-   *
-   * @param file The name of the log file.
-   */
-  void init(const std::string& file = "app.log");
-
-  /**
    * @brief Logs a message at the specified log level.
    *
    * @param lvl The log level.
@@ -126,18 +119,19 @@ namespace mgl::log
     log(level::critical, msg);
   }
 
-  /**
-   * @brief Checks if the logging system has been initialized.
-   *
-   * @return true if the logging system is initialized, false otherwise.
-   */
-  bool is_initialized();
-
 } // namespace mgl::log
 
 // log macros
-#define MGL_CORE_TRACE(...) ::mgl::log::trace(__VA_ARGS__)
-#define MGL_CORE_INFO(...) ::mgl::log::info(__VA_ARGS__)
-#define MGL_CORE_WARN(...) ::mgl::log::warn(__VA_ARGS__)
-#define MGL_CORE_ERROR(...) ::mgl::log::error(__VA_ARGS__)
-#define MGL_CORE_CRITICAL(...) ::mgl::log::critical(__VA_ARGS__)
+#ifdef MGL_DEBUG
+#  define MGL_CORE_TRACE(...) ::mgl::log::trace(__VA_ARGS__)
+#  define MGL_CORE_INFO(...) ::mgl::log::info(__VA_ARGS__)
+#  define MGL_CORE_WARN(...) ::mgl::log::warn(__VA_ARGS__)
+#  define MGL_CORE_ERROR(...) ::mgl::log::error(__VA_ARGS__)
+#  define MGL_CORE_CRITICAL(...) ::mgl::log::critical(__VA_ARGS__)
+#else
+#  define MGL_CORE_TRACE(...)
+#  define MGL_CORE_INFO(...)
+#  define MGL_CORE_WARN(...)
+#  define MGL_CORE_ERROR(...)
+#  define MGL_CORE_CRITICAL(...)
+#endif
