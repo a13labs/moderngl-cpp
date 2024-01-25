@@ -107,6 +107,20 @@ endif()
 add_subdirectory(vendors)
 add_subdirectory(mgl)
 
+set(
+    MGL_HEADERS     
+    ${MGL_CORE_INCLUDE_DIR}
+    ${MGL_REGISTRY_INCLUDE_DIR}
+    ${MGL_OPENGL_INCLUDE_DIR}
+    ${MGL_WINDOW_INCLUDE_DIR}
+    ${MGL_GRAPHICS_INCLUDE_DIR}
+    ${MGL_APPLICATION_INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${IMGUI_INCLUDE_DIR}
+    ${VENDORS_HEADERS_ONLY_INC_DIR}
+    CACHE INTERNAL "MGL_HEADERS"
+)
+
 # Debug CMake Vars, uncomment to show CMake vars
 # get_cmake_property(_variableNames VARIABLES)
 # list (SORT _variableNames)
