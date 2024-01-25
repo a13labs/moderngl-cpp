@@ -117,7 +117,7 @@ private:
     return current_registry().register_loader(loader);
   }
 
-  bool register_location_factory(location_factory_ref& factory)
+  inline bool register_location_factory(location_factory_ref& factory)
   {
     return current_registry().register_location_factory(factory);
   }
