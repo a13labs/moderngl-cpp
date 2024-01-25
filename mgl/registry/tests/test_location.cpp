@@ -39,7 +39,6 @@ TEST(url_test, test_url_parsing)
 
 int main(int argc, char** argv)
 {
-  mgl::log::init();
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

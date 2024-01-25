@@ -10,7 +10,7 @@ add_library(mgl::core-static ALIAS mgl_core)
 set(MGL_CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::core include directory")
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${SPDLOG_INCLUDE_DIR}
+    ${SIMPLELOG_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${LIBZIP_INCLUDE_DIR}
     ${LIBZIP_BINARY_DIR}
@@ -27,7 +27,7 @@ PRIVATE
 )
 
 # Link library to required libraries
-target_link_libraries(mgl_core PRIVATE spdlog::spdlog libzip::zip nlohmann_json::nlohmann_json)
+target_link_libraries(mgl_core PRIVATE simplelog::static libzip::zip nlohmann_json::nlohmann_json)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_core 

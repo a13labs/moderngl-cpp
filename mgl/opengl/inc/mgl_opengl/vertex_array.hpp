@@ -68,6 +68,8 @@ public:
     int vertices();
     int instances();
 
+    program_ref& program() { return m_program; }
+
 private:
     friend class context;
     vertex_array() = default;

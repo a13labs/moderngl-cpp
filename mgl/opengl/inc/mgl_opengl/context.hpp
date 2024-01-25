@@ -89,7 +89,7 @@ public:
 
     const mgl::string_list& extensions() const;
 
-    const framebuffer_ref& screen() const;
+    framebuffer& screen();
 
     int enable_flags();
 
@@ -437,9 +437,9 @@ private:
     return m_extensions;
   }
 
-  inline const framebuffer_ref& context::screen() const
+  inline framebuffer& context::screen()
   {
-    return m_default_framebuffer;
+    return *m_default_framebuffer;
   }
 
   inline int context::enable_flags()
