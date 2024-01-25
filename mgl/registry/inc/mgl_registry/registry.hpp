@@ -22,7 +22,7 @@ public:
     ~registry();
 
     bool register_location_factory(location_factory_ref& factory);
-    bool register_dir(resource::type type, const url& url);
+    bool register_location(resource::type type, const url& url);
     bool register_loader(loader_ref& loader);
 
     resource_ref load(resource::type type, const std::string& path, const loader_options& options);
@@ -107,9 +107,9 @@ private:
     return current_registry().find(type, path);
   }
 
-  inline bool register_dir(resource::type type, const std::string& path)
+  inline bool register_location(resource::type type, const std::string& path)
   {
-    return current_registry().register_dir(type, path);
+    return current_registry().register_location(type, path);
   }
 
   inline bool register_loader(loader_ref& loader)

@@ -65,7 +65,7 @@ namespace mgl::registry
     return true;
   }
 
-  bool registry::register_dir(resource::type type, const url& url)
+  bool registry::register_location(resource::type type, const url& url)
   {
     for(auto& [name, factory] : m_locations_factories)
     {
