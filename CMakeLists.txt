@@ -118,7 +118,7 @@ set(
     ${GLM_INCLUDE_DIR}
     ${IMGUI_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
-    CACHE INTERNAL "MGL_HEADERS"
+    CACHE PATH "MGL_HEADERS"
 )
 
 # Debug CMake Vars, uncomment to show CMake vars
