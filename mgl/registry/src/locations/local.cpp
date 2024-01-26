@@ -16,12 +16,12 @@ namespace mgl::registry
     }
   }
 
-  ifsteam_ptr local_location::open(const std::string& path, std::ios_base::openmode mode)
+  istream_ref local_location::open(const std::string& path, std::ios_base::openmode mode)
   {
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<std::ifstream>(this->path() / path, mode);
+    return mgl::create_ref<mgl::ifstream>(this->path() / path, mode);
   }
 
   bool local_location::exists(const std::string& path) const

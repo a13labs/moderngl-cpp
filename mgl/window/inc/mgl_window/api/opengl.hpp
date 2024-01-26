@@ -204,7 +204,7 @@ private:
                              const std::string& tcs_source = "");
 
   texture_2d_ref create_texture_2d(
-      int width, int height, int components, const mgl::byte_buffer& data, int samples = 0);
+      int width, int height, int components, const mgl::uint8_buffer& data, int samples = 0);
 
   void bind_screen_framebuffer();
 

@@ -14,7 +14,7 @@ namespace mgl::registry
 public:
     virtual ~image() = default;
 
-    image(int width, int height, int channels, mgl::byte_buffer& data)
+    image(int width, int height, int channels, mgl::uint8_buffer& data)
         : m_width(width)
         , m_height(height)
         , m_channels(channels)
@@ -31,13 +31,13 @@ public:
     int width() const { return m_width; }
     int height() const { return m_height; }
     int channels() const { return m_channels; }
-    const mgl::byte_buffer& data() const { return m_data; }
+    const mgl::uint8_buffer& data() const { return m_data; }
 
 private:
     int m_width = 0;
     int m_height = 0;
     int m_channels = 0;
-    mgl::byte_buffer m_data;
+    mgl::uint8_buffer m_data;
   };
 
 } // namespace mgl::registry

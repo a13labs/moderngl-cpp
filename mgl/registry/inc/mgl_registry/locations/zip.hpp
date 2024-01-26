@@ -12,7 +12,7 @@ public:
         : location(std::string())
     { }
 
-    virtual ifsteam_ptr open(const std::string& path,
+    virtual istream_ref open(const std::string& path,
                              std::ios_base::openmode mode = std::ios_base::in) override final;
 
     virtual bool exists(const std::string& path) const override final;

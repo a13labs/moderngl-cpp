@@ -166,10 +166,10 @@ public:
 
     // Buffer
     buffer_ref buffer(bool dynamic = false);
-    buffer_ref buffer(const mgl::float_buffer& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::uint_buffer& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::uint32_buffer& data, bool dynamic = false);
     buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::byte_buffer& data, bool dynamic = false);
+    buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false);
 
     // Compute Shader
     compute_shader_ref compute_shader(const std::string& source);
@@ -227,7 +227,7 @@ public:
     texture_2d_ref texture2d(int width,
                              int height,
                              int components,
-                             const mgl::byte_buffer& data,
+                             const mgl::uint8_buffer& data,
                              int samples = 0,
                              int alignment = 1,
                              const std::string& dtype = "f1",
@@ -502,12 +502,12 @@ private:
     return buffer((void*)nullptr, 0, dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::float_buffer& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::float32_buffer& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::uint_buffer& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::uint32_buffer& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
   }
@@ -517,7 +517,7 @@ private:
     return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
   }
 
-  inline buffer_ref context::buffer(const mgl::byte_buffer& data, bool dynamic)
+  inline buffer_ref context::buffer(const mgl::uint8_buffer& data, bool dynamic)
   {
     return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
   }

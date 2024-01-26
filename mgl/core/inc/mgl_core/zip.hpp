@@ -14,6 +14,12 @@ namespace mgl
   /**
    * Represents a file within a ZIP archive.
    */
+  class zip_file;
+  using zip_file_ref = mgl::ref<zip_file>;
+
+  class zip_ifstream;
+  using zip_ifstream_ref = mgl::ref<zip_ifstream>;
+
   class zip_file
   {
 public:
@@ -50,7 +56,9 @@ public:
      * @param path The path of the file to read.
      * @param buffer The byte buffer to store the file contents.
      */
-    void read(const mgl::path& path, mgl::byte_buffer& buffer) const;
+    void read(const mgl::path& path, mgl::uint8_buffer& buffer) const;
+
+    zip_ifstream_ref open(const mgl::path& path) const;
 
     /**
      * Checks if a file with the specified source is a valid ZIP file.
@@ -67,21 +75,21 @@ private:
   /**
    * Represents an input stream for reading files within a ZIP archive.
    */
-  class zip_ifsteam : public std::istream
+  class zip_ifstream : public std::istream
   {
 public:
     /**
-     * Constructs a zip_ifsteam object with the specified source and filename.
+     * Constructs a zip_ifstream object with the specified source and filename.
      * 
      * @param source The path to the ZIP archive.
      * @param filename The name of the file within the ZIP archive to read.
      */
-    zip_ifsteam(const std::string& source, const std::string& filename);
+    zip_ifstream(const std::string& source, const std::string& filename);
 
     /**
      * Destructor.
      */
-    ~zip_ifsteam();
+    ~zip_ifstream();
 
 private:
     static constexpr std::streamsize BUFFER_SIZE = 1024;
@@ -118,7 +126,5 @@ private:
 
     zip_file_buffer m_buffer;
   };
-
-  using zip_ifsteam_ptr = mgl::ref<zip_ifsteam>;
 
 } // namespace mgl

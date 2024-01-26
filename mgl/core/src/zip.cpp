@@ -47,7 +47,7 @@ namespace mgl
     return true;
   }
 
-  void zip_file::read(const mgl::path& path, mgl::byte_buffer& buffer) const
+  void zip_file::read(const mgl::path& path, mgl::uint8_buffer& buffer) const
   {
     if(m_source.empty())
     {
@@ -96,6 +96,11 @@ namespace mgl
     zip_close(z_file);
   }
 
+  zip_ifstream_ref zip_file::open(const mgl::path& path) const
+  {
+    return mgl::create_ref<zip_ifstream>(m_source, path.string());
+  }
+
   bool zip_file::is_zip_file(const std::string& source)
   {
     auto z_file = zip_open(source.c_str(), 0, nullptr);
@@ -109,14 +114,14 @@ namespace mgl
     return true;
   }
 
-  zip_ifsteam::zip_ifsteam(const std::string& source, const std::string& filename)
+  zip_ifstream::zip_ifstream(const std::string& source, const std::string& filename)
       : std::istream(&m_buffer)
   {
     m_zip_file = zip_open(source.c_str(), 0, nullptr);
 
     if(!m_zip_file)
     {
-      MGL_CORE_ERROR("zip_ifsteam: error opening zip file: {0}", source);
+      MGL_CORE_ERROR("zip_ifstream: error opening zip file: {0}", source);
       setstate(std::ios_base::failbit);
       return;
     }
@@ -125,7 +130,7 @@ namespace mgl
 
     if(!m_zip_entry)
     {
-      MGL_CORE_ERROR("zip_ifsteam: error opening zip entry: {0}", filename);
+      MGL_CORE_ERROR("zip_ifstream: error opening zip entry: {0}", filename);
       setstate(std::ios_base::failbit);
       zip_close(m_zip_file);
       return;
@@ -136,7 +141,7 @@ namespace mgl
     m_buffer.set_zip_entry(m_zip_entry);
   }
 
-  zip_ifsteam::~zip_ifsteam()
+  zip_ifstream::~zip_ifstream()
   {
     if(m_zip_entry)
     {
@@ -149,7 +154,7 @@ namespace mgl
     }
   }
 
-  std::streambuf::int_type zip_ifsteam::zip_file_buffer::underflow()
+  std::streambuf::int_type zip_ifstream::zip_file_buffer::underflow()
   {
     if(gptr() < egptr())
     {

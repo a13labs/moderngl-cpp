@@ -25,12 +25,12 @@ public:
 
     void upload(const void* data, size_t size);
 
-    void upload(const mgl::float_buffer& data)
+    void upload(const mgl::float32_buffer& data)
     {
       upload(data.data(), data.size() * sizeof(float));
     }
 
-    void upload(const mgl::uint_buffer& data)
+    void upload(const mgl::uint32_buffer& data)
     {
       upload(data.data(), data.size() * sizeof(uint32_t));
     }
@@ -40,7 +40,7 @@ public:
       upload(data.data(), data.size() * sizeof(uint16_t));
     }
 
-    void upload(const mgl::byte_buffer& data)
+    void upload(const mgl::uint8_buffer& data)
     {
       upload(data.data(), data.size() * sizeof(uint8_t));
     }

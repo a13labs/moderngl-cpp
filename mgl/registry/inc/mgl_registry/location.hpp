@@ -45,7 +45,7 @@ public:
 
     const mgl::path& path() const { return m_path; }
 
-    virtual ifsteam_ptr open(const std::string& path,
+    virtual istream_ref open(const std::string& path,
                              std::ios_base::openmode mode = std::ios_base::in) = 0;
 
     virtual bool operator==(const location& other) const = 0;
@@ -80,7 +80,7 @@ public:
         : location(std::string())
     { }
 
-    virtual ifsteam_ptr open(const std::string& path,
+    virtual istream_ref open(const std::string& path,
                              std::ios_base::openmode mode = std::ios_base::in) override final
     {
       return nullptr;

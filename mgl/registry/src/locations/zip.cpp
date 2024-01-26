@@ -17,12 +17,12 @@ namespace mgl::registry
     }
   }
 
-  ifsteam_ptr zip_location::open(const std::string& path, std::ios_base::openmode mode)
+  istream_ref zip_location::open(const std::string& path, std::ios_base::openmode mode)
   {
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<mgl::zip_ifsteam>(this->path().string(), path);
+    return mgl::create_ref<mgl::zip_ifstream>(this->path().string(), path);
   }
 
   bool zip_location::exists(const std::string& path) const

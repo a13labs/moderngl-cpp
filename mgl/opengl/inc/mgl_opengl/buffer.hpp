@@ -33,23 +33,23 @@ public:
     bool dynamic();
 
     bool
-    read_into(mgl::float_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
-    bool read_into(mgl::uint_buffer& dst,
+    read_into(mgl::float32_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
+    bool read_into(mgl::uint32_buffer& dst,
                    size_t size = 0,
                    size_t offset = 0,
                    size_t write_offset = 0);
-    bool read_into(mgl::byte_buffer& dst,
+    bool read_into(mgl::uint8_buffer& dst,
                    size_t size = 0,
                    size_t offset = 0,
                    size_t write_offset = 0);
     bool
-    read_into(mgl::int_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
+    read_into(mgl::int32_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0);
 
     bool write(const void* src, size_t size, size_t offset = 0);
-    bool write(const mgl::float_buffer& dst, size_t offset = 0);
-    bool write(const mgl::uint_buffer& dst, size_t offset = 0);
-    bool write(const mgl::byte_buffer& dst, size_t offset = 0);
-    bool write(const mgl::int_buffer& dst, size_t offset = 0);
+    bool write(const mgl::float32_buffer& dst, size_t offset = 0);
+    bool write(const mgl::uint32_buffer& dst, size_t offset = 0);
+    bool write(const mgl::uint8_buffer& dst, size_t offset = 0);
+    bool write(const mgl::int32_buffer& dst, size_t offset = 0);
 
     void clear();
     void bind_to_uniform_block(int binding = 0, size_t size = 0, size_t offset = 0);
@@ -87,46 +87,46 @@ private:
     return m_buffer_obj;
   }
 
-  inline bool buffer::write(const mgl::float_buffer& src, size_t offset)
+  inline bool buffer::write(const mgl::float32_buffer& src, size_t offset)
   {
     return write(src.data(), src.size() * sizeof(float), offset);
   }
 
-  inline bool buffer::write(const mgl::uint_buffer& src, size_t offset)
+  inline bool buffer::write(const mgl::uint32_buffer& src, size_t offset)
   {
     return write(src.data(), src.size() * sizeof(uint32_t), offset);
   }
 
-  inline bool buffer::write(const mgl::byte_buffer& src, size_t offset)
+  inline bool buffer::write(const mgl::uint8_buffer& src, size_t offset)
   {
     return write(src.data(), src.size() * sizeof(uint8_t), offset);
   }
 
-  inline bool buffer::write(const mgl::int_buffer& src, size_t offset)
+  inline bool buffer::write(const mgl::int32_buffer& src, size_t offset)
   {
     return write(src.data(), src.size() * sizeof(int), offset);
   }
 
   inline bool
-  buffer::read_into(mgl::float_buffer& dst, size_t size, size_t offset, size_t write_offset)
+  buffer::read_into(mgl::float32_buffer& dst, size_t size, size_t offset, size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
   inline bool
-  buffer::read_into(mgl::uint_buffer& dst, size_t size, size_t offset, size_t write_offset)
+  buffer::read_into(mgl::uint32_buffer& dst, size_t size, size_t offset, size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
   inline bool
-  buffer::read_into(mgl::byte_buffer& dst, size_t size, size_t offset, size_t write_offset)
+  buffer::read_into(mgl::uint8_buffer& dst, size_t size, size_t offset, size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }
 
   inline bool
-  buffer::read_into(mgl::int_buffer& dst, size_t size, size_t offset, size_t write_offset)
+  buffer::read_into(mgl::int32_buffer& dst, size_t size, size_t offset, size_t write_offset)
   {
     return read_into(dst.data(), dst.size(), size, offset, write_offset);
   }

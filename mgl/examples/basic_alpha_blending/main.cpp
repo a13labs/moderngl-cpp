@@ -67,7 +67,7 @@ bool example::on_load()
 
   m_scale->set_value({ 0.5, aspect_ratio() * 0.5 });
 
-  mgl::float_buffer vertices = {
+  mgl::float32_buffer vertices = {
     1.0,  0.0, //
     1.0,  0.0,   0.0, 0.5, //
 

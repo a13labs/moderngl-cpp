@@ -96,7 +96,7 @@ bool example::on_load()
   m_program->uniform("center")->set_value({ 0.f, 0.f, 0.f });
   m_program->uniform("up")->set_value({ 0.f, 0.f, 1.f });
 
-  mgl::float_buffer grid;
+  mgl::float32_buffer grid;
 
   grid.reserve(65 * 12);
 

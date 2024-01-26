@@ -72,7 +72,7 @@ bool example::on_load()
 
   m_scale->set_value({ width() / height() * 0.75, 0.25 });
 
-  mgl::float_buffer vertices = {
+  mgl::float32_buffer vertices = {
     1.0,  0.0, //
     -0.5, 0.86, //
     -0.5, -0.86 //

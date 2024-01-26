@@ -1,5 +1,4 @@
 #include "mgl_core/zip.hpp"
-
 #include "gtest/gtest.h"
 
 TEST(mgl_core, zip_test)
@@ -10,7 +9,7 @@ TEST(mgl_core, zip_test)
 
   EXPECT_TRUE(zip.exists("test.txt"));
 
-  mgl::byte_buffer buffer;
+  mgl::uint8_buffer buffer;
   zip.read("test.txt", buffer);
 
   EXPECT_TRUE(buffer.size() > 0);
@@ -18,7 +17,7 @@ TEST(mgl_core, zip_test)
 
 TEST(mgl_core, zip_ifstream_test)
 {
-  mgl::zip_ifsteam zip("test.zip", "test.txt");
+  mgl::zip_ifstream zip("test.zip", "test.txt");
 
   std::string line;
   std::getline(zip, line);

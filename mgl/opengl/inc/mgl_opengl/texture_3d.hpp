@@ -57,11 +57,11 @@ public:
     std::string swizzle();
     void set_swizzle(const std::string& value);
 
-    bool read_into(mgl::byte_buffer& dst, int alignment = 1, size_t write_offset = 0);
+    bool read_into(mgl::uint8_buffer& dst, int alignment = 1, size_t write_offset = 0);
     bool read_into(buffer_ref& dst, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::byte_buffer& src, const mgl::cube& viewport, int alignment = 1);
-    bool write(const mgl::byte_buffer& src, int alignment = 1);
+    bool write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment = 1);
+    bool write(const mgl::uint8_buffer& src, int alignment = 1);
     bool write(const buffer_ref& src, const mgl::cube& viewport, int alignment = 1);
     bool write(const buffer_ref& src, int alignment = 1);
 

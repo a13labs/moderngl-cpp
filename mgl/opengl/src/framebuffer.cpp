@@ -135,7 +135,7 @@ namespace mgl::opengl
     m_context->m_bound_framebuffer = shared_from_this();
   }
 
-  bool framebuffer::read_into(mgl::byte_buffer& dst,
+  bool framebuffer::read_into(mgl::uint8_buffer& dst,
                               const mgl::rect& viewport,
                               int components,
                               int attachment,

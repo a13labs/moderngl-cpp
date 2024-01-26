@@ -51,7 +51,7 @@ namespace mgl::registry::loaders
     int width, height, components;
     stbi_set_flip_vertically_on_load(opts->flip_vertically);
 
-    mgl::ifsteam_ptr file = location->open(path, std::ios::in | std::ios::binary);
+    mgl::istream_ref file = location->open(path, std::ios::in | std::ios::binary);
 
     if(!file)
     {
@@ -79,7 +79,7 @@ namespace mgl::registry::loaders
       horizontal_flip(data, width, height, components);
     }
 
-    auto img_data = mgl::byte_buffer(data, data + width * height * components);
+    auto img_data = mgl::uint8_buffer(data, data + width * height * components);
 
     stbi_image_free(data);
 

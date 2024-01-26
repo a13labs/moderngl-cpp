@@ -44,7 +44,7 @@ namespace mgl::opengl
     return texture::TEXTURE_3D;
   }
 
-  bool texture_3d::read_into(mgl::byte_buffer& dst, int alignment, size_t write_offset)
+  bool texture_3d::read_into(mgl::uint8_buffer& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -95,7 +95,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_3d::write(const mgl::byte_buffer& src, const mgl::cube& viewport, int alignment)
+  bool texture_3d::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -129,7 +129,7 @@ namespace mgl::opengl
     return glGetError() == GL_NO_ERROR;
   }
 
-  bool texture_3d::write(const mgl::byte_buffer& src, int alignment)
+  bool texture_3d::write(const mgl::uint8_buffer& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");

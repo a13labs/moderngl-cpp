@@ -87,7 +87,7 @@ namespace mgl::window::api
   }
 
   texture_2d_ref create_texture_2d(
-      int width, int height, int components, const mgl::byte_buffer& data, int samples)
+      int width, int height, int components, const mgl::uint8_buffer& data, int samples)
   {
     auto& ctx = mgl::window::current_context();
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");

@@ -117,23 +117,53 @@ namespace mgl
   using buffer = std::vector<T>;
 
   /**
-   * @brief A buffer of bytes.
+   * @brief A buffer of uint8 integer.
    */
-  using byte_buffer = buffer<uint8_t>;
+  using uint8_buffer = buffer<uint8_t>;
+
+  /**
+   * @brief A buffer of uint16 integers.
+   */
+  using uint16_buffer = buffer<uint16_t>;
+
+  /**
+   * @brief A buffer of uint32 integers.
+   */
+  using uint32_buffer = buffer<uint32_t>;
+
+  /**
+   * @brief A buffer of uint64 integers.
+   */
+  using uint64_buffer = buffer<uint64_t>;
+
+  /**
+   * @brief A buffer of int16 integers.
+   */
+  using int8_buffer = buffer<int8_t>;
+
+  /**
+   * @brief A buffer of int16 integers.
+   */
+  using int16_buffer = buffer<int16_t>;
+
+  /**
+   * @brief A buffer of int32_t.
+   */
+  using int32_buffer = buffer<int32_t>;
+
+  /**
+   * @brief A buffer of int64_t.
+   */
+  using int64_buffer = buffer<int64_t>;
 
   /**
    * @brief A buffer of floating-point numbers.
    */
-  using float_buffer = buffer<float>;
+  using float32_buffer = buffer<float>;
 
   /**
-   * @brief A buffer of integers.
+   * @brief A buffer of floating-point numbers.
    */
-  using int_buffer = buffer<int>;
-
-  /**
-   * @brief A buffer of unsigned integers.
-   */
-  using uint_buffer = buffer<uint32_t>;
+  using float64_buffer = buffer<double>;
 
 } // namespace mgl

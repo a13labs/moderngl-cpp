@@ -18,7 +18,7 @@ void render_layer::render_prepare(mgl::graphics::render_script& script)
 
 void render_layer::on_attach()
 {
-  mgl::float_buffer vertices = {
+  mgl::float32_buffer vertices = {
     // x, y, red, green, blue
     0.0,  0.8,  1.0, 0.0, 0.0, //
     -0.6, -0.8, 0.0, 1.0, 0.0, //
