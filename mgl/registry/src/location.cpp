@@ -2,8 +2,6 @@
 
 namespace mgl::registry
 {
-  static const std::string null_location_name = "null";
-
   void url::parse(const std::string& url)
   {
     const std::string::size_type protocol_end = url.find("://");
@@ -40,6 +38,11 @@ namespace mgl::registry
     {
       path = url.substr(host_end);
     }
+  }
+
+  bool location::operator==(const location& other) const
+  {
+    return path() == other.path();
   }
 
 } // namespace mgl::registry

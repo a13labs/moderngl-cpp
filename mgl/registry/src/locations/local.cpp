@@ -8,6 +8,9 @@ namespace mgl::registry
   local_location::local_location(const mgl::path& path)
       : location(path)
   {
+    if(path.empty())
+      return;
+
     if(path.is_relative())
       set_path(std::filesystem::current_path() / path);
 
@@ -93,8 +96,4 @@ namespace mgl::registry
     return local_location_name;
   }
 
-  bool local_location::operator==(const location& other) const
-  {
-    return path() == other.path();
-  }
 } // namespace mgl::registry

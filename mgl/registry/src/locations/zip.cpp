@@ -8,6 +8,9 @@ namespace mgl::registry
   zip_location::zip_location(const mgl::path& path)
       : location(path)
   {
+    if(path.empty())
+      return;
+
     if(path.is_relative())
       set_path(std::filesystem::current_path() / path);
 
@@ -76,11 +79,6 @@ namespace mgl::registry
       return nullptr;
 
     return mgl::ref<location>(new zip_location(url.path));
-  }
-
-  bool zip_location::operator==(const location& other) const
-  {
-    return path() == other.path();
   }
 
   const std::string& zip_location::name() const

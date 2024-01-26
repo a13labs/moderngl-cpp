@@ -54,9 +54,9 @@ public:
 
     virtual void write(const std::string& path, const mgl::uint8_buffer& buffer) const = 0;
 
-    virtual bool operator==(const location& other) const = 0;
-
     virtual bool exists(const std::string& path) const = 0;
+
+    virtual bool operator==(const location& other) const;
 
 protected:
     location(const std::string& path)

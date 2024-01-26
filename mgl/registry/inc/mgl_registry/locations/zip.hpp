@@ -31,11 +31,9 @@ public:
 
     virtual const std::string& name() const override final;
 
-    virtual bool operator==(const location& other) const override final;
-
 protected:
     zip_location(const std::string& path)
-        : location(std::string())
+        : location(mgl::path(path))
     { }
 
     zip_location(const mgl::path& path);

@@ -31,11 +31,9 @@ public:
 
     virtual const std::string& name() const override final;
 
-    virtual bool operator==(const location& other) const override final;
-
 protected:
     local_location(const std::string& path)
-        : location(std::string())
+        : local_location(mgl::path(path))
     { }
 
     local_location(const mgl::path& path);
