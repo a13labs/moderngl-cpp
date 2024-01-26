@@ -3,6 +3,7 @@
 #include "mgl_core/io.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
+#include "mgl_core/utils.hpp"
 
 namespace mgl::registry
 {
@@ -45,9 +46,9 @@ public:
 
     const mgl::path& path() const { return m_path; }
 
-    virtual istream_ref open_read(const std::string& path, openmode mode = file_mode::binary) = 0;
+    virtual io::istream_ref open_read(const std::string& path, io::openmode mode = io::binary) = 0;
 
-    virtual ostream_ref open_write(const std::string& path, openmode mode = file_mode::binary) = 0;
+    virtual io::ostream_ref open_write(const std::string& path, io::openmode mode = io::binary) = 0;
 
     virtual void read(const std::string& path, mgl::uint8_buffer& buffer) const = 0;
 

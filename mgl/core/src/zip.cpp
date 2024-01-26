@@ -2,6 +2,7 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/io.hpp"
 #include "mgl_core/log.hpp"
+#include "mgl_core/utils.hpp"
 
 #include "zip.h"
 

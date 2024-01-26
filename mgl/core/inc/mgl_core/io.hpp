@@ -18,8 +18,7 @@
 #include "containers.hpp"
 #include "debug.hpp"
 #include "memory.hpp"
-
-#include <filesystem>
+#include "utils.hpp"
 #include <fstream>
 
 #include "glm/glm.hpp"
@@ -31,28 +30,8 @@
 /**
   * @brief Namespace for core input/output functionality.
   */
-namespace mgl
+namespace mgl::io
 {
-  /**
-   * @brief Alias for std::filesystem::path.
-   */
-  using path = std::filesystem::path;
-
-  /**
-   * @brief Alias for mgl::list<mgl::path>.
-   */
-  using path_list = mgl::list<path>;
-
-  /**
-   * @brief Alias for std::ifstream.
-   */
-  using input_file = std::ifstream;
-
-  /**
-   * @brief Alias for std::ofstream.
-   */
-  using output_file = std::ofstream;
-
   /**
    * @brief Alias for std::istream.
    */
@@ -103,13 +82,10 @@ namespace mgl
    */
   using openmode = std::ios_base::openmode;
 
-  namespace file_mode
-  {
-    static const openmode binary = std::ios_base::binary;
-    static const openmode in = std::ios_base::in;
-    static const openmode out = std::ios_base::out;
-    static const openmode trunc = std::ios_base::trunc;
-  }; // namespace file_mode
+  static const openmode binary = std::ios_base::binary;
+  static const openmode in = std::ios_base::in;
+  static const openmode out = std::ios_base::out;
+  static const openmode trunc = std::ios_base::trunc;
 
   // Reading functions
 
@@ -1210,4 +1186,4 @@ namespace mgl
     return result;
   }
 
-} // namespace  mgl
+} // namespace mgl::io

@@ -17,20 +17,20 @@ namespace mgl::registry
     }
   }
 
-  istream_ref local_location::open_read(const std::string& path, openmode mode)
+  io::istream_ref local_location::open_read(const std::string& path, io::openmode mode)
   {
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<mgl::ifstream>(this->path() / path, file_mode::in | mode);
+    return mgl::create_ref<mgl::io::ifstream>(this->path() / path, io::in | mode);
   }
 
-  ostream_ref local_location::open_write(const std::string& path, openmode mode)
+  io::ostream_ref local_location::open_write(const std::string& path, io::openmode mode)
   {
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<mgl::ofstream>(this->path() / path, file_mode::out | mode);
+    return mgl::create_ref<mgl::io::ofstream>(this->path() / path, io::out | mode);
   }
 
   void local_location::read(const std::string& path, mgl::uint8_buffer& buffer) const
@@ -40,8 +40,8 @@ namespace mgl::registry
 
     auto file_size = std::filesystem::file_size(this->path() / path);
     buffer.resize(file_size);
-    auto stream = mgl::open_read(this->path() / path);
-    read_uint8_buffer(stream, buffer);
+    auto stream = mgl::io::open_read(this->path() / path);
+    io::read_uint8_buffer(stream, buffer);
     stream->close();
   }
 
@@ -50,8 +50,8 @@ namespace mgl::registry
     if(is_null())
       return;
 
-    auto stream = mgl::open_write(this->path() / path);
-    write_uint8_buffer(stream, buffer);
+    auto stream = mgl::io::open_write(this->path() / path);
+    io::write_uint8_buffer(stream, buffer);
     stream->flush();
     stream->close();
   }

@@ -17,7 +17,7 @@ namespace mgl::registry
     }
   }
 
-  istream_ref zip_location::open_read(const std::string& path, openmode mode)
+  io::istream_ref zip_location::open_read(const std::string& path, io::openmode mode)
   {
     if(is_null())
       return nullptr;
@@ -25,7 +25,7 @@ namespace mgl::registry
     return mgl::create_ref<mgl::zip_ifstream>(this->path().string(), path);
   }
 
-  ostream_ref zip_location::open_write(const std::string& path, openmode mode)
+  io::ostream_ref zip_location::open_write(const std::string& path, io::openmode mode)
   {
     MGL_CORE_INFO("zip_location::open_write not implemented");
     return nullptr;

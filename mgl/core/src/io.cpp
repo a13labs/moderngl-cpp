@@ -1,6 +1,5 @@
 #include "mgl_core/io.hpp"
 
-namespace mgl
+namespace mgl::io
 {
-  const path null_path = path();
-} // namespace  mgl
+} // namespace mgl::io

@@ -6,10 +6,22 @@
 
 #include "containers.hpp"
 
+#include <filesystem>
+
 #define BIT(x) 1 << x
 
 namespace mgl
 {
+
+  /**
+   * @brief Alias for std::filesystem::path.
+   */
+  using path = std::filesystem::path;
+
+  /**
+   * @brief Alias for mgl::list<mgl::path>.
+   */
+  using path_list = mgl::list<path>;
 
   /**
    * @brief Zips two lists together into a list of pairs.

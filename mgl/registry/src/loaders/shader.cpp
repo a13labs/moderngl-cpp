@@ -34,7 +34,7 @@ namespace mgl::registry::loaders
       opts = &default_shader_loader_options;
     }
 
-    mgl::istream_ref file = location->open_read(path);
+    mgl::io::istream_ref file = location->open_read(path);
 
     if(!file)
     {
