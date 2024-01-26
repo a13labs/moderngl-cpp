@@ -124,7 +124,7 @@ set(
 set(
     MGL_LIBS   
     simplelog::static libzip::zip nlohmann_json::nlohmann_json
-    glm::glm_static glad::static glfw::static imgui::static
+    glm::glm_static glad::static SDL2::SDL2-static ImGUI::static
     mgl::core-static mgl::registry-static mgl::opengl-static 
     mgl::window-static mgl::graphics-static mgl::application-static
     CACHE PATH "MGL_LIBS"
