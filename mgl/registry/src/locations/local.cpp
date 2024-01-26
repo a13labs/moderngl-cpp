@@ -1,4 +1,5 @@
 #include "mgl_registry/locations/local.hpp"
+#include "mgl_core/io.hpp"
 
 namespace mgl::registry
 {
@@ -16,12 +17,43 @@ namespace mgl::registry
     }
   }
 
-  istream_ref local_location::open(const std::string& path, std::ios_base::openmode mode)
+  istream_ref local_location::open_read(const std::string& path, openmode mode)
   {
     if(is_null())
       return nullptr;
 
-    return mgl::create_ref<mgl::ifstream>(this->path() / path, mode);
+    return mgl::create_ref<mgl::ifstream>(this->path() / path, file_mode::in | mode);
+  }
+
+  ostream_ref local_location::open_write(const std::string& path, openmode mode)
+  {
+    if(is_null())
+      return nullptr;
+
+    return mgl::create_ref<mgl::ofstream>(this->path() / path, file_mode::out | mode);
+  }
+
+  void local_location::read(const std::string& path, mgl::uint8_buffer& buffer) const
+  {
+    if(is_null())
+      return;
+
+    auto file_size = std::filesystem::file_size(this->path() / path);
+    buffer.resize(file_size);
+    auto stream = mgl::open_read(this->path() / path);
+    read_uint8_buffer(stream, buffer);
+    stream->close();
+  }
+
+  void local_location::write(const std::string& path, const mgl::uint8_buffer& buffer) const
+  {
+    if(is_null())
+      return;
+
+    auto stream = mgl::open_write(this->path() / path);
+    write_uint8_buffer(stream, buffer);
+    stream->flush();
+    stream->close();
   }
 
   bool local_location::exists(const std::string& path) const

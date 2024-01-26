@@ -42,9 +42,4 @@ namespace mgl::registry
     }
   }
 
-  const std::string& null_location::name() const
-  {
-    return null_location_name;
-  }
-
 } // namespace mgl::registry

@@ -22,7 +22,7 @@ namespace mgl::registry::loaders
       opts = &default_text_loader_options;
     }
 
-    mgl::istream_ref file = location->open(path, mgl::input_file::in);
+    mgl::istream_ref file = location->open_read(path);
 
     if(!file)
     {

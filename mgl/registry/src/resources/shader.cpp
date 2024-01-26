@@ -53,7 +53,7 @@ namespace mgl::registry
 
       std::string include_path = source.substr(start + 1, end - start - 1);
 
-      mgl::istream_ref file = location->open(include_path, mgl::input_file::in);
+      mgl::istream_ref file = location->open_read(include_path);
 
       if(!file)
       {

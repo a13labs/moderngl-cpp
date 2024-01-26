@@ -54,11 +54,6 @@ namespace mgl
   using output_file = std::ofstream;
 
   /**
-   * @brief Alias for std::ifstream::openmode.
-   */
-  using openmode = std::ifstream::openmode;
-
-  /**
    * @brief Alias for std::istream.
    */
   using istream = std::istream;
@@ -102,6 +97,19 @@ namespace mgl
    * @brief Constant representing a null path.
    */
   extern const path null_path;
+
+  /**
+   * @brief Alias to std::ios_base::openmode.
+   */
+  using openmode = std::ios_base::openmode;
+
+  namespace file_mode
+  {
+    static const openmode binary = std::ios_base::binary;
+    static const openmode in = std::ios_base::in;
+    static const openmode out = std::ios_base::out;
+    static const openmode trunc = std::ios_base::trunc;
+  }; // namespace file_mode
 
   // Reading functions
 

@@ -17,12 +17,32 @@ namespace mgl::registry
     }
   }
 
-  istream_ref zip_location::open(const std::string& path, std::ios_base::openmode mode)
+  istream_ref zip_location::open_read(const std::string& path, openmode mode)
   {
     if(is_null())
       return nullptr;
 
     return mgl::create_ref<mgl::zip_ifstream>(this->path().string(), path);
+  }
+
+  ostream_ref zip_location::open_write(const std::string& path, openmode mode)
+  {
+    MGL_CORE_INFO("zip_location::open_write not implemented");
+    return nullptr;
+  }
+
+  void zip_location::read(const std::string& path, mgl::uint8_buffer& buffer) const
+  {
+    if(is_null())
+      return;
+
+    auto zip = mgl::zip_file(this->path().string());
+    zip.read(path, buffer);
+  }
+
+  void zip_location::write(const std::string& path, const mgl::uint8_buffer& buffer) const
+  {
+    MGL_CORE_INFO("zip_location::write not implemented");
   }
 
   bool zip_location::exists(const std::string& path) const

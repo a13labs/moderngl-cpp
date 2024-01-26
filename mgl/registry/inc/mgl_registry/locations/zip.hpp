@@ -12,8 +12,16 @@ public:
         : location(std::string())
     { }
 
-    virtual istream_ref open(const std::string& path,
-                             std::ios_base::openmode mode = std::ios_base::in) override final;
+    virtual istream_ref open_read(const std::string& path,
+                                  openmode mode = file_mode::binary) override final;
+
+    virtual ostream_ref open_write(const std::string& path,
+                                   openmode mode = file_mode::binary) override final;
+
+    virtual void read(const std::string& path, mgl::uint8_buffer& buffer) const override final;
+
+    virtual void write(const std::string& path,
+                       const mgl::uint8_buffer& buffer) const override final;
 
     virtual bool exists(const std::string& path) const override final;
 

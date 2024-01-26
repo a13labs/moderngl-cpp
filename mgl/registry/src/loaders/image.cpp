@@ -51,7 +51,7 @@ namespace mgl::registry::loaders
     int width, height, components;
     stbi_set_flip_vertically_on_load(opts->flip_vertically);
 
-    mgl::istream_ref file = location->open(path, std::ios::in | std::ios::binary);
+    mgl::istream_ref file = location->open_read(path);
 
     if(!file)
     {

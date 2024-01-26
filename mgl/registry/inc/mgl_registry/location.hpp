@@ -45,8 +45,13 @@ public:
 
     const mgl::path& path() const { return m_path; }
 
-    virtual istream_ref open(const std::string& path,
-                             std::ios_base::openmode mode = std::ios_base::in) = 0;
+    virtual istream_ref open_read(const std::string& path, openmode mode = file_mode::binary) = 0;
+
+    virtual ostream_ref open_write(const std::string& path, openmode mode = file_mode::binary) = 0;
+
+    virtual void read(const std::string& path, mgl::uint8_buffer& buffer) const = 0;
+
+    virtual void write(const std::string& path, const mgl::uint8_buffer& buffer) const = 0;
 
     virtual bool operator==(const location& other) const = 0;
 
@@ -72,29 +77,5 @@ private:
   };
 
   using locations = mgl::list<location_ref>;
-
-  class null_location : public location, public location_factory
-  {
-public:
-    null_location()
-        : location(std::string())
-    { }
-
-    virtual istream_ref open(const std::string& path,
-                             std::ios_base::openmode mode = std::ios_base::in) override final
-    {
-      return nullptr;
-    }
-
-    virtual bool operator==(const location& other) const override final { return false; }
-
-    virtual bool exists(const std::string& path) const override final { return false; }
-
-    virtual bool can_handle(const url& url) const override final { return false; }
-
-    virtual location_ref factory(const url& url) const override final { return nullptr; }
-
-    virtual const std::string& name() const override final;
-  };
 
 } // namespace mgl::registry
