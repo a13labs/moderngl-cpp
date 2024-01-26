@@ -60,13 +60,13 @@ if (MGL_BUILD_TESTS)
         add_test(NAME mgl_core_ctest_${TEST_NAME} COMMAND mgl_core_${TEST_NAME})
     endforeach()
 
-    add_custom_target(mgl_code_test_data ALL)
+    add_custom_target(mgl_core_test_data ALL)
     # Get all tests data available in the test folder and copy it
     file(GLOB GAMELIB_TESTS_DATA "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/*.*")
     set(TESTS_DATA_FOLDER "${CMAKE_CURRENT_BINARY_DIR}")
     foreach(FILE_PATH ${GAMELIB_TESTS_DATA})
         add_custom_command(
-            TARGET mgl_code_test_data
+            TARGET mgl_core_test_data
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             ARGS -E copy ${FILE_PATH} "${TESTS_DATA_FOLDER}"
