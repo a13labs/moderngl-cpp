@@ -109,7 +109,7 @@ namespace mgl
    * @brief reads a null terminated string from a file.
    * @param file The file to read from.
    */
-  inline std::string read_string(const ifstream_ref& file)
+  inline std::string read_string(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     std::string result;
@@ -123,7 +123,7 @@ namespace mgl
    * @brief read bool from a file.
    * @param file The file to read from.
    */
-  inline bool read_bool(const ifstream_ref& file)
+  inline bool read_bool(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_bool: file is not open");
     bool result;
@@ -135,7 +135,7 @@ namespace mgl
    * @brief reads a uint8_t from a file.
    * @param file The file to read from.
    */
-  inline uint8_t read_uint8(const ifstream_ref& file)
+  inline uint8_t read_uint8(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     uint8_t result;
@@ -147,7 +147,7 @@ namespace mgl
    * @brief reads a uint16_t from a file.
    * @param file The file to read from.
    */
-  inline uint16_t read_uint16(const ifstream_ref& file)
+  inline uint16_t read_uint16(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     uint16_t result;
@@ -159,7 +159,7 @@ namespace mgl
    * @brief reads a uint32_t from a file.
    * @param file The file to read from.
    */
-  inline uint32_t read_uint32(const ifstream_ref& file)
+  inline uint32_t read_uint32(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     uint32_t result;
@@ -171,7 +171,7 @@ namespace mgl
    * @brief reads a uint64_t from a file.
    * @param file The file to read from.
    */
-  inline uint64_t read_uint64(const ifstream_ref& file)
+  inline uint64_t read_uint64(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     uint64_t result;
@@ -183,7 +183,7 @@ namespace mgl
    * @brief reads a int8_t from a file.
    * @param file The file to read from.
    */
-  inline int8_t read_int8(const ifstream_ref& file)
+  inline int8_t read_int8(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     int8_t result;
@@ -195,7 +195,7 @@ namespace mgl
    * @brief reads a int16_t from a file.
    * @param file The file to read from.
    */
-  inline int16_t read_int16(const ifstream_ref& file)
+  inline int16_t read_int16(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     int16_t result;
@@ -207,7 +207,7 @@ namespace mgl
    * @brief reads a int32_t from a file.
    * @param file The file to read from.
    */
-  inline int32_t read_int32(const ifstream_ref& file)
+  inline int32_t read_int32(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     int32_t result;
@@ -219,7 +219,7 @@ namespace mgl
    * @brief reads a int64_t from a file.
    * @param file The file to read from.
    */
-  inline int64_t read_int64(const ifstream_ref& file)
+  inline int64_t read_int64(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     int64_t result;
@@ -231,7 +231,7 @@ namespace mgl
    * @brief reads a float from a file.
    * @param file The file to read from.
    */
-  inline float read_float32(const ifstream_ref& file)
+  inline float read_float32(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     float result;
@@ -243,7 +243,7 @@ namespace mgl
    * @brief reads a double from a file.
    * @param file The file to read from.
    */
-  inline double read_float64(const ifstream_ref& file)
+  inline double read_float64(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     double result;
@@ -255,7 +255,7 @@ namespace mgl
    * @brief reads a glm::vec2 from a file.
    * @param file The file to read from.
    */
-  inline glm::vec2 read_vec2(const ifstream_ref& file)
+  inline glm::vec2 read_vec2(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::vec2 result;
@@ -267,7 +267,7 @@ namespace mgl
    * @brief reads a glm::vec3 from a file.
    * @param file The file to read from.
    */
-  inline glm::vec3 read_vec3(const ifstream_ref& file)
+  inline glm::vec3 read_vec3(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::vec3 result;
@@ -279,7 +279,7 @@ namespace mgl
    * @brief reads a glm::vec4 from a file.
    * @param file The file to read from.
    */
-  inline glm::vec4 read_vec4(const ifstream_ref& file)
+  inline glm::vec4 read_vec4(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::vec4 result;
@@ -291,7 +291,7 @@ namespace mgl
    * @brief reads a glm::ivec2 from a file.
    * @param file The file to read from.
    */
-  inline glm::ivec2 read_ivec2(const ifstream_ref& file)
+  inline glm::ivec2 read_ivec2(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::ivec2 result;
@@ -303,7 +303,7 @@ namespace mgl
    * @brief reads a glm::ivec3 from a file.
    * @param file The file to read from.
    */
-  inline glm::ivec3 read_ivec3(const ifstream_ref& file)
+  inline glm::ivec3 read_ivec3(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::ivec3 result;
@@ -315,7 +315,7 @@ namespace mgl
    * @brief reads a glm::ivec4 from a file.
    * @param file The file to read from.
    */
-  inline glm::ivec4 read_ivec4(const ifstream_ref& file)
+  inline glm::ivec4 read_ivec4(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::ivec4 result;
@@ -327,7 +327,7 @@ namespace mgl
    * @brief reads a glm::mat2 from a file.
    * @param file The file to read from.
    */
-  inline glm::mat2 read_mat2(const ifstream_ref& file)
+  inline glm::mat2 read_mat2(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::mat2 result;
@@ -339,7 +339,7 @@ namespace mgl
    * @brief reads a glm::mat3 from a file.
    * @param file The file to read from.
    */
-  inline glm::mat3 read_mat3(const ifstream_ref& file)
+  inline glm::mat3 read_mat3(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::mat3 result;
@@ -351,7 +351,7 @@ namespace mgl
    * @brief reads a glm::mat4 from a file.
    * @param file The file to read from.
    */
-  inline glm::mat4 read_mat4(const ifstream_ref& file)
+  inline glm::mat4 read_mat4(const istream_ref& file)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     glm::mat4 result;
@@ -364,7 +364,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_uint8_buffer(const ifstream_ref& file, uint8_buffer& buffer)
+  inline void read_uint8_buffer(const istream_ref& file, uint8_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size());
@@ -378,7 +378,7 @@ namespace mgl
    * @note The size parameter is in number of elements, not bytes.
    */
   inline void
-  read_uint8_buffer(const ifstream_ref& file, uint8_buffer& buffer, size_t size, size_t offset = 0)
+  read_uint8_buffer(const istream_ref& file, uint8_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -392,7 +392,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_uint16_buffer(const ifstream_ref& file, uint16_buffer& buffer)
+  inline void read_uint16_buffer(const istream_ref& file, uint16_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(uint16_t));
@@ -405,10 +405,8 @@ namespace mgl
    * @param size The size of the buffer to read.
    * @note The size parameter is in number of elements, not bytes.
    */
-  inline void read_uint16_buffer(const ifstream_ref& file,
-                                 uint16_buffer& buffer,
-                                 size_t size,
-                                 size_t offset = 0)
+  inline void
+  read_uint16_buffer(const istream_ref& file, uint16_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -422,7 +420,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_uint32_buffer(const ifstream_ref& file, uint32_buffer& buffer)
+  inline void read_uint32_buffer(const istream_ref& file, uint32_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(uint32_t));
@@ -435,10 +433,8 @@ namespace mgl
    * @param size The size of the buffer to read.
    * @note The size parameter is in number of elements, not bytes.
    */
-  inline void read_uint32_buffer(const ifstream_ref& file,
-                                 uint32_buffer& buffer,
-                                 size_t size,
-                                 size_t offset = 0)
+  inline void
+  read_uint32_buffer(const istream_ref& file, uint32_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -452,7 +448,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_uint64_buffer(const ifstream_ref& file, uint64_buffer& buffer)
+  inline void read_uint64_buffer(const istream_ref& file, uint64_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(uint64_t));
@@ -465,10 +461,8 @@ namespace mgl
    * @param size The size of the buffer to read.
    * @note The size parameter is in number of elements, not bytes.
    */
-  inline void read_uint64_buffer(const ifstream_ref& file,
-                                 uint64_buffer& buffer,
-                                 size_t size,
-                                 size_t offset = 0)
+  inline void
+  read_uint64_buffer(const istream_ref& file, uint64_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -482,7 +476,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_int8_buffer(const ifstream_ref& file, int8_buffer& buffer)
+  inline void read_int8_buffer(const istream_ref& file, int8_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size());
@@ -496,7 +490,7 @@ namespace mgl
    * @note The size parameter is in number of elements, not bytes.
    */
   inline void
-  read_int8_buffer(const ifstream_ref& file, int8_buffer& buffer, size_t size, size_t offset = 0)
+  read_int8_buffer(const istream_ref& file, int8_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -510,7 +504,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_int16_buffer(const ifstream_ref& file, int16_buffer& buffer)
+  inline void read_int16_buffer(const istream_ref& file, int16_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(int16_t));
@@ -524,7 +518,7 @@ namespace mgl
    * @note The size parameter is in number of elements, not bytes.
    */
   inline void
-  read_int16_buffer(const ifstream_ref& file, int16_buffer& buffer, size_t size, size_t offset = 0)
+  read_int16_buffer(const istream_ref& file, int16_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -538,7 +532,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_int32_buffer(const ifstream_ref& file, int32_buffer& buffer)
+  inline void read_int32_buffer(const istream_ref& file, int32_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(int32_t));
@@ -552,7 +546,7 @@ namespace mgl
    * @note The size parameter is in number of elements, not bytes.
    */
   inline void
-  read_int32_buffer(const ifstream_ref& file, int32_buffer& buffer, size_t size, size_t offset = 0)
+  read_int32_buffer(const istream_ref& file, int32_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -566,7 +560,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_int64_buffer(const ifstream_ref& file, int64_buffer& buffer)
+  inline void read_int64_buffer(const istream_ref& file, int64_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(int64_t));
@@ -580,7 +574,7 @@ namespace mgl
    * @note The size parameter is in number of elements, not bytes.
    */
   inline void
-  read_int64_buffer(const ifstream_ref& file, int64_buffer& buffer, size_t size, size_t offset = 0)
+  read_int64_buffer(const istream_ref& file, int64_buffer& buffer, size_t size, size_t offset = 0)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     MGL_CORE_ASSERT(size <= buffer.size(), "read_bytes: size is greater than buffer size");
@@ -594,7 +588,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_float32_buffer(const ifstream_ref& file, float32_buffer& buffer)
+  inline void read_float32_buffer(const istream_ref& file, float32_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(float));
@@ -607,7 +601,7 @@ namespace mgl
    * @param size The size of the buffer to read.
    * @note The size parameter is in number of elements, not bytes.
    */
-  inline void read_float32_buffer(const ifstream_ref& file,
+  inline void read_float32_buffer(const istream_ref& file,
                                   float32_buffer& buffer,
                                   size_t size,
                                   size_t offset = 0)
@@ -624,7 +618,7 @@ namespace mgl
    * @param file The file to read from.
    * @param buffer The buffer to read into.
    */
-  inline void read_float64_buffer(const ifstream_ref& file, float64_buffer& buffer)
+  inline void read_float64_buffer(const istream_ref& file, float64_buffer& buffer)
   {
     MGL_CORE_ASSERT(file->good() && !file->eof(), "read_string: file is not open");
     file->read(reinterpret_cast<char*>(buffer.data()), buffer.size() * sizeof(double));
@@ -637,7 +631,7 @@ namespace mgl
    * @param size The size of the buffer to read.
    * @note The size parameter is in number of elements, not bytes.
    */
-  inline void read_float64_buffer(const ifstream_ref& file,
+  inline void read_float64_buffer(const istream_ref& file,
                                   float64_buffer& buffer,
                                   size_t size,
                                   size_t offset = 0)
