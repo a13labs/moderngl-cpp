@@ -140,6 +140,7 @@ namespace mgl
     m_buffer.pubsetbuf(m_buffer_data, BUFFER_SIZE);
     m_buffer.pubseekpos(0, std::ios_base::in);
     m_buffer.set_zip_entry(m_zip_entry);
+    rdbuf(&m_buffer);
   }
 
   zip_ifstream::~zip_ifstream()
