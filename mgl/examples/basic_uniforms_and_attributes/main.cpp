@@ -24,7 +24,7 @@ void example::on_update(float time, float frame_time)
 {
   const auto ctx = current_context();
 
-  float sin_scale = static_cast<float>(sin(mgl::deg2rad(time * 60)));
+  float sin_scale = static_cast<float>(sin(mgl::math::deg2rad(time * 60)));
 
   ctx->clear(1.0, 1.0, 1.0);
   ctx->enable(mgl::opengl::enable_flag::BLEND);

@@ -18,13 +18,12 @@ public:
     enum class type
     {
       image,
+      palette,
       shader,
       font,
       sound,
       music,
       text,
-      json,
-      binary,
       custom
     };
 

@@ -81,7 +81,7 @@ namespace mgl::registry
     return mgl::ref<location>(new zip_location(url.path));
   }
 
-  const std::string& zip_location::name() const
+  const std::string& zip_location::kind() const
   {
     return zip_location_name;
   }

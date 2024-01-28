@@ -13,7 +13,7 @@ TEST(mgl_test_load_image, load_image)
   EXPECT_EQ(image->width(), 128);
   EXPECT_EQ(image->height(), 161);
   EXPECT_EQ(image->channels(), 3);
-  EXPECT_EQ(image->data().size(), 128 * 161 * 3);
+  EXPECT_EQ(image->buffer().size(), 128 * 161 * 3);
 }
 
 TEST(mgl_test_load_image, load_image_with_options)
@@ -26,7 +26,7 @@ TEST(mgl_test_load_image, load_image_with_options)
   EXPECT_EQ(image->width(), 128);
   EXPECT_EQ(image->height(), 161);
   EXPECT_EQ(image->channels(), 3);
-  EXPECT_EQ(image->data().size(), 128 * 161 * 3);
+  EXPECT_EQ(image->buffer().size(), 128 * 161 * 3);
 }
 
 TEST(mgl_test_load_text, load_text)

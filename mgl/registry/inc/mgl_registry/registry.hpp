@@ -1,12 +1,20 @@
 #pragma once
 #include "loader.hpp"
 #include "loaders/image.hpp"
+#include "loaders/music.hpp"
+#include "loaders/palette.hpp"
 #include "loaders/shader.hpp"
+#include "loaders/sound.hpp"
 #include "loaders/text.hpp"
+#include "loaders/ttf_font.hpp"
 #include "location.hpp"
 #include "resource.hpp"
+#include "resources/font.hpp"
 #include "resources/image.hpp"
+#include "resources/music.hpp"
+#include "resources/palette.hpp"
 #include "resources/shader.hpp"
+#include "resources/sound.hpp"
 #include "resources/text.hpp"
 
 #include "mgl_core/io.hpp"
@@ -82,24 +90,22 @@ private:
         current_registry().load(resource::type::text, path, options));
   }
 
-  inline resource_ref load_font(const std::string& path, const loader_options& options)
+  inline font_ref load_font(const std::string& path, const loader_options& options)
   {
-    return current_registry().load(resource::type::font, path, options);
+    return std::dynamic_pointer_cast<font>(
+        current_registry().load(resource::type::font, path, options));
   }
 
-  inline resource_ref load_sound(const std::string& path, const loader_options& options)
+  inline sound_ref load_sound(const std::string& path, const loader_options& options)
   {
-    return current_registry().load(resource::type::sound, path, options);
+    return std::dynamic_pointer_cast<sound>(
+        current_registry().load(resource::type::sound, path, options));
   }
 
-  inline resource_ref load_music(const std::string& path, const loader_options& options)
+  inline music_ref load_music(const std::string& path, const loader_options& options)
   {
-    return current_registry().load(resource::type::music, path, options);
-  }
-
-  inline resource_ref load_json(const std::string& path, const loader_options& options)
-  {
-    return current_registry().load(resource::type::json, path, options);
+    return std::dynamic_pointer_cast<music>(
+        current_registry().load(resource::type::music, path, options));
   }
 
   inline const location_ref find(resource::type type, const std::string& path)

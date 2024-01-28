@@ -5,26 +5,13 @@
 
 #pragma once
 
+#include <cstdint>
+
 #define MGL_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MGL_MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 namespace mgl
 {
-  /**
-   * @brief The mathematical constant pi.
-   */
-  static constexpr double pi = 3.14159265358979323846;
-
-  /**
-   * @brief Converts degrees to radians.
-   * @param degrees The angle in degrees.
-   * @return The angle in radians.
-   */
-  inline double deg2rad(double degrees)
-  {
-    return degrees * pi / 180.0;
-  }
-
   /**
    * @brief Represents a rectangle.
    */
@@ -347,4 +334,96 @@ namespace mgl
   {
     return !(lhs == rhs);
   }
-} // namespace  mgl
+} // namespace mgl
+
+namespace mgl::math
+{
+  /**
+   * @brief The mathematical constant pi.
+   */
+  static constexpr double pi = 3.14159265358979323846;
+
+  /**
+   * @brief Converts degrees to radians.
+   * @param degrees The angle in degrees.
+   * @return The angle in radians.
+   */
+  inline double deg2rad(double degrees)
+  {
+    return degrees * pi / 180.0;
+  }
+
+  /**
+   * @brief Converts radians to degrees.
+   * @param radians The angle in radians.
+   * @return The angle in degrees.
+   */
+  inline double rad2deg(double radians)
+  {
+    return radians * 180.0 / pi;
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline uint8_t next_power_of_two(uint8_t value)
+  {
+    --value;
+    value |= value >> 1;
+    value |= value >> 2;
+    ++value;
+    return value;
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline uint16_t next_power_of_two(uint16_t value)
+  {
+    --value;
+    value |= value >> 1;
+    value |= value >> 2;
+    value |= value >> 4;
+    ++value;
+    return value;
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline uint32_t next_power_of_two(uint32_t value)
+  {
+    --value;
+    value |= value >> 1;
+    value |= value >> 2;
+    value |= value >> 4;
+    value |= value >> 8;
+    value |= value >> 16;
+    ++value;
+    return value;
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline uint64_t next_power_of_two(uint64_t value)
+  {
+    --value;
+    value |= value >> 1;
+    value |= value >> 2;
+    value |= value >> 4;
+    value |= value >> 8;
+    value |= value >> 16;
+    value |= value >> 32;
+    ++value;
+    return value;
+  }
+} // namespace mgl::math

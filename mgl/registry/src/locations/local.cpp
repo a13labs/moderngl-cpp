@@ -91,7 +91,7 @@ namespace mgl::registry
     return mgl::ref<location>(new local_location(url.path));
   }
 
-  const std::string& local_location::name() const
+  const std::string& local_location::kind() const
   {
     return local_location_name;
   }

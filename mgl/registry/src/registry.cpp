@@ -52,16 +52,16 @@ namespace mgl::registry
       return false;
     }
 
-    if(m_locations_factories.find(factory->name()) != m_locations_factories.end())
+    if(m_locations_factories.find(factory->kind()) != m_locations_factories.end())
     {
-      MGL_CORE_ERROR("registry: factory with name {} already registered", factory->name());
+      MGL_CORE_ERROR("registry: factory for kind '{}' already registered", factory->kind());
       return false;
     }
 
     location_factory_info_ref info = mgl::create_ref<location_factory_info>();
     info->factory = std::move(factory);
 
-    m_locations_factories[info->factory->name()] = info;
+    m_locations_factories[info->factory->kind()] = info;
     return true;
   }
 

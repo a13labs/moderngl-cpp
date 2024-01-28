@@ -29,7 +29,7 @@ public:
 
     virtual location_ref factory(const url& url) const override final;
 
-    virtual const std::string& name() const override final;
+    virtual const std::string& kind() const override final;
 
 protected:
     zip_location(const std::string& path)
