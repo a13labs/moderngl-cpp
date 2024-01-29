@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mgl_core/math.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_registry/location.hpp"
 #include "mgl_registry/resource.hpp"
@@ -44,16 +45,27 @@ public:
     void blit(uint32_t x, uint32_t y, const image_ref& image) { blit(x, y, *image); }
 
     image_ref crop(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const;
+    image_ref crop(mgl::rect rect) const { return crop(rect.x, rect.y, rect.width, rect.height); }
+
+    image_ref flip_vertically() const;
+    image_ref flip_horizontally() const;
+
+    image_ref clone() const;
 
     void put_pixel(uint32_t x, uint32_t y, const glm::vec4& color);
+    void put_pixel(uint32_t x, uint32_t y, const glm::vec3& color)
+    {
+      put_pixel(x, y, glm::vec4(color, 1.0f));
+    }
 
     glm::vec4 get_pixel(uint32_t x, uint32_t y) const;
 
     void fill(const glm::vec4& color);
+    void fill(const glm::vec3& color) { fill(glm::vec4(color, 1.0f)); }
 
     uint32_t size() const { return m_width * m_height * m_channels; }
 
-    void save(const location_ref& location, const std::string& path) const;
+    void save(const std::string& path, const location_ref& location = nullptr) const;
 
 private:
     uint32_t m_width = 0;

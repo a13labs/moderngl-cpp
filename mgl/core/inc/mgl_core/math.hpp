@@ -426,4 +426,35 @@ namespace mgl::math
     ++value;
     return value;
   }
+
+  /**
+   * @brief Returns the floor of the specified value.
+   * @param f The value.
+   * @return The floor of the specified value.
+   */
+  static inline float floor(float f)
+  {
+    return (float)((f >= 0 || (float)(int)f == f) ? (int)f : (int)f - 1);
+  }
+
+  /**
+   * @brief Returns the ceiling of the specified value.
+   * @param f The value.
+   * @return The ceiling of the specified value.
+   */
+  static inline float ceil(float f)
+  {
+    return (float)((f >= 0) ? ((int)f == f ? (int)f : (int)f + 1) : (int)f);
+  }
+
+  /**
+   * @brief Returns the absolute value of the specified value.
+   * @param f The value.
+   * @return The absolute value of the specified value.
+   */
+  static inline float abs(float f)
+  {
+    return (f >= 0) ? f : -f;
+  }
+
 } // namespace mgl::math

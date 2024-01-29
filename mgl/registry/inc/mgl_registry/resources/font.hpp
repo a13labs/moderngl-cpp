@@ -18,14 +18,15 @@ namespace mgl::registry
     glm::vec2 uv0, uv1;
   };
 
-  struct font_bitmap
+  struct font_face
   {
-    image_ref image;
-    uint16_t font_size;
+    image_ref bitmap;
+    float scale;
+    int ascent, descent, line_gap;
     std::vector<glyph> glyphs;
   };
 
-  using font_bitmap_ref = mgl::ref<font_bitmap>;
+  using font_face_ref = mgl::ref<font_face>;
 
   class font : public resource
   {
@@ -41,8 +42,8 @@ public:
 
     virtual resource::type get_type() const override { return resource::type::font; }
 
-    virtual font_bitmap_ref
-    bitmap(uint16_t start_char, uint16_t num_chars, uint16_t font_size) const = 0;
+    virtual font_face_ref
+    bitmap(uint16_t start_char, uint16_t num_chars, u_int16_t pixel_height) const = 0;
 
 private:
   };

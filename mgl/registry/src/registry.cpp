@@ -34,6 +34,9 @@ namespace mgl::registry
 
       loader_ref text_loader = mgl::create_scope<loaders::text_loader>();
       register_loader(text_loader);
+
+      loader_ref font_loader = mgl::create_scope<loaders::font_loader>();
+      register_loader(font_loader);
     }
   }
 

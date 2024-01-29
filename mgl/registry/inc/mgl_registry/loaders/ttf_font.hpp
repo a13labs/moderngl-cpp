@@ -33,8 +33,8 @@ public:
     ttf_font(const uint8_buffer& data);
     virtual ~ttf_font() = default;
 
-    virtual font_bitmap_ref
-    bitmap(uint16_t start_char, uint16_t num_chars, uint16_t font_size) const override;
+    virtual font_face_ref
+    bitmap(uint16_t start_char, uint16_t num_chars, uint16_t pixel_height) const override;
 
 private:
     friend class font_loader;

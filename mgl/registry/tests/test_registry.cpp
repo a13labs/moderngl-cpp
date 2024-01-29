@@ -2,6 +2,7 @@
 #include "mgl_registry/loaders/image.hpp"
 #include "mgl_registry/loaders/shader.hpp"
 #include "mgl_registry/loaders/text.hpp"
+#include "mgl_registry/loaders/ttf_font.hpp"
 #include "mgl_registry/registry.hpp"
 #include "gtest/gtest.h"
 
@@ -46,20 +47,31 @@ TEST(mgl_test_load_text, load_text_with_options)
   EXPECT_EQ(text->data(), "Hello, World!");
 }
 
-TEST(mgl_test_loadt_shader, load_shader)
+TEST(mgl_test_load_shader, load_shader)
 {
   auto shader = mgl::registry::load_shader("test.glsl", mgl::registry::loader_options());
   EXPECT_NE(shader, nullptr);
   EXPECT_EQ(shader->get_type(), mgl::registry::resource::type::shader);
 }
 
-TEST(mgl_test_loadt_shader, load_shader_with_options)
+TEST(mgl_test_load_shader, load_shader_with_options)
 {
   mgl::registry::loaders::shader_loader_options options;
   options.type = mgl::registry::shader::type::FRAGMENT_SHADER;
   auto shader = mgl::registry::load_shader("test.fs", options);
   EXPECT_NE(shader, nullptr);
   EXPECT_EQ(shader->get_type(), mgl::registry::resource::type::shader);
+}
+
+TEST(mgl_test_load_font, load_font)
+{
+  auto font =
+      mgl::registry::load_font("LiberationMono-Regular.ttf", mgl::registry::loader_options());
+  EXPECT_NE(font, nullptr);
+  auto face = font->bitmap(32, 96, 96);
+  EXPECT_NE(face, nullptr);
+  face->bitmap->save("test.png");
+  EXPECT_EQ(font->get_type(), mgl::registry::resource::type::font);
 }
 
 int main(int argc, char** argv)
@@ -69,5 +81,6 @@ int main(int argc, char** argv)
   mgl::registry::register_location(mgl::registry::resource::type::image, "file://data/images");
   mgl::registry::register_location(mgl::registry::resource::type::text, "file://data/text");
   mgl::registry::register_location(mgl::registry::resource::type::shader, "file://data/shaders");
+  mgl::registry::register_location(mgl::registry::resource::type::font, "file://data/fonts");
   return RUN_ALL_TESTS();
 }

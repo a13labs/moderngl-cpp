@@ -63,7 +63,16 @@
             "args": [],
             "cwd": "${workspaceFolder}/build/mgl/examples/compute_shader",
             "MIMode": "gdb",
-        }
+        },
+        {
+            "name": "tests/mgl_registry_test_registry",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/mgl/registry/mgl_registry_test_registry",
+            "args": [],
+            "cwd": "${workspaceFolder}/build/mgl/registry",
+            "MIMode": "gdb",
+        },
     ],
     "compounds": []
 }

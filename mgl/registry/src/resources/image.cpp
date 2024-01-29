@@ -27,17 +27,22 @@ namespace mgl::registry
 
   void image::blit(uint32_t x, uint32_t y, const image& image)
   {
-    MGL_CORE_ASSERT(x >= 0 && x < m_width, "X is out of bounds");
-    MGL_CORE_ASSERT(y >= 0 && y < m_height, "Y is out of bounds");
-    MGL_CORE_ASSERT(x + image.width() <= m_width, "Image is out of bounds");
-    MGL_CORE_ASSERT(y + image.height() <= m_height, "Image is out of bounds");
+    MGL_CORE_ASSERT(x >= 0 && x <= m_width, "X is out of bounds");
+    MGL_CORE_ASSERT(y >= 0 && y <= m_height, "Y is out of bounds");
+    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    MGL_CORE_ASSERT(m_channels == image.m_channels, "Invalid number of channels, must be the same")
 
-    for(uint32_t i = 0; i < image.height(); ++i)
+    uint width = std::min(image.width(), m_width - x);
+    uint height = std::min(image.height(), m_height - y);
+
+    for(uint32_t i = 0; i < height; ++i)
     {
-      for(uint32_t j = 0; j < image.width(); ++j)
+      for(uint32_t j = 0; j < width; ++j)
       {
-        glm::vec4 color = image.get_pixel(j, i);
-        put_pixel(x + j, y + i, color);
+        std::copy(image.m_data.begin() + i * image.m_width * m_channels + j * m_channels,
+                  image.m_data.begin() + i * image.m_width * m_channels + j * m_channels +
+                      m_channels,
+                  m_data.begin() + (y + i) * m_width * m_channels + (x + j) * m_channels);
       }
     }
   }
@@ -49,31 +54,72 @@ namespace mgl::registry
     MGL_CORE_ASSERT(x + width <= m_width, "Width is out of bounds");
     MGL_CORE_ASSERT(y + height <= m_height, "Height is out of bounds");
 
-    uint8_buffer data(width * height * m_channels);
+    auto result = mgl::create_ref<image>(width, height, m_channels);
+
     for(uint32_t i = 0; i < height; ++i)
     {
       for(uint32_t j = 0; j < width; ++j)
       {
-        for(uint32_t k = 0; k < m_channels; ++k)
-        {
-          data[i * width * m_channels + j * m_channels + k] =
-              m_data[(y + i) * m_width * m_channels + (x + j) * m_channels + k];
-        }
+        std::copy(m_data.begin() + (y + i) * m_width * m_channels + (x + j) * m_channels,
+                  m_data.begin() + (y + i) * m_width * m_channels + (x + j) * m_channels +
+                      m_channels,
+                  result->m_data.begin() + i * width * m_channels + j * m_channels);
       }
     }
 
-    return mgl::create_ref<image>(width, height, m_channels, data);
+    return result;
+  }
+
+  image_ref image::flip_vertically() const
+  {
+    auto result = mgl::create_ref<image>(m_width, m_height, m_channels);
+    for(uint32_t i = 0; i < m_height; ++i)
+    {
+      std::copy(m_data.begin() + i * m_width * m_channels,
+                m_data.begin() + i * m_width * m_channels + m_width * m_channels,
+                result->m_data.begin() + (m_height - i - 1) * m_width * m_channels);
+    }
+
+    return result;
+  }
+
+  image_ref image::flip_horizontally() const
+  {
+    auto result = mgl::create_ref<image>(m_width, m_height, m_channels);
+
+    for(uint32_t i = 0; i < m_height; ++i)
+    {
+      for(uint32_t j = 0; j < m_width; ++j)
+      {
+        std::copy(m_data.begin() + i * m_width * m_channels + j * m_channels,
+                  m_data.begin() + i * m_width * m_channels + j * m_channels + m_channels,
+                  result->m_data.begin() + i * m_width * m_channels +
+                      (m_width - j - 1) * m_channels);
+      }
+    }
+
+    return result;
+  }
+
+  image_ref image::clone() const
+  {
+    auto result = mgl::create_ref<image>(m_width, m_height, m_channels);
+    std::copy(m_data.begin(), m_data.end(), result->m_data.begin());
+    return result;
   }
 
   void image::put_pixel(uint32_t x, uint32_t y, const glm::vec4& color)
   {
-    MGL_CORE_ASSERT(x >= 0 && x < m_width, "X is out of bounds");
-    MGL_CORE_ASSERT(y >= 0 && y < m_height, "Y is out of bounds");
-
+    MGL_CORE_ASSERT(x >= 0 && x <= m_width, "X is out of bounds");
+    MGL_CORE_ASSERT(y >= 0 && y <= m_height, "Y is out of bounds");
+    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    uint8_t data[m_channels];
     for(uint32_t i = 0; i < m_channels; ++i)
     {
-      m_data[y * m_width * m_channels + x * m_channels + i] = color[i] * 255;
+      data[i] = color[i] * 255;
     }
+
+    std::copy(data, data + m_channels, m_data.begin() + y * m_width * m_channels + x * m_channels);
   }
 
   glm::vec4 image::get_pixel(uint32_t x, uint32_t y) const
@@ -92,38 +138,47 @@ namespace mgl::registry
 
   void image::fill(const glm::vec4& color)
   {
-    for(uint32_t i = 0; i < m_height; ++i)
+    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    uint8_t data[m_channels];
+
+    for(uint32_t i = 0; i < m_channels; ++i)
     {
-      for(uint32_t j = 0; j < m_width; ++j)
-      {
-        for(uint32_t k = 0; k < m_channels; ++k)
-        {
-          m_data[i * m_width * m_channels + j * m_channels + k] = color[k] * 255;
-        }
-      }
+      data[i] = color[i] * 255;
+    }
+
+    for(uint32_t i = 0; i < m_width * m_height; ++i)
+    {
+      std::copy(data, data + m_channels, m_data.begin() + i * m_channels);
     }
   }
 
-  void image::save(const location_ref& location, const std::string& path) const
+  void image::save(const std::string& path, const location_ref& location) const
   {
-    auto file = location->open_write(path);
-    if(!file)
+    if(location)
     {
-      MGL_CORE_ERROR("Failed to open file for writing: {0}", path);
-      return;
-    }
+      auto file = location->open_write(path);
+      if(!file)
+      {
+        MGL_CORE_ERROR("Failed to open file for writing: {0}", path);
+        return;
+      }
 
-    stbi_write_png_to_func(
-        [](void* context, void* data, int size) {
-          auto file = static_cast<mgl::io::ostream*>(context);
-          file->write((char*)data, size);
-        },
-        file.get(),
-        m_width,
-        m_height,
-        m_channels,
-        m_data.data(),
-        0);
+      stbi_write_png_to_func(
+          [](void* context, void* data, int size) {
+            auto file = static_cast<mgl::io::ostream*>(context);
+            file->write((char*)data, size);
+          },
+          file.get(),
+          m_width,
+          m_height,
+          m_channels,
+          m_data.data(),
+          0);
+    }
+    else
+    {
+      stbi_write_png(path.c_str(), m_width, m_height, m_channels, m_data.data(), 0);
+    }
   }
 
 } // namespace mgl::registry
