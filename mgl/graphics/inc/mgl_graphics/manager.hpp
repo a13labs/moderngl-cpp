@@ -91,7 +91,7 @@ public:
     void clear();
 
 protected:
-    virtual void on_add(const T& item) = 0;
+    virtual bool on_add(const T& item) = 0;
     virtual void on_remove(const T& item) = 0;
 
 private:
@@ -101,8 +101,10 @@ private:
   template <typename T>
   size_t manager<T>::add_item(const std::string& name, const T& item)
   {
+    if(!on_add(item))
+      return 0;
+
     m_database.add_item(name, item);
-    on_add(item);
     return m_database.item_idx_by_name[name];
   }
 

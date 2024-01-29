@@ -2,7 +2,7 @@
 #include "mgl_registry/loaders/image.hpp"
 #include "mgl_registry/loaders/shader.hpp"
 #include "mgl_registry/loaders/text.hpp"
-#include "mgl_registry/loaders/ttf_font.hpp"
+#include "mgl_registry/loaders/truetype.hpp"
 #include "mgl_registry/registry.hpp"
 #include "gtest/gtest.h"
 
@@ -68,9 +68,8 @@ TEST(mgl_test_load_font, load_font)
   auto font =
       mgl::registry::load_font("LiberationMono-Regular.ttf", mgl::registry::loader_options());
   EXPECT_NE(font, nullptr);
-  auto face = font->bitmap(32, 96, 96);
-  EXPECT_NE(face, nullptr);
-  face->bitmap->save("test.png");
+  auto face = font->get_face();
+  face->bitmap->save("font-face-32-96.png");
   EXPECT_EQ(font->get_type(), mgl::registry::resource::type::font);
 }
 

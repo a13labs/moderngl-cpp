@@ -74,6 +74,8 @@ public:
     bool write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
     bool write(const buffer_ref& src, int level = 0, int alignment = 1);
 
+    void resize(int width, int height, int components = 4, const mgl::uint8_buffer& data = {});
+
     void bind_to_image(
         int unit, bool read_into = true, bool write = true, int level = 0, int format = 0);
     void build_mipmaps(int base = 0, int max_level = 1000);

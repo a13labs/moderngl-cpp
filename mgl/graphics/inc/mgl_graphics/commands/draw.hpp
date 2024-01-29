@@ -51,4 +51,7 @@ private:
     batch_ref m_batch;
   };
 
+  class draw_text_command : public render_command
+  { };
+
 } // namespace mgl::graphics

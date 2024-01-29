@@ -51,8 +51,7 @@ namespace mgl::opengl
     return texture::TEXTURE_2D;
   }
 
-  bool
-  texture_2d::read_into(mgl::uint8_buffer& dst, int level, int alignment, size_t write_offset)
+  bool texture_2d::read_into(mgl::uint8_buffer& dst, int level, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -480,6 +479,56 @@ namespace mgl::opengl
     glBindTexture(texture_target, m_texture_obj);
 
     glTexParameterf(texture_target, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
+  }
+
+  void texture_2d::resize(int width, int height, int components, const mgl::uint8_buffer& data)
+  {
+    MGL_CORE_ASSERT(!m_released, "Texture2D already released");
+    MGL_CORE_ASSERT(width > 0, "width must be greater than 0");
+    MGL_CORE_ASSERT(height > 0, "height must be greater than 0");
+    MGL_CORE_ASSERT(components > 0 && components <= 4, "components must be between 1 and 4");
+    MGL_CORE_ASSERT(!m_samples, "cannot resize multisample textures");
+    MGL_CORE_ASSERT(!m_depth, "cannot resize depth textures");
+
+    int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+    if(m_width == width && m_height == height && m_components == components)
+    {
+      glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+      glBindTexture(texture_target, m_texture_obj);
+
+      if(data.size() > 0)
+      {
+        int pixel_type = m_data_type->gl_type;
+        int format = m_data_type->base_format[m_components];
+
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, pixel_type, data.data());
+      }
+
+      return;
+    }
+
+    int internal_format = m_data_type->internal_format[components];
+    int format = m_data_type->base_format[components];
+
+    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glBindTexture(texture_target, m_texture_obj);
+
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 internal_format,
+                 width,
+                 height,
+                 0,
+                 format,
+                 m_data_type->gl_type,
+                 data.data());
+
+    m_width = width;
+    m_height = height;
+    m_components = components;
   }
 
 } // namespace  mgl::opengl

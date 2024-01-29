@@ -6,7 +6,7 @@
 #include "loaders/shader.hpp"
 #include "loaders/sound.hpp"
 #include "loaders/text.hpp"
-#include "loaders/ttf_font.hpp"
+#include "loaders/truetype.hpp"
 #include "location.hpp"
 #include "resource.hpp"
 #include "resources/font.hpp"

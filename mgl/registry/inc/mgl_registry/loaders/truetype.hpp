@@ -9,6 +9,20 @@ namespace mgl::registry::loaders
 
   struct font_loader_options : public loader_options
   {
+    struct glyph_range
+    {
+      uint16_t start;
+      uint16_t end;
+    };
+
+    mgl::list<glyph_range> glyph_ranges;
+    uint16_t pixel_height;
+
+    font_loader_options(const mgl::list<glyph_range>& glyph_ranges, uint16_t pixel_height)
+        : glyph_ranges(glyph_ranges)
+        , pixel_height(pixel_height)
+    { }
+
     virtual ~font_loader_options() = default;
   };
 
@@ -27,21 +41,21 @@ public:
                               const loader_options& options) override;
   };
 
-  class ttf_font : public font
+  class truetype_font : public font
   {
 public:
-    ttf_font(const uint8_buffer& data);
-    virtual ~ttf_font() = default;
+    truetype_font(const uint8_buffer& data, const font_loader_options& options);
+    virtual ~truetype_font() = default;
 
-    virtual font_face_ref
-    bitmap(uint16_t start_char, uint16_t num_chars, uint16_t pixel_height) const override;
+    virtual font::face_ref get_face() const override;
+
+    virtual uint16_t get_pixel_height() const override { return m_options.pixel_height; }
 
 private:
-    friend class font_loader;
-
+    font_loader_options m_options;
     uint8_buffer m_data;
   };
 
-  using ttf_font_ref = mgl::ref<ttf_font>;
+  using truetype_font_ref = mgl::ref<truetype_font>;
   using font_loader_ref = mgl::scope<font_loader>;
 } // namespace mgl::registry::loaders

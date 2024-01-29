@@ -428,6 +428,46 @@ namespace mgl::math
   }
 
   /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline int8_t next_power_of_two(int8_t value)
+  {
+    return (int8_t)next_power_of_two((uint8_t)value);
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline int16_t next_power_of_two(int16_t value)
+  {
+    return (int16_t)next_power_of_two((uint16_t)value);
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline int32_t next_power_of_two(int32_t value)
+  {
+    return (int32_t)next_power_of_two((uint32_t)value);
+  }
+
+  /**
+   * @brief Returns the next power of two of the specified value.
+   * @param value The value.
+   * @return The next power of two of the specified value.
+   */
+  inline int64_t next_power_of_two(int64_t value)
+  {
+    return (int64_t)next_power_of_two((uint64_t)value);
+  }
+
+  /**
    * @brief Returns the floor of the specified value.
    * @param f The value.
    * @return The floor of the specified value.
