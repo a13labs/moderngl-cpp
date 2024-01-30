@@ -76,6 +76,8 @@ public:
     void fill(const glm::vec4& color);
     void fill(const glm::vec3& color) { fill(glm::vec4(color, 1.0f)); }
 
+    void clear() { fill(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)); }
+
     int32_t size() const { return m_width * m_height * m_channels; }
 
     void save(const std::string& path, const location_ref& location = nullptr) const;

@@ -17,10 +17,9 @@ namespace mgl::graphics
     s_instance.release();
   }
 
-  bool texture_manager::on_add(const texture_ref& texture)
+  void texture_manager::on_add(const texture_ref& texture)
   {
     texture->load();
-    return true;
   }
 
   void texture_manager::on_remove(const texture_ref& texture)

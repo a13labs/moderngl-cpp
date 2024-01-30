@@ -13,7 +13,7 @@ public:
     font_manager();
     ~font_manager();
 
-    virtual bool on_add(const mgl::registry::font_ref& font) override final;
+    virtual void on_add(const mgl::registry::font_ref& font) override final;
     virtual void on_remove(const mgl::registry::font_ref& font) override final;
 
     static font_manager& instance();

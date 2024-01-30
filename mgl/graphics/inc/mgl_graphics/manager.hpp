@@ -19,7 +19,7 @@ namespace mgl::graphics
       size_t add_item(const std::string& name, const T& item)
       {
         if(items_by_name.find(name) != items_by_name.end())
-          return item_idx_by_name[name];
+          return 0;
 
         items_by_name[name] = item;
         items_by_idx[item_idx] = item;
@@ -91,21 +91,21 @@ public:
     void clear();
 
 protected:
-    virtual bool on_add(const T& item) = 0;
+    virtual void on_add(const T& item) = 0;
     virtual void on_remove(const T& item) = 0;
 
-private:
+protected:
     database m_database;
   };
 
   template <typename T>
   size_t manager<T>::add_item(const std::string& name, const T& item)
   {
-    if(!on_add(item))
+    size_t idx = m_database.add_item(name, item);
+    if(idx == 0)
       return 0;
-
-    m_database.add_item(name, item);
-    return m_database.item_idx_by_name[name];
+    on_add(item);
+    return idx;
   }
 
   template <typename T>

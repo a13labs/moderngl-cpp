@@ -68,8 +68,17 @@ TEST(mgl_test_load_font, load_font)
   auto font =
       mgl::registry::load_font("LiberationMono-Regular.ttf", mgl::registry::loader_options());
   EXPECT_NE(font, nullptr);
-  auto face = font->get_face();
-  face->bitmap->save("font-face-32-96.png");
+  auto bmp_size = font->get_size("Hello, World!", 32);
+  auto bmp = mgl::create_ref<mgl::registry::image>(bmp_size.width, bmp_size.height, 4);
+  font->draw_text(0, 0, "Hello, World!", 32, *bmp);
+  bmp->save("font-hello-world-32.png");
+
+  bmp_size = font->get_size(0x0020, 0x00FF, 32);
+  bmp->clear();
+  bmp->resize(bmp_size.width, bmp_size.height);
+  auto glyphs = font->draw_glyph_range(0, 0, 0x0020, 0x00FF, 32, *bmp);
+  bmp->save("font-glyph-range-32.png");
+
   EXPECT_EQ(font->get_type(), mgl::registry::resource::type::font);
 }
 

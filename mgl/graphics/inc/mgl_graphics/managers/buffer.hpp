@@ -11,7 +11,7 @@ public:
     buffer_manager();
     ~buffer_manager();
 
-    virtual bool on_add(const buffer_ref& buffer) override final;
+    virtual void on_add(const buffer_ref& buffer) override final;
     virtual void on_remove(const buffer_ref& buffer) override final;
 
     static buffer_manager& instance();
