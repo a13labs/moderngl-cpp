@@ -3,9 +3,35 @@
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
+#include "mgl_registry/resources/font.hpp"
+#include "mgl_registry/resources/image.hpp"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 namespace mgl::window::api
 {
+  // Text rendering stuff
+
+  // This is the data that is shared between all the draw calls
   static render_state s_state_data;
+
+  const mgl::float32_buffer quad_verts = {
+    // positions        // texture Coords
+    -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
+    0.5f,  -0.5f, 1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  1.0f, 1.0f, // top right
+    -0.5f, 0.5f,  0.0f, 1.0f // top left
+  };
+
+  const mgl::uint32_buffer quad_indices = {
+    0, 1, 2, // first triangle
+    2, 3, 0 // second triangle
+  };
+
+  static const char* quad_layout = "2f 2f";
+
+  static geom_data* s_quad = nullptr;
 
   const static mgl::opengl::blend_factor s_blend_equation_mapping[] = {
     mgl::opengl::blend_factor::ZERO,
@@ -70,6 +96,25 @@ namespace mgl::window::api
   mgl::opengl::render_mode to_api(render_mode mode)
   {
     return s_render_mode[static_cast<int>(mode)];
+  }
+
+  void init_api()
+  {
+    auto& ctx = mgl::window::current_context();
+    MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+    auto vb = ctx->buffer(quad_verts);
+    auto ib = ctx->buffer(quad_indices);
+
+    s_quad = new geom_data(vb, quad_layout, ib, 4, mgl::opengl::render_mode::TRIANGLES);
+    // s_quad->allocate();
+  }
+
+  void shutdown_api()
+  {
+    MGL_PROFILE_FUNCTION("API_SHUTDOWN");
+    // s_quad->deallocate();
+    delete s_quad;
   }
 
   program_ref create_program(const std::string& vs_source,
@@ -250,7 +295,7 @@ namespace mgl::window::api
     }
   }
 
-  void geom_data::allocate()
+  void geom_data::allocate(program_ref prg)
   {
     if(m_vao != nullptr)
     {
@@ -261,7 +306,11 @@ namespace mgl::window::api
     MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
 
     // We get the uniform for the transform matrix
-    auto prg = s_state_data.current_program;
+    if(prg == nullptr)
+    {
+      prg = s_state_data.current_program;
+    }
+
     MGL_CORE_ASSERT(prg != nullptr, "Shader is null");
 
     mgl::opengl::vertex_buffer_list content = { { m_vb, m_layout, s_state_data.attributes } };
@@ -309,5 +358,91 @@ namespace mgl::window::api
       geom.draw(batch.model_view, batch.count, batch.offset, batch.instance_count);
     }
   }
+
+  // void add_font(const std::string& font,
+  //               const mgl::registry::font_ref& font_ref,
+  //               mgl::list<int32_t> sizes)
+  // {
+  //   MGL_CORE_ASSERT(font_ref != nullptr, "Font is null")
+  //   MGL_CORE_ASSERT(s_font_cache.find(font) == s_font_cache.end(), "Font already exists");
+
+  //   auto atlas = mgl::create_ref<mgl::registry::font_atlas>(font_ref, sizes);
+  //   s_font_cache[font] = { atlas, nullptr };
+
+  //   // Create the texture
+  //   s_font_cache[font].texture =
+  //       create_texture_2d(atlas->width(), atlas->height(), 4, atlas->bitmap()->buffer());
+  // }
+
+  // void remove_font(const std::string& font)
+  // {
+  //   MGL_CORE_ASSERT(s_font_cache.find(font) != s_font_cache.end(), "Font does not exist");
+
+  //   auto& font_info = s_font_cache[font];
+
+  //   // Remove the texture
+  //   font_info.texture->release();
+
+  //   // Remove the font
+  //   s_font_cache.erase(font);
+  // }
+
+  // void set_font(const std::string& font, int32_t size)
+  // {
+  //   MGL_CORE_ASSERT(s_font_cache.find(font) != s_font_cache.end(), "Font does not exist");
+  //   s_state_data.current_font = font;
+  //   s_state_data.current_font_size = size;
+  //   s_state_data.current_font_atlas = s_font_cache[font].texture;
+  // }
+
+  // void
+  // draw_text(const std::string& text, const glm::vec2& position, const glm::vec4& color, float scale)
+  // {
+  //   MGL_CORE_ASSERT(s_state_data.current_font_atlas, "No atlas available");
+  //   MGL_CORE_ASSERT(s_state_data.current_font_size != 0, "Font size is 0");
+
+  //   auto& ctx = mgl::window::current_context();
+  //   MGL_CORE_ASSERT(ctx != nullptr, "Context is null");
+
+  //   int32_t x = position.x;
+  //   int32_t y = position.y;
+
+  //   s_state_data.current_font_atlas->use(0);
+
+  //   set_view_matrix(glm::mat4(1.0f));
+  //   set_projection_matrix(glm::ortho(0.0f,
+  //                                    static_cast<float>(ctx->screen().width()),
+  //                                    static_cast<float>(ctx->screen().height()),
+  //                                    0.0f));
+
+  //   ctx->set_blend_equation(mgl::opengl::blend_equation_mode::ADD,
+  //                           mgl::opengl::blend_equation_mode::ADD);
+  //   ctx->set_blend_func(mgl::opengl::blend_factor::SRC_ALPHA,
+  //                       mgl::opengl::blend_factor::ONE_MINUS_SRC_ALPHA,
+  //                       mgl::opengl::blend_factor::SRC_ALPHA,
+  //                       mgl::opengl::blend_factor::ONE_MINUS_SRC_ALPHA);
+
+  //   // for(auto& c : text)
+  //   // {
+  //   //   if(c == '\n')
+  //   //   {
+  //   //     x = position.x;
+  //   //     y += s_state_data.current_font_size;
+  //   //     continue;
+  //   //   }
+
+  //   //   auto& glyph = font_glyphs_info[c];
+
+  //   //   auto& g = glyph.glyphs[0];
+
+  //   //   glm::mat4 model = glm::translate(
+  //   //       glm::mat4(1.0f), glm::vec3(x + g.x_offset * scale, y + g.y_offset * scale, 0.0f));
+  //   //   model = glm::scale(model, glm::vec3(g.width * scale, g.height * scale, 1.0f));
+
+  //   //   s_quad->draw(model, 1, 0, 1);
+
+  //   //   x += static_cast<int32_t>(g.x_advance * scale);
+  //   // }
+  // }
 
 }; // namespace mgl::window::api

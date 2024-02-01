@@ -27,7 +27,7 @@ namespace mgl::graphics
 
   void render_script::enable_texture(uint32_t slot, const std::string& name)
   {
-    auto& render = mgl::graphics::current_render();
+    auto& render = mgl::graphics::current_render_registry();
     auto tex = render.get_texture(name);
     MGL_CORE_ASSERT(tex != nullptr, "Texture is null");
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, tex));
@@ -35,7 +35,7 @@ namespace mgl::graphics
 
   void render_script::enable_texture(uint32_t slot, uint32_t idx)
   {
-    auto& render = mgl::graphics::current_render();
+    auto& render = mgl::graphics::current_render_registry();
     auto tex = render.get_texture(idx);
     MGL_CORE_ASSERT(tex != nullptr, "Texture is null");
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, tex));
@@ -98,7 +98,7 @@ namespace mgl::graphics
 
   void render_script::enable_shader(const std::string& name)
   {
-    auto& render = mgl::graphics::current_render();
+    auto& render = mgl::graphics::current_render_registry();
     auto shader = render.get_shader(name);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
@@ -106,7 +106,7 @@ namespace mgl::graphics
 
   void render_script::enable_shader(uint32_t idx)
   {
-    auto& render = mgl::graphics::current_render();
+    auto& render = mgl::graphics::current_render_registry();
     auto shader = render.get_shader(idx);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));

@@ -18,12 +18,12 @@ namespace mgl::graphics
     s_instance.release();
   }
 
-  void buffer_manager::on_add(const buffer_ref& buffer)
+  void buffer_manager::on_add(const buffer_ref& buffer, const std::string& name)
   {
     buffer->allocate();
   }
 
-  void buffer_manager::on_remove(const buffer_ref& buffer)
+  void buffer_manager::on_remove(const buffer_ref& buffer, const std::string& name)
   {
     buffer->free();
   }

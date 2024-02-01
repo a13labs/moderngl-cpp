@@ -3,6 +3,7 @@
 #include "mgl_graphics/manager.hpp"
 #include "mgl_graphics/texture.hpp"
 #include "mgl_registry/resources/font.hpp"
+#include "mgl_window/api/opengl.hpp"
 
 namespace mgl::graphics
 {
@@ -13,8 +14,10 @@ public:
     font_manager();
     ~font_manager();
 
-    virtual void on_add(const mgl::registry::font_ref& font) override final;
-    virtual void on_remove(const mgl::registry::font_ref& font) override final;
+    virtual void on_add(const mgl::registry::font_ref& font,
+                        const std::string& name) override final;
+    virtual void on_remove(const mgl::registry::font_ref& font,
+                           const std::string& name) override final;
 
     static font_manager& instance();
   };

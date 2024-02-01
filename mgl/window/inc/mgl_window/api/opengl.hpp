@@ -105,6 +105,7 @@ namespace mgl::window::api
         , view_uniform(nullptr)
         , projection_matrix(1.0f)
         , projection_uniform(nullptr)
+        , model_uniform(nullptr)
     { }
 
     // The current shader, view and projection matrices are stored in the render, as they are
@@ -180,7 +181,7 @@ public:
 
     geom_data(const geom_data& other) = delete;
 
-    void allocate();
+    void allocate(program_ref program = nullptr);
 
     void deallocate();
 
@@ -196,6 +197,10 @@ private:
     uint32_t m_mode = 0;
     mgl::opengl::vertex_array_ref m_vao = nullptr;
   };
+
+  void init_api();
+
+  void shutdown_api();
 
   program_ref create_program(const std::string& vs_source,
                              const std::string& fs_source,

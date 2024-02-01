@@ -29,7 +29,7 @@ void render_layer::on_attach()
   s_vbo->allocate();
   s_vbo->upload(vertices);
 
-  auto& render = mgl::graphics::current_render();
+  auto& render = mgl::graphics::current_render_registry();
   render.register_shader("custom_shader", mgl::create_ref<custom_shader>());
 }
 

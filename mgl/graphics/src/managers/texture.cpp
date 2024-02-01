@@ -17,12 +17,12 @@ namespace mgl::graphics
     s_instance.release();
   }
 
-  void texture_manager::on_add(const texture_ref& texture)
+  void texture_manager::on_add(const texture_ref& texture, const std::string& name)
   {
     texture->load();
   }
 
-  void texture_manager::on_remove(const texture_ref& texture)
+  void texture_manager::on_remove(const texture_ref& texture, const std::string& name)
   {
     texture->unload();
   }

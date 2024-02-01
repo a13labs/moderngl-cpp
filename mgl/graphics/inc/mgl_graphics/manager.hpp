@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgl_core/containers.hpp"
+#include "mgl_core/debug.hpp"
 #include "mgl_core/string.hpp"
 
 namespace mgl::graphics
@@ -50,19 +51,15 @@ namespace mgl::graphics
         item_name_by_idx.erase(idx);
       }
 
-      T get_item(const std::string& name)
+      T& get_item(const std::string& name)
       {
-        if(items_by_name.find(name) == items_by_name.end())
-          return nullptr;
-
+        MGL_CORE_ASSERT(items_by_name.find(name) != items_by_name.end(), "Item does not exist");
         return items_by_name[name];
       }
 
-      T get_item(size_t idx)
+      T& get_item(size_t idx)
       {
-        if(items_by_idx.find(idx) == items_by_idx.end())
-          return nullptr;
-
+        MGL_CORE_ASSERT(items_by_idx.find(idx) != items_by_idx.end(), "Item does not exist");
         return items_by_idx[idx];
       }
 
@@ -85,14 +82,14 @@ public:
     size_t add_item(const std::string& name, const T& item);
     void remove_item(const std::string& name);
     void remove_item(size_t idx);
-    T get_item(const std::string& name);
-    T get_item(size_t idx);
+    T& get_item(const std::string& name);
+    T& get_item(size_t idx);
     bool has_item(const std::string& name);
     void clear();
 
 protected:
-    virtual void on_add(const T& item) = 0;
-    virtual void on_remove(const T& item) = 0;
+    virtual void on_add(const T& item, const std::string& name) = 0;
+    virtual void on_remove(const T& item, const std::string& name) = 0;
 
 protected:
     database m_database;
@@ -104,7 +101,7 @@ protected:
     size_t idx = m_database.add_item(name, item);
     if(idx == 0)
       return 0;
-    on_add(item);
+    on_add(item, name);
     return idx;
   }
 
@@ -115,7 +112,7 @@ protected:
     if(item == nullptr)
       return;
 
-    on_remove(item);
+    on_remove(item, name);
     m_database.remove_item(name);
   }
 
@@ -131,13 +128,13 @@ protected:
   }
 
   template <typename T>
-  T manager<T>::get_item(const std::string& name)
+  T& manager<T>::get_item(const std::string& name)
   {
     return m_database.get_item(name);
   }
 
   template <typename T>
-  T manager<T>::get_item(size_t idx)
+  T& manager<T>::get_item(size_t idx)
   {
     return m_database.get_item(idx);
   }
@@ -147,7 +144,7 @@ protected:
   {
     for(auto& item : m_database.items_by_name)
     {
-      on_remove(item.second);
+      on_remove(item.second, item.first);
     }
     m_database.clear();
   }

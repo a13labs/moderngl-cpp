@@ -7,6 +7,7 @@
 #include "enums.hpp"
 #include "glm/glm.hpp"
 #include "managers/buffer.hpp"
+#include "managers/font.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
 #include "mgl_window/api/opengl.hpp"
@@ -15,18 +16,18 @@
 
 namespace mgl::graphics
 {
-  class render;
-  using render_ref = mgl::scope<render>;
-  class render
+  class render_registry;
+  using render_ref = mgl::scope<render_registry>;
+  class render_registry
   {
 public:
-    render() = default;
+    render_registry();
 
-    ~render() = default;
+    ~render_registry() = default;
 
-    static render& current_render()
+    static render_registry& current_render()
     {
-      static render s_render;
+      static render_registry s_render;
       return s_render;
     }
 
@@ -71,15 +72,32 @@ public:
 
     buffer_ref get_buffer(size_t idx) { return m_buffer_manager.get_item(idx); }
 
+    size_t register_font(const std::string& name, const mgl::registry::font_ref& font)
+    {
+      return m_font_manager.add_item(name, font);
+    }
+
+    void unregister_font(const std::string& name) { m_font_manager.remove_item(name); }
+
+    bool has_font(const std::string& name) { return m_font_manager.has_item(name); }
+
+    mgl::registry::font_ref get_font(const std::string& name)
+    {
+      return m_font_manager.get_item(name);
+    }
+
+    mgl::registry::font_ref get_font(size_t idx) { return m_font_manager.get_item(idx); }
+
 private:
     shader_manager m_shader_manager;
     texture_manager m_texture_manager;
     buffer_manager m_buffer_manager;
+    font_manager m_font_manager;
   };
 
-  inline render& current_render()
+  inline render_registry& current_render_registry()
   {
-    return render::current_render();
+    return render_registry::current_render();
   }
 
 } // namespace mgl::graphics

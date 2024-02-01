@@ -14,9 +14,24 @@
 namespace mgl::registry
 {
   truetype_font::truetype_font(const uint8_buffer& data)
+      : m_data(data)
   {
     m_font = new stbtt_fontinfo;
     if(!stbtt_InitFont(m_font, data.data(), 0))
+    {
+      MGL_CORE_ERROR("Failed to load font");
+      m_font = nullptr;
+      return;
+    }
+
+    stbtt_GetFontVMetrics(m_font, &m_ascent, &m_descent, &m_line_gap);
+  }
+
+  truetype_font::truetype_font(const uint8_t* data, size_t size)
+      : m_data(0)
+  {
+    m_font = new stbtt_fontinfo;
+    if(!stbtt_InitFont(m_font, data, 0))
     {
       MGL_CORE_ERROR("Failed to load font");
       m_font = nullptr;
@@ -32,6 +47,7 @@ namespace mgl::registry
     {
       delete m_font;
     }
+    m_data.clear();
   }
 
   mgl::registry::font::glyph truetype_font::get_glyph(uint16_t codepoint,
@@ -144,6 +160,10 @@ namespace mgl::registry
       g.x_offset = static_cast<float>(x_offset);
       g.y_offset = static_cast<float>(y_offset);
       g.x_advance = static_cast<float>(advance * scale);
+      g.u0 = static_cast<float>(x) / bmp.width();
+      g.v0 = static_cast<float>(y) / bmp.height();
+      g.u1 = static_cast<float>(x + width) / bmp.width();
+      g.v1 = static_cast<float>(y + height) / bmp.height();
       glyphs.push_back(g);
       x += static_cast<int32_t>(advance * scale);
     }

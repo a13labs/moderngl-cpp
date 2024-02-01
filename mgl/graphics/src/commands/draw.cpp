@@ -1,6 +1,7 @@
 #include "mgl_graphics/commands/draw.hpp"
 #include "glm/glm.hpp"
 #include "mgl_core/debug.hpp"
+#include "mgl_graphics/render.hpp"
 
 namespace mgl::graphics
 {
@@ -53,6 +54,11 @@ namespace mgl::graphics
       mgl::window::api::draw_batch(geom, m_batch->get());
       geom.deallocate();
     }
+  }
+
+  void draw_text_command::execute()
+  {
+    // mgl::window::api::draw_text(m_text, m_position, m_color);
   }
 
 } // namespace mgl::graphics

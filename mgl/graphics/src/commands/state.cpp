@@ -14,4 +14,9 @@ namespace mgl::graphics
     mgl::window::api::disable_state(m_flags);
   }
 
+  void set_font_command::execute()
+  {
+    // mgl::window::api::set_font(m_font, m_size);
+  }
+
 } // namespace mgl::graphics

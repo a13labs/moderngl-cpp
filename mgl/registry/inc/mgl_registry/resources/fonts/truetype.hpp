@@ -12,6 +12,7 @@ namespace mgl::registry
   {
 public:
     truetype_font(const uint8_buffer& data);
+    truetype_font(const uint8_t* data, size_t size);
     virtual ~truetype_font();
 
     virtual int32_t get_ascent() const override final { return m_ascent; }
@@ -46,9 +47,11 @@ public:
 
 private:
     stbtt_fontinfo* m_font;
+    uint8_buffer m_data;
     int32_t m_ascent;
     int32_t m_descent;
     int32_t m_line_gap;
+    uint32_t m_unique_id;
   };
 
   using truetype_font_ref = mgl::ref<truetype_font>;

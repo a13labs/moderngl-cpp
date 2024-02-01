@@ -18,12 +18,12 @@ namespace mgl::graphics
     s_instance.release();
   }
 
-  void shader_manager::on_add(const shader_ref& shader)
+  void shader_manager::on_add(const shader_ref& shader, const std::string& name)
   {
     shader->load();
   }
 
-  void shader_manager::on_remove(const shader_ref& shader)
+  void shader_manager::on_remove(const shader_ref& shader, const std::string& name)
   {
     shader->unload();
   }

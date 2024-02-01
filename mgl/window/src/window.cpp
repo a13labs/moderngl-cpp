@@ -19,10 +19,12 @@
 #include "mgl_core/profiling.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_registry/registry.hpp"
+#include "mgl_registry/resources/font.hpp"
+#include "mgl_registry/resources/fonts/truetype.hpp"
+#include "mgl_window/api/opengl.hpp"
 #include "mgl_window/context/sdl_window.hpp"
 #include "mgl_window/event.hpp"
 #include "mgl_window/input.hpp"
-
 namespace mgl::window
 {
   static mgl::scope<window> s_instance = nullptr;
@@ -99,6 +101,8 @@ namespace mgl::window
 
     m_running = true;
 
+    mgl::window::api::init_api();
+
     MGL_PROFILE_BEGIN_SESSION();
 
     if(!on_load())
@@ -125,6 +129,8 @@ namespace mgl::window
     on_unload();
 
     MGL_PROFILE_END_SESSION();
+
+    mgl::window::api::shutdown_api();
 
     m_context->release();
     m_api_window->destroy_window();
