@@ -50,6 +50,12 @@ namespace mgl::registry
     m_data.clear();
   }
 
+  float truetype_font::get_scale_for_pixel_height(int32_t pixel_height) const
+  {
+    MGL_CORE_ASSERT(m_font, "Font not loaded");
+    return stbtt_ScaleForPixelHeight(m_font, pixel_height);
+  }
+
   mgl::registry::font::glyph truetype_font::get_glyph(uint16_t codepoint,
                                                       int32_t pixel_height) const
   {
@@ -120,6 +126,7 @@ namespace mgl::registry
                                                                         int32_t pixel_height,
                                                                         image& bmp)
   {
+    MGL_CORE_ASSERT(bmp.channels() == 1, "Image must be 1 channel")
     MGL_CORE_ASSERT(m_font, "Font not loaded");
 
     float scale = stbtt_ScaleForPixelHeight(m_font, pixel_height);
@@ -139,15 +146,8 @@ namespace mgl::registry
       stbtt_MakeCodepointBitmapSubpixel(
           m_font, glyph_8bit, width, height, width, scale, scale, 0.0f, 0.0f, first_codepoint + c);
 
-      image glyph_32bit(width, height, 4);
-      for(int32_t j = 0; j < height; ++j)
-      {
-        for(int32_t k = 0; k < width; ++k)
-        {
-          float alpha = glyph_8bit[j * width + k] / 255.0f;
-          glyph_32bit.put_pixel(k, j, glm::vec4(1.0f, 1.0f, 1.0f, alpha));
-        }
-      }
+      image glyph_32bit(width, height, 1);
+      std::copy(glyph_8bit, glyph_8bit + width * height, glyph_32bit.data());
 
       delete[] glyph_8bit;
 
@@ -214,8 +214,7 @@ namespace mgl::registry
 
       delete[] glyph_8bit;
 
-      int new_y = base_line + y_offset;
-      bmp.blit(x + x_offset, new_y, glyph_32bit);
+      bmp.blit(x + x_offset, base_line + y_offset, glyph_32bit);
       x += static_cast<int32_t>(advance * scale);
     }
   }

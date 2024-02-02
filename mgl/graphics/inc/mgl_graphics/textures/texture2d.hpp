@@ -22,4 +22,6 @@ private:
     mgl::registry::image_ref m_image;
     texture_opts m_opts;
   };
+
+  using texture2d_ref = mgl::ref<texture2d>;
 } // namespace mgl::graphics

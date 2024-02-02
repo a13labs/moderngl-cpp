@@ -14,6 +14,7 @@ void render_layer::render_prepare(mgl::graphics::render_script& script)
   script.enable_shader("custom_shader");
   script.draw(s_vbo);
   script.disable_shader();
+  script.draw_text("This is a string, Hello World!", { 0.0, 0.0 }, { 1.0, 1.0, 1.0, 1.0 });
 }
 
 void render_layer::on_attach()

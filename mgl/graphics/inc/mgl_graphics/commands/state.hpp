@@ -30,17 +30,4 @@ private:
     int m_flags;
   };
 
-  class set_font_command : public render_command
-  {
-public:
-    set_font_command(const std::string& font)
-        : m_font(font)
-    { }
-
-    void execute() override;
-
-private:
-    std::string m_font;
-  };
-
 } // namespace mgl::graphics

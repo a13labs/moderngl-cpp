@@ -13,13 +13,15 @@ namespace mgl::graphics
     m_font_cache[name] = { atlas, nullptr };
 
     // Create the texture
-    m_font_cache[name].texture = mgl::window::api::create_texture_2d(
-        atlas->width(), atlas->height(), 4, atlas->bitmap()->buffer());
+    m_font_cache[name].texture = mgl::create_ref<texture2d>(atlas->bitmap());
+    m_font_cache[name].texture->load();
   }
 
   void font_manager::on_remove(const mgl::registry::font_ref& font, const std::string& name)
   {
     MGL_CORE_ASSERT(m_font_cache.find(name) != m_font_cache.end(), "Font does not exist");
+    m_font_cache[name].atlas = nullptr;
+    m_font_cache[name].texture->unload();
     m_font_cache[name].texture = nullptr;
     m_font_cache.erase(name);
   }
@@ -30,7 +32,7 @@ namespace mgl::graphics
     return m_font_cache.at(name).atlas;
   }
 
-  const mgl::window::api::texture_2d_ref& font_manager::get_texture(const std::string& name) const
+  const texture2d_ref& font_manager::get_texture(const std::string& name) const
   {
     MGL_CORE_ASSERT(m_font_cache.find(name) != m_font_cache.end(), "Font does not exist");
     return m_font_cache.at(name).texture;

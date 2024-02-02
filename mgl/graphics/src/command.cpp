@@ -7,8 +7,20 @@
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
+
+#include "glm/gtc/matrix_transform.hpp"
 namespace mgl::graphics
 {
+  render_script::render_script()
+      : m_render_target(nullptr)
+      , m_commands()
+  {
+    auto vb = get_buffer("text_vb");
+    MGL_CORE_ASSERT(vb != nullptr, "Font vertex buffer is null");
+    vb->seek(0);
+
+    m_commands.reserve(100);
+  }
 
   void render_script::enable_state(int state)
   {
@@ -129,6 +141,39 @@ namespace mgl::graphics
     {
       command->execute();
     }
+  }
+
+  void render_script::draw_text(const std::string& text,
+                                const glm::vec2& position,
+                                const glm::vec4& color,
+                                const std::string& font,
+                                float scale)
+  {
+    auto atlas = fonts().get_atlas(font);
+    MGL_CORE_ASSERT(atlas != nullptr, "Font atlas is null");
+    auto tex = fonts().get_texture(font);
+    MGL_CORE_ASSERT(tex != nullptr, "Font texture is null");
+
+    auto shader = get_shader("text_shader");
+    MGL_CORE_ASSERT(shader != nullptr, "Text shader is null");
+    auto vb = std::static_pointer_cast<vertex_buffer>(get_buffer("text_vb"));
+
+    set_projection(glm::ortho(0.0f,
+                              static_cast<float>(mgl::window::current_window().width()),
+                              0.0f,
+                              static_cast<float>(mgl::window::current_window().height())));
+    enable_shader(shader);
+    enable_texture(0, tex);
+    set_blend_func(blend_factor::SRC_ALPHA, blend_factor::ONE_MINUS_SRC_ALPHA);
+    set_blend_equation(blend_equation_mode::ADD);
+
+    size_t offset = vb->needle();
+    int32_t vertices = 0;
+    atlas->text_to_vertices(position, text, vb, vertices, scale, scale);
+    draw(vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, offset);
+
+    disable_shader();
+    clear_samplers(0, 1);
   }
 
 } // namespace mgl::graphics

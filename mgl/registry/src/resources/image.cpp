@@ -29,7 +29,7 @@ namespace mgl::registry
   {
     MGL_CORE_ASSERT(x >= 0 && x <= m_width, "X is out of bounds");
     MGL_CORE_ASSERT(y >= 0 && y <= m_height, "Y is out of bounds");
-    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    MGL_CORE_ASSERT(m_channels >= 1 && m_channels <= 4, "Invalid number of channels");
     MGL_CORE_ASSERT(m_channels == image.m_channels, "Invalid number of channels, must be the same")
 
     int32_t width = std::min(static_cast<int32_t>(rect.width), m_width - x);
@@ -113,7 +113,7 @@ namespace mgl::registry
   {
     MGL_CORE_ASSERT(x >= 0 && x <= m_width, "X is out of bounds");
     MGL_CORE_ASSERT(y >= 0 && y <= m_height, "Y is out of bounds");
-    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    MGL_CORE_ASSERT(m_channels >= 1 && m_channels <= 4, "Invalid number of channels");
     uint8_t data[m_channels];
     for(int32_t i = 0; i < m_channels; ++i)
     {
@@ -159,7 +159,7 @@ namespace mgl::registry
 
   void image::fill(const glm::vec4& color)
   {
-    MGL_CORE_ASSERT(m_channels > 1 && m_channels <= 4, "Invalid number of channels");
+    MGL_CORE_ASSERT(m_channels >= 1 && m_channels <= 4, "Invalid number of channels");
     uint8_t data[m_channels];
 
     for(int32_t i = 0; i < m_channels; ++i)

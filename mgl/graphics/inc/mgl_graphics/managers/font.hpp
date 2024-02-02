@@ -2,7 +2,7 @@
 
 #include "mgl_graphics/atlas/font.hpp"
 #include "mgl_graphics/manager.hpp"
-#include "mgl_graphics/texture.hpp"
+#include "mgl_graphics/textures/texture2d.hpp"
 #include "mgl_registry/resources/font.hpp"
 
 namespace mgl::graphics
@@ -14,7 +14,7 @@ private:
     struct font_info
     {
       font_atlas_ref atlas;
-      mgl::window::api::texture_2d_ref texture;
+      texture2d_ref texture;
     };
 
 public:
@@ -27,7 +27,7 @@ public:
                            const std::string& name) override final;
 
     const font_atlas_ref& get_atlas(const std::string& name) const;
-    const mgl::window::api::texture_2d_ref& get_texture(const std::string& name) const;
+    const texture2d_ref& get_texture(const std::string& name) const;
 
     static font_manager& instance()
     {

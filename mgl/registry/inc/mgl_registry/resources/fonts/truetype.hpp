@@ -21,6 +21,8 @@ public:
 
     virtual int32_t get_line_gap() const override final { return m_line_gap; }
 
+    virtual float get_scale_for_pixel_height(int32_t pixel_height) const override final;
+
     virtual glyph get_glyph(uint16_t codepoint, int32_t pixel_height) const override final;
 
     virtual glyph draw_glyph(

@@ -30,10 +30,7 @@ public:
 
   {
 public:
-    render_script()
-        : m_render_target(nullptr)
-        , m_commands()
-    { }
+    render_script();
 
     render_script(const mgl::window::api::framebuffer_ref& target)
         : m_render_target(target)
@@ -82,6 +79,12 @@ public:
               glm::mat4 model_view = glm::mat4(1.0f),
               size_t count = 0,
               size_t offset = 0);
+
+    void draw_text(const std::string& text,
+                   const glm::vec2& position,
+                   const glm::vec4& color = glm::vec4(1.0f),
+                   const std::string& font = "default",
+                   float scale = 1.0f);
 
     void draw_batch(const batch_ref& batch);
 

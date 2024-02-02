@@ -50,26 +50,4 @@ private:
     batch_ref m_batch;
   };
 
-  class draw_text_command : public render_command
-  {
-public:
-    draw_text_command(const std::string& text,
-                      const glm::vec2& position,
-                      const glm::vec4& color,
-                      float scale = 1.0f)
-        : m_text(text)
-        , m_position(position)
-        , m_color(color)
-        , m_scale(scale)
-    { }
-
-    void execute() override;
-
-private:
-    std::string m_text;
-    glm::vec2 m_position;
-    glm::vec4 m_color;
-    float m_scale;
-  };
-
 } // namespace mgl::graphics

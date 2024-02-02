@@ -36,6 +36,8 @@ public:
 
     virtual int32_t get_line_gap() const = 0;
 
+    virtual float get_scale_for_pixel_height(int32_t pixel_height) const = 0;
+
     virtual glyph get_glyph(uint16_t codepoint, int32_t pixel_height) const = 0;
 
     virtual glyph
@@ -79,42 +81,5 @@ public:
   };
 
   using font_ref = mgl::ref<font>;
-
-  class font_atlas
-  {
-    struct size_info
-    {
-      int32_t top;
-      mgl::list<font::glyph> glyphs;
-    };
-
-public:
-    font_atlas(const font_ref& font, mgl::list<int32_t> pixel_heights = { 32 });
-
-    font_atlas(const font_atlas&) = delete;
-
-    font_atlas(font_atlas&&) = delete;
-
-    font_atlas& operator=(const font_atlas&) = delete;
-
-    font_atlas& operator=(font_atlas&&) = delete;
-
-    int32_t width() const { return m_width; }
-
-    int32_t height() const { return m_height; }
-
-    const image_ref& bitmap() const { return m_bitmap; }
-
-    int32_t glypys_top(int32_t pixel_height) const;
-
-    const mgl::list<font::glyph>& glyphs(int32_t pixel_height) const;
-
-private:
-    int32_t m_width, m_height;
-    image_ref m_bitmap;
-    mgl::unordered_map<int32_t, font_atlas::size_info> m_sizes_info;
-  };
-
-  using font_atlas_ref = mgl::ref<font_atlas>;
 
 } // namespace mgl::registry

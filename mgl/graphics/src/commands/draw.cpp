@@ -55,9 +55,4 @@ namespace mgl::graphics
     }
   }
 
-  void draw_text_command::execute()
-  {
-    // mgl::window::api::draw_text(m_text, m_position, m_color);
-  }
-
 } // namespace mgl::graphics
