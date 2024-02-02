@@ -1,6 +1,5 @@
 #include "mgl_graphics/batch.hpp"
 #include "mgl_core/debug.hpp"
-#include "mgl_graphics/render.hpp"
 
 namespace mgl::graphics
 {

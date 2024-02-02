@@ -8,16 +8,26 @@ namespace mgl::graphics
   class shader_manager : public manager<shader_ref>
   {
 public:
-    shader_manager();
-    ~shader_manager();
+    shader_manager() = default;
+    ~shader_manager() = default;
 
-    virtual void on_add(const shader_ref& shader, const std::string& name) override final;
-    virtual void on_remove(const shader_ref& shader, const std::string& name) override final;
+    virtual void on_add(const shader_ref& shader, const std::string& name) override final
+    {
+      shader->load();
+    }
+    virtual void on_remove(const shader_ref& shader, const std::string& name) override final
+    {
+      shader->unload();
+    }
 
-    static shader_manager& instance();
+    static shader_manager& instance()
+    {
+      static shader_manager instance;
+      return instance;
+    }
   };
 
-  inline shader_manager& current_shader_manager()
+  inline shader_manager& shaders()
   {
     return shader_manager::instance();
   }

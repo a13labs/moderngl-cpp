@@ -43,6 +43,7 @@ namespace mgl::application
 
   bool application::on_load()
   {
+    mgl::graphics::init();
     if(config().gui_layer == nullptr)
     {
       m_gui_layer = mgl::create_ref<mgl::graphics::layers::null_gui_layer>();
@@ -77,6 +78,7 @@ namespace mgl::application
     m_gui_layer->on_detach();
     m_render_layer->on_detach();
     m_layers.clear();
+    mgl::graphics::shutdown();
   }
 
   application& application::current()

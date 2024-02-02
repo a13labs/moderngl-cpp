@@ -1,5 +1,5 @@
 #include "mgl_graphics/layers/gui.hpp"
-#include "mgl_graphics/render.hpp"
+#include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/shaders/gui.hpp"
 #include "mgl_graphics/textures/texture2d.hpp"
 
@@ -89,10 +89,9 @@ namespace mgl::graphics::layers
       return;
     }
 
-    auto& render = mgl::graphics::current_render_registry();
-    render.register_shader("gui", mgl::create_ref<shaders::gui>());
-    render.register_buffer("gui_vb", mgl::create_ref<vertex_buffer>("2f 2f 4f1", 0, true));
-    render.register_buffer("gui_ib", mgl::create_ref<index_buffer>(0, sizeof(ImDrawIdx), true));
+    register_shader("gui", mgl::create_ref<builtins::gui_shader>());
+    register_buffer("gui_vb", mgl::create_ref<vertex_buffer>("2f 2f 4f1", 0, true));
+    register_buffer("gui_ib", mgl::create_ref<index_buffer>(0, sizeof(ImDrawIdx), true));
 
     refresh_font();
 
@@ -187,12 +186,11 @@ namespace mgl::graphics::layers
         &height); // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
     auto image = mgl::create_ref<mgl::registry::image>(width, height, 4, pixels);
-    auto& render = mgl::graphics::current_render_registry();
-    if(render.has_texture("gui_font"))
-      render.unregister_texture("gui_font");
 
-    size_t id =
-        render.register_texture("gui_font", mgl::create_ref<mgl::graphics::texture2d>(image));
+    if(has_texture("gui_font"))
+      unregister_texture("gui_font");
+
+    size_t id = register_texture("gui_font", mgl::create_ref<mgl::graphics::texture2d>(image));
     io.Fonts->TexID = reinterpret_cast<void*>(id);
   }
 
@@ -202,12 +200,10 @@ namespace mgl::graphics::layers
 
     ImGuiIO& io = ImGui::GetIO();
 
-    auto& render = mgl::graphics::current_render_registry();
-
-    render.unregister_buffer("gui_ib");
-    render.unregister_buffer("gui_vb");
-    render.unregister_shader("gui");
-    render.unregister_texture("gui_font");
+    unregister_buffer("gui_ib");
+    unregister_buffer("gui_vb");
+    unregister_shader("gui");
+    unregister_texture("gui_font");
 
     io.BackendRendererUserData = nullptr;
     io.BackendRendererName = nullptr;
@@ -241,9 +237,7 @@ namespace mgl::graphics::layers
     if(!draw_data)
       return;
 
-    auto& render = mgl::graphics::current_render_registry();
-
-    auto prg = render.get_shader("gui");
+    auto prg = get_shader("gui");
 
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
 
@@ -262,8 +256,8 @@ namespace mgl::graphics::layers
 
     mgl::window::api::enable_scissor();
 
-    auto vb = std::static_pointer_cast<vertex_buffer>(render.get_buffer("gui_vb"));
-    auto ib = std::static_pointer_cast<index_buffer>(render.get_buffer("gui_ib"));
+    auto vb = std::static_pointer_cast<vertex_buffer>(get_buffer("gui_vb"));
+    auto ib = std::static_pointer_cast<index_buffer>(get_buffer("gui_ib"));
 
     for(int n = 0; n < draw_data->CmdListsCount; ++n)
     {
@@ -301,7 +295,7 @@ namespace mgl::graphics::layers
                                         static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
                                         static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
-          auto tex = render.get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
+          auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
           mgl::window::api::draw(geom, glm::mat4(1.0f), pcmd->ElemCount, idx_buffer_offset, 0);

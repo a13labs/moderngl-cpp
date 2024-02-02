@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 #include "mgl_window/api/opengl.hpp"
@@ -31,8 +32,18 @@ public:
 
     ~texture() = default;
 
-    void bind(int index);
-    void unload();
+    void bind(int index)
+    {
+      MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
+      m_texture->use(index);
+    }
+
+    void unload()
+    {
+      MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
+      m_texture->release();
+    }
+
     const mgl::window::api::texture_ref& api() { return m_texture; }
 
     virtual texture::type texture_type() = 0;

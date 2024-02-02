@@ -1,8 +1,8 @@
-#include "mgl_registry/resources/font.hpp"
+#include "mgl_graphics/atlas/font.hpp"
 
-namespace mgl::registry
+namespace mgl::graphics
 {
-  font_atlas::font_atlas(const font_ref& font, mgl::list<int32_t> pixel_heights)
+  font_atlas::font_atlas(const mgl::registry::font_ref& font, mgl::list<int32_t> pixel_heights)
   {
     MGL_CORE_ASSERT(font, "Font is null");
 
@@ -17,7 +17,7 @@ namespace mgl::registry
       atlas_height += size;
     }
 
-    m_bitmap = mgl::create_ref<image>(atlas_width, atlas_height, 4);
+    m_bitmap = mgl::create_ref<mgl::registry::image>(atlas_width, atlas_height, 4);
 
     int32_t y = 0;
     for(auto& size : pixel_heights)
@@ -50,11 +50,11 @@ namespace mgl::registry
     return it->second.top;
   }
 
-  const mgl::list<font::glyph>& font_atlas::glyphs(int32_t pixel_height) const
+  const mgl::list<mgl::registry::font::glyph>& font_atlas::glyphs(int32_t pixel_height) const
   {
     auto it = m_sizes_info.find(pixel_height);
     MGL_CORE_ASSERT(it != m_sizes_info.end(), "Font size not found");
     return it->second.glyphs;
   }
 
-} // namespace mgl::registry
+} // namespace mgl::graphics

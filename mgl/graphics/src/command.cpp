@@ -3,7 +3,7 @@
 #include "mgl_graphics/commands/shader.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
-#include "mgl_graphics/render.hpp"
+#include "mgl_graphics/graphics.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
@@ -27,16 +27,14 @@ namespace mgl::graphics
 
   void render_script::enable_texture(uint32_t slot, const std::string& name)
   {
-    auto& render = mgl::graphics::current_render_registry();
-    auto tex = render.get_texture(name);
+    auto tex = get_texture(name);
     MGL_CORE_ASSERT(tex != nullptr, "Texture is null");
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, tex));
   }
 
   void render_script::enable_texture(uint32_t slot, uint32_t idx)
   {
-    auto& render = mgl::graphics::current_render_registry();
-    auto tex = render.get_texture(idx);
+    auto tex = get_texture(idx);
     MGL_CORE_ASSERT(tex != nullptr, "Texture is null");
     submit(mgl::create_ref<mgl::graphics::enable_texture>(slot, tex));
   }
@@ -98,16 +96,14 @@ namespace mgl::graphics
 
   void render_script::enable_shader(const std::string& name)
   {
-    auto& render = mgl::graphics::current_render_registry();
-    auto shader = render.get_shader(name);
+    auto shader = get_shader(name);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
   }
 
   void render_script::enable_shader(uint32_t idx)
   {
-    auto& render = mgl::graphics::current_render_registry();
-    auto shader = render.get_shader(idx);
+    auto shader = get_shader(idx);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
   }

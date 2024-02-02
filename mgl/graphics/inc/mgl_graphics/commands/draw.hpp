@@ -1,10 +1,9 @@
 #pragma once
 
-#include "mgl_core/containers.hpp"
 #include "mgl_graphics/batch.hpp"
 #include "mgl_graphics/buffer.hpp"
-#include "mgl_graphics/render.hpp"
-#include "mgl_registry/resources/font.hpp"
+#include "mgl_graphics/command.hpp"
+
 namespace mgl::graphics
 {
   class draw_command : public render_command

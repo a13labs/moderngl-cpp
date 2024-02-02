@@ -2,7 +2,6 @@
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/debug.hpp"
-#include "mgl_core/string.hpp"
 
 namespace mgl::graphics
 {

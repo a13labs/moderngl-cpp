@@ -4,16 +4,16 @@
 #include "mgl_graphics/shader.hpp"
 #include "mgl_window/api/opengl.hpp"
 
-namespace mgl::graphics::shaders
+namespace mgl::graphics::builtins
 {
-  class gui : public mgl::graphics::shader
+  class gui_shader : public mgl::graphics::shader
   {
 public:
-    gui() = default;
+    gui_shader() = default;
 
     virtual void prepare() override final;
     virtual mgl::string_list& attributes() override final;
     virtual void load() override final;
   };
 
-} // namespace mgl::graphics::shaders
+} // namespace mgl::graphics::builtins

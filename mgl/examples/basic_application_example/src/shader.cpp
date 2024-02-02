@@ -1,6 +1,6 @@
 #include "shader.hpp"
 #include "mgl_application/application.hpp"
-#include "mgl_graphics/render.hpp"
+#include "mgl_graphics/graphics.hpp"
 
 #include "shaders/fragment/fragment.hpp"
 #include "shaders/vertex/vertex.hpp"

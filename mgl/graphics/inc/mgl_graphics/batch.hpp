@@ -2,16 +2,11 @@
 #include "buffers/index.hpp"
 #include "buffers/vertex.hpp"
 #include "enums.hpp"
-
-#include "mgl_window/api/opengl.hpp"
-
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
 
 namespace mgl::graphics
 {
-  class batch;
-  using batch_ref = mgl::ref<batch>;
 
   class batch
   {
@@ -52,4 +47,6 @@ private:
     vertex_buffer_ref m_vb;
     index_buffer_ref m_ib;
   };
+
+  using batch_ref = mgl::ref<batch>;
 } // namespace mgl::graphics

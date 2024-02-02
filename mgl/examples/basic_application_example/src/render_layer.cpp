@@ -4,7 +4,7 @@
 #include "imgui/imgui.h"
 #include "mgl_application/application.hpp"
 #include "mgl_graphics/buffer.hpp"
-#include "mgl_graphics/render.hpp"
+#include "mgl_graphics/graphics.hpp"
 
 static mgl::graphics::vertex_buffer_ref s_vbo = nullptr;
 
@@ -29,8 +29,7 @@ void render_layer::on_attach()
   s_vbo->allocate();
   s_vbo->upload(vertices);
 
-  auto& render = mgl::graphics::current_render_registry();
-  render.register_shader("custom_shader", mgl::create_ref<custom_shader>());
+  register_shader("custom_shader", mgl::create_ref<custom_shader>());
 }
 
 void render_layer::on_detach()

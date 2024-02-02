@@ -1,7 +1,7 @@
 #pragma once
 
+#include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/layer.hpp"
-#include "mgl_graphics/render.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_window/window.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl_graphics/render.hpp"
+#include "mgl_graphics/command.hpp"
 
 namespace mgl::graphics
 {
@@ -33,16 +33,14 @@ private:
   class set_font_command : public render_command
   {
 public:
-    set_font_command(const std::string& font, int32_t size)
+    set_font_command(const std::string& font)
         : m_font(font)
-        , m_size(size)
     { }
 
     void execute() override;
 
 private:
     std::string m_font;
-    int32_t m_size;
   };
 
 } // namespace mgl::graphics
