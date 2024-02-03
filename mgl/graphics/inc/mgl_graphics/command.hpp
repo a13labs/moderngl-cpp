@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-#include "mgl_window/api/opengl.hpp"
+#include "mgl_platform/api/opengl.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
@@ -32,7 +32,7 @@ public:
 public:
     render_script();
 
-    render_script(const mgl::window::api::framebuffer_ref& target)
+    render_script(const mgl::platform::api::framebuffer_ref& target)
         : m_render_target(target)
         , m_commands()
     { }
@@ -102,7 +102,7 @@ private:
     void submit(const render_command_ref& command) { m_commands.push_back(command); }
 
     mgl::list<render_command_ref> m_commands;
-    mgl::window::api::framebuffer_ref m_render_target;
+    mgl::platform::api::framebuffer_ref m_render_target;
   };
 
 } // namespace mgl::graphics

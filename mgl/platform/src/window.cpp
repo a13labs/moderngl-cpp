@@ -14,18 +14,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "mgl_window/window.hpp"
+#include "mgl_platform/window.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_registry/registry.hpp"
 #include "mgl_registry/resources/font.hpp"
 #include "mgl_registry/resources/fonts/truetype.hpp"
-#include "mgl_window/api/opengl.hpp"
-#include "mgl_window/context/sdl_window.hpp"
-#include "mgl_window/event.hpp"
-#include "mgl_window/input.hpp"
-namespace mgl::window
+#include "mgl_platform/api/opengl.hpp"
+#include "mgl_platform/context/sdl_window.hpp"
+#include "mgl_platform/event.hpp"
+#include "mgl_platform/input.hpp"
+namespace mgl::platform
 {
   static mgl::scope<window> s_instance = nullptr;
   static mgl::registry::registry_ref s_registry = nullptr;
@@ -101,7 +101,7 @@ namespace mgl::window
 
     m_running = true;
 
-    mgl::window::api::init_api();
+    mgl::platform::api::init_api();
 
     MGL_PROFILE_BEGIN_SESSION();
 
@@ -130,7 +130,7 @@ namespace mgl::window
 
     MGL_PROFILE_END_SESSION();
 
-    mgl::window::api::shutdown_api();
+    mgl::platform::api::shutdown_api();
 
     m_context->release();
     m_api_window->destroy_window();
@@ -165,4 +165,4 @@ namespace mgl::window
     return s_instance != nullptr;
   }
 
-} // namespace  mgl::window
+} // namespace  mgl::platform

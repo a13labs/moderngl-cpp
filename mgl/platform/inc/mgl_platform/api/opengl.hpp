@@ -4,7 +4,7 @@
 #include "mgl_core/string.hpp"
 #include "mgl_opengl/context.hpp"
 
-namespace mgl::window::api
+namespace mgl::platform::api
 {
   // Map the opengl namespace to the api namespace, eventually we might have a vulkan api
   using context_ref = mgl::opengl::context_ref;
@@ -281,4 +281,4 @@ private:
 
   void draw_batch(geom_data& geom, const mgl::list<batch_data>& data);
 
-}; // namespace mgl::window::api
+}; // namespace mgl::platform::api

@@ -4,8 +4,8 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
-#include "mgl_window/api/opengl.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_platform/api/opengl.hpp"
+#include "mgl_platform/window.hpp"
 
 namespace mgl::graphics
 {
@@ -25,7 +25,7 @@ public:
     void allocate()
     {
       MGL_CORE_ASSERT(!m_buffer, "Buffer is already allocated");
-      m_buffer = mgl::window::current_context()->buffer(is_dynamic());
+      m_buffer = mgl::platform::current_context()->buffer(is_dynamic());
       m_buffer->orphan(m_size);
       m_pos = 0;
     }
@@ -174,13 +174,13 @@ public:
 
     bool is_dynamic() const { return m_dynamic; }
 
-    mgl::window::api::buffer_ref& api() { return m_buffer; }
+    mgl::platform::api::buffer_ref& api() { return m_buffer; }
 
 private:
     bool m_dynamic;
     size_t m_pos;
     size_t m_size;
-    mgl::window::api::buffer_ref m_buffer;
+    mgl::platform::api::buffer_ref m_buffer;
   };
 
   using buffer_ref = mgl::ref<buffer>;

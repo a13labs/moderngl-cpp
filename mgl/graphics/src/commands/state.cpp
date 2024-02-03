@@ -7,12 +7,12 @@ namespace mgl::graphics
 
   void enable_state::execute()
   {
-    mgl::window::api::enable_state(m_flags);
+    mgl::platform::api::enable_state(m_flags);
   }
 
   void disable_state::execute()
   {
-    mgl::window::api::disable_state(m_flags);
+    mgl::platform::api::disable_state(m_flags);
   }
 
 } // namespace mgl::graphics

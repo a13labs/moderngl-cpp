@@ -24,7 +24,7 @@ target_link_libraries(
     mgl::core::static
     mgl::registry::static
     mgl::opengl::static
-    mgl::window::static
+    mgl::platform::static
     mgl::graphics::static
   )
 

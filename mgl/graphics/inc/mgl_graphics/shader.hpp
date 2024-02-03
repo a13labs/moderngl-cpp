@@ -15,7 +15,7 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
-#include "mgl_window/api/opengl.hpp"
+#include "mgl_platform/api/opengl.hpp"
 
 namespace mgl::graphics
 {
@@ -28,16 +28,16 @@ public:
     virtual const mgl::string_list& attributes() = 0;
     virtual void load() = 0;
 
-    mgl::window::api::program_ref& api() { return m_program; }
+    mgl::platform::api::program_ref& api() { return m_program; }
 
     void bind()
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
-      mgl::window::api::enable_program(m_program);
-      mgl::window::api::set_program_attributes(attributes());
+      mgl::platform::api::enable_program(m_program);
+      mgl::platform::api::set_program_attributes(attributes());
     }
 
-    void unbind() { mgl::window::api::disable_program(); }
+    void unbind() { mgl::platform::api::disable_program(); }
 
     void unload()
     {
@@ -322,7 +322,7 @@ public:
     }
 
 protected:
-    mgl::window::api::program_ref m_program = nullptr;
+    mgl::platform::api::program_ref m_program = nullptr;
   };
 
   using shader_ref = mgl::ref<shader>;

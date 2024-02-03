@@ -3,7 +3,7 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
-#include "mgl_window/api/opengl.hpp"
+#include "mgl_platform/api/opengl.hpp"
 
 namespace mgl::graphics
 {
@@ -44,14 +44,14 @@ public:
       m_texture->release();
     }
 
-    const mgl::window::api::texture_ref& api() { return m_texture; }
+    const mgl::platform::api::texture_ref& api() { return m_texture; }
 
     virtual texture::type texture_type() = 0;
     virtual void prepare() = 0;
     virtual void load() = 0;
 
 protected:
-    mgl::window::api::texture_ref m_texture = nullptr;
+    mgl::platform::api::texture_ref m_texture = nullptr;
   };
 
   struct texture_opts

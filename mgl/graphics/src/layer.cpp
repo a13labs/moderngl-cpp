@@ -55,7 +55,7 @@ namespace mgl::graphics
     }
   }
 
-  void layer_stack::on_event(mgl::window::event& event)
+  void layer_stack::on_event(mgl::platform::event& event)
   {
     for(auto it = m_layers.rbegin(); it != m_layers.rend(); ++it)
     {

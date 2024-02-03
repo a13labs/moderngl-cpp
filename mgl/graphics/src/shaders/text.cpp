@@ -12,7 +12,7 @@ namespace mgl::graphics::builtins
                     "Vertex shader source is empty");
     MGL_CORE_ASSERT(mgl::shaders::text::fragment_shader_source().size() > 0,
                     "Fragment shader source is empty");
-    m_program = mgl::window::api::create_program(mgl::shaders::text::vertex_shader_source(),
+    m_program = mgl::platform::api::create_program(mgl::shaders::text::vertex_shader_source(),
                                                  mgl::shaders::text::fragment_shader_source());
     set_uniform_value("atlas", 0);
   }

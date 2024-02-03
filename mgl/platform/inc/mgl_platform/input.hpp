@@ -15,7 +15,7 @@
 */
 #pragma once
 
-namespace mgl::window
+namespace mgl::platform
 {
   struct key
   {
@@ -168,4 +168,4 @@ namespace mgl::window
     return s_input_state.pressed_mouse_buttons[button & 0xff];
   }
 
-} // namespace  mgl::window
+} // namespace  mgl::platform

@@ -10,7 +10,7 @@
 #include "managers/font.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "mgl_window/api/opengl.hpp"
+#include "mgl_platform/api/opengl.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 

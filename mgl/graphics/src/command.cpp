@@ -134,7 +134,7 @@ namespace mgl::graphics
     }
     else
     {
-      mgl::window::api::bind_screen_framebuffer();
+      mgl::platform::api::bind_screen_framebuffer();
     }
 
     for(auto& command : m_commands)
@@ -159,9 +159,9 @@ namespace mgl::graphics
     auto vb = std::static_pointer_cast<vertex_buffer>(get_buffer("text_vb"));
 
     set_projection(glm::ortho(0.0f,
-                              static_cast<float>(mgl::window::current_window().width()),
+                              static_cast<float>(mgl::platform::current_window().width()),
                               0.0f,
-                              static_cast<float>(mgl::window::current_window().height())));
+                              static_cast<float>(mgl::platform::current_window().height())));
     enable_shader(shader);
     enable_texture(0, tex);
     set_blend_func(blend_factor::SRC_ALPHA, blend_factor::ONE_MINUS_SRC_ALPHA);

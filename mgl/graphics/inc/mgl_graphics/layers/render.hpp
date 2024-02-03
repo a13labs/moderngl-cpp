@@ -20,7 +20,7 @@ public:
 
     virtual void render_prepare(render_script& script) = 0;
 
-    void on_event(mgl::window::event& event) override;
+    void on_event(mgl::platform::event& event) override;
   };
 
   class null_render_layer : public render_layer

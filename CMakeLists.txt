@@ -113,7 +113,7 @@ add_library(mgl_static STATIC
     $<TARGET_OBJECTS:mgl::core::static>
     $<TARGET_OBJECTS:mgl::registry::static>
     $<TARGET_OBJECTS:mgl::opengl::static>
-    $<TARGET_OBJECTS:mgl::window::static>
+    $<TARGET_OBJECTS:mgl::platform::static>
     $<TARGET_OBJECTS:mgl::graphics::static>
     $<TARGET_OBJECTS:mgl::application::static>
 )
@@ -126,7 +126,7 @@ target_link_libraries(mgl_static
     mgl::core::static
     mgl::registry::static
     mgl::opengl::static
-    mgl::window::static
+    mgl::platform::static
     mgl::graphics::static
     mgl::application::static
 )

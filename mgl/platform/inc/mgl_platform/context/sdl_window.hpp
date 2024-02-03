@@ -14,13 +14,13 @@
    limitations under the License.
 */
 #pragma once
-#include "mgl_window/event.hpp"
-#include "mgl_window/input.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_platform/event.hpp"
+#include "mgl_platform/input.hpp"
+#include "mgl_platform/window.hpp"
 
 #include "SDL.h"
 
-namespace mgl::window
+namespace mgl::platform
 {
   struct window_state
   {
@@ -61,4 +61,4 @@ private:
     SDL_Window* m_api_window = nullptr;
     window_state m_state;
   };
-} // namespace  mgl::window
+} // namespace  mgl::platform

@@ -30,7 +30,7 @@ target_link_libraries(
     mgl::core::static 
     mgl::registry::static
     mgl::opengl::static 
-    mgl::window::static
+    mgl::platform::static
 )
 
 # compiler and OS definitions
@@ -41,7 +41,7 @@ target_compile_definitions(mgl_graphics_static
 )
 
 if (MGL_BUILD_TESTS)
-  find_unit_tests(mgl_window_static)
+  find_unit_tests(mgl_platform_static)
 endif()
 
 install(TARGETS mgl_graphics_static

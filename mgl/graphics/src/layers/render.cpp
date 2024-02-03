@@ -20,5 +20,5 @@ namespace mgl::graphics::layers
     script.execute();
   }
 
-  void render_layer::on_event(mgl::window::event& event) { }
+  void render_layer::on_event(mgl::platform::event& event) { }
 } // namespace mgl::graphics::layers

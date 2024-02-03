@@ -1,5 +1,5 @@
 #pragma once
-#include "mgl_window/event.hpp"
+#include "mgl_platform/event.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
@@ -22,7 +22,7 @@ public:
 
     virtual void on_update(float time, float frame_time) = 0;
 
-    virtual void on_event(mgl::window::event& event) = 0;
+    virtual void on_event(mgl::platform::event& event) = 0;
 
     void enable() { m_enabled = true; }
 
@@ -65,7 +65,7 @@ public:
 
     void remove_layer(layer_ref layer);
 
-    void on_event(mgl::window::event& event);
+    void on_event(mgl::platform::event& event);
 
     void on_update(float time, float frame_time);
 

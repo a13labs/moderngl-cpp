@@ -11,6 +11,6 @@ namespace mgl::graphics
 
   void disable_shader::execute()
   {
-    mgl::window::api::disable_program();
+    mgl::platform::api::disable_program();
   }
 } // namespace mgl::graphics

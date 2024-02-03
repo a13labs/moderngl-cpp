@@ -21,7 +21,7 @@
 #include "mgl_core/math.hpp"
 #include "mgl_core/timer.hpp"
 
-namespace mgl::window
+namespace mgl::platform
 {
   struct window_config
   {
@@ -186,4 +186,4 @@ private:
     return window::is_available();
   }
 
-} // namespace  mgl::window
+} // namespace  mgl::platform

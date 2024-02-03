@@ -12,7 +12,7 @@ namespace mgl::application
   static mgl::scope<application> s_instance = nullptr;
 
   application::application(const application_config& settings)
-      : mgl::window::window(settings)
+      : mgl::platform::window(settings)
       , m_render_layer(settings.render_layer)
       , m_gui_layer(settings.gui_layer)
       , m_layers()
@@ -26,9 +26,9 @@ namespace mgl::application
     s_instance.release();
   }
 
-  void application::on_event(mgl::window::event& event)
+  void application::on_event(mgl::platform::event& event)
   {
-    mgl::window::window::on_event(event);
+    mgl::platform::window::on_event(event);
     m_gui_layer->on_event(event);
     m_layers.on_event(event);
     m_render_layer->on_event(event);

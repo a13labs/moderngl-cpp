@@ -13,7 +13,7 @@ void custom_shader::load()
                   "Vertex shader source is empty");
   MGL_CORE_ASSERT(mgl::shaders::example::fragment_shader_source().size() > 0,
                   "Fragment shader source is empty");
-  m_program = mgl::window::api::create_program(mgl::shaders::example::vertex_shader_source(),
+  m_program = mgl::platform::api::create_program(mgl::shaders::example::vertex_shader_source(),
                                                mgl::shaders::example::fragment_shader_source());
 }
 

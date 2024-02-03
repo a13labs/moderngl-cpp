@@ -15,7 +15,7 @@ namespace mgl::graphics
   {
     MGL_CORE_ASSERT(m_texture == nullptr, "Texture already loaded");
     MGL_CORE_ASSERT(m_image != nullptr, "Image is null");
-    auto tex = mgl::window::api::create_texture_2d(m_image->width(),
+    auto tex = mgl::platform::api::create_texture_2d(m_image->width(),
                                                    m_image->height(),
                                                    m_image->channels(),
                                                    m_image->buffer(),

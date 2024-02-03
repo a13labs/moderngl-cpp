@@ -1,7 +1,7 @@
 #include "mgl_opengl/context.hpp"
-#include "mgl_window/window.hpp"
+#include "mgl_platform/window.hpp"
 
-class example : public mgl::window::window
+class example : public mgl::platform::window
 {
 
   public:
