@@ -251,6 +251,96 @@ namespace mgl::platform::api
     s_state_data.attributes = attributes;
   }
 
+  void set_program_uniform(const std::string& uniform, bool value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, int value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, float value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::vec2& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::vec3& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::vec4& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2x3& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2x4& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3x2& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3x4& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4x2& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4x3& value)
+  {
+    MGL_CORE_ASSERT(s_state_data.current_program != nullptr, "Program is null");
+    s_state_data.current_program->uniform(uniform)->set_value(value);
+  }
+
   void enable_program(const program_ref& prg)
   {
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");

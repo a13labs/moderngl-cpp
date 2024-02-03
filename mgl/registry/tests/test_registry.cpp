@@ -73,6 +73,22 @@ TEST(mgl_test_load_font, load_font)
   auto bmp = mgl::create_ref<mgl::registry::image>(bmp_size.width, bmp_size.height, 4);
   font->draw_text(0, 0, "Hello, World!", 32, *bmp);
   bmp->save("font-hello-world-32.png");
+
+  auto a_glyph = font->get_sdf_size(0, 255, 32);
+  auto bmp_sdf = mgl::create_ref<mgl::registry::image>(a_glyph.width, a_glyph.height, 1);
+  font->draw_sdf_glyph_range(0, 0, 0, 255, 32, *bmp_sdf);
+
+  auto bmp_sdf2 = mgl::create_ref<mgl::registry::image>(a_glyph.width, a_glyph.height, 4);
+  for(int i = 0; i < bmp_sdf->width(); i++)
+  {
+    for(int j = 0; j < bmp_sdf->height(); j++)
+    {
+      auto value = bmp_sdf->get_pixel(i, j);
+      bmp_sdf2->put_pixel(i, j, { 1.0, 1.0, 1.0, value[0] });
+    }
+  }
+
+  bmp_sdf2->save("font-sdf-32.png");
 }
 
 int main(int argc, char** argv)

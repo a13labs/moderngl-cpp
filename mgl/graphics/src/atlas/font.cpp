@@ -3,78 +3,40 @@
 #include "glm/glm.hpp"
 namespace mgl::graphics
 {
-
-  font_atlas::font_atlas(const mgl::registry::font_ref& font, mgl::list<int32_t> pixel_heights)
+  font_atlas::font_atlas(const mgl::registry::font_ref& font, int32_t pixel_height, int32_t padding)
       : m_font(font)
+      , m_pixel_height(pixel_height)
   {
     MGL_CORE_ASSERT(font, "Font is null");
 
-    int32_t max_pixel_height = pixel_heights.back();
-    MGL_CORE_ASSERT(max_pixel_height <= 128, "Font size is too big");
-
-    mgl::size area = font->get_size(0, 255, max_pixel_height);
-    int32_t atlas_width = area.width;
-    int32_t atlas_height = 0;
-    for(auto& size : pixel_heights)
-    {
-      atlas_height += size;
-    }
+    int32_t atlas_width = m_pixel_height * 255;
+    int32_t atlas_height = m_pixel_height + padding * 2;
 
     m_bitmap = mgl::create_ref<mgl::registry::image>(atlas_width, atlas_height, 1);
 
     int32_t y = 0;
-    for(auto& size : pixel_heights)
+    auto glyphs = font->draw_sdf_glyph_range(0, y, 0, 255, m_pixel_height, *m_bitmap, padding);
+
+    m_glyphs.reserve(glyphs.size());
+
+    for(auto& glyph : glyphs)
     {
-      auto glyphs = font->draw_glyph_range(0, y, 0, 255, size, *m_bitmap);
-
-      font_atlas::size_info info;
-      info.top = y;
-      info.glyphs.reserve(glyphs.size());
-
-      for(auto& glyph : glyphs)
-      {
-        glyph.y += y;
-        glyph.u0 = static_cast<float>(glyph.x) / atlas_width;
-        glyph.v0 = static_cast<float>(glyph.y) / atlas_height;
-        glyph.u1 = static_cast<float>(glyph.x + glyph.width) / atlas_width;
-        glyph.v1 = static_cast<float>(glyph.y + glyph.height) / atlas_height;
-        info.glyphs.push_back(glyph);
-      }
-
-      m_sizes_info[size] = info;
-      y += size;
+      glyph.y += y;
+      glyph.u0 = static_cast<float>(glyph.x) / atlas_width;
+      glyph.v0 = static_cast<float>(glyph.y) / atlas_height;
+      glyph.u1 = static_cast<float>(glyph.x + glyph.width) / atlas_width;
+      glyph.v1 = static_cast<float>(glyph.y + glyph.height) / atlas_height;
+      m_glyphs.push_back(glyph);
     }
   }
 
-  int32_t font_atlas::glypys_top(int32_t pixel_height) const
-  {
-    auto it = m_sizes_info.find(pixel_height);
-    MGL_CORE_ASSERT(it != m_sizes_info.end(), "Font size not found");
-    return it->second.top;
-  }
-
-  const mgl::list<mgl::registry::font::glyph>& font_atlas::glyphs(int32_t pixel_height) const
-  {
-    auto it = m_sizes_info.find(pixel_height);
-    MGL_CORE_ASSERT(it != m_sizes_info.end(), "Font size not found");
-    return it->second.glyphs;
-  }
-
-  glm::vec4* font_atlas::text_to_vertices(const glm::vec2& pos,
-                                          const std::string& text,
-                                          float sx,
-                                          float sy,
-                                          int32_t pixel_height,
-                                          int32_t& vertices) const
+  glm::vec4* font_atlas::text_to_vertices(
+      const glm::vec2& pos, const std::string& text, float sx, float sy, int32_t& vertices) const
   {
     glm::vec4* coords = new glm::vec4[6 * text.size()];
 
-    auto it = m_sizes_info.find(pixel_height);
-    MGL_CORE_ASSERT(it != m_sizes_info.end(), "Font size not found");
-    auto& glyphs = it->second.glyphs;
-
-    float scale = m_font->get_scale_for_pixel_height(pixel_height);
-    int32_t base_line = pixel_height - (m_font->get_ascent() * scale);
+    float scale = m_font->get_scale_for_pixel_height(m_pixel_height);
+    int32_t base_line = m_pixel_height - (m_font->get_ascent() * scale);
 
     float x = pos.x;
     float y = pos.y + base_line;
@@ -86,15 +48,15 @@ namespace mgl::graphics
       if(c == '\n')
       {
         x = 0;
-        y += pixel_height * sy;
+        y += m_pixel_height * sy;
         continue;
       }
 
-      auto g = glyphs[c];
+      auto g = m_glyphs[c];
 
       if(!g.width || !g.height)
       {
-        x += g.x_advance;
+        x += g.x_advance * sx;
         continue;
       }
 
@@ -121,7 +83,7 @@ namespace mgl::graphics
       const glm::vec2& pos, const std::string& text, float32_buffer& out, float sx, float sy) const
   {
     int32_t vertices;
-    glm::vec4* coords = text_to_vertices(pos, text, sx, sy, 32, vertices);
+    glm::vec4* coords = text_to_vertices(pos, text, sx, sy, vertices);
 
     std::copy(reinterpret_cast<const uint8_t*>(coords),
               reinterpret_cast<const uint8_t*>(coords) + sizeof(glm::vec4) * vertices,
@@ -137,7 +99,7 @@ namespace mgl::graphics
                                     float sx,
                                     float sy) const
   {
-    glm::vec4* coords = text_to_vertices(pos, text, sx, sy, 32, vertices);
+    glm::vec4* coords = text_to_vertices(pos, text, sx, sy, vertices);
     buffer->write(reinterpret_cast<const uint8_t*>(coords), sizeof(glm::vec4) * 6 * text.size());
     delete[] coords;
   }

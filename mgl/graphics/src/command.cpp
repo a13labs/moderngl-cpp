@@ -120,6 +120,81 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
   }
 
+  void render_script::set_shader_uniform(const std::string& name, bool value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, int value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, float value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::vec2& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::vec3& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::vec4& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat2& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat2x3& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat2x4& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat3& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat3x2& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat3x4& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat4& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat4x2& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
+  void render_script::set_shader_uniform(const std::string& name, const glm::mat4x3& value)
+  {
+    submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
+  }
+
   void render_script::disable_shader()
   {
     submit(mgl::create_ref<mgl::graphics::disable_shader>());
@@ -163,6 +238,8 @@ namespace mgl::graphics
                               0.0f,
                               static_cast<float>(mgl::platform::current_window().height())));
     enable_shader(shader);
+    set_shader_uniform("color", color);
+    set_shader_uniform("px_range", static_cast<float>(atlas->pixel_height()));
     enable_texture(0, tex);
     set_blend_func(blend_factor::SRC_ALPHA, blend_factor::ONE_MINUS_SRC_ALPHA);
     set_blend_equation(blend_equation_mode::ADD);

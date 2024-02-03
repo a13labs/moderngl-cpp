@@ -41,6 +41,26 @@ public:
                            int32_t pixel_height,
                            image& bmp) override final;
 
+    virtual size get_sdf_size(uint16_t first_codepoint,
+                              uint16_t last_codepoint,
+                              int32_t pixel_height,
+                              int32_t padding = 3) const override final;
+
+    virtual void draw_sdf_glyph(int32_t x,
+                                int32_t y,
+                                uint16_t codepoint,
+                                int32_t pixel_height,
+                                image& bmp,
+                                int32_t padding = 3) override final;
+
+    virtual mgl::list<glyph> draw_sdf_glyph_range(int32_t x,
+                                                  int32_t y,
+                                                  uint16_t first_codepoint,
+                                                  uint16_t last_codepoint,
+                                                  int32_t pixel_height,
+                                                  image& bmp,
+                                                  int32_t padding = 3) override final;
+
     virtual size get_size(const std::string& text, int32_t pixel_height) const override final;
 
     virtual size get_size(uint16_t first_codepoint,

@@ -271,6 +271,36 @@ private:
 
   void set_program_attributes(const mgl::string_list& attributes);
 
+  void set_program_uniform(const std::string& uniform, bool value);
+
+  void set_program_uniform(const std::string& uniform, int value);
+
+  void set_program_uniform(const std::string& uniform, float value);
+
+  void set_program_uniform(const std::string& uniform, const glm::vec2& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::vec3& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::vec4& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2x3& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat2x4& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3x2& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat3x4& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4x2& value);
+
+  void set_program_uniform(const std::string& uniform, const glm::mat4x3& value);
+
   void disable_program();
 
   inline void

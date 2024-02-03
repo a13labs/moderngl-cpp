@@ -94,6 +94,36 @@ public:
 
     void enable_shader(uint32_t idx);
 
+    void set_shader_uniform(const std::string& name, bool value);
+
+    void set_shader_uniform(const std::string& name, int value);
+
+    void set_shader_uniform(const std::string& name, float value);
+
+    void set_shader_uniform(const std::string& name, const glm::vec2& value);
+
+    void set_shader_uniform(const std::string& name, const glm::vec3& value);
+
+    void set_shader_uniform(const std::string& name, const glm::vec4& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat2& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat2x3& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat2x4& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat3& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat3x2& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat3x4& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat4& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat4x2& value);
+
+    void set_shader_uniform(const std::string& name, const glm::mat4x3& value);
+
     void disable_shader();
 
     void execute();
