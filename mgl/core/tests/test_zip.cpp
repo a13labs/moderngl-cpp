@@ -3,7 +3,7 @@
 
 TEST(mgl_core, zip_test)
 {
-  mgl::zip_file zip("test.zip");
+  mgl::zip_file zip("data/test.zip");
 
   EXPECT_TRUE(zip.is_valid());
 
@@ -17,7 +17,7 @@ TEST(mgl_core, zip_test)
 
 TEST(mgl_core, zip_ifstream_test)
 {
-  mgl::zip_ifstream zip("test.zip", "test.txt");
+  mgl::zip_ifstream zip("data/test.zip", "test.txt");
 
   std::string line;
   std::getline(zip, line);

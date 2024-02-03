@@ -78,7 +78,6 @@ TEST(mgl_test_load_font, load_font)
 int main(int argc, char** argv)
 {
   ::testing::InitGoogleTest(&argc, argv);
-  mgl::registry::registry_ref registry = mgl::create_scope<mgl::registry::registry>();
   mgl::registry::register_location(mgl::registry::resource::type::image, "file://data/images");
   mgl::registry::register_location(mgl::registry::resource::type::text, "file://data/text");
   mgl::registry::register_location(mgl::registry::resource::type::shader, "file://data/shaders");

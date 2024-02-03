@@ -26,7 +26,6 @@ namespace mgl::registry
   class registry
   {
 public:
-    registry();
     ~registry();
 
     bool register_location_factory(location_factory_ref& factory);
@@ -38,9 +37,15 @@ public:
 
     bool exists(const std::string& path) const;
 
-    static registry& current_registry();
+    static registry& current_registry()
+    {
+      static registry s_registry;
+      return s_registry;
+    }
 
 private:
+    registry();
+
     struct loader_info
     {
       loader_ref loader;

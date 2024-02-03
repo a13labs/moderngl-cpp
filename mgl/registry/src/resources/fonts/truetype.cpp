@@ -14,10 +14,10 @@
 namespace mgl::registry
 {
   truetype_font::truetype_font(const uint8_buffer& data)
-      : m_data(data)
+      : m_data(std::move(data))
   {
     m_font = new stbtt_fontinfo;
-    if(!stbtt_InitFont(m_font, data.data(), 0))
+    if(!stbtt_InitFont(m_font, m_data.data(), 0))
     {
       MGL_CORE_ERROR("Failed to load font");
       m_font = nullptr;

@@ -6,17 +6,8 @@
 
 namespace mgl::registry
 {
-  static registry* s_registry = nullptr;
-
-  static const std::string types_names[] = { "image", "shader", "font",   "sound", "music",
-                                             "text",  "json",   "binary", "custom" };
-
   registry::registry()
   {
-    MGL_CORE_ASSERT(s_registry == nullptr, "Registry already exists");
-    if(s_registry == nullptr)
-      s_registry = this;
-
     {
       // Register location factories
       location_factory_ref local_factory = mgl::create_scope<local_location>();
@@ -42,7 +33,6 @@ namespace mgl::registry
 
   registry::~registry()
   {
-    s_registry = nullptr;
     m_loaders.clear();
     m_locations.clear();
   }
@@ -142,6 +132,9 @@ namespace mgl::registry
 
   const location_ref registry::find(resource::type type, const std::string& path)
   {
+    static const std::string types_names[] = { "image", "shader", "font",   "sound", "music",
+                                               "text",  "json",   "binary", "custom" };
+
     if(m_locations.find(type) == m_locations.end())
     {
       MGL_CORE_ERROR("No locations registered for type: {}", types_names[(int)type]);
@@ -196,12 +189,6 @@ namespace mgl::registry
     }
 
     return false;
-  }
-
-  registry& registry::current_registry()
-  {
-    MGL_CORE_ASSERT(s_registry != nullptr, "Registry does not exist");
-    return *s_registry;
   }
 
 } // namespace mgl::registry

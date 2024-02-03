@@ -18,17 +18,14 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_registry/registry.hpp"
-#include "mgl_registry/resources/font.hpp"
-#include "mgl_registry/resources/fonts/truetype.hpp"
 #include "mgl_platform/api/opengl.hpp"
 #include "mgl_platform/context/sdl_window.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
+
 namespace mgl::platform
 {
   static mgl::scope<window> s_instance = nullptr;
-  static mgl::registry::registry_ref s_registry = nullptr;
 
   window::window(const window_config& config)
   {
@@ -36,10 +33,6 @@ namespace mgl::platform
     s_instance = mgl::scope<window>(this);
     m_running = false;
     m_config = config;
-
-    // Initialize logging and registry (for loading resources)
-    auto registry = mgl::create_scope<mgl::registry::registry>();
-    s_registry = std::move(registry);
 
     // Create api window (SDL)
     m_api_window = mgl::create_scope<sdl_window>(config);
