@@ -15,7 +15,8 @@ parser = argparse.ArgumentParser(description='Generate C++ header file with shad
 parser.add_argument('input', metavar='input', type=str, nargs=1, help='input shader file')
 parser.add_argument('--name', metavar='name', type=str, nargs=1, help='name of the shader variable in the header file')
 parser.add_argument('--no-include', dest='no_include', action='store_true', help='do not include the header file in the output')
-parser.add_argument('--no-static', dest='no_static', action='store_true', help='do not use static for the shader variable in the header file')
+parser.add_argument('--namespace', metavar='namespace', type=str, nargs=1, help='namespace for the shader variable in the header file')
+parser.add_argument('--no-namespace', dest='no_namespace', action='store_true', help='do not use a namespace for the shader variable in the header file')
 
 args = parser.parse_args()
 
@@ -33,19 +34,22 @@ if not args.no_include:
     print('')
 
 
-# Write shader variable
-var_decl = ''
-if not args.no_static:
-    var_decl += 'static '
+# Write namespace
+if args.namespace and not args.no_namespace:
+    print('namespace ' + args.namespace[0] + ' {')
 
 if args.name:
-    var_decl += 'const std::string ' + args.name[0] + ' = '
+    print("std::string& "+ args.name[0] +"() {")
 else:
-    var_decl += 'const std::string ' + os.path.splitext(os.path.basename(args.input[0]))[0] + ' = '
+    print("std::string& "+  os.path.splitext(os.path.basename(args.input[0]))[0] +"() {")
 
+
+var_decl = '    static std::string source = ' + 'R"(' + input_file_contents.strip() + ')";'
 print(var_decl)
+print("    return source;")
+print("}")
 
-# Write shader string
-print('R"(')
-print(input_file_contents)
-print(')";')
+
+# Write namespace end
+if args.namespace and not args.no_namespace:
+    print('}')

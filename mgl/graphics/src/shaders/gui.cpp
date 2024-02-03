@@ -5,19 +5,18 @@
 
 namespace mgl::graphics::builtins
 {
-  static mgl::string_list s_attributes = { "Position", "UV", "Color" };
 
   void gui_shader::load()
   {
-    m_program = mgl::window::api::create_program(vertex_shader_source, fragment_shader_source);
+    MGL_CORE_ASSERT(mgl::shaders::imgui::vertex_shader_source().size() > 0,
+                    "Vertex shader source is empty");
+    MGL_CORE_ASSERT(mgl::shaders::imgui::fragment_shader_source().size() > 0,
+                    "Fragment shader source is empty");
+    m_program = mgl::window::api::create_program(mgl::shaders::imgui::vertex_shader_source(),
+                                                 mgl::shaders::imgui::fragment_shader_source());
     set_uniform_value("Texture", 0);
   }
 
   void gui_shader::prepare() { }
-
-  mgl::string_list& gui_shader::attributes()
-  {
-    return s_attributes;
-  }
 
 } // namespace mgl::graphics::builtins

@@ -10,7 +10,6 @@ generate_shader_headers()
 add_executable(basic_application_example ${APP_SOURCES})
 
 set (DEFAULT_INCLUDE_DIRS 
-    ${MGL_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_CURRENT_BINARY_DIR}/inc
 )

@@ -8,14 +8,6 @@
 
 namespace mgl::registry
 {
-
-  const std::string no_shader = "";
-
-  static mgl::string_list s_shaders_text = {
-    "VERTEX_SHADER",       "FRAGMENT_SHADER",        "GEOMETRY_SHADER",
-    "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",
-  };
-
   shader::shader(const std::string& source, shader::type type)
   {
     auto src = mgl::trim(source);
@@ -140,6 +132,11 @@ namespace mgl::registry
 
   const std::string shader::source(shader::type type, const shader_defines& defines)
   {
+    static mgl::string_list s_shaders_text = {
+      "VERTEX_SHADER",       "FRAGMENT_SHADER",        "GEOMETRY_SHADER",
+      "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",
+    };
+
     if(!mgl::in(s_shaders_text[type], m_source))
     {
       if(type == m_type)

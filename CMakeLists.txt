@@ -68,8 +68,7 @@ endif()
 configure_file(version.hpp.in ${CMAKE_BINARY_DIR}/inc/version.hpp)
                     
 if (MGL_BUILD_TESTS)
-    # TODO: Setup testing on windows and macOS
-    # Add unit tests
+    include(UnitTestConfig)
     message(STATUS "ModernGL-Cpp tests: ON")
     enable_testing()
 else()
@@ -123,13 +122,11 @@ add_library(mgl::static ALIAS mgl_static)
 # Set the include directories
 target_include_directories(mgl_static
     PUBLIC
-    $<BUILD_INTERFACE:${MGL_CORE_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${MGL_REGISTRY_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${MGL_OPENGL_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${MGL_WINDOW_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${MGL_GRAPHICS_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${MGL_APPLICATION_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${GLM_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${IMGUI_INCLUDE_DIR}>
 )
 

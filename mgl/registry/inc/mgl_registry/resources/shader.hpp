@@ -12,7 +12,6 @@ namespace mgl::registry
   using shader_defines = mgl::dict<std::string, std::string>;
   using shaders_outputs = mgl::string_list;
 
-  extern const std::string no_shader;
   class shader : public resource
   {
     friend class shader_loader;

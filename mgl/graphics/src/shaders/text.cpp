@@ -5,19 +5,18 @@
 
 namespace mgl::graphics::builtins
 {
-  static mgl::string_list s_attributes = { "vertex" };
 
   void text_shader::load()
   {
-    m_program = mgl::window::api::create_program(vertex_shader_source, fragment_shader_source);
+    MGL_CORE_ASSERT(mgl::shaders::text::vertex_shader_source().size() > 0,
+                    "Vertex shader source is empty");
+    MGL_CORE_ASSERT(mgl::shaders::text::fragment_shader_source().size() > 0,
+                    "Fragment shader source is empty");
+    m_program = mgl::window::api::create_program(mgl::shaders::text::vertex_shader_source(),
+                                                 mgl::shaders::text::fragment_shader_source());
     set_uniform_value("atlas", 0);
   }
 
   void text_shader::prepare() { }
-
-  mgl::string_list& text_shader::attributes()
-  {
-    return s_attributes;
-  }
 
 } // namespace mgl::graphics::builtins

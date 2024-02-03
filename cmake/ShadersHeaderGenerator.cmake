@@ -29,8 +29,12 @@ endfunction()
 
 function(generate_shader_header INPUT_SHADER SHADER_TYPE OUTPUT_HEADER)
     set(VARIABLE_NAME "${SHADER_TYPE}_shader_source")
+    # Get base name and extension of the input shader
+    get_filename_component(SHADER_NAME ${INPUT_SHADER} NAME_WE)
+    get_shader_type_extension(${SHADER_TYPE} SHADER_EXTENSION)
+
     execute_process(
-        COMMAND ${_Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER}
+        COMMAND ${_Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER} --namespace mgl::shaders::${SHADER_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_FILE ${OUTPUT_HEADER}
         OUTPUT_STRIP_TRAILING_WHITESPACE

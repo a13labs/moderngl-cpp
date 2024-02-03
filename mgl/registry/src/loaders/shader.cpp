@@ -11,13 +11,6 @@ namespace mgl::registry::loaders
 {
   static shader_loader_options default_shader_loader_options;
 
-  const std::string no_shader = "";
-
-  static mgl::string_list s_shaders_text = {
-    "VERTEX_SHADER",       "FRAGMENT_SHADER",        "GEOMETRY_SHADER",
-    "TESS_CONTROL_SHADER", "TESS_EVALUATION_SHADER",
-  };
-
   mgl::string_list shader_loader::get_extensions() const
   {
     return { ".vs", ".fs", ".gs", ".cs", ".ts", ".glsl" };
