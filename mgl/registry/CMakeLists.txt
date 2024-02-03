@@ -7,15 +7,14 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(mgl_registry_static STATIC ${LIB_SOURCES})
 add_library(mgl::registry::static ALIAS mgl_registry_static)
 
-set(MGL_REGISTRY_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::registry include directory")
-
 # Add include directories
 target_include_directories(
     mgl_registry_static 
   PUBLIC
-    $<BUILD_INTERFACE:${MGL_REGISTRY_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE 
     ${VENDORS_HEADERS_ONLY_INC_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc        
 )
 

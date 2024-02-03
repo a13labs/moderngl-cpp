@@ -13,6 +13,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
 # Enable the FetchContent module
 include(FetchContent)
 
+# Include the script for generating shader headers
+include(ShadersHeaderGenerator)
+
 # Build options
 option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
 option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
@@ -107,8 +110,6 @@ add_subdirectory(vendors)
 add_subdirectory(mgl)
 
 add_library(mgl_static STATIC 
-    $<TARGET_OBJECTS:glm::glm_static>
-    $<TARGET_OBJECTS:imgui::static>
     $<TARGET_OBJECTS:mgl::core::static>
     $<TARGET_OBJECTS:mgl::registry::static>
     $<TARGET_OBJECTS:mgl::opengl::static>
@@ -119,22 +120,9 @@ add_library(mgl_static STATIC
 
 add_library(mgl::static ALIAS mgl_static)
 
-# Set the include directories
-target_include_directories(mgl_static
-    PUBLIC
-    $<BUILD_INTERFACE:${MGL_REGISTRY_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${MGL_OPENGL_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${MGL_WINDOW_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${MGL_GRAPHICS_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${MGL_APPLICATION_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${IMGUI_INCLUDE_DIR}>
-)
-
 # Set the compile definitions
 target_link_libraries(mgl_static
     PUBLIC
-    glm::static
-    imgui::static
     mgl::core::static
     mgl::registry::static
     mgl::opengl::static

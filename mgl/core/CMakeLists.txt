@@ -7,20 +7,19 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(mgl_core_static STATIC ${LIB_SOURCES})
 add_library(mgl::core::static ALIAS mgl_core_static)
 
-set(MGL_CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::core include directory")
-
 # Add include directories
 target_include_directories(
     mgl_core_static 
   PUBLIC
     $<BUILD_INTERFACE:${GLM_INCLUDE_DIR}>
-    $<BUILD_INTERFACE:${MGL_CORE_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE 
     ${SIMPLELOG_INCLUDE_DIR}
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${LIBZIP_INCLUDE_DIR}
     ${LIBZIP_BINARY_DIR}
     ${JSON_INCLUDE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc
 )
 

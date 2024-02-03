@@ -10,23 +10,26 @@ add_library(mgl::opengl::static ALIAS mgl_opengl_static)
 set(MGL_OPENGL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::opengl include directory")
 
 # Add include directories
-include_directories(
+target_include_directories(
+    mgl_opengl_static
   PUBLIC
     $<BUILD_INTERFACE:${MGL_OPENGL_INCLUDE_DIR}>
   PRIVATE 
     ${GLAD_INCLUDE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/inc
+    ${CMAKE_BINARY_DIR}/inc
 )
 
 if(WIN32)
-    message(STATUS "OpenGL Platform: Windows")
-    set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_WGL")
+  message(STATUS "OpenGL Platform: Windows")
+  set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_WGL")
 elseif (UNIX)
-    if (NOT APPLE)
-        set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_EGL")
-    else()
-        message(STATUS "OpenGL Platform: MacOS")
-        set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_CGL")
-    endif()
+  if (NOT APPLE)
+    set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_EGL")
+  else()
+    message(STATUS "OpenGL Platform: MacOS")
+    set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_CGL")
+  endif()
 endif()
 
 # Link library to required libraries
@@ -39,21 +42,26 @@ target_link_libraries(
 )
 
 # compiler and OS definitions
-target_compile_definitions(mgl_opengl_static 
+target_compile_definitions(
+  mgl_opengl_static 
     PRIVATE 
-    ${MGL_COMPILER_DEFINITION} 
-    ${MGL_BUILD_TYPE_DEFINITIONS}
-    ${MGL_OPENGL_PLATFORM_DEFINITION}
+  ${MGL_COMPILER_DEFINITION} 
+  ${MGL_BUILD_TYPE_DEFINITIONS}
+  ${MGL_OPENGL_PLATFORM_DEFINITION}
 )
 
 if (MGL_BUILD_TESTS)
     find_unit_tests(
       mgl::core::static
+      glad::static
       mgl_opengl_static
     )
 endif()
 
 install(TARGETS mgl_opengl_static
     EXPORT mgl-targets
+    LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
 )
