@@ -33,12 +33,24 @@ function(generate_shader_header INPUT_SHADER SHADER_TYPE OUTPUT_HEADER)
     get_filename_component(SHADER_NAME ${INPUT_SHADER} NAME_WE)
     get_shader_type_extension(${SHADER_TYPE} SHADER_EXTENSION)
 
-    execute_process(
-        COMMAND ${_Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER} --namespace mgl::shaders::${SHADER_NAME}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_FILE ${OUTPUT_HEADER}
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
+    # Generate the header file using the custom python script
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        # Generate a debug header no optimization is applied
+        execute_process(
+            COMMAND ${_Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER} --namespace mgl::shaders::${SHADER_NAME}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            OUTPUT_FILE ${OUTPUT_HEADER}
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    else()
+        # Generate a release header with optimization applied
+        execute_process(
+            COMMAND ${_Python3_EXECUTABLE} ${MGL_SCRIPTS_DIR}/gen_header.py --name ${VARIABLE_NAME} ${INPUT_SHADER} --namespace mgl::shaders::${SHADER_NAME} --release
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            OUTPUT_FILE ${OUTPUT_HEADER}
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    endif()
     file(READ ${OUTPUT_HEADER} FILE_CONTENT)
     file(WRITE ${OUTPUT_HEADER} "${FILE_CONTENT}")    
 endfunction()

@@ -2,7 +2,7 @@
 layout (location = 0) in vec4 vertex; 
 out vec2 texcoord;
 
-uniform mat4 projection;
+uniform mat4 projection; // ortho matrix
 uniform mat4 model;
 
 void main()

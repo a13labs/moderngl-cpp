@@ -17,6 +17,7 @@ parser.add_argument('--name', metavar='name', type=str, nargs=1, help='name of t
 parser.add_argument('--no-include', dest='no_include', action='store_true', help='do not include the header file in the output')
 parser.add_argument('--namespace', metavar='namespace', type=str, nargs=1, help='namespace for the shader variable in the header file')
 parser.add_argument('--no-namespace', dest='no_namespace', action='store_true', help='do not use a namespace for the shader variable in the header file')
+parser.add_argument('--release', dest='release', action='store_true', help='strip comments and whitespace from the shader')
 
 args = parser.parse_args()
 
@@ -33,18 +34,28 @@ if not args.no_include:
     print('#include <string>')
     print('')
 
-
 # Write namespace
 if args.namespace and not args.no_namespace:
     print('namespace ' + args.namespace[0] + ' {')
 
 if args.name:
-    print("std::string& "+ args.name[0] +"() {")
+    print("inline std::string& "+ args.name[0] +"() {")
 else:
-    print("std::string& "+  os.path.splitext(os.path.basename(args.input[0]))[0] +"() {")
+    print("inline std::string& "+  os.path.splitext(os.path.basename(args.input[0]))[0] +"() {")
 
+if args.release:
+    # Strip comments and whitespace
+    contents = re.sub(r'//.*', '', input_file_contents)
+    # Remove /* */ comments
+    contents = re.sub(r'/\*.*\*/', '', contents, flags=re.DOTALL)
+    # remove empty lines
+    contents = os.linesep.join([
+        s.strip() for s in contents.splitlines() if s
+    ])
+else:
+    contents = input_file_contents
 
-var_decl = '    static std::string source = ' + 'R"(' + input_file_contents.strip() + ')";'
+var_decl = '    static std::string source = ' + 'R"(' + contents + ')";'
 print(var_decl)
 print("    return source;")
 print("}")
