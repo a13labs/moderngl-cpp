@@ -131,9 +131,6 @@ target_include_directories(mgl_static
     $<BUILD_INTERFACE:${MGL_APPLICATION_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${GLM_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${IMGUI_INCLUDE_DIR}>
-    # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    # $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/inc>
-    # $<INSTALL_INTERFACE:include>
 )
 
 # Set the compile definitions
@@ -148,6 +145,11 @@ target_link_libraries(mgl_static
     mgl::graphics::static
     mgl::application::static
 )
+
+# Build the examples
+if(MGL_BUILD_EXAMPLES) 
+    add_subdirectory(examples)
+endif()
 
 install(TARGETS mgl_static
     EXPORT mgl-targets
