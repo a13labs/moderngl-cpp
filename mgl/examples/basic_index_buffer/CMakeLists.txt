@@ -18,5 +18,5 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_index_buffer PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_index_buffer PRIVATE mgl::window-static)
+target_link_libraries(basic_index_buffer PRIVATE mgl::static)
 

@@ -19,4 +19,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_application_example PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_application_example PRIVATE mgl::application-static)
+target_link_libraries(basic_application_example PRIVATE mgl::static)

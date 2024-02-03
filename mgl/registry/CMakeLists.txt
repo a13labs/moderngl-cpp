@@ -4,8 +4,8 @@ project(mgl_registry)
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_registry"
-add_library(mgl_registry STATIC ${LIB_SOURCES})
-add_library(mgl::registry-static ALIAS mgl_registry)
+add_library(mgl_registry_static STATIC ${LIB_SOURCES})
+add_library(mgl::registry::static ALIAS mgl_registry_static)
 
 set(MGL_REGISTRY_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::registry include directory")
 
@@ -17,13 +17,13 @@ set (DEFAULT_INCLUDE_DIRS
 )
 
 # Add include directories
-target_include_directories(mgl_registry PRIVATE ${DEFAULT_INCLUDE_DIRS})
+target_include_directories(mgl_registry_static PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_registry PRIVATE mgl::core-static)
+target_link_libraries(mgl_registry_static PRIVATE mgl::core::static)
 
 # compiler and OS definitions
-target_compile_definitions(mgl_registry 
+target_compile_definitions(mgl_registry_static 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
@@ -41,7 +41,7 @@ if (MGL_BUILD_TESTS)
         # Create the unit test executable
         add_executable(mgl_registry_${TEST_NAME} ${FILE_PATH})
         # Link mgl_registry and Check library to the unit test executable
-        target_link_libraries(mgl_registry_${TEST_NAME} PRIVATE mgl_registry gtest)
+        target_link_libraries(mgl_registry_${TEST_NAME} PRIVATE mgl_registry_static gtest)
         target_include_directories(mgl_registry_${TEST_NAME} PRIVATE 
                         ${DEFAULT_INCLUDE_DIRS} 
                         ${GTEST_INSTALL_DIR}/include)
@@ -69,3 +69,11 @@ if (MGL_BUILD_TESTS)
         )
     endforeach(FILE_PATH)
 endif()
+
+install(TARGETS mgl_registry_static
+    EXPORT mgl-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)

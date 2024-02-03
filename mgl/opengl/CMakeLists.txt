@@ -4,8 +4,8 @@ project(mgl_opengl)
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_opengl"
-add_library(mgl_opengl STATIC ${LIB_SOURCES})
-add_library(mgl::opengl-static ALIAS mgl_opengl)
+add_library(mgl_opengl_static STATIC ${LIB_SOURCES})
+add_library(mgl::opengl::static ALIAS mgl_opengl_static)
 
 set(MGL_OPENGL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::opengl include directory")
 
@@ -17,16 +17,26 @@ set (DEFAULT_INCLUDE_DIRS
     ${MGL_OPENGL_INCLUDE_DIR}
 )
 
-# Add include directories
-target_include_directories(mgl_opengl PRIVATE ${DEFAULT_INCLUDE_DIRS})
-
-# Link library to required libraries
-target_link_libraries(mgl_opengl PRIVATE mgl::core-static glm::glm_static glad::static)
-
 # Find OpenGL package
 find_package(OpenGL REQUIRED)
-include_directories(mgl_opengl PRIVATE ${OPENGL_INCLUDE_DIR})
-target_link_libraries(mgl_opengl PRIVATE ${OPENGL_LIBRARIES})
+
+# Add include directories
+include_directories(
+    mgl_opengl_static 
+    PRIVATE 
+    ${DEFAULT_INCLUDE_DIRS}
+    ${OPENGL_INCLUDE_DIR}
+)
+
+# Link library to required libraries
+target_link_libraries(
+        mgl_opengl_static 
+    PRIVATE 
+        mgl::core::static 
+        glm::static
+        $<TARGET_OBJECTS:glad::static>
+        ${OPENGL_LIBRARIES}
+)
 
 if(WIN32)
     message(STATUS "OpenGL Platform: Windows")
@@ -41,7 +51,7 @@ elseif (UNIX)
 endif()
 
 # compiler and OS definitions
-target_compile_definitions(mgl_opengl 
+target_compile_definitions(mgl_opengl_static 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
@@ -63,7 +73,7 @@ if (MGL_BUILD_TESTS)
             add_executable(mgl_opengl_${TEST_NAME} ${FILE_PATH})
         endif()
         # Link mgl_opengl and Check library to the unit test executable
-        target_link_libraries(mgl_opengl_${TEST_NAME} PRIVATE mgl_opengl gtest)
+        target_link_libraries(mgl_opengl_${TEST_NAME} PRIVATE mgl_opengl_static gtest)
         target_include_directories(mgl_opengl_${TEST_NAME} PRIVATE 
                         ${DEFAULT_INCLUDE_DIRS} 
                         ${GTEST_INSTALL_DIR}/include)
@@ -71,3 +81,8 @@ if (MGL_BUILD_TESTS)
         add_test(NAME mgl_opengl_ctest_${TEST_NAME} COMMAND mgl_opengl_${TEST_NAME})
     endforeach()
 endif()
+
+install(TARGETS mgl_opengl_static
+    EXPORT mgl-targets
+    ARCHIVE DESTINATION lib
+)

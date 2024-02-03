@@ -4,8 +4,8 @@ project(mgl_core)
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_core"
-add_library(mgl_core STATIC ${LIB_SOURCES})
-add_library(mgl::core-static ALIAS mgl_core)
+add_library(mgl_core_static STATIC ${LIB_SOURCES})
+add_library(mgl::core::static ALIAS mgl_core_static)
 
 set(MGL_CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::core include directory")
 
@@ -22,16 +22,22 @@ set (DEFAULT_INCLUDE_DIRS
 
 # Add include directories
 target_include_directories(
-    mgl_core 
+    mgl_core_static 
 PRIVATE 
     ${DEFAULT_INCLUDE_DIRS}
 )
 
 # Link library to required libraries
-target_link_libraries(mgl_core PRIVATE simplelog::static libzip::zip nlohmann_json::nlohmann_json)
+target_link_libraries(
+    mgl_core_static 
+    PRIVATE 
+    $<TARGET_OBJECTS:simplelog::static>
+    nlohmann_json::nlohmann_json
+    libzip::zip 
+)
 
 # compiler and OS definitions
-target_compile_definitions(mgl_core 
+target_compile_definitions(mgl_core_static 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
@@ -53,7 +59,7 @@ if (MGL_BUILD_TESTS)
         endif()
 
         # Link mgl_core and Check library to the unit test executable
-        target_link_libraries(mgl_core_${TEST_NAME} PRIVATE mgl_core gtest)
+        target_link_libraries(mgl_core_${TEST_NAME} PRIVATE mgl_core_static gtest)
         target_include_directories(mgl_core_${TEST_NAME} PRIVATE 
                         ${DEFAULT_INCLUDE_DIRS} 
                         ${GTEST_INSTALL_DIR}/include)
@@ -75,3 +81,10 @@ if (MGL_BUILD_TESTS)
     endforeach(FILE_PATH)    
 endif()
 
+install(TARGETS mgl_core_static
+    EXPORT mgl-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)

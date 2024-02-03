@@ -13,3 +13,11 @@ FetchContent_MakeAvailable(json)
 
 set(JSON_SOURCE_DIR "${json_SOURCE_DIR}" CACHE PATH "Path to json source directory")
 set(JSON_INCLUDE_DIR "${JSON_SOURCE_DIR}/single_include" CACHE PATH "Path to json include directory")
+
+install(TARGETS nlohmann_json
+    EXPORT mgl-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)

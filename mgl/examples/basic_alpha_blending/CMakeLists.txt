@@ -18,4 +18,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_alpha_blending PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_alpha_blending PRIVATE mgl::window-static)
+target_link_libraries(basic_alpha_blending PRIVATE mgl::static)

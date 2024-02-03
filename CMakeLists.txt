@@ -107,29 +107,61 @@ endif()
 add_subdirectory(vendors)
 add_subdirectory(mgl)
 
-set(
-    MGL_HEADERS     
-    ${MGL_CORE_INCLUDE_DIR}
-    ${MGL_REGISTRY_INCLUDE_DIR}
-    ${MGL_OPENGL_INCLUDE_DIR}
-    ${MGL_WINDOW_INCLUDE_DIR}
-    ${MGL_GRAPHICS_INCLUDE_DIR}
-    ${MGL_APPLICATION_INCLUDE_DIR}
-    ${GLM_INCLUDE_DIR}
-    ${IMGUI_INCLUDE_DIR}
-    ${VENDORS_HEADERS_ONLY_INC_DIR}
-    CACHE PATH "MGL_HEADERS"
+add_library(mgl_static STATIC 
+    $<TARGET_OBJECTS:glm::glm_static>
+    $<TARGET_OBJECTS:imgui::static>
+    $<TARGET_OBJECTS:mgl::core::static>
+    $<TARGET_OBJECTS:mgl::registry::static>
+    $<TARGET_OBJECTS:mgl::opengl::static>
+    $<TARGET_OBJECTS:mgl::window::static>
+    $<TARGET_OBJECTS:mgl::graphics::static>
+    $<TARGET_OBJECTS:mgl::application::static>
 )
 
-set(
-    MGL_LIBS   
-    simplelog::static libzip::zip nlohmann_json::nlohmann_json
-    glm::glm_static glad::static SDL2::SDL2-static ImGUI::static
-    mgl::core-static mgl::registry-static mgl::opengl-static 
-    mgl::window-static mgl::graphics-static mgl::application-static
-    CACHE PATH "MGL_LIBS"
+add_library(mgl::static ALIAS mgl_static)
+
+# Set the include directories
+target_include_directories(mgl_static
+    PUBLIC
+    $<BUILD_INTERFACE:${MGL_CORE_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${MGL_REGISTRY_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${MGL_OPENGL_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${MGL_WINDOW_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${MGL_GRAPHICS_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${MGL_APPLICATION_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${GLM_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${IMGUI_INCLUDE_DIR}>
+    # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    # $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/inc>
+    # $<INSTALL_INTERFACE:include>
 )
 
+# Set the compile definitions
+target_link_libraries(mgl_static
+    PUBLIC
+    glm::static
+    imgui::static
+    mgl::core::static
+    mgl::registry::static
+    mgl::opengl::static
+    mgl::window::static
+    mgl::graphics::static
+    mgl::application::static
+)
+
+install(TARGETS mgl_static
+    EXPORT mgl-targets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)
+
+install(EXPORT mgl-targets
+    FILE mgl-targets.cmake
+    NAMESPACE mgl::
+    DESTINATION lib/cmake/mgl
+)
 
 # Debug CMake Vars, uncomment to show CMake vars
 # get_cmake_property(_variableNames VARIABLES)

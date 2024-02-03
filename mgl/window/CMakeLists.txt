@@ -5,7 +5,7 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Create the static library target "mgl_window"
 add_library(mgl_window STATIC ${LIB_SOURCES})
-add_library(mgl::window-static ALIAS mgl_window)
+add_library(mgl::window::static ALIAS mgl_window)
 
 set(MGL_WINDOW_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::window include directory")
 
@@ -26,10 +26,15 @@ set (DEFAULT_INCLUDE_DIRS
 target_include_directories(mgl_window PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_window PRIVATE mgl::core-static mgl::opengl-static mgl::registry-static)
+target_link_libraries(mgl_window PRIVATE mgl::core::static mgl::opengl::static mgl::registry::static)
 
 # Link library to required external libraries
-target_link_libraries(mgl_window PRIVATE SDL2::SDL2-static ImGUI::static)
+target_link_libraries(
+        mgl_window 
+    PRIVATE 
+        $<TARGET_OBJECTS:SDL2::SDL2-static>
+        imgui::static
+)
 
 # compiler and OS definitions
 target_compile_definitions(mgl_window 
@@ -58,3 +63,12 @@ if (MGL_BUILD_TESTS)
         add_test(NAME mgl_window_ctest_${TEST_NAME} COMMAND mgl_window_${TEST_NAME})
     endforeach()
 endif()
+
+# Add the install target
+install(TARGETS mgl_window
+    EXPORT mgl-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)

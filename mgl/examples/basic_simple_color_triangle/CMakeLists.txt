@@ -18,4 +18,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(basic_simple_color_triangle PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(basic_simple_color_triangle PRIVATE mgl::window-static)
+target_link_libraries(basic_simple_color_triangle PRIVATE mgl::static)

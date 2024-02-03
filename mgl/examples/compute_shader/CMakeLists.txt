@@ -19,4 +19,4 @@ set (DEFAULT_INCLUDE_DIRS
 include_directories(compute_shader PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link gamelib to the application
-target_link_libraries(compute_shader PRIVATE mgl::window-static)
+target_link_libraries(compute_shader PRIVATE mgl::window::static)

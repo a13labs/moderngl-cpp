@@ -10,8 +10,8 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 generate_shader_headers()
 
 # Create the static library target "mgl_graphics"
-add_library(mgl_graphics STATIC ${LIB_SOURCES})
-add_library(mgl::graphics-static ALIAS mgl_graphics)
+add_library(mgl_graphics_static STATIC ${LIB_SOURCES})
+add_library(mgl::graphics::static ALIAS mgl_graphics_static)
 
 set(MGL_GRAPHICS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::graphics include directory")
 
@@ -29,13 +29,13 @@ set (DEFAULT_INCLUDE_DIRS
 )
 
 # Add include directories
-target_include_directories(mgl_graphics PRIVATE ${DEFAULT_INCLUDE_DIRS})
+target_include_directories(mgl_graphics_static PRIVATE ${DEFAULT_INCLUDE_DIRS})
 
 # Link library to required libraries
-target_link_libraries(mgl_graphics PRIVATE mgl::window-static mgl::registry-static)
+target_link_libraries(mgl_graphics_static PRIVATE mgl::window::static mgl::registry::static)
 
 # compiler and OS definitions
-target_compile_definitions(mgl_graphics 
+target_compile_definitions(mgl_graphics_static 
     PRIVATE 
     ${MGL_COMPILER_DEFINITION} 
     ${MGL_BUILD_TYPE_DEFINITIONS}
@@ -61,3 +61,11 @@ if (MGL_BUILD_TESTS)
         add_test(NAME mgl_graphics_ctest_${TEST_NAME} COMMAND mgl_graphics_${TEST_NAME})
     endforeach()
 endif()
+
+install(TARGETS mgl_graphics_static
+    EXPORT mgl-targets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION inc
+)
