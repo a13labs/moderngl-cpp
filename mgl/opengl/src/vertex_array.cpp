@@ -69,6 +69,7 @@ namespace mgl::opengl
     {
       glDrawArraysInstanced(mode, first, vertices, instances);
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void vertex_array::render_indirect(const buffer_ref& buffer,

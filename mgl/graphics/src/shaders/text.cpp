@@ -15,7 +15,7 @@ namespace mgl::graphics::builtins
                                                    mgl::shaders::text::fragment_shader_source());
     set_uniform_value("atlas", 0);
     set_uniform_value("color", glm::vec4(1.0, 1.0, 1.0, 1.0));
-    set_uniform_value("px_range", 32.f);
+    set_uniform_value("px_range", 64.f);
   }
 
   void text_shader::prepare() { }

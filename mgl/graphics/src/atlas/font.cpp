@@ -39,7 +39,7 @@ namespace mgl::graphics
     int32_t base_line = m_pixel_height - (m_font->get_ascent() * scale);
 
     float x = pos.x;
-    float y = pos.y + base_line;
+    float y = pos.y + base_line * sy;
 
     int32_t i = 0;
     vertices = 0;
@@ -48,7 +48,7 @@ namespace mgl::graphics
       if(c == '\n')
       {
         x = 0;
-        y += m_pixel_height * sy;
+        y += base_line * sy;
         continue;
       }
 

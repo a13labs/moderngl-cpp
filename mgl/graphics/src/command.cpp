@@ -221,8 +221,8 @@ namespace mgl::graphics
   void render_script::draw_text(const std::string& text,
                                 const glm::vec2& position,
                                 const glm::vec4& color,
-                                const std::string& font,
-                                float scale)
+                                uint32_t size,
+                                const std::string& font)
   {
     auto atlas = fonts().get_atlas(font);
     MGL_CORE_ASSERT(atlas != nullptr, "Font atlas is null");
@@ -246,8 +246,10 @@ namespace mgl::graphics
 
     size_t offset = vb->needle();
     int32_t vertices = 0;
+    float scale = static_cast<float>(size) / atlas->pixel_height();
     atlas->text_to_vertices(position, text, vb, vertices, scale, scale);
-    draw(vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, offset);
+    draw(
+        vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, offset / sizeof(glm::vec4));
 
     disable_shader();
     clear_samplers(0, 1);

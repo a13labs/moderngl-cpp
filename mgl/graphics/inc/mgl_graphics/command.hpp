@@ -83,8 +83,8 @@ public:
     void draw_text(const std::string& text,
                    const glm::vec2& position,
                    const glm::vec4& color = glm::vec4(1.0f),
-                   const std::string& font = "default",
-                   float scale = 1.0f);
+                   uint32_t size = 16,
+                   const std::string& font = "default");
 
     void draw_batch(const batch_ref& batch);
 

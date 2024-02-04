@@ -38,7 +38,7 @@ namespace mgl::opengl
     glDeleteBuffers(1, (GLuint*)&m_buffer_obj);
   }
 
-  bool buffer::write(const void* src, size_t size, size_t offset)
+  void buffer::write(const void* src, size_t size, size_t offset)
   {
     MGL_CORE_ASSERT(!m_released, "Buffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -48,11 +48,10 @@ namespace mgl::opengl
 
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
     glBufferSubData(GL_ARRAY_BUFFER, (GLintptr)offset, size, src);
-
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error writing to buffer");
   }
 
-  bool buffer::read_into(
+  void buffer::read_into(
       void* dst, size_t dst_size, size_t read_size, size_t read_offset, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Buffer already released");
@@ -76,7 +75,7 @@ namespace mgl::opengl
     // memcpy(ptr, map, read_size);
 
     glUnmapBuffer(GL_ARRAY_BUFFER);
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error writing to buffer");
   }
 
   void buffer::clear()

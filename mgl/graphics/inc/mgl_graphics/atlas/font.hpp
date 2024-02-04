@@ -13,7 +13,7 @@ namespace mgl::graphics
   {
 
 public:
-    font_atlas(const mgl::registry::font_ref& font, int32_t pixel_height = 32, int32_t padding = 3);
+    font_atlas(const mgl::registry::font_ref& font, int32_t pixel_height = 64, int32_t padding = 3);
 
     font_atlas(const font_atlas&) = delete;
 

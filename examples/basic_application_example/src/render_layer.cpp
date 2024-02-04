@@ -14,11 +14,11 @@ void render_layer::render_prepare(mgl::graphics::render_script& script)
   script.enable_shader("custom_shader");
   script.draw(s_vbo);
   script.disable_shader();
-  script.draw_text("This is a string, Hello World!",
-                   glm::vec2(0.0),
-                   glm::vec4(1.0, 0.0, 0.0, 1.0),
-                   "default",
-                   2.f);
+  script.draw_text("This is a text size 8!", glm::vec2(0.0), glm::vec4(1.0, 0.0, 0.0, 1.0));
+  script.draw_text(
+      "This is a text size 16!", glm::vec2(0.0, 32.f), glm::vec4(1.0, 0.0, 0.0, 1.0), 16.f);
+  script.draw_text(
+      "This is a text size 32!", glm::vec2(0.0, 64.f), glm::vec4(1.0, 0.0, 0.0, 1.0), 32.f);
 }
 
 void render_layer::on_attach()
