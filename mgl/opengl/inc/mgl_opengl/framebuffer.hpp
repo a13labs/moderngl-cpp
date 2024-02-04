@@ -54,7 +54,7 @@ public:
     int width();
     int height();
 
-    bool bits(int& red_bits,
+    void bits(int& red_bits,
               int& green_bits,
               int& blue_bits,
               int& alpha_bits,
@@ -71,21 +71,21 @@ public:
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
-    bool read_into(mgl::uint8_buffer& dst,
-                   const mgl::rect& viewport = mgl::null_viewport_2d,
-                   int components = 3,
-                   int attachment = 0,
-                   int alignment = 1,
-                   const char* dtype = "f1",
-                   size_t write_offset = 0);
+    void read(mgl::uint8_buffer& dst,
+              const mgl::rect& viewport = mgl::null_viewport_2d,
+              int components = 3,
+              int attachment = 0,
+              int alignment = 1,
+              const char* dtype = "f1",
+              size_t write_offset = 0);
 
-    bool read_into(buffer_ref dst,
-                   const mgl::rect& viewport = mgl::null_viewport_2d,
-                   int components = 3,
-                   int attachment = 0,
-                   int alignment = 1,
-                   const char* dtype = "f1",
-                   size_t write_offset = 0);
+    void read(buffer_ref dst,
+              const mgl::rect& viewport = mgl::null_viewport_2d,
+              int components = 3,
+              int attachment = 0,
+              int alignment = 1,
+              const char* dtype = "f1",
+              size_t write_offset = 0);
 
     void use();
 

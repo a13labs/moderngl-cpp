@@ -51,7 +51,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error writing to buffer");
   }
 
-  void buffer::read_into(
+  void buffer::read(
       void* dst, size_t dst_size, size_t read_size, size_t read_offset, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Buffer already released");

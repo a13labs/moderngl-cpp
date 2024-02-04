@@ -44,7 +44,7 @@ namespace mgl::opengl
     return texture::TEXTURE_3D;
   }
 
-  bool texture_3d::read_into(mgl::uint8_buffer& dst, int alignment, size_t write_offset)
+  void texture_3d::read(mgl::uint8_buffer& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -69,10 +69,10 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glGetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, ptr);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_3d::read_into(buffer_ref& dst, int alignment, size_t write_offset)
+  void texture_3d::read(buffer_ref& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -92,10 +92,10 @@ namespace mgl::opengl
     glGetTexImage(GL_TEXTURE_3D, 0, base_format, pixel_type, (void*)write_offset);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_3d::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment)
+  void texture_3d::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -126,10 +126,10 @@ namespace mgl::opengl
     glTexSubImage3D(
         GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_3d::write(const mgl::uint8_buffer& src, int alignment)
+  void texture_3d::write(const mgl::uint8_buffer& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -160,10 +160,10 @@ namespace mgl::opengl
     glTexSubImage3D(
         GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_3d::write(const buffer_ref& src, const mgl::cube& viewport, int alignment)
+  void texture_3d::write(const buffer_ref& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -190,10 +190,10 @@ namespace mgl::opengl
     glTexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_3d::write(const buffer_ref& src, int alignment)
+  void texture_3d::write(const buffer_ref& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture3D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -220,7 +220,7 @@ namespace mgl::opengl
     glTexSubImage3D(GL_TEXTURE_3D, 0, x, y, z, width, height, depth, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_3d::bind_to_image(int unit, bool read, bool write, int level, int format)

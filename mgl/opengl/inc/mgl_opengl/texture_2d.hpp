@@ -62,22 +62,21 @@ public:
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool
-    read_into(mgl::uint8_buffer& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
-    bool read_into(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
+    void read(mgl::uint8_buffer& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
+    void read(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
 
-    bool write(const mgl::uint8_buffer& src,
+    void write(const mgl::uint8_buffer& src,
                const mgl::rect& viewport,
                int level = 0,
                int alignment = 1);
-    bool write(const mgl::uint8_buffer& src, int level = 0, int alignment = 1);
-    bool write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
-    bool write(const buffer_ref& src, int level = 0, int alignment = 1);
+    void write(const mgl::uint8_buffer& src, int level = 0, int alignment = 1);
+    void write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
+    void write(const buffer_ref& src, int level = 0, int alignment = 1);
 
     void resize(int width, int height, int components = 4, const mgl::uint8_buffer& data = {});
 
-    void bind_to_image(
-        int unit, bool read_into = true, bool write = true, int level = 0, int format = 0);
+    void
+    bind_to_image(int unit, bool read = true, bool write = true, int level = 0, int format = 0);
     void build_mipmaps(int base = 0, int max_level = 1000);
 
     virtual void use(int index = 0) override;

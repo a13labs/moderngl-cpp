@@ -40,7 +40,7 @@ namespace mgl::opengl
     glDeleteTextures(1, (GLuint*)&m_texture_obj);
   }
 
-  bool texture_array::read_into(mgl::uint8_buffer& dst, int alignment, size_t write_offset)
+  void texture_array::read(mgl::uint8_buffer& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -65,10 +65,10 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glGetTexImage(GL_TEXTURE_2D_ARRAY, 0, base_format, pixel_type, ptr);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_array::read_into(buffer_ref& dst, int alignment, size_t write_offset)
+  void texture_array::read(buffer_ref& dst, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -88,11 +88,10 @@ namespace mgl::opengl
     glGetTexImage(GL_TEXTURE_2D_ARRAY, 0, base_format, pixel_type, (void*)write_offset);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool
-  texture_array::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment)
+  void texture_array::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -132,10 +131,10 @@ namespace mgl::opengl
                     pixel_type,
                     src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_array::write(const mgl::uint8_buffer& src, int alignment)
+  void texture_array::write(const mgl::uint8_buffer& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -175,10 +174,10 @@ namespace mgl::opengl
                     pixel_type,
                     src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_array::write(const buffer_ref& src, const mgl::cube& viewport, int alignment)
+  void texture_array::write(const buffer_ref& src, const mgl::cube& viewport, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -206,10 +205,10 @@ namespace mgl::opengl
         GL_TEXTURE_2D_ARRAY, 0, x, y, z, width, height, layers, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_array::write(const buffer_ref& src, int alignment)
+  void texture_array::write(const buffer_ref& src, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "TextureArray already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -237,7 +236,7 @@ namespace mgl::opengl
         GL_TEXTURE_2D_ARRAY, 0, x, y, z, width, height, layers, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::bind_to_image(int unit, bool read, bool write, int level, int format)

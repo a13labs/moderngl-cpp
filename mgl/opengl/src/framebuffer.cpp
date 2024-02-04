@@ -135,13 +135,13 @@ namespace mgl::opengl
     m_context->m_bound_framebuffer = shared_from_this();
   }
 
-  bool framebuffer::read_into(mgl::uint8_buffer& dst,
-                              const mgl::rect& viewport,
-                              int components,
-                              int attachment,
-                              int alignment,
-                              const char* dtype,
-                              size_t write_offset)
+  void framebuffer::read(mgl::uint8_buffer& dst,
+                         const mgl::rect& viewport,
+                         int components,
+                         int attachment,
+                         int alignment,
+                         const char* dtype,
+                         size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -189,16 +189,16 @@ namespace mgl::opengl
     glReadPixels(x, y, width, height, base_format, pixel_type, ptr);
     glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool framebuffer::read_into(buffer_ref dst,
-                              const mgl::rect& viewport,
-                              int components,
-                              int attachment,
-                              int alignment,
-                              const char* dtype,
-                              size_t write_offset)
+  void framebuffer::read(buffer_ref dst,
+                         const mgl::rect& viewport,
+                         int components,
+                         int attachment,
+                         int alignment,
+                         const char* dtype,
+                         size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Framebuffer already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -240,7 +240,7 @@ namespace mgl::opengl
     glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void framebuffer::set_color_mask(const color_masks& masks)
@@ -275,7 +275,7 @@ namespace mgl::opengl
     }
   }
 
-  bool framebuffer::bits(int& red_bits,
+  void framebuffer::bits(int& red_bits,
                          int& green_bits,
                          int& blue_bits,
                          int& alpha_bits,
@@ -301,7 +301,7 @@ namespace mgl::opengl
         GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &stencil_bits);
     glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_framebuffer_obj);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void framebuffer::set_viewport(const mgl::rect& r)

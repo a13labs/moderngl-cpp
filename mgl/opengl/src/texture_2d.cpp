@@ -51,7 +51,7 @@ namespace mgl::opengl
     return texture::TEXTURE_2D;
   }
 
-  bool texture_2d::read_into(mgl::uint8_buffer& dst, int level, int alignment, size_t write_offset)
+  void texture_2d::read(mgl::uint8_buffer& dst, int level, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -85,10 +85,10 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glGetTexImage(GL_TEXTURE_2D, level, base_format, pixel_type, ptr);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_2d::read_into(buffer_ref& dst, int level, int alignment, size_t write_offset)
+  void texture_2d::read(buffer_ref& dst, int level, int alignment, size_t write_offset)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -116,10 +116,10 @@ namespace mgl::opengl
     glGetTexImage(GL_TEXTURE_2D, level, base_format, pixel_type, (void*)write_offset);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_2d::write(const mgl::uint8_buffer& src,
+  void texture_2d::write(const mgl::uint8_buffer& src,
                          const mgl::rect& viewport,
                          int level,
                          int alignment)
@@ -153,10 +153,10 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glTexSubImage2D(GL_TEXTURE_2D, level, x, y, width, height, format, pixel_type, src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_2d::write(const mgl::uint8_buffer& src, int level, int alignment)
+  void texture_2d::write(const mgl::uint8_buffer& src, int level, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -190,10 +190,10 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glTexSubImage2D(GL_TEXTURE_2D, level, x, y, width, height, format, pixel_type, src.data());
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_2d::write(const buffer_ref& src, const mgl::rect& viewport, int level, int alignment)
+  void texture_2d::write(const buffer_ref& src, const mgl::rect& viewport, int level, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -220,10 +220,10 @@ namespace mgl::opengl
     glTexSubImage2D(GL_TEXTURE_2D, level, x, y, width, height, format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  bool texture_2d::write(const buffer_ref& src, int level, int alignment)
+  void texture_2d::write(const buffer_ref& src, int level, int alignment)
   {
     MGL_CORE_ASSERT(!m_released, "Texture2D already released");
     MGL_CORE_ASSERT(m_context, "No context");
@@ -253,7 +253,7 @@ namespace mgl::opengl
     glTexSubImage2D(GL_TEXTURE_2D, level, x, y, width, height, format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-    return glGetError() == GL_NO_ERROR;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::bind_to_image(int unit, bool read, bool write, int level, int format)

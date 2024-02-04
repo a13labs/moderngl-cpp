@@ -50,14 +50,14 @@ public:
     float anisotropy();
     void set_anisotropy(float value);
 
-    bool read_into(mgl::uint8_buffer& dst, int face, int alignment = 1, size_t write_offset = 0);
-    bool read_into(buffer_ref& dst, int face, int alignment = 1, size_t write_offset = 0);
+    void read(mgl::uint8_buffer& dst, int face, int alignment = 1, size_t write_offset = 0);
+    void read(buffer_ref& dst, int face, int alignment = 1, size_t write_offset = 0);
 
-    bool
+    void
     write(const mgl::uint8_buffer& src, int face, const mgl::rect& viewport, int alignment = 1);
-    bool write(const mgl::uint8_buffer& src, int face, int alignment = 1);
-    bool write(const buffer_ref& src, int face, const mgl::rect& viewport, int alignment = 1);
-    bool write(const buffer_ref& src, int face, int alignment = 1);
+    void write(const mgl::uint8_buffer& src, int face, int alignment = 1);
+    void write(const buffer_ref& src, int face, const mgl::rect& viewport, int alignment = 1);
+    void write(const buffer_ref& src, int face, int alignment = 1);
 
     void
     bind_to_image(int unit, bool read = true, bool write = true, int level = 0, int format = 0);
