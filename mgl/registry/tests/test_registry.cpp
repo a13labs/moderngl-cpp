@@ -69,16 +69,13 @@ TEST(mgl_test_load_font, load_font)
       mgl::registry::load_font("LiberationMono-Regular.ttf", mgl::registry::loader_options());
   EXPECT_NE(font, nullptr);
   EXPECT_EQ(font->get_type(), mgl::registry::resource::type::font);
-  auto bmp_size = font->get_size("Hello, World!", 32);
-  auto bmp = mgl::create_ref<mgl::registry::image>(bmp_size.width, bmp_size.height, 4);
-  font->draw_text(0, 0, "Hello, World!", 32, *bmp);
+  auto bmp = font->draw_text(0, 0, "Hello, World!", 32);
   bmp->save("font-hello-world-32.png");
 
-  auto a_glyph = font->get_sdf_size(0, 255, 32);
-  auto bmp_sdf = mgl::create_ref<mgl::registry::image>(a_glyph.width, a_glyph.height, 1);
-  font->draw_sdf_glyph_range(0, 0, 0, 255, 32, *bmp_sdf);
+  auto bmp_sdf = mgl::create_ref<mgl::registry::image>(8196, 64, 1);
+  font->get_glyphs(0, 0, 32, 255, 32, *bmp_sdf);
 
-  auto bmp_sdf2 = mgl::create_ref<mgl::registry::image>(a_glyph.width, a_glyph.height, 4);
+  auto bmp_sdf2 = mgl::create_ref<mgl::registry::image>(8196, 64, 4);
   for(int i = 0; i < bmp_sdf->width(); i++)
   {
     for(int j = 0; j < bmp_sdf->height(); j++)

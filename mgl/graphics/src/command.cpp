@@ -18,7 +18,16 @@ namespace mgl::graphics
     auto vb = get_buffer("text_vb");
     MGL_CORE_ASSERT(vb != nullptr, "Font vertex buffer is null");
     vb->seek(0);
+    m_commands.reserve(100);
+  }
 
+  render_script::render_script(const mgl::platform::api::framebuffer_ref& target)
+      : m_render_target(target)
+      , m_commands()
+  {
+    auto vb = get_buffer("text_vb");
+    MGL_CORE_ASSERT(vb != nullptr, "Font vertex buffer is null");
+    vb->seek(0);
     m_commands.reserve(100);
   }
 
@@ -244,12 +253,15 @@ namespace mgl::graphics
     set_blend_func(blend_factor::SRC_ALPHA, blend_factor::ONE_MINUS_SRC_ALPHA);
     set_blend_equation(blend_equation_mode::ADD);
 
-    size_t offset = vb->needle();
+    // convert position to screen space
+    auto x = position.x;
+    auto y = mgl::platform::current_window().height() - position.y;
+
     int32_t vertices = 0;
+    int32_t first = vb->needle() / sizeof(glm::vec4);
     float scale = static_cast<float>(size) / atlas->pixel_height();
-    atlas->text_to_vertices(position, text, vb, vertices, scale, scale);
-    draw(
-        vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, offset / sizeof(glm::vec4));
+    atlas->text_to_vertices({ x, y }, text, vb, vertices, scale, scale);
+    draw(vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, first);
 
     disable_shader();
     clear_samplers(0, 1);

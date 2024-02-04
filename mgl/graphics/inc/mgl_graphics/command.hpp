@@ -32,10 +32,8 @@ public:
 public:
     render_script();
 
-    render_script(const mgl::platform::api::framebuffer_ref& target)
-        : m_render_target(target)
-        , m_commands()
-    { }
+    render_script(const mgl::platform::api::framebuffer_ref& target);
+
     ~render_script() { m_commands.clear(); }
 
     void reset() { m_commands.clear(); }

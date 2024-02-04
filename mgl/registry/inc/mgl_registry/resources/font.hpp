@@ -67,79 +67,25 @@ public:
 
     virtual glyph get_glyph(uint16_t codepoint, int32_t pixel_height) const = 0;
 
-    virtual glyph
-    draw_glyph(int32_t x, int32_t y, uint16_t codepoint, int32_t pixel_height, image& bmp) = 0;
+    virtual image_ref
+    draw_text(int32_t x, int32_t y, const std::string& text, int32_t pixel_height) = 0;
 
-    virtual mgl::list<glyph> draw_glyph_range(int32_t x,
-                                              int32_t y,
-                                              uint16_t first_codepoint,
-                                              uint16_t last_codepoint,
-                                              int32_t pixel_height,
-                                              image& bmp) = 0;
+    virtual mgl::list<glyph> get_glyphs(int32_t x,
+                                        int32_t y,
+                                        uint16_t first_codepoint,
+                                        uint16_t last_codepoint,
+                                        int32_t pixel_height,
+                                        image& bmp,
+                                        int32_t padding = 3) = 0;
 
-    virtual void
-    draw_text(int32_t x, int32_t y, const std::string& text, int32_t pixel_height, image& bmp) = 0;
-
-    virtual size get_size(const std::string& text, int32_t pixel_height) const = 0;
-
-    virtual size
-    get_size(uint16_t first_codepoint, uint16_t last_codepoint, int32_t pixel_height) const = 0;
-
-    virtual size get_sdf_size(uint16_t first_codepoint,
-                              uint16_t last_codepoint,
-                              int32_t pixel_height,
-                              int32_t padding = 3) const = 0;
-
-    virtual void draw_sdf_glyph(int32_t x,
+    mgl::list<glyph> get_glyphs(int32_t x,
                                 int32_t y,
-                                uint16_t codepoint,
+                                uint16_t first_codepoint,
+                                uint16_t last_codepoint,
                                 int32_t pixel_height,
-                                image& bmp,
-                                int32_t padding = 3) = 0;
-
-    virtual mgl::list<glyph> draw_sdf_glyph_range(int32_t x,
-                                                  int32_t y,
-                                                  uint16_t first_codepoint,
-                                                  uint16_t last_codepoint,
-                                                  int32_t pixel_height,
-                                                  image& bmp,
-                                                  int32_t padding = 3) = 0;
-
-    glyph draw_glyph(int32_t x, int32_t y, uint16_t codepoint, int32_t pixel_height, image_ref& bmp)
+                                image_ref& bmp)
     {
-      return draw_glyph(x, y, codepoint, pixel_height, *bmp);
-    }
-
-    mgl::list<glyph> draw_glyph_range(int32_t x,
-                                      int32_t y,
-                                      uint16_t first_codepoint,
-                                      uint16_t last_codepoint,
-                                      int32_t pixel_height,
-                                      image_ref& bmp)
-    {
-      return draw_glyph_range(x, y, first_codepoint, last_codepoint, pixel_height, *bmp);
-    }
-
-    void
-    draw_text(int32_t x, int32_t y, const std::string& text, int32_t pixel_height, image_ref& bmp)
-    {
-      draw_text(x, y, text, pixel_height, *bmp);
-    }
-
-    void
-    draw_sdf_glyph(int32_t x, int32_t y, uint16_t codepoint, int32_t pixel_height, image_ref& bmp)
-    {
-      draw_sdf_glyph(x, y, codepoint, pixel_height, *bmp);
-    }
-
-    void draw_sdf_glyph_range(int32_t x,
-                              int32_t y,
-                              uint16_t first_codepoint,
-                              uint16_t last_codepoint,
-                              int32_t pixel_height,
-                              image_ref& bmp)
-    {
-      draw_sdf_glyph_range(x, y, first_codepoint, last_codepoint, pixel_height, *bmp);
+      return get_glyphs(x, y, first_codepoint, last_codepoint, pixel_height, *bmp);
     }
   };
 

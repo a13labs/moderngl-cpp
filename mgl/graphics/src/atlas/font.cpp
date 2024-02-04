@@ -15,7 +15,7 @@ namespace mgl::graphics
     m_bitmap = mgl::create_ref<mgl::registry::image>(atlas_width, atlas_height, 1);
 
     int32_t y = 0;
-    auto glyphs = font->draw_sdf_glyph_range(0, y, 0, 255, m_pixel_height, *m_bitmap, padding);
+    auto glyphs = font->get_glyphs(0, y, 0, 255, m_pixel_height, *m_bitmap, padding);
 
     m_glyphs.reserve(glyphs.size());
 
@@ -36,10 +36,14 @@ namespace mgl::graphics
     glm::vec4* coords = new glm::vec4[6 * text.size()];
 
     float scale = m_font->get_scale_for_pixel_height(m_pixel_height);
-    int32_t base_line = m_pixel_height - (m_font->get_ascent() * scale);
+    int32_t row_height =
+        static_cast<int32_t>(
+            (m_font->get_ascent() - m_font->get_descent() + m_font->get_line_gap()) * scale) *
+        sy;
+    int32_t base_line = row_height - (m_font->get_ascent() * scale) * sy;
 
     float x = pos.x;
-    float y = pos.y + base_line * sy;
+    float y = pos.y - row_height;
 
     int32_t i = 0;
     vertices = 0;
@@ -48,7 +52,7 @@ namespace mgl::graphics
       if(c == '\n')
       {
         x = 0;
-        y += base_line * sy;
+        y -= row_height;
         continue;
       }
 
@@ -100,7 +104,7 @@ namespace mgl::graphics
                                     float sy) const
   {
     glm::vec4* coords = text_to_vertices(pos, text, sx, sy, vertices);
-    buffer->write(reinterpret_cast<const uint8_t*>(coords), sizeof(glm::vec4) * 6 * text.size());
+    buffer->write(reinterpret_cast<const uint8_t*>(coords), sizeof(glm::vec4) * vertices);
     delete[] coords;
   }
 
