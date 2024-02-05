@@ -23,10 +23,8 @@
 
 namespace mgl::opengl
 {
-  uniform_block::uniform_block(
-      const std::string& name, int program_obj, int index, size_t size, context* ctx)
+  uniform_block::uniform_block(const std::string& name, int program_obj, int index, size_t size)
   {
-    m_context = ctx;
     m_name = name;
     m_program_obj = program_obj;
     m_index = index;
@@ -35,7 +33,6 @@ namespace mgl::opengl
 
   int uniform_block::binding()
   {
-
     int binding = 0;
     glGetActiveUniformBlockiv(m_program_obj, m_index, GL_UNIFORM_BLOCK_BINDING, &binding);
     return binding;

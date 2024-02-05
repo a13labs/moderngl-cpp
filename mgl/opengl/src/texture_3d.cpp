@@ -83,7 +83,7 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->glo());
     glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
@@ -181,7 +181,7 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
     glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 
@@ -211,7 +211,7 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int base_format = m_data_type->base_format[m_components];
 
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->m_buffer_obj);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
     glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_texture_obj);
 

@@ -1,48 +1,33 @@
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #pragma once
 
 #include "attribute.hpp"
+#include "shader.hpp"
 #include "subroutine.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
 #include "varying.hpp"
 
+#include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
 namespace mgl::opengl
 {
-  class context;
+  using shaders_outputs = mgl::string_list;
+  using fragment_outputs = mgl::dict<std::string, int>;
+
   class program
   {
 public:
-    ~program() = default;
+    program(const shaders& shaders,
+            const shaders_outputs& outputs,
+            const fragment_outputs& fragment_outputs,
+            bool interleave);
 
-    void release();
-    bool released();
+    ~program() = default;
 
     void bind();
     void unbind();
-
-    const attribute_ref attribute(const std::string& name) const;
-    const uniform_ref uniform(const std::string& name) const;
-    const uniform_block_ref uniform_block(const std::string& name) const;
-    const varying_ref varying(const std::string& name) const;
-    const subroutine_ref subroutine(const std::string& name) const;
 
     const mgl::string_list attributes(bool all = true);
     const mgl::string_list uniforms();
@@ -50,38 +35,88 @@ public:
     const mgl::string_list varyings();
     const mgl::string_list subroutines();
 
-    size_t num_attributes();
-    size_t num_uniforms();
-    size_t num_uniform_blocks();
-    size_t num_varyings();
-    size_t num_subroutines();
+    void release();
 
-    const uniform_ref operator[](const std::string& name) const;
+    bool released() const { return m_glo == 0; }
 
-    int geometry_input();
-    int geometry_output();
-    int geometry_vertices();
-    bool is_transform();
+    const attribute_ref attribute(const std::string& name) const
+    {
+      if(m_attributes_map.find(name) == m_attributes_map.end())
+      {
+        return nullptr;
+      }
+      return m_attributes_map.at(name);
+    }
 
-    int glo();
+    const uniform_ref uniform(const std::string& name) const
+    {
+      if(m_uniforms_map.find(name) == m_uniforms_map.end())
+      {
+        return nullptr;
+      }
+      return m_uniforms_map.at(name);
+    }
+
+    const uniform_block_ref uniform_block(const std::string& name) const
+    {
+      if(m_uniform_blocks_map.find(name) == m_uniform_blocks_map.end())
+      {
+        return nullptr;
+      }
+      return m_uniform_blocks_map.at(name);
+    }
+
+    const varying_ref varying(const std::string& name) const
+    {
+      if(m_varyings_map.find(name) == m_varyings_map.end())
+      {
+        return nullptr;
+      }
+      return m_varyings_map.at(name);
+    }
+
+    const subroutine_ref subroutine(const std::string& name) const
+    {
+      if(m_subroutines_map.find(name) == m_subroutines_map.end())
+      {
+        return nullptr;
+      }
+      return m_subroutines_map.at(name);
+    }
+
+    int32_t geometry_input() const { return m_geometry_input; }
+
+    int32_t geometry_output() const { return m_geometry_output; }
+
+    int32_t geometry_vertices() const { return m_geometry_vertices; }
+
+    bool is_transform() const { return m_transform; }
+
+    size_t num_attributes() const { return m_attributes_map.size(); }
+
+    size_t num_uniforms() const { return m_uniforms_map.size(); }
+
+    size_t num_uniform_blocks() const { return m_uniform_blocks_map.size(); }
+
+    size_t num_varyings() const { return m_varyings_map.size(); }
+
+    size_t num_subroutines() const { return m_subroutines_map.size(); }
+
+    const uniform_ref operator[](const std::string& name) const { return uniform(name); }
+
+    int32_t glo() const { return m_glo; }
 
 private:
-    friend class context;
-    friend class vertex_array;
-    program() = default;
-
-    context* m_context;
-    int m_program_obj;
-    int m_geometry_input;
-    int m_geometry_output;
-    int m_geometry_vertices;
+    int32_t m_glo;
+    int32_t m_geometry_input;
+    int32_t m_geometry_output;
+    int32_t m_geometry_vertices;
     bool m_transform;
-    bool m_released;
-    int m_num_vertex_shader_subroutines;
-    int m_num_fragment_shader_subroutines;
-    int m_num_geometry_shader_subroutines;
-    int m_num_tess_evaluation_shader_subroutines;
-    int m_num_tess_control_shader_subroutines;
+    int32_t m_num_vertex_shader_subroutines;
+    int32_t m_num_fragment_shader_subroutines;
+    int32_t m_num_geometry_shader_subroutines;
+    int32_t m_num_tess_evaluation_shader_subroutines;
+    int32_t m_num_tess_control_shader_subroutines;
 
     uniforms_dict m_uniforms_map;
     uniform_blocks_dict m_uniform_blocks_map;
@@ -91,110 +126,5 @@ private:
   };
 
   using program_ref = mgl::ref<program>;
-
-  inline int program::glo()
-  {
-    return m_program_obj;
-  }
-
-  inline bool program::released()
-  {
-    return m_released;
-  }
-
-  inline const attribute_ref program::attribute(const std::string& name) const
-  {
-    if(m_attributes_map.find(name) == m_attributes_map.end())
-    {
-      return nullptr;
-    }
-    return m_attributes_map.at(name);
-  }
-
-  inline const uniform_ref program::uniform(const std::string& name) const
-  {
-    if(m_uniforms_map.find(name) == m_uniforms_map.end())
-    {
-      return nullptr;
-    }
-    return m_uniforms_map.at(name);
-  }
-
-  inline const uniform_block_ref program::uniform_block(const std::string& name) const
-  {
-    if(m_uniform_blocks_map.find(name) == m_uniform_blocks_map.end())
-    {
-      return nullptr;
-    }
-    return m_uniform_blocks_map.at(name);
-  }
-
-  inline const varying_ref program::varying(const std::string& name) const
-  {
-    if(m_varyings_map.find(name) == m_varyings_map.end())
-    {
-      return nullptr;
-    }
-    return m_varyings_map.at(name);
-  }
-
-  inline const subroutine_ref program::subroutine(const std::string& name) const
-  {
-    if(m_subroutines_map.find(name) == m_subroutines_map.end())
-    {
-      return nullptr;
-    }
-    return m_subroutines_map.at(name);
-  }
-
-  inline int program::geometry_input()
-  {
-    return m_geometry_input;
-  }
-
-  inline int program::geometry_output()
-  {
-    return m_geometry_output;
-  }
-
-  inline int program::geometry_vertices()
-  {
-    return m_geometry_vertices;
-  }
-
-  inline bool program::is_transform()
-  {
-    return m_transform;
-  }
-
-  inline size_t program::num_attributes()
-  {
-    return m_attributes_map.size();
-  }
-
-  inline size_t program::num_uniforms()
-  {
-    return m_uniforms_map.size();
-  }
-
-  inline size_t program::num_uniform_blocks()
-  {
-    return m_uniform_blocks_map.size();
-  }
-
-  inline size_t program::num_varyings()
-  {
-    return m_varyings_map.size();
-  }
-
-  inline size_t program::num_subroutines()
-  {
-    return m_subroutines_map.size();
-  }
-
-  inline const uniform_ref program::operator[](const std::string& name) const
-  {
-    return uniform(name);
-  }
 
 } // namespace  mgl::opengl

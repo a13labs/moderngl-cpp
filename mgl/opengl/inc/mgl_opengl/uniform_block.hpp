@@ -26,17 +26,13 @@ namespace mgl::opengl
   class uniform_block
   {
 public:
+    uniform_block(const std::string& name, int program_obj, int index, size_t size);
     ~uniform_block() = default;
 
     int binding();
     void set_binding(int value);
 
 private:
-    friend class context;
-    uniform_block(
-        const std::string& name, int program_obj, int index, size_t size, context* ctx);
-
-    context* m_context;
     std::string m_name;
     int m_program_obj;
     int m_index;

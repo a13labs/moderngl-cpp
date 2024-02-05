@@ -26,29 +26,38 @@ namespace mgl::opengl
 public:
     struct data_type
     {
-      int dimension;
-      int scalar_type;
-      int rows_length;
-      int row_length;
+      int32_t dimension;
+      int32_t scalar_type;
+      int32_t rows_length;
+      int32_t row_length;
       bool normalizable;
       const char* shape;
     };
 
-    ~attribute() = default;
-
-private:
-    friend class context;
     attribute(const std::string& name,
-              int gl_type,
-              int program_obj,
-              int location,
+              int32_t gl_type,
+              int32_t program_obj,
+              int32_t location,
               size_t array_length);
 
+    ~attribute() = default;
+
+    const std::string& name() const { return m_name; }
+
+    int32_t gl_type() const { return m_gl_type; }
+
+    int32_t location() const { return m_location; }
+
+    size_t array_length() const { return m_array_length; }
+
+    const data_type* get_data_type() const { return m_data_type; }
+
+private:
     std::string m_name;
-    int m_program_obj;
-    int m_gl_type;
+    int32_t m_program_obj;
+    int32_t m_gl_type;
     data_type* m_data_type;
-    int m_location;
+    int32_t m_location;
     size_t m_array_length;
   };
 

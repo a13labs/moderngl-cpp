@@ -57,7 +57,7 @@ namespace mgl::opengl
       instances = m_num_instances;
     }
 
-    glUseProgram(m_program->m_program_obj);
+    glUseProgram(m_program->glo());
     glBindVertexArray(m_vertex_array_obj);
 
     if(m_index_buffer != nullptr)
@@ -81,9 +81,9 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_context, "No context");
     MGL_CORE_ASSERT(!m_context->released(), "Context already released");
 
-    glUseProgram(m_program->m_program_obj);
+    glUseProgram(m_program->glo());
     glBindVertexArray(m_vertex_array_obj);
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->m_buffer_obj);
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->glo());
 
     const void* ptr = (const void*)((GLintptr)first * 20);
 
@@ -186,7 +186,7 @@ namespace mgl::opengl
       }
     }
 
-    glUseProgram(m_program->m_program_obj);
+    glUseProgram(m_program->glo());
     glBindVertexArray(m_vertex_array_obj);
 
     int i = 0;
@@ -194,9 +194,9 @@ namespace mgl::opengl
     {
       glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER,
                         i,
-                        buffer->m_buffer_obj,
+                        buffer->glo(),
                         buffer_offset,
-                        buffer->m_size - buffer_offset);
+                        buffer->size() - buffer_offset);
       i++;
     }
 
@@ -249,7 +249,7 @@ namespace mgl::opengl
     char* ptr = (char*)offset;
 
     glBindVertexArray(m_vertex_array_obj);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
 
     switch(type[0])
     {

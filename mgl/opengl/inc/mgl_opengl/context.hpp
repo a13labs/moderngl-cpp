@@ -64,8 +64,6 @@ namespace mgl::opengl
     };
   };
 
-  using shaders_outputs = mgl::string_list;
-  using fragment_outputs = mgl::dict<std::string, int>;
   using context_ref = mgl::ref<context>;
 
   class context

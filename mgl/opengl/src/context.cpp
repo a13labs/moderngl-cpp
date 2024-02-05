@@ -45,7 +45,7 @@
 namespace mgl::opengl
 {
 
-  static const int SHADER_TYPE[5] = {
+  static const int32_t SHADER_TYPE[5] = {
     GL_VERTEX_SHADER,       GL_FRAGMENT_SHADER,        GL_GEOMETRY_SHADER,
     GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER,
   };
@@ -55,7 +55,7 @@ namespace mgl::opengl
     "tess_control_shader", "tess_evaluation_shader",
   };
 
-  inline void clean_glsl_name(char* name, int& name_len)
+  inline void clean_glsl_name(char* name, int32_t& name_len)
   {
     if(name_len && name[name_len - 1] == ']')
     {
@@ -68,7 +68,7 @@ namespace mgl::opengl
     name[name_len] = 0;
   }
 
-  inline void framebuffer_error_message(int status)
+  inline void framebuffer_error_message(int32_t status)
   {
     const char* message = "the framebuffer is not complete";
 
@@ -108,7 +108,7 @@ namespace mgl::opengl
     MGL_CORE_ERROR("{0}", message);
   }
 
-  context_ref context::create_context(context_mode::Enum mode, int required)
+  context_ref context::create_context(context_mode::Enum mode, int32_t required)
   {
 
     context* ctx = nullptr;
@@ -164,8 +164,8 @@ namespace mgl::opengl
 
     ctx->m_wireframe = false;
 
-    int major = 0;
-    int minor = 0;
+    int32_t major = 0;
+    int32_t minor = 0;
 
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
@@ -181,10 +181,10 @@ namespace mgl::opengl
     }
 
     // Load extensions
-    int num_extensions = 0;
+    int32_t num_extensions = 0;
     glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
 
-    for(int i = 0; i < num_extensions; i++)
+    for(int32_t i = 0; i < num_extensions; i++)
     {
       const char* ext = (const char*)glGetStringi(GL_EXTENSIONS, i);
       MGL_CORE_INFO("Found GL extension: {0}", ext);
@@ -221,18 +221,18 @@ namespace mgl::opengl
     ctx->m_max_anisotropy = 0.0;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, (GLfloat*)&ctx->m_max_anisotropy);
 
-    int bound_framebuffer = 0;
+    int32_t bound_framebuffer = 0;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
 
 #ifdef MGL_PLATFORM_MACOS
     if(mode == context_mode::STANDALONE)
     {
-      int renderbuffer = 0;
+      int32_t renderbuffer = 0;
       glGenRenderbuffers(1, (GLuint*)&renderbuffer);
       glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
       glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, 4, 4);
 
-      int framebuffer = 0;
+      int32_t framebuffer = 0;
       glGenFramebuffers(1, (GLuint*)&framebuffer);
       glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
       glFramebufferRenderbuffer(
@@ -264,14 +264,14 @@ namespace mgl::opengl
       // framebuffer->draw_buffers[0] = GL_BACK_LEFT;
 
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      glGetIntegerv(GL_DRAW_BUFFER, (int*)&framebuffer->m_draw_buffers[0]);
+      glGetIntegerv(GL_DRAW_BUFFER, (int32_t*)&framebuffer->m_draw_buffers[0]);
       glBindFramebuffer(GL_FRAMEBUFFER, bound_framebuffer);
 
       framebuffer->m_color_masks = { { true, true, true, true } };
       framebuffer->m_depth_mask = true;
 
-      int scissor_box[4] = {};
-      glGetIntegerv(GL_SCISSOR_BOX, (int*)&scissor_box);
+      int32_t scissor_box[4] = {};
+      glGetIntegerv(GL_SCISSOR_BOX, (int32_t*)&scissor_box);
 
       framebuffer->m_viewport = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
 
@@ -309,160 +309,14 @@ namespace mgl::opengl
 
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(reserve >= 0, "invalid buffer size: {0}", reserve);
-
-    auto buffer = new mgl::opengl::buffer();
-    buffer->m_released = false;
-    buffer->m_size = reserve;
-    buffer->m_dynamic = dynamic;
-    buffer->m_context = this;
-
-    buffer->m_buffer_obj = 0;
-    glGenBuffers(1, (GLuint*)&buffer->m_buffer_obj);
-
-    if(!buffer->m_buffer_obj)
-    {
-      MGL_CORE_ERROR("Cannot create buffer");
-      delete buffer;
-      return nullptr;
-    }
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
-    glBufferData(GL_ARRAY_BUFFER, reserve, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-
+    auto buffer = new mgl::opengl::buffer(data, reserve, dynamic);
     return buffer_ref(buffer);
   }
 
   compute_shader_ref context::compute_shader(const std::string& source)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    auto compute_shader = new mgl::opengl::compute_shader();
-
-    compute_shader->m_released = false;
-    compute_shader->m_context = this;
-
-    int program_obj = glCreateProgram();
-
-    if(!program_obj)
-    {
-      delete compute_shader;
-      MGL_CORE_ERROR("cannot create program");
-      return nullptr;
-    }
-
-    int shader_obj = glCreateShader(GL_COMPUTE_SHADER);
-
-    if(!shader_obj)
-    {
-      delete compute_shader;
-      MGL_CORE_ERROR("cannot create the shader object");
-      return nullptr;
-    }
-
-    const GLchar* source_str = source.c_str();
-    glShaderSource(shader_obj, 1, &source_str, 0);
-    glCompileShader(shader_obj);
-
-    int compiled = GL_FALSE;
-    glGetShaderiv(shader_obj, GL_COMPILE_STATUS, &compiled);
-
-    if(!compiled)
-    {
-      const char* message = "GLSL Compiler failed";
-      const char* title = "ComputeShader";
-      const char* underline = "=============";
-
-      int log_len = 0;
-      glGetShaderiv(shader_obj, GL_INFO_LOG_LENGTH, &log_len);
-
-      char* log = new char[log_len];
-      glGetShaderInfoLog(shader_obj, log_len, &log_len, log);
-
-      glDeleteShader(shader_obj);
-
-      MGL_CORE_ERROR("{0}\n\n{1}\n{2}\n{3}\n", message, title, underline, log);
-
-      delete[] log;
-      delete compute_shader;
-      return nullptr;
-    }
-
-    glAttachShader(program_obj, shader_obj);
-    glLinkProgram(program_obj);
-
-    int linked = GL_FALSE;
-    glGetProgramiv(program_obj, GL_LINK_STATUS, &linked);
-
-    if(!linked)
-    {
-      const char* message = "GLSL Linker failed";
-      const char* title = "ComputeShader";
-      const char* underline = "=============";
-
-      int log_len = 0;
-      glGetProgramiv(program_obj, GL_INFO_LOG_LENGTH, &log_len);
-
-      char* log = new char[log_len];
-      glGetProgramInfoLog(program_obj, log_len, &log_len, log);
-
-      glDeleteProgram(program_obj);
-
-      MGL_CORE_ERROR("{0}\n\n{1}\n{2}\n{3}\n", message, title, underline, log);
-
-      delete[] log;
-      delete compute_shader;
-      return nullptr;
-    }
-
-    compute_shader->m_shader_obj = shader_obj;
-    compute_shader->m_program_obj = program_obj;
-
-    int num_uniforms = 0;
-
-    glGetProgramiv(program_obj, GL_ACTIVE_UNIFORMS, &num_uniforms);
-
-    for(int i = 0; i < num_uniforms; ++i)
-    {
-      int type = 0;
-      int size = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetActiveUniform(program_obj, i, 256, &name_len, &size, (GLenum*)&type, name);
-      int location = glGetUniformLocation(program_obj, name);
-
-      clean_glsl_name(name, name_len);
-
-      if(location < 0)
-      {
-        continue;
-      }
-
-      compute_shader->m_uniforms_map.insert(
-          { name, uniform_ref(new uniform(name, type, program_obj, location, size, this)) });
-    }
-
-    int num_uniform_blocks = 0;
-    glGetProgramiv(program_obj, GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
-
-    for(int i = 0; i < num_uniform_blocks; ++i)
-    {
-      int size = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetActiveUniformBlockName(program_obj, i, 256, &name_len, name);
-      int index = glGetUniformBlockIndex(program_obj, name);
-      glGetActiveUniformBlockiv(program_obj, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
-
-      clean_glsl_name(name, name_len);
-
-      compute_shader->m_uniform_blocks_map.insert(
-          { name, uniform_block_ref(new uniform_block(name, program_obj, index, size, this)) });
-    }
-
-    return compute_shader_ref(compute_shader);
+    auto shader = new mgl::opengl::compute_shader(source);
+    return compute_shader_ref(shader);
   }
 
   framebuffer_ref context::framebuffer(const attachments_ref& color_attachments,
@@ -470,9 +324,9 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     MGL_CORE_ASSERT(color_attachments.size(), "missing color attachments");
-    int width = 0;
-    int height = 0;
-    int samples = 0;
+    int32_t width = 0;
+    int32_t height = 0;
+    int32_t samples = 0;
 
     if(!color_attachments.size() && depth_attachment == nullptr)
     {
@@ -480,7 +334,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int i = 0;
+    int32_t i = 0;
     for(auto&& attachment : color_attachments)
     {
       if(attachment->attachment_type() == attachment::type::TEXTURE)
@@ -722,7 +576,7 @@ namespace mgl::opengl
       }
     }
 
-    int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    int32_t status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_bound_framebuffer->m_framebuffer_obj);
 
@@ -741,386 +595,7 @@ namespace mgl::opengl
                                const fragment_outputs& fragment_outputs,
                                bool interleaved)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    auto program = new mgl::opengl::program();
-    program->m_released = false;
-    program->m_context = this;
-    program->m_transform = shaders.sources[shader::type::FRAGMENT_SHADER].empty();
-
-    int program_obj = glCreateProgram();
-
-    if(!program_obj)
-    {
-      MGL_CORE_ERROR("cannot create program");
-      delete program;
-      return nullptr;
-    }
-
-    int shader_objs[] = { 0, 0, 0, 0, 0 };
-
-    for(int i = 0; i < shader::type::GENERIC_PROGRAM; ++i)
-    {
-      if(shaders.sources[i] == "")
-      {
-        continue;
-      }
-
-      const char* source_str = shaders.sources[i].c_str();
-
-      int shader_obj = glCreateShader(SHADER_TYPE[i]);
-
-      if(!shader_obj)
-      {
-        MGL_CORE_ERROR("cannot create shader");
-        delete program;
-        return nullptr;
-      }
-
-      glShaderSource(shader_obj, 1, &source_str, 0);
-      glCompileShader(shader_obj);
-
-      int compiled = GL_FALSE;
-      glGetShaderiv(shader_obj, GL_COMPILE_STATUS, &compiled);
-
-      if(!compiled)
-      {
-        int log_len = 0;
-        glGetShaderiv(shader_obj, GL_INFO_LOG_LENGTH, &log_len);
-
-        char* log = new char[log_len];
-        glGetShaderInfoLog(shader_obj, log_len, &log_len, log);
-        glDeleteShader(shader_obj);
-
-        MGL_CORE_ERROR("GLSL Compiler failed ({0}):{1}", SHADER_NAME[i], log);
-
-        delete[] log;
-        delete program;
-        return nullptr;
-      }
-
-      shader_objs[i] = shader_obj;
-      glAttachShader(program_obj, shader_obj);
-    }
-
-    if(outputs.size())
-    {
-      const char** varyings_array = new const char*[outputs.size()];
-
-      for(int i = 0; i < (int)outputs.size(); ++i)
-      {
-        varyings_array[i] = outputs[i].c_str();
-      }
-
-      int capture_mode = interleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS;
-
-      glTransformFeedbackVaryings(program_obj, outputs.size(), varyings_array, capture_mode);
-
-      delete[] varyings_array;
-    }
-
-    for(auto&& fo : fragment_outputs)
-    {
-      glBindFragDataLocation(program_obj, fo.second, fo.first.c_str());
-    }
-
-    glLinkProgram(program_obj);
-
-    for(int i = 0; i < shader::type::GENERIC_PROGRAM; ++i)
-    {
-      if(shader_objs[i])
-      {
-        glDeleteShader(shader_objs[i]);
-      }
-    }
-
-    int linked = GL_FALSE;
-    glGetProgramiv(program_obj, GL_LINK_STATUS, &linked);
-
-    if(!linked)
-    {
-      const char* message = "GLSL Linker failed";
-      const char* title = "Program";
-      const char* underline = "=======";
-
-      int log_len = 0;
-      glGetProgramiv(program_obj, GL_INFO_LOG_LENGTH, &log_len);
-
-      char* log = new char[log_len];
-      glGetProgramInfoLog(program_obj, log_len, &log_len, log);
-
-      glDeleteProgram(program_obj);
-
-      MGL_CORE_ERROR("{0}\n\n{1}\n{2}\n{3}\n", message, title, underline, log);
-
-      delete[] log;
-      delete program;
-      return nullptr;
-    }
-
-    program->m_program_obj = program_obj;
-
-    int num_vertex_shader_subroutines = 0;
-    int num_fragment_shader_subroutines = 0;
-    int num_geometry_shader_subroutines = 0;
-    int num_tess_evaluation_shader_subroutines = 0;
-    int num_tess_control_shader_subroutines = 0;
-
-    int num_vertex_shader_subroutine_uniforms = 0;
-    int num_fragment_shader_subroutine_uniforms = 0;
-    int num_geometry_shader_subroutine_uniforms = 0;
-    int num_tess_evaluation_shader_subroutine_uniforms = 0;
-    int num_tess_control_shader_subroutine_uniforms = 0;
-
-    if(program->m_context->version_code() >= 400)
-    {
-      if(!shaders.sources[shader::type::VERTEX_SHADER].empty())
-      {
-        glGetProgramStageiv(
-            program_obj, GL_VERTEX_SHADER, GL_ACTIVE_SUBROUTINES, &num_vertex_shader_subroutines);
-        glGetProgramStageiv(program_obj,
-                            GL_VERTEX_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_vertex_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::FRAGMENT_SHADER].empty())
-      {
-        glGetProgramStageiv(program_obj,
-                            GL_FRAGMENT_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_fragment_shader_subroutines);
-        glGetProgramStageiv(program_obj,
-                            GL_FRAGMENT_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_fragment_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
-      {
-        glGetProgramStageiv(program_obj,
-                            GL_GEOMETRY_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_geometry_shader_subroutines);
-        glGetProgramStageiv(program_obj,
-                            GL_GEOMETRY_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_geometry_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::TESS_EVALUATION_SHADER].empty())
-      {
-        glGetProgramStageiv(program_obj,
-                            GL_TESS_EVALUATION_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_tess_evaluation_shader_subroutines);
-        glGetProgramStageiv(program_obj,
-                            GL_TESS_EVALUATION_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_tess_evaluation_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::TESS_CONTROL_SHADER].empty())
-      {
-        glGetProgramStageiv(program_obj,
-                            GL_TESS_CONTROL_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_tess_control_shader_subroutines);
-        glGetProgramStageiv(program_obj,
-                            GL_TESS_CONTROL_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_tess_control_shader_subroutine_uniforms);
-      }
-    }
-
-    program->m_num_vertex_shader_subroutines = num_vertex_shader_subroutine_uniforms;
-    program->m_num_fragment_shader_subroutines = num_fragment_shader_subroutine_uniforms;
-    program->m_num_geometry_shader_subroutines = num_geometry_shader_subroutine_uniforms;
-    program->m_num_tess_evaluation_shader_subroutines =
-        num_tess_evaluation_shader_subroutine_uniforms;
-    program->m_num_tess_control_shader_subroutines = num_tess_control_shader_subroutine_uniforms;
-
-    if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
-    {
-
-      int geometry_in = 0;
-      int geometry_out = 0;
-      program->m_geometry_vertices = 0;
-
-      glGetProgramiv(program_obj, GL_GEOMETRY_INPUT_TYPE, &geometry_in);
-      glGetProgramiv(program_obj, GL_GEOMETRY_OUTPUT_TYPE, &geometry_out);
-      glGetProgramiv(program_obj, GL_GEOMETRY_VERTICES_OUT, &program->m_geometry_vertices);
-
-      switch(geometry_in)
-      {
-        case GL_TRIANGLES: program->m_geometry_input = GL_TRIANGLES; break;
-
-        case GL_TRIANGLE_STRIP: program->m_geometry_input = GL_TRIANGLE_STRIP; break;
-
-        case GL_TRIANGLE_FAN: program->m_geometry_input = GL_TRIANGLE_FAN; break;
-
-        case GL_LINES: program->m_geometry_input = GL_LINES; break;
-
-        case GL_LINE_STRIP: program->m_geometry_input = GL_LINE_STRIP; break;
-
-        case GL_LINE_LOOP: program->m_geometry_input = GL_LINE_LOOP; break;
-
-        case GL_POINTS: program->m_geometry_input = GL_POINTS; break;
-
-        case GL_LINE_STRIP_ADJACENCY: program->m_geometry_input = GL_LINE_STRIP_ADJACENCY; break;
-
-        case GL_LINES_ADJACENCY: program->m_geometry_input = GL_LINES_ADJACENCY; break;
-
-        case GL_TRIANGLE_STRIP_ADJACENCY:
-          program->m_geometry_input = GL_TRIANGLE_STRIP_ADJACENCY;
-          break;
-
-        case GL_TRIANGLES_ADJACENCY: program->m_geometry_input = GL_TRIANGLES_ADJACENCY; break;
-
-        default: program->m_geometry_input = -1; break;
-      }
-
-      switch(geometry_out)
-      {
-        case GL_TRIANGLES: program->m_geometry_output = GL_TRIANGLES; break;
-
-        case GL_TRIANGLE_STRIP: program->m_geometry_output = GL_TRIANGLES; break;
-
-        case GL_TRIANGLE_FAN: program->m_geometry_output = GL_TRIANGLES; break;
-
-        case GL_LINES: program->m_geometry_output = GL_LINES; break;
-
-        case GL_LINE_STRIP: program->m_geometry_output = GL_LINES; break;
-
-        case GL_LINE_LOOP: program->m_geometry_output = GL_LINES; break;
-
-        case GL_POINTS: program->m_geometry_output = GL_POINTS; break;
-
-        case GL_LINE_STRIP_ADJACENCY: program->m_geometry_output = GL_LINES; break;
-
-        case GL_LINES_ADJACENCY: program->m_geometry_output = GL_LINES; break;
-
-        case GL_TRIANGLE_STRIP_ADJACENCY: program->m_geometry_output = GL_TRIANGLES; break;
-
-        case GL_TRIANGLES_ADJACENCY: program->m_geometry_output = GL_TRIANGLES; break;
-
-        default: program->m_geometry_output = -1; break;
-      }
-    }
-    else
-    {
-      program->m_geometry_input = -1;
-      program->m_geometry_output = -1;
-      program->m_geometry_vertices = 0;
-    }
-
-    int num_attributes = 0;
-    int num_varyings = 0;
-    int num_uniforms = 0;
-    int num_uniform_blocks = 0;
-
-    glGetProgramiv(program->m_program_obj, GL_ACTIVE_ATTRIBUTES, &num_attributes);
-    glGetProgramiv(program->m_program_obj, GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
-    glGetProgramiv(program->m_program_obj, GL_ACTIVE_UNIFORMS, &num_uniforms);
-    glGetProgramiv(program->m_program_obj, GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
-
-    for(int i = 0; i < num_attributes; ++i)
-    {
-      int type = 0;
-      int array_length = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetActiveAttrib(
-          program->m_program_obj, i, 256, &name_len, &array_length, (GLenum*)&type, name);
-      int location = glGetAttribLocation(program->m_program_obj, name);
-
-      clean_glsl_name(name, name_len);
-
-      program->m_attributes_map.insert(
-          { name,
-            attribute_ref(
-                new attribute(name, type, program->m_program_obj, location, array_length)) });
-    }
-
-    for(int i = 0; i < num_varyings; ++i)
-    {
-      int type = 0;
-      int array_length = 0;
-      int dimension = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetTransformFeedbackVarying(
-          program->m_program_obj, i, 256, &name_len, &array_length, (GLenum*)&type, name);
-
-      program->m_varyings_map.insert(
-          { name, varying_ref(new varying(name, i, array_length, dimension)) });
-    }
-
-    for(int i = 0; i < num_uniforms; ++i)
-    {
-      int type = 0;
-      int size = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetActiveUniform(program->m_program_obj, i, 256, &name_len, &size, (GLenum*)&type, name);
-      int location = glGetUniformLocation(program->m_program_obj, name);
-
-      clean_glsl_name(name, name_len);
-
-      if(location < 0)
-      {
-        continue;
-      }
-
-      program->m_uniforms_map.insert(
-          { name, uniform_ref(new uniform(name, type, program_obj, location, size, this)) });
-    }
-
-    for(int i = 0; i < num_uniform_blocks; ++i)
-    {
-      int size = 0;
-      int name_len = 0;
-      char name[256];
-
-      glGetActiveUniformBlockName(program->m_program_obj, i, 256, &name_len, name);
-      int index = glGetUniformBlockIndex(program->m_program_obj, name);
-      glGetActiveUniformBlockiv(program->m_program_obj, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
-
-      clean_glsl_name(name, name_len);
-
-      program->m_uniform_blocks_map.insert(
-          { name, uniform_block_ref(new uniform_block(name, program_obj, index, size, this)) });
-    }
-
-    if(program->m_context->version_code() >= 400)
-    {
-      for(int st = 0; st < 5; ++st)
-      {
-        int num_subroutines = 0;
-        auto type = mgl::opengl::subroutine::type(SHADER_TYPE[st]);
-
-        glGetProgramStageiv(program_obj, type, GL_ACTIVE_SUBROUTINES, &num_subroutines);
-
-        int num_subroutine_uniforms = 0;
-        glGetProgramStageiv(
-            program_obj, type, GL_ACTIVE_SUBROUTINE_UNIFORMS, &num_subroutine_uniforms);
-
-        for(int i = 0; i < num_subroutines; ++i)
-        {
-          int name_len = 0;
-          char name[256];
-
-          glGetActiveSubroutineName(program_obj, type, i, 256, &name_len, name);
-          int index = glGetSubroutineIndex(program_obj, type, name);
-
-          program->m_subroutines_map.insert(
-              { name, subroutine_ref(new subroutine(name, index, type)) });
-        }
-      }
-    }
-
+    auto program = new mgl::opengl::program(shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);
   }
 
@@ -1179,7 +654,7 @@ namespace mgl::opengl
   }
 
   renderbuffer_ref context::renderbuffer(
-      int width, int height, int components, int samples, const std::string& dtype)
+      int32_t width, int32_t height, int32_t components, int32_t samples, const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if(components < 1 || components > 4)
@@ -1202,7 +677,7 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int format = data_type->internal_format[components];
+    int32_t format = data_type->internal_format[components];
 
     auto renderbuffer = new mgl::opengl::renderbuffer();
     renderbuffer->m_released = false;
@@ -1238,7 +713,7 @@ namespace mgl::opengl
     return renderbuffer_ref(renderbuffer);
   }
 
-  renderbuffer_ref context::depth_renderbuffer(int width, int height, int samples)
+  renderbuffer_ref context::depth_renderbuffer(int32_t width, int32_t height, int32_t samples)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if((samples & (samples - 1)) || samples > m_max_samples)
@@ -1307,7 +782,7 @@ namespace mgl::opengl
   }
 
   scope_ref context::scope(framebuffer_ref framebuffer,
-                           int enable_flags,
+                           int32_t enable_flags,
                            const texture_bindings& textures,
                            const buffer_bindings& uniform_buffers,
                            const buffer_bindings& storage_buffers,
@@ -1328,11 +803,11 @@ namespace mgl::opengl
         mgl::list<scope::BindingData>(uniform_buffers.size() + storage_buffers.size());
     scope->m_samplers = samplers;
 
-    int i = 0;
+    int32_t i = 0;
     for(auto&& t : textures)
     {
-      int texture_type;
-      int texture_obj;
+      int32_t texture_type;
+      int32_t texture_obj;
 
       MGL_CORE_ASSERT(t.texture, "Texture is null");
 
@@ -1366,7 +841,7 @@ namespace mgl::opengl
           return nullptr;
       }
 
-      int binding = t.binding;
+      int32_t binding = t.binding;
       scope->m_textures[i].binding = GL_TEXTURE0 + binding;
       scope->m_textures[i].type = texture_type;
       scope->m_textures[i].gl_object = texture_obj;
@@ -1379,7 +854,7 @@ namespace mgl::opengl
       MGL_CORE_ASSERT(b.buffer, "buffer is null");
 
       scope->m_buffers[i].binding = b.binding;
-      scope->m_buffers[i].gl_object = b.buffer->m_buffer_obj;
+      scope->m_buffers[i].gl_object = b.buffer->glo();
       scope->m_buffers[i].type = GL_UNIFORM_BUFFER;
       i++;
     }
@@ -1389,7 +864,7 @@ namespace mgl::opengl
       MGL_CORE_ASSERT(b.buffer, "buffer is null");
 
       scope->m_buffers[i].binding = b.binding;
-      scope->m_buffers[i].gl_object = b.buffer->m_buffer_obj;
+      scope->m_buffers[i].gl_object = b.buffer->glo();
       scope->m_buffers[i].type = GL_SHADER_STORAGE_BUFFER;
       i++;
     }
@@ -1397,14 +872,14 @@ namespace mgl::opengl
     return scope_ref(scope);
   }
 
-  texture_2d_ref context::texture2d(int width,
-                                    int height,
-                                    int components,
+  texture_2d_ref context::texture2d(int32_t width,
+                                    int32_t height,
+                                    int32_t components,
                                     const void* data,
-                                    int samples,
-                                    int alignment,
+                                    int32_t samples,
+                                    int32_t alignment,
                                     const std::string& dtype,
-                                    int internal_format_override)
+                                    int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if(components < 1 || components > 4)
@@ -1439,11 +914,11 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-    int pixel_type = data_type->gl_type;
-    int base_format = data_type->base_format[components];
-    int internal_format = internal_format_override ? internal_format_override
-                                                   : data_type->internal_format[components];
+    int32_t texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+    int32_t pixel_type = data_type->gl_type;
+    int32_t base_format = data_type->base_format[components];
+    int32_t internal_format = internal_format_override ? internal_format_override
+                                                       : data_type->internal_format[components];
 
     glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
 
@@ -1503,8 +978,8 @@ namespace mgl::opengl
     return texture_2d_ref(texture);
   }
 
-  texture_2d_ref
-  context::depth_texture2d(int width, int height, const void* data, int samples, int alignment)
+  texture_2d_ref context::depth_texture2d(
+      int32_t width, int32_t height, const void* data, int32_t samples, int32_t alignment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     if((samples & (samples - 1)) || samples > m_max_samples)
@@ -1552,8 +1027,8 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-    int pixel_type = GL_FLOAT;
+    int32_t texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+    int32_t pixel_type = GL_FLOAT;
 
     glBindTexture(texture_target, texture->m_texture_obj);
 
@@ -1583,12 +1058,12 @@ namespace mgl::opengl
     return texture_2d_ref(texture);
   }
 
-  texture_3d_ref context::texture3d(int width,
-                                    int height,
-                                    int depth,
-                                    int components,
+  texture_3d_ref context::texture3d(int32_t width,
+                                    int32_t height,
+                                    int32_t depth,
+                                    int32_t components,
                                     const void* data,
-                                    int alignment,
+                                    int32_t alignment,
                                     const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
@@ -1640,9 +1115,9 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int pixel_type = data_type->gl_type;
-    int base_format = data_type->base_format[components];
-    int internal_format = data_type->internal_format[components];
+    int32_t pixel_type = data_type->gl_type;
+    int32_t base_format = data_type->base_format[components];
+    int32_t internal_format = data_type->internal_format[components];
 
     glBindTexture(GL_TEXTURE_3D, texture->m_texture_obj);
 
@@ -1665,12 +1140,12 @@ namespace mgl::opengl
     return texture_3d_ref(texture);
   }
 
-  texture_array_ref context::texture_array(int width,
-                                           int height,
-                                           int layers,
-                                           int components,
+  texture_array_ref context::texture_array(int32_t width,
+                                           int32_t height,
+                                           int32_t layers,
+                                           int32_t components,
                                            const void* data,
-                                           int alignment,
+                                           int32_t alignment,
                                            const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
@@ -1721,9 +1196,9 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int pixel_type = data_type->gl_type;
-    int base_format = data_type->base_format[components];
-    int internal_format = data_type->internal_format[components];
+    int32_t pixel_type = data_type->gl_type;
+    int32_t base_format = data_type->base_format[components];
+    int32_t internal_format = data_type->internal_format[components];
 
     glBindTexture(GL_TEXTURE_2D_ARRAY, texture->m_texture_obj);
 
@@ -1754,13 +1229,13 @@ namespace mgl::opengl
     return texture_array_ref(texture);
   }
 
-  texture_cube_ref context::texture_cube(int width,
-                                         int height,
-                                         int components,
+  texture_cube_ref context::texture_cube(int32_t width,
+                                         int32_t height,
+                                         int32_t components,
                                          const void* data,
-                                         int alignment,
+                                         int32_t alignment,
                                          const std::string& dtype,
-                                         int internal_format_override)
+                                         int32_t internal_format_override)
   {
 
     MGL_CORE_ASSERT(!released(), "Context already released");
@@ -1808,12 +1283,12 @@ namespace mgl::opengl
       return nullptr;
     }
 
-    int pixel_type = data_type->gl_type;
-    int base_format = data_type->base_format[components];
-    int internal_format = internal_format_override ? internal_format_override
-                                                   : data_type->internal_format[components];
+    int32_t pixel_type = data_type->gl_type;
+    int32_t base_format = data_type->base_format[components];
+    int32_t internal_format = internal_format_override ? internal_format_override
+                                                       : data_type->internal_format[components];
 
-    int expected_size = width * components * data_type->size;
+    int32_t expected_size = width * components * data_type->size;
     expected_size = (expected_size + alignment - 1) / alignment * alignment;
     expected_size = expected_size * height * 6;
 
@@ -1899,35 +1374,18 @@ namespace mgl::opengl
   vertex_array_ref context::vertex_array(program_ref program,
                                          mgl::opengl::vertex_buffer_list vertex_buffers,
                                          buffer_ref index_buffer,
-                                         int index_element_size,
+                                         int32_t index_element_size,
                                          bool skip_errors,
                                          mgl::opengl::render_mode mode)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(program->m_context != this)
-    {
-      MGL_CORE_ERROR("the program belongs to a different context");
-      return nullptr;
-    }
 
-    if(index_buffer != nullptr && index_buffer->m_context != this)
-    {
-      MGL_CORE_ERROR("the index_buffer belongs to a different context");
-      return nullptr;
-    }
-
-    int i = 0;
+    int32_t i = 0;
     for(auto&& v_data : vertex_buffers)
     {
       if(v_data.buffer == nullptr)
       {
         MGL_CORE_ERROR("vertex_buffers[{0}]: empty vertex buffer", i);
-        return nullptr;
-      }
-
-      if(v_data.buffer->m_context != this)
-      {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: vertex buffer belongs to a different context", i);
         return nullptr;
       }
 
@@ -1945,7 +1403,7 @@ namespace mgl::opengl
         return nullptr;
       }
 
-      if((int)v_data.attributes.size() != layout.size())
+      if((int32_t)v_data.attributes.size() != layout.size())
       {
         MGL_CORE_ERROR("vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
                        i,
@@ -1971,7 +1429,7 @@ namespace mgl::opengl
     array->m_program = program;
     array->m_index_buffer = index_buffer;
     array->m_index_element_size = index_element_size;
-    const int element_types[5] = { 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT };
+    const int32_t element_types[5] = { 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT };
     array->m_index_element_type = element_types[index_element_size];
     array->m_num_vertices = -1;
 
@@ -1989,8 +1447,8 @@ namespace mgl::opengl
 
     if(array->m_index_buffer != nullptr)
     {
-      array->m_num_vertices = (int)(array->m_index_buffer->size() / index_element_size);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, array->m_index_buffer->m_buffer_obj);
+      array->m_num_vertices = (int32_t)(array->m_index_buffer->size() / index_element_size);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, array->m_index_buffer->glo());
     }
 
     i = 0;
@@ -2001,7 +1459,7 @@ namespace mgl::opengl
 
       buffer_layout layout = v_data.buffer_layout;
 
-      int buf_vertices = (int)(buffer->size() / layout.size());
+      int32_t buf_vertices = (int32_t)(buffer->size() / layout.size());
 
       if(!layout.divisor() && array->m_index_buffer == nullptr &&
          (!i || array->m_num_vertices > buf_vertices))
@@ -2009,7 +1467,7 @@ namespace mgl::opengl
         array->m_num_vertices = buf_vertices;
       }
 
-      glBindBuffer(GL_ARRAY_BUFFER, buffer->m_buffer_obj);
+      glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
 
       for(size_t j = 0; j < v_data.attributes.size(); ++j)
       {
@@ -2022,15 +1480,15 @@ namespace mgl::opengl
         }
 
         buffer_layout::element element = layout[j];
-        int attribute_location = attribute->m_location;
-        int attribute_rows_length = attribute->m_data_type->rows_length;
-        int attribute_scalar_type = attribute->m_data_type->scalar_type;
+        int32_t attribute_location = attribute->location();
+        int32_t attribute_rows_length = attribute->get_data_type()->rows_length;
+        int32_t attribute_scalar_type = attribute->get_data_type()->scalar_type;
 
         char* ptr = (char*)(intptr_t)element.offset;
-        for(int r = 0; r < attribute_rows_length; ++r)
+        for(int32_t r = 0; r < attribute_rows_length; ++r)
         {
-          int location = attribute_location + r;
-          int count = element.count / attribute_rows_length;
+          int32_t location = attribute_location + r;
+          int32_t count = element.count / attribute_rows_length;
 
           switch(attribute_scalar_type)
           {
@@ -2060,7 +1518,7 @@ namespace mgl::opengl
     return vertex_array_ref(array);
   }
 
-  void context::set_enable_flags(int flags)
+  void context::set_enable_flags(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     m_enable_flags = flags;
@@ -2111,7 +1569,7 @@ namespace mgl::opengl
     }
   }
 
-  void context::enable(int flags)
+  void context::enable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     m_enable_flags |= flags;
@@ -2147,7 +1605,7 @@ namespace mgl::opengl
     }
   }
 
-  void context::disable(int flags)
+  void context::disable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
 
@@ -2201,18 +1659,18 @@ namespace mgl::opengl
     MGL_CORE_ASSERT((read_offset + size <= src->size() && write_offset + size <= dst->size()),
                     "buffer overflow");
 
-    glBindBuffer(GL_COPY_READ_BUFFER, src->m_buffer_obj);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, dst->m_buffer_obj);
+    glBindBuffer(GL_COPY_READ_BUFFER, src->glo());
+    glBindBuffer(GL_COPY_WRITE_BUFFER, dst->glo());
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, read_offset, write_offset, size);
   }
 
-  void context::enable_direct(int value)
+  void context::enable_direct(int32_t value)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     glEnable(value);
   }
 
-  void context::disable_direct(int value)
+  void context::disable_direct(int32_t value)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     glDisable(value);
@@ -2224,7 +1682,7 @@ namespace mgl::opengl
     glFinish();
   }
 
-  void context::clear_samplers(int start, int end)
+  void context::clear_samplers(int32_t start, int32_t end)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
 
@@ -2238,7 +1696,7 @@ namespace mgl::opengl
       end = MGL_MIN(end, m_max_texture_units);
     }
 
-    for(int i = start; i < end; i++)
+    for(int32_t i = start; i < end; i++)
     {
       glBindSampler(i, 0);
     }

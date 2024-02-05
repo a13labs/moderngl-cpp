@@ -25,6 +25,7 @@ namespace mgl::opengl
 
   class subroutine
   {
+public:
     enum type
     {
       VERTEX_SHADER = 0x8B31,
@@ -34,13 +35,10 @@ namespace mgl::opengl
       TESS_CONTROL_SHADER = 0x8E88,
     };
 
-public:
+    subroutine(const std::string& name, int index, subroutine::type type);
     ~subroutine() = default;
 
 private:
-    friend class context;
-    subroutine(const std::string& name, int index, subroutine::type type);
-
     std::string m_name;
     int m_index;
     subroutine::type m_type;

@@ -27,81 +27,48 @@ namespace mgl::opengl
   class compute_shader
   {
 public:
+    compute_shader(const std::string& source);
     ~compute_shader() = default;
-
     void release();
-    bool released();
+    const mgl::string_list uniforms() const;
+    const mgl::string_list uniform_blocks() const;
+    void run(int32_t x = 1, int32_t y = 1, int32_t z = 1);
 
-    const uniform_ref uniform(const std::string& name) const;
-    const uniform_block_ref uniform_block(const std::string& name) const;
+    bool released() const { return m_glo == 0; }
 
-    const mgl::string_list uniforms();
-    const mgl::string_list uniform_blocks();
+    const uniform_ref uniform(const std::string& name) const
+    {
+      if(m_uniforms_map.find(name) == m_uniforms_map.end())
+      {
+        return nullptr;
+      }
+      return m_uniforms_map.at(name);
+    }
 
-    size_t num_uniforms();
-    size_t num_uniform_blocks();
+    const uniform_block_ref uniform_block(const std::string& name) const
+    {
+      if(m_uniform_blocks_map.find(name) == m_uniform_blocks_map.end())
+      {
+        return nullptr;
+      }
+      return m_uniform_blocks_map.at(name);
+    }
 
-    void run(int x = 1, int y = 1, int z = 1);
+    size_t num_uniforms() const { return m_uniforms_map.size(); }
+    size_t num_uniform_blocks() const { return m_uniform_blocks_map.size(); }
 
-    const uniform_ref operator[](const std::string& name) const;
+    const uniform_ref operator[](const std::string& name) const { return uniform(name); }
 
-    int glo();
+    int32_t glo() const { return m_glo; }
 
 private:
-    friend class context;
-    compute_shader() = default;
-
-    context* m_context;
-    int m_program_obj;
-    int m_shader_obj;
+    int32_t m_glo;
+    int32_t m_shader_glo;
     uniforms_dict m_uniforms_map;
     uniform_blocks_dict m_uniform_blocks_map;
     bool m_released;
   };
 
-  using compute_shader_ref = mgl::ref<mgl::opengl::compute_shader>;
-
-  inline int compute_shader::glo()
-  {
-    return m_program_obj;
-  }
-
-  inline const uniform_ref compute_shader::uniform(const std::string& name) const
-  {
-    if(m_uniforms_map.find(name) == m_uniforms_map.end())
-    {
-      return nullptr;
-    }
-    return m_uniforms_map.at(name);
-  }
-
-  inline const uniform_block_ref compute_shader::uniform_block(const std::string& name) const
-  {
-    if(m_uniform_blocks_map.find(name) == m_uniform_blocks_map.end())
-    {
-      return nullptr;
-    }
-    return m_uniform_blocks_map.at(name);
-  }
-
-  inline size_t compute_shader::num_uniforms()
-  {
-    return m_uniforms_map.size();
-  }
-
-  inline size_t compute_shader::num_uniform_blocks()
-  {
-    return m_uniform_blocks_map.size();
-  }
-
-  inline const uniform_ref compute_shader::operator[](const std::string& name) const
-  {
-    return uniform(name);
-  }
-
-  inline bool compute_shader::released()
-  {
-    return m_released;
-  }
+  using compute_shader_ref = std::shared_ptr<compute_shader>;
 
 } // namespace  mgl::opengl

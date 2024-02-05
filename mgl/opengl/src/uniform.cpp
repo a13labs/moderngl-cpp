@@ -157,14 +157,8 @@ namespace mgl::opengl
     };
   }
 
-  uniform::uniform(const std::string& name,
-                   int gl_type,
-                   int program_obj,
-                   int location,
-                   size_t size,
-                   context* ctx)
+  uniform::uniform(const std::string& name, int gl_type, int program_obj, int location, size_t size)
   {
-    m_context = ctx;
     m_name = name;
     m_gl_type = gl_type;
     m_program_obj = program_obj;

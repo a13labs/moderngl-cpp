@@ -231,7 +231,7 @@ namespace mgl::opengl
     int pixel_type = data_type->gl_type;
     int base_format = read_depth ? GL_DEPTH_COMPONENT : data_type->base_format[components];
 
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->m_buffer_obj);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->glo());
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer_obj);
     glReadBuffer(read_depth ? GL_NONE : (GL_COLOR_ATTACHMENT0 + attachment));
     glPixelStorei(GL_PACK_ALIGNMENT, alignment);

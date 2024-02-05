@@ -23,108 +23,85 @@
 
 namespace mgl::opengl
 {
-  void buffer::release()
+  buffer::buffer(const void* data, size_t reserve, bool dynamic)
+      : m_size(reserve)
+      , m_dynamic(dynamic)
+      , m_glo(0)
   {
-    if(m_released)
-    {
-      return;
-    }
-
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
-    m_released = true;
-
-    glDeleteBuffers(1, (GLuint*)&m_buffer_obj);
+    glGenBuffers(1, (GLuint*)&m_glo);
+    MGL_CORE_ASSERT(m_glo != GL_ZERO, "Error creating buffer");
+    glBindBuffer(GL_ARRAY_BUFFER, m_glo);
+    glBufferData(GL_ARRAY_BUFFER, reserve, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
   }
 
-  void buffer::write(const void* src, size_t size, size_t offset)
+  void buffer::release()
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
-    MGL_CORE_ASSERT(size + offset <= m_size, "out of bounds")
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
+    glDeleteBuffers(1, (GLuint*)&m_glo);
+    m_glo = GL_ZERO;
+  }
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
-    glBufferSubData(GL_ARRAY_BUFFER, (GLintptr)offset, size, src);
+  void buffer::write(const void* src, size_t src_sz, size_t offset)
+  {
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
+    MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
+    MGL_CORE_ASSERT(src_sz + offset <= m_size, "out of bounds")
+    glBindBuffer(GL_ARRAY_BUFFER, m_glo);
+    glBufferSubData(GL_ARRAY_BUFFER, (GLintptr)offset, src_sz, src);
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error writing to buffer");
   }
 
-  void buffer::read(
-      void* dst, size_t dst_size, size_t read_size, size_t read_offset, size_t write_offset)
+  void buffer::read(void* dst, size_t dst_sz, size_t read_sz, size_t read_off, size_t dst_off)
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
 
-    if(read_size == 0)
-      read_size = m_size;
+    if(read_sz == 0)
+    {
+      read_sz = m_size;
+    }
 
-    MGL_CORE_ASSERT(read_size >= 0, "invalid size: {0}", read_size)
-    MGL_CORE_ASSERT(read_offset >= 0, "invalid offset: {0}", read_offset)
-    MGL_CORE_ASSERT(write_offset >= 0, "invalid write offset: {0}", write_offset)
-    MGL_CORE_ASSERT(m_size >= read_size + read_offset, "out of bounds")
-    MGL_CORE_ASSERT(dst_size <= write_offset + read_size, "out of bounds")
+    MGL_CORE_ASSERT(read_sz >= 0, "invalid size: {0}", read_sz)
+    MGL_CORE_ASSERT(read_off >= 0, "invalid offset: {0}", read_off)
+    MGL_CORE_ASSERT(dst_off >= 0, "invalid write offset: {0}", dst_off)
+    MGL_CORE_ASSERT(m_size >= read_sz + read_off, "out of bounds")
+    MGL_CORE_ASSERT(dst_sz <= dst_off + read_sz, "out of bounds")
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
-    auto map = glMapBufferRange(GL_ARRAY_BUFFER, read_offset, read_size, GL_MAP_READ_BIT);
-
-    char* ptr = (char*)dst + write_offset;
-    std::copy((char*)map, (char*)map + read_size, ptr);
-    // memcpy(ptr, map, read_size);
-
+    glBindBuffer(GL_ARRAY_BUFFER, m_glo);
+    auto map = glMapBufferRange(GL_ARRAY_BUFFER, read_off, read_sz, GL_MAP_READ_BIT);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error mapping buffer");
+    std::copy((char*)map, (char*)map + read_sz, (char*)dst + dst_off);
     glUnmapBuffer(GL_ARRAY_BUFFER);
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error writing to buffer");
   }
 
   void buffer::clear()
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
-
+    glBindBuffer(GL_ARRAY_BUFFER, m_glo);
     char* map = (char*)glMapBufferRange(GL_ARRAY_BUFFER, 0, m_size, GL_MAP_WRITE_BIT);
-
-    if(!map)
-    {
-      MGL_CORE_ERROR("Buffer::clear, cannot map the buffer");
-      return;
-    }
-
-    // memset(map, 0, m_size);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "Error mapping buffer");
     std::fill(map, map + m_size, 0);
-
     glUnmapBuffer(GL_ARRAY_BUFFER);
   }
 
   void buffer::orphan(size_t size)
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
 
     if(size == SIZE_MAX)
     {
       size = m_size;
     }
 
-    if(size > 0)
-    {
-      m_size = size;
-    }
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_obj);
+    glBindBuffer(GL_ARRAY_BUFFER, m_glo);
     glBufferData(GL_ARRAY_BUFFER, size, 0, m_dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    m_size = size;
   }
 
   void buffer::bind_to_uniform_block(int binding, size_t size, size_t offset)
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 
@@ -133,14 +110,12 @@ namespace mgl::opengl
       size = m_size - offset;
     }
 
-    glBindBufferRange(GL_UNIFORM_BUFFER, binding, m_buffer_obj, offset, size);
+    glBindBufferRange(GL_UNIFORM_BUFFER, binding, m_glo, offset, size);
   }
 
   void buffer::bind_to_storage_buffer(int binding, size_t size, size_t offset)
   {
-    MGL_CORE_ASSERT(!m_released, "Buffer already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!released(), "Buffer already released");
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 
@@ -149,7 +124,7 @@ namespace mgl::opengl
       size = m_size - offset;
     }
 
-    glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, m_buffer_obj, offset, size);
+    glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, m_glo, offset, size);
   }
 
 } // namespace  mgl::opengl
