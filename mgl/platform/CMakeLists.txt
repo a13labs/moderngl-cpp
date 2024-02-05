@@ -13,7 +13,6 @@ target_include_directories(
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE 
-    ${SDL2_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc
 )
@@ -25,6 +24,20 @@ target_link_libraries(
     mgl::core::static 
     mgl::registry::static
     mgl::opengl::static
+)
+
+# Link library to SDL2 dependencies
+target_include_directories(
+    mgl_platform_static 
+  PRIVATE 
+    $<TARGET_PROPERTY:SDL2::SDL2-static,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
+target_link_libraries(
+    mgl_platform_static 
+  PUBLIC
+    ${SDL2_LIB_DEPENDS}
+  PRIVATE 
     $<TARGET_OBJECTS:SDL2::SDL2-static>
 )
 

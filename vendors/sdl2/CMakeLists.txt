@@ -8,10 +8,6 @@ if (MGL_LINUX_OS)
     option(SDL_X11 "" OFF)
 endif()
 
-
-# Set the path where you want to download Google Test
-set(SDL2_INSTALL_DIR "${CMAKE_BINARY_DIR}/sdl2" CACHE PATH "Path to sdl2 installation directory")
-
 # Use FetchContent to download sdl2
 FetchContent_Declare(
     sdl2
@@ -22,5 +18,4 @@ FetchContent_Declare(
 # FetchContent will download sdl2 and build it at configure time
 FetchContent_MakeAvailable(sdl2)
 
-set(SDL2_BINARY_DIR "${sdl2_BINARY_DIR}" CACHE PATH "Path to sdl2 binary directory")
-set(SDL2_INCLUDE_DIR "${SDL2_SOURCE_DIR}/include" CACHE PATH "Path to sdl2 include directory")
+set(SDL2_LIB_DEPENDS "${SDL2-static_LIB_DEPENDS}" CACHE PATH "Path to sdl2 dependencies")

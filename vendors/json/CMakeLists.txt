@@ -1,5 +1,3 @@
-# Set the path where you want to download Google Test
-set(JSON_INSTALL_DIR "${CMAKE_BINARY_DIR}/json" CACHE PATH "Path to json installation directory")
 
 # Use FetchContent to download json
 FetchContent_Declare(

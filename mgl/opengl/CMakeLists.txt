@@ -7,15 +7,13 @@ file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(mgl_opengl_static STATIC ${LIB_SOURCES})
 add_library(mgl::opengl::static ALIAS mgl_opengl_static)
 
-set(MGL_OPENGL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to mgl::opengl include directory")
-
 # Add include directories
 target_include_directories(
     mgl_opengl_static
   PUBLIC
-    $<BUILD_INTERFACE:${MGL_OPENGL_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE 
-    ${GLAD_INCLUDE_DIR}
+    $<TARGET_PROPERTY:glad::static,INTERFACE_INCLUDE_DIRECTORIES>
     ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc
 )
@@ -29,6 +27,7 @@ elseif (UNIX)
   else()
     message(STATUS "OpenGL Platform: MacOS")
     set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_CGL")
+    target_link_libraries(mgl_opengl_static PUBLIC "-framework OpenGL")
   endif()
 endif()
 

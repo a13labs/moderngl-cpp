@@ -1,6 +1,3 @@
-    # Set the path where you want to download Google Test
-    set(GTEST_INSTALL_DIR "${CMAKE_BINARY_DIR}/googletest" CACHE PATH "Path to Google Test installation directory")
-
     # Use FetchContent to download Google Test
     FetchContent_Declare(
         googletest

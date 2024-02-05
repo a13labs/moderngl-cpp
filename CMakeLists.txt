@@ -122,7 +122,7 @@ add_library(mgl::static ALIAS mgl_static)
 
 # Set the compile definitions
 target_link_libraries(mgl_static
-    PUBLIC
+  PUBLIC
     mgl::core::static
     mgl::registry::static
     mgl::opengl::static
@@ -130,6 +130,7 @@ target_link_libraries(mgl_static
     mgl::graphics::static
     mgl::application::static
 )
+
 
 # Build the examples
 if(MGL_BUILD_EXAMPLES) 

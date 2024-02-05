@@ -14,7 +14,7 @@ add_library(mgl::graphics::static ALIAS mgl_graphics_static)
 target_include_directories(
     mgl_graphics_static 
   PUBLIC
-    $<BUILD_INTERFACE:${IMGUI_INCLUDE_DIR}>
+    $<TARGET_PROPERTY:imgui::static,INTERFACE_INCLUDE_DIRECTORIES>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE 
     ${CMAKE_CURRENT_BINARY_DIR}/inc
