@@ -11,7 +11,7 @@ add_library(mgl::core::static ALIAS mgl_core_static)
 target_include_directories(
     mgl_core_static 
   PUBLIC
-    $<BUILD_INTERFACE:${GLM_INCLUDE_DIR}>
+    $<TARGET_PROPERTY:glm::static,INTERFACE_INCLUDE_DIRECTORIES>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   PRIVATE     
     ${VENDORS_HEADERS_ONLY_INC_DIR}

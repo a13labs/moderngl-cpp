@@ -8,11 +8,11 @@ option(GLM_BUILD_SHARED_LIBS "Buil GLM shared library" OFF)
 
 add_subdirectory(glm)
 add_library(glm::static ALIAS glm)
-target_include_directories(glm INTERFACE 
+target_include_directories(
+    glm 
+  INTERFACE 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-
-set(GLM_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Path to glm include directory")
 
 install(TARGETS glm
     EXPORT mgl-targets
