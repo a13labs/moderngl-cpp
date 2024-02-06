@@ -25,17 +25,95 @@
 
 namespace mgl::opengl
 {
-  void scope::release()
+  scope::scope(framebuffer_ref framebuffer,
+               int32_t enable_flags,
+               const texture_bindings& textures,
+               const buffer_bindings& uniform_buffers,
+               const buffer_bindings& storage_buffers,
+               const sampler_bindings& samplers)
   {
-    if(m_released)
+    m_enable_flags = enable_flags;
+    m_old_enable_flags = mgl::opengl::enable_flag::INVALID;
+    m_framebuffer = framebuffer;
+    m_old_framebuffer = m_bound_framebuffer;
+    m_textures = mgl::list<scope::BindingData>(textures.size());
+    m_buffers = mgl::list<scope::BindingData>(uniform_buffers.size() + storage_buffers.size());
+    m_samplers = samplers;
+
+    int32_t i = 0;
+    for(auto&& t : textures)
     {
-      return;
+      int32_t texture_type;
+      int32_t texture_obj;
+
+      MGL_CORE_ASSERT(t.texture, "Texture is null");
+
+      switch(t.texture->texture_type())
+      {
+        case texture::type::TEXTURE_2D: {
+          auto texture = std::dynamic_pointer_cast<texture_2d>(t.texture);
+          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
+          texture_type = texture->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+          texture_obj = texture->glo();
+        }
+        /* code */
+        break;
+        case texture::type::TEXTURE_3D: {
+          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
+          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
+          texture_type = GL_TEXTURE_3D;
+          texture_obj = texture->glo();
+        }
+        break;
+        case texture::type::TEXTURE_CUBE: {
+          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
+          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
+          texture_type = GL_TEXTURE_CUBE_MAP;
+          texture_obj = texture->glo();
+        }
+        break;
+        default: MGL_CORE_ASSERT(false, "Invalid texture type"); return;
+      }
+
+      int32_t binding = t.binding;
+      m_textures[i].binding = GL_TEXTURE0 + binding;
+      m_textures[i].type = texture_type;
+      m_textures[i].gl_object = texture_obj;
+      i++;
     }
 
-    m_released = true;
+    i = 0;
+    for(auto&& b : uniform_buffers)
+    {
+      MGL_CORE_ASSERT(b.buffer, "buffer is null");
+
+      m_buffers[i].binding = b.binding;
+      m_buffers[i].gl_object = b.buffer->glo();
+      m_buffers[i].type = GL_UNIFORM_BUFFER;
+      i++;
+    }
+
+    for(auto&& b : storage_buffers)
+    {
+      MGL_CORE_ASSERT(b.buffer, "buffer is null");
+
+      m_buffers[i].binding = b.binding;
+      m_buffers[i].gl_object = b.buffer->glo();
+      m_buffers[i].type = GL_SHADER_STORAGE_BUFFER;
+      i++;
+    }
+
+    m_begin = false;
+  }
+
+  scope::~scope()
+  {
+    if(m_begin)
+    {
+      end();
+    }
     m_framebuffer = nullptr;
     m_old_framebuffer = nullptr;
-    m_context = nullptr;
     m_samplers.clear();
     m_textures.clear();
     m_buffers.clear();
@@ -43,11 +121,10 @@ namespace mgl::opengl
 
   void scope::begin()
   {
-    MGL_CORE_ASSERT(!m_released, "Scope released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!m_begin, "Scope already started");
+    m_begin = true;
 
-    const int& flags = m_enable_flags;
+    const int32_t& flags = m_enable_flags;
 
     m_old_enable_flags = m_context->enable_flags();
     m_context->set_enable_flags(m_enable_flags);
@@ -119,10 +196,8 @@ namespace mgl::opengl
 
   void scope::end()
   {
-    MGL_CORE_ASSERT(!m_released, "Scope released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const int& flags = m_old_enable_flags;
+    MGL_CORE_ASSERT(m_begin, "Scope not started");
+    const int32_t& flags = m_old_enable_flags;
 
     m_context->set_enable_flags(m_old_enable_flags);
 
@@ -172,6 +247,25 @@ namespace mgl::opengl
     {
       glDisable(GL_PROGRAM_POINT_SIZE);
     }
+
+    for(auto&& sampler : m_samplers)
+    {
+      MGL_CORE_ASSERT(sampler.sampler, "invalid sampler");
+      sampler.sampler->clear(sampler.binding);
+    }
+
+    for(auto&& buffer : m_buffers)
+    {
+      glBindBufferBase(buffer.type, buffer.binding, 0);
+    }
+
+    for(auto&& texture : m_textures)
+    {
+      glActiveTexture(texture.binding);
+      glBindTexture(texture.type, 0);
+    }
+
+    m_begin = false;
   }
 
 } // namespace  mgl::opengl

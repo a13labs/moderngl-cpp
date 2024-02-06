@@ -58,7 +58,14 @@ public:
       int gl_object;
     };
 
-    ~scope() = default;
+    scope(framebuffer_ref framebuffer,
+          int32_t enable_flags,
+          const texture_bindings& textures,
+          const buffer_bindings& uniform_buffers,
+          const buffer_bindings& storage_buffers,
+          const sampler_bindings& samplers);
+
+    ~scope();
 
     void release();
     bool released();
@@ -67,10 +74,7 @@ public:
     void end();
 
 private:
-    friend class context;
-    scope() = default;
-
-    context* m_context;
+    bool m_begin;
     framebuffer_ref m_framebuffer;
     framebuffer_ref m_old_framebuffer;
     sampler_bindings m_samplers;
@@ -78,13 +82,8 @@ private:
     mgl::list<scope::BindingData> m_buffers;
     int m_enable_flags;
     int m_old_enable_flags;
-    bool m_released;
   };
 
   using scope_ref = mgl::ref<scope>;
 
-  inline bool scope::released()
-  {
-    return m_released;
-  }
 } // namespace  mgl::opengl

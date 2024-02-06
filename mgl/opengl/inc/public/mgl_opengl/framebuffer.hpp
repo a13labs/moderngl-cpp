@@ -29,30 +29,43 @@ namespace mgl::opengl
   class framebuffer : public mgl::ref_from_this<framebuffer>
   {
 public:
+    framebuffer(const attachments_ref& color_attachments, attachment_ref depth_attachment);
+
     ~framebuffer() = default;
 
+    bool released() const { return m_glo == 0; }
+
+    const mgl::rect& viewport() const { return m_viewport; }
+
+    const mgl::rect& scissor() const { return m_scissor; }
+
+    void enable_scissor() { m_scissor_enabled = true; }
+
+    void disable_scissor() { m_scissor_enabled = false; }
+
+    void clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
+    {
+      clear(color.r, color.g, color.b, color.a, depth, viewport);
+    }
+
+    const color_masks& color_mask() const { return m_color_masks; }
+
+    bool depth_mask() { return m_depth_mask; }
+
+    int width() { return m_width; }
+
+    int height() { return m_height; }
+
+    void set_color_mask(const opengl::color_mask& mask) { set_color_mask({ mask }); }
+
+    int32_t glo() const { return m_glo; }
+
     void release();
-    bool released();
-
-    const mgl::rect& viewport();
     void set_viewport(const mgl::rect& r);
-
-    const mgl::rect& scissor();
     void set_scissor(const mgl::rect& r);
     void reset_scissor() { set_scissor(m_viewport); }
-
-    void enable_scissor();
-    void disable_scissor();
-
-    const color_masks& color_mask() const;
-    void set_color_mask(const mgl::opengl::color_mask& mask);
-    void set_color_mask(const mgl::opengl::color_masks& masks);
-
-    bool depth_mask();
+    void set_color_mask(const opengl::color_masks& masks);
     void set_depth_mask(bool value);
-
-    int width();
-    int height();
 
     void bits(int& red_bits,
               int& green_bits,
@@ -64,6 +77,7 @@ public:
     void clear(const glm::vec4& color,
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
+
     void clear(float r,
                float g,
                float b,
@@ -89,17 +103,8 @@ public:
 
     void use();
 
-    int glo();
-
 private:
-    friend class context;
-    friend class renderbuffer;
-    friend class texture_2d;
-
-    framebuffer() = default;
-
-    context* m_context;
-    int m_framebuffer_obj;
+    int m_glo;
 
     mgl::rect m_viewport;
     bool m_scissor_enabled;
@@ -116,69 +121,9 @@ private:
 
     int m_samples;
     bool m_depth_mask;
-    bool m_released;
   };
 
   using framebuffer_ref = mgl::ref<mgl::opengl::framebuffer>;
   using framebuffer_weak_ref = mgl::weak_ref<mgl::opengl::framebuffer>;
-
-  inline int framebuffer::glo()
-  {
-    return m_framebuffer_obj;
-  }
-
-  inline bool framebuffer::released()
-  {
-    return m_released;
-  }
-
-  inline const mgl::rect& framebuffer::viewport()
-  {
-    return m_viewport;
-  }
-
-  inline const mgl::rect& framebuffer::scissor()
-  {
-    return m_scissor;
-  }
-
-  inline void framebuffer::enable_scissor()
-  {
-    m_scissor_enabled = true;
-  }
-  inline void framebuffer::disable_scissor()
-  {
-    m_scissor_enabled = false;
-  }
-
-  inline void framebuffer::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
-  {
-    clear(color.r, color.g, color.b, color.a, depth, viewport);
-  }
-
-  inline const color_masks& framebuffer::color_mask() const
-  {
-    return m_color_masks;
-  }
-
-  inline bool framebuffer::depth_mask()
-  {
-    return m_depth_mask;
-  }
-
-  inline int framebuffer::width()
-  {
-    return m_width;
-  }
-
-  inline int framebuffer::height()
-  {
-    return m_height;
-  }
-
-  inline void framebuffer::set_color_mask(const mgl::opengl::color_mask& mask)
-  {
-    set_color_mask({ mask });
-  }
 
 } // namespace  mgl::opengl

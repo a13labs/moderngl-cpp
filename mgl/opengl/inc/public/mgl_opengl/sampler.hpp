@@ -27,130 +27,70 @@ namespace mgl::opengl
   class sampler
   {
 public:
-    struct Filter
+    struct filter
     {
-      int min_filter;
-      int mag_filter;
+      int32_t min_filter;
+      int32_t mag_filter;
     };
 
+    sampler();
     ~sampler() = default;
 
 public:
-    void use(int index = 0);
-    void clear(int index = 0);
+    void use(int32_t index = 0);
+    void clear(int32_t index = 0);
 
     void release();
-    bool released();
+    bool released() const { return m_glo == 0; };
 
-    bool repeat_x();
+    bool repeat_x() const { return m_repeat_x; }
+
+    bool repeat_y() const { return m_repeat_y; }
+
+    bool repeat_z() const { return m_repeat_z; }
+
+    float anisotropy() const { return m_anisotropy; }
+
+    float min_lod() const { return m_min_lod; }
+
+    float max_lod() const { return m_max_lod; }
+
+    const glm::vec4& border_color() const { return m_border_color; }
+
+    const filter& sampler_filter() const { return m_filter; }
+
+    mgl::opengl::compare_func compare_func() { return m_compare_func; }
+
+    void set_border_color(float r, float g, float b, float a) { set_border_color({ r, g, b, a }); }
+
+    int32_t glo() const { return m_glo; };
+
     void set_repeat_x(bool value);
-
-    bool repeat_y();
     void set_repeat_y(bool value);
-
-    bool repeat_z();
     void set_repeat_z(bool value);
-
-    const sampler::Filter& filter() const;
-    void set_filter(const sampler::Filter& value);
-
-    mgl::opengl::compare_func compare_func();
+    void set_filter(const filter& value);
     void set_compare_func(mgl::opengl::compare_func value);
-
-    float anisotropy();
     void set_anisotropy(float value);
-
-    const glm::vec4& border_color() const;
     void set_border_color(const glm::vec4& value);
-    void set_border_color(float r, float g, float b, float a);
-
-    float min_lod();
+    float min_lod() const;
     void set_min_lod(float value);
-
-    float max_lod();
+    float max_lod() const;
     void set_max_lod(float value);
 
-    int glo();
-
 private:
-    friend class context;
-    sampler() = default;
-
-    context* m_context;
-    int m_sampler_obj;
+    int32_t m_glo;
     float m_anisotropy;
-    mgl::opengl::compare_func m_compare_func;
     bool m_repeat_x;
     bool m_repeat_y;
     bool m_repeat_z;
-    glm::vec4 m_border_color;
     float m_min_lod;
     float m_max_lod;
-    bool m_released;
-    sampler::Filter m_filter;
+    filter m_filter;
+    glm::vec4 m_border_color;
+    mgl::opengl::compare_func m_compare_func;
   };
 
   using sampler_ref = mgl::ref<sampler>;
   using samplers = mgl::ref_list<sampler>;
-
-  inline int sampler::glo()
-  {
-    return m_sampler_obj;
-  }
-
-  inline bool sampler::released()
-  {
-    return m_released;
-  }
-
-  inline bool sampler::repeat_x()
-  {
-    return m_repeat_x;
-  }
-
-  inline bool sampler::repeat_y()
-  {
-    return m_repeat_y;
-  }
-
-  inline bool sampler::repeat_z()
-  {
-    return m_repeat_z;
-  }
-
-  inline float sampler::anisotropy()
-  {
-    return m_anisotropy;
-  }
-
-  inline float sampler::min_lod()
-  {
-    return m_min_lod;
-  }
-
-  inline float sampler::max_lod()
-  {
-    return m_max_lod;
-  }
-
-  inline const glm::vec4& sampler::border_color() const
-  {
-    return m_border_color;
-  }
-
-  inline const sampler::Filter& sampler::filter() const
-  {
-    return m_filter;
-  }
-
-  inline mgl::opengl::compare_func sampler::compare_func()
-  {
-    return m_compare_func;
-  }
-
-  inline void sampler::set_border_color(float r, float g, float b, float a)
-  {
-    set_border_color({ r, g, b, a });
-  }
 
 } // namespace  mgl::opengl

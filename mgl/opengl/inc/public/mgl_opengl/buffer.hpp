@@ -71,6 +71,7 @@ private:
     size_t m_size;
     bool m_dynamic;
     int32_t m_glo;
+    context* m_context;
   };
 
   using buffer_ref = mgl::ref<buffer>;

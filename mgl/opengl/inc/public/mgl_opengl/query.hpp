@@ -31,7 +31,7 @@ public:
 
       COUNT,
     };
-
+    query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated);
     ~query() = default;
 
     void begin();
@@ -39,16 +39,12 @@ public:
     void begin_render();
     void end_render();
 
-    int samples();
-    int primitives();
-    int elapsed();
+    int32_t samples();
+    int32_t primitives();
+    int32_t elapsed();
 
 private:
-    friend class context;
-    query() = default;
-
-    context* m_context;
-    int m_query_obj[query::keys::COUNT];
+    int32_t m_glo[query::keys::COUNT];
   };
 
   using query_ref = mgl::ref<query>;

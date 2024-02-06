@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/attribute.hpp"
 #include "mgl_opengl/buffer.hpp"
@@ -40,73 +24,12 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/math.hpp"
 
+#include "mgl_opengl_internal/utils.hpp"
+
 #include "glad/gl.h"
 
 namespace mgl::opengl
 {
-
-  static const int32_t SHADER_TYPE[5] = {
-    GL_VERTEX_SHADER,       GL_FRAGMENT_SHADER,        GL_GEOMETRY_SHADER,
-    GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER,
-  };
-
-  static const char* SHADER_NAME[] = {
-    "vertex_shader",       "fragment_shader",        "geometry_shader",
-    "tess_control_shader", "tess_evaluation_shader",
-  };
-
-  inline void clean_glsl_name(char* name, int32_t& name_len)
-  {
-    if(name_len && name[name_len - 1] == ']')
-    {
-      name_len -= 1;
-      while(name_len && name[name_len] != '[')
-      {
-        name_len -= 1;
-      }
-    }
-    name[name_len] = 0;
-  }
-
-  inline void framebuffer_error_message(int32_t status)
-  {
-    const char* message = "the framebuffer is not complete";
-
-    switch(status)
-    {
-      case GL_FRAMEBUFFER_UNDEFINED: message = "the framebuffer is not complete (UNDEFINED)"; break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-        message = "the framebuffer is not complete (INCOMPLETE_ATTACHMENT)";
-        break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-        message = "the framebuffer is not complete (INCOMPLETE_MISSING_ATTACHMENT)";
-        break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-        message = "the framebuffer is not complete (INCOMPLETE_DRAW_BUFFER)";
-        break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-        message = "the framebuffer is not complete (INCOMPLETE_READ_BUFFER)";
-        break;
-
-      case GL_FRAMEBUFFER_UNSUPPORTED:
-        message = "the framebuffer is not complete (UNSUPPORTED)";
-        break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-        message = "the framebuffer is not complete (INCOMPLETE_MULTISAMPLE)";
-        break;
-
-      case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-        message = "the framebuffer is not complete (INCOMPLETE_LAYER_TARGETS)";
-        break;
-    }
-
-    MGL_CORE_ERROR("{0}", message);
-  }
 
   context_ref context::create_context(context_mode::Enum mode, int32_t required)
   {
@@ -309,12 +232,14 @@ namespace mgl::opengl
 
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
+    MGL_CORE_ASSERT(!released(), "Context already released");
     auto buffer = new mgl::opengl::buffer(data, reserve, dynamic);
     return buffer_ref(buffer);
   }
 
   compute_shader_ref context::compute_shader(const std::string& source)
   {
+    MGL_CORE_ASSERT(!released(), "Context already released");
     auto shader = new mgl::opengl::compute_shader(source);
     return compute_shader_ref(shader);
   }
@@ -323,270 +248,7 @@ namespace mgl::opengl
                                        attachment_ref depth_attachment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(color_attachments.size(), "missing color attachments");
-    int32_t width = 0;
-    int32_t height = 0;
-    int32_t samples = 0;
-
-    if(!color_attachments.size() && depth_attachment == nullptr)
-    {
-      MGL_CORE_ERROR("the framebuffer is empty");
-      return nullptr;
-    }
-
-    int32_t i = 0;
-    for(auto&& attachment : color_attachments)
-    {
-      if(attachment->attachment_type() == attachment::type::TEXTURE)
-      {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-        MGL_CORE_ASSERT(texture, "Not a texture2D");
-
-        if(texture->m_depth)
-        {
-          MGL_CORE_ERROR("color_attachments[{0}] is a depth attachment", i);
-          return nullptr;
-        }
-
-        if(i == 0)
-        {
-          width = texture->m_width;
-          height = texture->m_height;
-          samples = texture->m_samples;
-        }
-        else
-        {
-          if(texture->m_width != width || texture->m_height != height ||
-             texture->m_samples != samples)
-          {
-            MGL_CORE_ERROR("the color_attachments have different sizes or samples");
-            return nullptr;
-          }
-        }
-      }
-      else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
-      {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-
-        if(renderbuffer->m_depth)
-        {
-          MGL_CORE_ERROR("color_attachments[{0}] is a depth attachment", i);
-          return nullptr;
-        }
-
-        if(i == 0)
-        {
-          width = renderbuffer->m_width;
-          height = renderbuffer->m_height;
-          samples = renderbuffer->m_samples;
-        }
-        else
-        {
-          if(renderbuffer->m_width != width || renderbuffer->m_height != height ||
-             renderbuffer->m_samples != samples)
-          {
-            MGL_CORE_ERROR("the color_attachments have different sizes or samples");
-            return nullptr;
-          }
-        }
-      }
-      i++;
-    }
-
-    if(depth_attachment != nullptr)
-    {
-      if(depth_attachment->attachment_type() == attachment::type::TEXTURE)
-      {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
-        MGL_CORE_ASSERT(texture, "Not a texture2D");
-
-        if(!texture->m_depth)
-        {
-          MGL_CORE_ERROR("the depth_attachment is a color attachment");
-          return nullptr;
-        }
-
-        if(texture->m_context != this)
-        {
-          MGL_CORE_ERROR("the depth_attachment belongs to a different context");
-          return nullptr;
-        }
-
-        if(color_attachments.size())
-        {
-          if(texture->m_width != width || texture->m_height != height ||
-             texture->m_samples != samples)
-          {
-            MGL_CORE_ERROR("the depth_attachment have different sizes or samples");
-            return nullptr;
-          }
-        }
-        else
-        {
-          width = texture->m_width;
-          height = texture->m_height;
-          samples = texture->m_samples;
-        }
-      }
-      else if(depth_attachment->attachment_type() == attachment::type::RENDERBUFFER)
-      {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-
-        if(!renderbuffer->m_depth)
-        {
-          MGL_CORE_ERROR("the depth_attachment is a color attachment");
-          return nullptr;
-        }
-
-        if(renderbuffer->m_context != this)
-        {
-          MGL_CORE_ERROR("the depth_attachment belongs to a different context");
-          return nullptr;
-        }
-
-        if(color_attachments.size())
-        {
-          if(renderbuffer->m_width != width || renderbuffer->m_height != height ||
-             renderbuffer->m_samples != samples)
-          {
-            MGL_CORE_ERROR("the depth_attachment have different sizes or samples");
-            return nullptr;
-          }
-        }
-        else
-        {
-          width = renderbuffer->m_width;
-          height = renderbuffer->m_height;
-          samples = renderbuffer->m_samples;
-        }
-      }
-      else
-      {
-        MGL_CORE_ERROR("the depth_attachment must be a Renderbuffer or Texture not %s");
-        return nullptr;
-      }
-    }
-
-    auto framebuffer = new mgl::opengl::framebuffer();
-    framebuffer->m_released = false;
-    framebuffer->m_draw_buffers_len = color_attachments.size();
-    framebuffer->m_draw_buffers = new unsigned[color_attachments.size()];
-    framebuffer->m_color_masks = color_masks(color_attachments.size());
-
-    for(size_t i = 0; i < color_attachments.size(); ++i)
-    {
-      auto attachment = color_attachments[i];
-
-      framebuffer->m_draw_buffers[i] = GL_COLOR_ATTACHMENT0 + i;
-
-      if(attachment->attachment_type() == attachment::type::TEXTURE)
-      {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-        MGL_CORE_ASSERT(texture, "Not a texture2D");
-        framebuffer->m_color_masks[i] = { texture->m_components >= 1,
-                                          texture->m_components >= 2,
-                                          texture->m_components >= 3,
-                                          texture->m_components >= 4 };
-      }
-      else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
-      {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-        framebuffer->m_color_masks[i] = { renderbuffer->m_components >= 1,
-                                          renderbuffer->m_components >= 2,
-                                          renderbuffer->m_components >= 3,
-                                          renderbuffer->m_components >= 4 };
-      }
-    }
-
-    framebuffer->m_depth_mask = (depth_attachment != nullptr);
-    framebuffer->m_viewport = { 0, 0, width, height };
-    framebuffer->m_dynamic = false;
-    framebuffer->m_scissor_enabled = false;
-    framebuffer->m_scissor = { 0, 0, width, height };
-    framebuffer->m_width = width;
-    framebuffer->m_height = height;
-    framebuffer->m_samples = samples;
-    framebuffer->m_context = this;
-
-    framebuffer->m_framebuffer_obj = 0;
-    glGenFramebuffers(1, (GLuint*)&framebuffer->m_framebuffer_obj);
-
-    if(!framebuffer->m_framebuffer_obj)
-    {
-      MGL_CORE_ERROR("cannot create framebuffer");
-      delete framebuffer;
-      return nullptr;
-    }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->m_framebuffer_obj);
-
-    if(!color_attachments.size())
-    {
-      glDrawBuffer(GL_NONE); // No color buffer is drawn to.
-    }
-
-    for(auto&& attachment : color_attachments)
-    {
-      if(attachment->attachment_type() == attachment::type::TEXTURE)
-      {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-        MGL_CORE_ASSERT(texture, "Not a texture2D");
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER,
-                               GL_COLOR_ATTACHMENT0 + i,
-                               texture->m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-                               texture->m_texture_obj,
-                               0);
-      }
-      else if(attachment->attachment_type() == attachment::type::RENDERBUFFER)
-      {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                                  GL_COLOR_ATTACHMENT0 + i,
-                                  GL_RENDERBUFFER,
-                                  renderbuffer->m_renderbuffer_obj);
-      }
-    }
-
-    if(depth_attachment)
-    {
-      if(depth_attachment->attachment_type() == attachment::type::TEXTURE)
-      {
-        auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
-        MGL_CORE_ASSERT(texture, "Not a texture2D");
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER,
-                               GL_DEPTH_ATTACHMENT,
-                               texture->m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-                               texture->m_texture_obj,
-                               0);
-      }
-      else if(depth_attachment->attachment_type() == attachment::type::RENDERBUFFER)
-      {
-        auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
-        MGL_CORE_ASSERT(renderbuffer, "Not a Renderbuffer");
-
-        glFramebufferRenderbuffer(
-            GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->m_renderbuffer_obj);
-      }
-    }
-
-    int32_t status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, m_bound_framebuffer->m_framebuffer_obj);
-
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-    {
-      framebuffer_error_message(status);
-      delete framebuffer;
-      return nullptr;
-    }
-
+    auto framebuffer = new mgl::opengl::framebuffer(color_attachments, depth_attachment);
     return framebuffer_ref(framebuffer);
   }
 
@@ -595,6 +257,7 @@ namespace mgl::opengl
                                const fragment_outputs& fragment_outputs,
                                bool interleaved)
   {
+    MGL_CORE_ASSERT(!released(), "Context already released");
     auto program = new mgl::opengl::program(shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);
   }
@@ -603,53 +266,7 @@ namespace mgl::opengl
   context::query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(!(samples || any_samples || time_elapsed || primitives_generated))
-    {
-      samples = true;
-      any_samples = true;
-      time_elapsed = true;
-      primitives_generated = true;
-    }
-
-    auto query = new mgl::opengl::query();
-    query->m_context = this;
-
-    if(samples)
-    {
-      glGenQueries(1, (GLuint*)&query->m_query_obj[query::keys::SAMPLES_PASSED]);
-    }
-    else
-    {
-      query->m_query_obj[query::keys::SAMPLES_PASSED] = 0;
-    }
-
-    if(any_samples)
-    {
-      glGenQueries(1, (GLuint*)&query->m_query_obj[query::keys::ANY_SAMPLES_PASSED]);
-    }
-    else
-    {
-      query->m_query_obj[query::keys::ANY_SAMPLES_PASSED] = 0;
-    }
-
-    if(time_elapsed)
-    {
-      glGenQueries(1, (GLuint*)&query->m_query_obj[query::keys::TIME_ELAPSED]);
-    }
-    else
-    {
-      query->m_query_obj[query::keys::TIME_ELAPSED] = 0;
-    }
-
-    if(primitives_generated)
-    {
-      glGenQueries(1, (GLuint*)&query->m_query_obj[query::keys::PRIMITIVES_GENERATED]);
-    }
-    else
-    {
-      query->m_query_obj[query::keys::PRIMITIVES_GENERATED] = 0;
-    }
-
+    auto query = new mgl::opengl::query(samples, any_samples, time_elapsed, primitives_generated);
     return query_ref(query);
   }
 
@@ -657,103 +274,14 @@ namespace mgl::opengl
       int32_t width, int32_t height, int32_t components, int32_t samples, const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(components < 1 || components > 4)
-    {
-      MGL_CORE_ERROR("Components must be 1, 2, 3 or 4, got: {0}", components);
-      return nullptr;
-    }
-
-    if((samples & (samples - 1)) || samples > m_max_samples)
-    {
-      MGL_CORE_ERROR("The number of samples is invalid got: {0}", samples);
-      return nullptr;
-    }
-
-    auto data_type = from_dtype(dtype);
-
-    if(!data_type)
-    {
-      MGL_CORE_ERROR("Invalid data type got: '{0}'", dtype);
-      return nullptr;
-    }
-
-    int32_t format = data_type->internal_format[components];
-
-    auto renderbuffer = new mgl::opengl::renderbuffer();
-    renderbuffer->m_released = false;
-    renderbuffer->m_context = this;
-    renderbuffer->m_width = width;
-    renderbuffer->m_height = height;
-    renderbuffer->m_components = components;
-    renderbuffer->m_samples = samples;
-    renderbuffer->m_data_type = data_type;
-    renderbuffer->m_depth = false;
-
-    renderbuffer->m_renderbuffer_obj = 0;
-    glGenRenderbuffers(1, (GLuint*)&renderbuffer->m_renderbuffer_obj);
-
-    if(!renderbuffer->m_renderbuffer_obj)
-    {
-      MGL_CORE_ERROR("Cannot create RenderBuffer");
-      delete renderbuffer;
-      return nullptr;
-    }
-
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->m_renderbuffer_obj);
-
-    if(samples == 0)
-    {
-      glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
-    }
-    else
-    {
-      glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, format, width, height);
-    }
-
+    auto renderbuffer = new mgl::opengl::renderbuffer(width, height, components, samples, dtype);
     return renderbuffer_ref(renderbuffer);
   }
 
   renderbuffer_ref context::depth_renderbuffer(int32_t width, int32_t height, int32_t samples)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if((samples & (samples - 1)) || samples > m_max_samples)
-    {
-      MGL_CORE_ERROR("The number of samples is invalid got: {0}", samples);
-      return nullptr;
-    }
-
-    auto renderbuffer = new mgl::opengl::renderbuffer();
-    renderbuffer->m_released = false;
-    renderbuffer->m_context = this;
-    renderbuffer->m_width = width;
-    renderbuffer->m_height = height;
-    renderbuffer->m_components = 1;
-    renderbuffer->m_samples = samples;
-    renderbuffer->m_data_type = from_dtype("f4", 2);
-    renderbuffer->m_depth = true;
-
-    renderbuffer->m_renderbuffer_obj = 0;
-    glGenRenderbuffers(1, (GLuint*)&renderbuffer->m_renderbuffer_obj);
-
-    if(!renderbuffer->m_renderbuffer_obj)
-    {
-      MGL_CORE_ERROR("Cannot create RenderBuffer");
-      delete renderbuffer;
-      return nullptr;
-    }
-
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->m_renderbuffer_obj);
-
-    if(samples == 0)
-    {
-      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
-    }
-    else
-    {
-      glRenderbufferStorageMultisample(
-          GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT24, width, height);
-    }
-
+    auto renderbuffer = new mgl::opengl::renderbuffer(width, height, samples);
     return renderbuffer_ref(renderbuffer);
   }
 
@@ -761,23 +289,6 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
     auto sampler = new mgl::opengl::sampler();
-    sampler->m_released = false;
-    sampler->m_context = this;
-    sampler->m_filter = { GL_LINEAR, GL_LINEAR };
-    sampler->m_anisotropy = 0.0;
-    sampler->m_repeat_x = true;
-    sampler->m_repeat_y = true;
-    sampler->m_repeat_z = true;
-    sampler->m_compare_func = mgl::opengl::compare_func::NONE;
-    sampler->m_border_color[0] = 0.0;
-    sampler->m_border_color[1] = 0.0;
-    sampler->m_border_color[2] = 0.0;
-    sampler->m_border_color[3] = 0.0;
-    sampler->m_min_lod = -1000.0;
-    sampler->m_max_lod = 1000.0;
-
-    glGenSamplers(1, (GLuint*)&sampler->m_sampler_obj);
-
     return sampler_ref(sampler);
   }
 
@@ -788,87 +299,9 @@ namespace mgl::opengl
                            const buffer_bindings& storage_buffers,
                            const sampler_bindings& samplers)
   {
-
     MGL_CORE_ASSERT(!released(), "Context already released");
-
-    auto scope = new mgl::opengl::scope();
-    scope->m_released = false;
-    scope->m_context = this;
-    scope->m_enable_flags = enable_flags;
-    scope->m_old_enable_flags = mgl::opengl::enable_flag::INVALID;
-    scope->m_framebuffer = framebuffer;
-    scope->m_old_framebuffer = m_bound_framebuffer;
-    scope->m_textures = mgl::list<scope::BindingData>(textures.size());
-    scope->m_buffers =
-        mgl::list<scope::BindingData>(uniform_buffers.size() + storage_buffers.size());
-    scope->m_samplers = samplers;
-
-    int32_t i = 0;
-    for(auto&& t : textures)
-    {
-      int32_t texture_type;
-      int32_t texture_obj;
-
-      MGL_CORE_ASSERT(t.texture, "Texture is null");
-
-      switch(t.texture->texture_type())
-      {
-        case texture::type::TEXTURE_2D: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(t.texture);
-          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
-          texture_type = texture->m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-          texture_obj = texture->m_texture_obj;
-        }
-        /* code */
-        break;
-        case texture::type::TEXTURE_3D: {
-          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
-          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
-          texture_type = GL_TEXTURE_3D;
-          texture_obj = texture->m_texture_obj;
-        }
-        break;
-        case texture::type::TEXTURE_CUBE: {
-          auto texture = std::dynamic_pointer_cast<texture_3d>(t.texture);
-          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
-          texture_type = GL_TEXTURE_CUBE_MAP;
-          texture_obj = texture->m_texture_obj;
-        }
-        break;
-        default:
-          delete scope;
-          MGL_CORE_ERROR("invalid texture");
-          return nullptr;
-      }
-
-      int32_t binding = t.binding;
-      scope->m_textures[i].binding = GL_TEXTURE0 + binding;
-      scope->m_textures[i].type = texture_type;
-      scope->m_textures[i].gl_object = texture_obj;
-      i++;
-    }
-
-    i = 0;
-    for(auto&& b : uniform_buffers)
-    {
-      MGL_CORE_ASSERT(b.buffer, "buffer is null");
-
-      scope->m_buffers[i].binding = b.binding;
-      scope->m_buffers[i].gl_object = b.buffer->glo();
-      scope->m_buffers[i].type = GL_UNIFORM_BUFFER;
-      i++;
-    }
-
-    for(auto&& b : storage_buffers)
-    {
-      MGL_CORE_ASSERT(b.buffer, "buffer is null");
-
-      scope->m_buffers[i].binding = b.binding;
-      scope->m_buffers[i].gl_object = b.buffer->glo();
-      scope->m_buffers[i].type = GL_SHADER_STORAGE_BUFFER;
-      i++;
-    }
-
+    auto scope = new mgl::opengl::scope(
+        framebuffer, enable_flags, textures, uniform_buffers, storage_buffers, samplers);
     return scope_ref(scope);
   }
 
