@@ -131,7 +131,6 @@ target_link_libraries(mgl_static
     mgl::application::static
 )
 
-
 # Build the examples
 if(MGL_BUILD_EXAMPLES) 
     add_subdirectory(examples)

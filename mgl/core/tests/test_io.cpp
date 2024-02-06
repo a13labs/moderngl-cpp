@@ -16,7 +16,7 @@ mgl::float64_buffer s_float64_buffer = { 0.0, 1.0, 2.0, 3.0, 4.0 };
 TEST(mgl_core, io_write_read_test)
 {
 
-  mgl::path path = "test.txt";
+  mgl::path path = mgl::path("test.dat");
   mgl::uint8_buffer uint8_buffer(s_uint8_buffer.size());
   mgl::uint16_buffer uint16_buffer(s_uint16_buffer.size());
   mgl::uint32_buffer uint32_buffer(s_uint32_buffer.size());

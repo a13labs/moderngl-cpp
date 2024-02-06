@@ -1,6 +1,8 @@
 #include "mgl_opengl/program.hpp"
 #include "mgl_opengl/context.hpp"
 
+#include "mgl_opengl_internal/utils.hpp"
+
 #include "mgl_core/debug.hpp"
 #include "mgl_core/string.hpp"
 
@@ -8,20 +10,6 @@
 
 namespace mgl::opengl
 {
-
-  inline void clean_glsl_name(char* name, int32_t& name_len)
-  {
-    if(name_len && name[name_len - 1] == ']')
-    {
-      name_len -= 1;
-      while(name_len && name[name_len] != '[')
-      {
-        name_len -= 1;
-      }
-    }
-    name[name_len] = 0;
-  }
-
   program::program(const shaders& shaders,
                    const shaders_outputs& outputs,
                    const fragment_outputs& fragment_outputs,
@@ -141,89 +129,6 @@ namespace mgl::opengl
 
     m_glo = glo;
 
-    int32_t num_vertex_shader_subroutines = 0;
-    int32_t num_fragment_shader_subroutines = 0;
-    int32_t num_geometry_shader_subroutines = 0;
-    int32_t num_tess_evaluation_shader_subroutines = 0;
-    int32_t num_tess_control_shader_subroutines = 0;
-
-    int32_t num_vertex_shader_subroutine_uniforms = 0;
-    int32_t num_fragment_shader_subroutine_uniforms = 0;
-    int32_t num_geometry_shader_subroutine_uniforms = 0;
-    int32_t num_tess_evaluation_shader_subroutine_uniforms = 0;
-    int32_t num_tess_control_shader_subroutine_uniforms = 0;
-
-    int32_t major = 0;
-    int32_t minor = 0;
-
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-    int32_t version_code = major * 100 + minor * 10;
-
-    if(version_code >= 400)
-    {
-      if(!shaders.sources[shader::type::VERTEX_SHADER].empty())
-      {
-        glGetProgramStageiv(
-            glo, GL_VERTEX_SHADER, GL_ACTIVE_SUBROUTINES, &num_vertex_shader_subroutines);
-        glGetProgramStageiv(glo,
-                            GL_VERTEX_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_vertex_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::FRAGMENT_SHADER].empty())
-      {
-        glGetProgramStageiv(
-            glo, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINES, &num_fragment_shader_subroutines);
-        glGetProgramStageiv(glo,
-                            GL_FRAGMENT_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_fragment_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
-      {
-        glGetProgramStageiv(
-            glo, GL_GEOMETRY_SHADER, GL_ACTIVE_SUBROUTINES, &num_geometry_shader_subroutines);
-        glGetProgramStageiv(glo,
-                            GL_GEOMETRY_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_geometry_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::TESS_EVALUATION_SHADER].empty())
-      {
-        glGetProgramStageiv(glo,
-                            GL_TESS_EVALUATION_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_tess_evaluation_shader_subroutines);
-        glGetProgramStageiv(glo,
-                            GL_TESS_EVALUATION_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_tess_evaluation_shader_subroutine_uniforms);
-      }
-
-      if(!shaders.sources[shader::type::TESS_CONTROL_SHADER].empty())
-      {
-        glGetProgramStageiv(glo,
-                            GL_TESS_CONTROL_SHADER,
-                            GL_ACTIVE_SUBROUTINES,
-                            &num_tess_control_shader_subroutines);
-        glGetProgramStageiv(glo,
-                            GL_TESS_CONTROL_SHADER,
-                            GL_ACTIVE_SUBROUTINE_UNIFORMS,
-                            &num_tess_control_shader_subroutine_uniforms);
-      }
-    }
-
-    m_num_vertex_shader_subroutines = num_vertex_shader_subroutine_uniforms;
-    m_num_fragment_shader_subroutines = num_fragment_shader_subroutine_uniforms;
-    m_num_geometry_shader_subroutines = num_geometry_shader_subroutine_uniforms;
-    m_num_tess_evaluation_shader_subroutines = num_tess_evaluation_shader_subroutine_uniforms;
-    m_num_tess_control_shader_subroutines = num_tess_control_shader_subroutine_uniforms;
-
     if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
     {
 
@@ -297,14 +202,7 @@ namespace mgl::opengl
     }
 
     int32_t num_attributes = 0;
-    int32_t num_varyings = 0;
-    int32_t num_uniforms = 0;
-    int32_t num_uniform_blocks = 0;
-
     glGetProgramiv(m_glo, GL_ACTIVE_ATTRIBUTES, &num_attributes);
-    glGetProgramiv(m_glo, GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
-    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORMS, &num_uniforms);
-    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
 
     for(int32_t i = 0; i < num_attributes; ++i)
     {
@@ -316,12 +214,15 @@ namespace mgl::opengl
       glGetActiveAttrib(m_glo, i, 256, &name_len, &array_length, (GLenum*)&type, name);
       int32_t location = glGetAttribLocation(m_glo, name);
 
-      clean_glsl_name(name, name_len);
+      mgl::opengl::internal::clean_glsl_name(name, name_len);
 
       m_attributes_map.insert(
           { name,
             mgl::create_ref<mgl::opengl::attribute>(name, type, m_glo, location, array_length) });
     }
+
+    int32_t num_varyings = 0;
+    glGetProgramiv(m_glo, GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
 
     for(int32_t i = 0; i < num_varyings; ++i)
     {
@@ -337,6 +238,9 @@ namespace mgl::opengl
           { name, mgl::create_ref<mgl::opengl::varying>(name, i, array_length, dimension) });
     }
 
+    int32_t num_uniforms = 0;
+    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORMS, &num_uniforms);
+
     for(int32_t i = 0; i < num_uniforms; ++i)
     {
       int32_t type = 0;
@@ -347,7 +251,7 @@ namespace mgl::opengl
       glGetActiveUniform(m_glo, i, 256, &name_len, &size, (GLenum*)&type, name);
       int32_t location = glGetUniformLocation(m_glo, name);
 
-      clean_glsl_name(name, name_len);
+      mgl::opengl::internal::clean_glsl_name(name, name_len);
 
       if(location < 0)
       {
@@ -357,6 +261,9 @@ namespace mgl::opengl
       m_uniforms_map.insert(
           { name, mgl::create_ref<mgl::opengl::uniform>(name, type, glo, location, size) });
     }
+
+    int32_t num_uniform_blocks = 0;
+    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
 
     for(int32_t i = 0; i < num_uniform_blocks; ++i)
     {
@@ -368,18 +275,18 @@ namespace mgl::opengl
       int32_t index = glGetUniformBlockIndex(m_glo, name);
       glGetActiveUniformBlockiv(m_glo, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
 
-      clean_glsl_name(name, name_len);
+      mgl::opengl::internal::clean_glsl_name(name, name_len);
 
       m_uniform_blocks_map.insert(
           { name, mgl::create_ref<mgl::opengl::uniform_block>(name, glo, index, size) });
     }
 
-    if(version_code >= 400)
+    if(mgl::opengl::internal::gl_version_code() >= 400)
     {
-      for(int32_t st = 0; st < 5; ++st)
+      for(int32_t st = 0; st < shader::type::GENERIC_PROGRAM; ++st)
       {
         int32_t num_subroutines = 0;
-        auto type = mgl::opengl::subroutine::type(SHADER_TYPE[st]);
+        auto type = subroutine::type(SHADER_TYPE[st]);
 
         glGetProgramStageiv(glo, type, GL_ACTIVE_SUBROUTINES, &num_subroutines);
 

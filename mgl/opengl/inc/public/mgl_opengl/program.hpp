@@ -112,11 +112,6 @@ private:
     int32_t m_geometry_output;
     int32_t m_geometry_vertices;
     bool m_transform;
-    int32_t m_num_vertex_shader_subroutines;
-    int32_t m_num_fragment_shader_subroutines;
-    int32_t m_num_geometry_shader_subroutines;
-    int32_t m_num_tess_evaluation_shader_subroutines;
-    int32_t m_num_tess_control_shader_subroutines;
 
     uniforms_dict m_uniforms_map;
     uniform_blocks_dict m_uniform_blocks_map;

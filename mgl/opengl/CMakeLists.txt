@@ -11,11 +11,12 @@ add_library(mgl::opengl::static ALIAS mgl_opengl_static)
 target_include_directories(
     mgl_opengl_static
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc/public>
   PRIVATE 
     $<TARGET_PROPERTY:glad::static,INTERFACE_INCLUDE_DIRECTORIES>
     ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc/internal
 )
 
 if(WIN32)

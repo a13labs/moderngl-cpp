@@ -31,7 +31,6 @@ public:
       int32_t rows_length;
       int32_t row_length;
       bool normalizable;
-      const char* shape;
     };
 
     attribute(const std::string& name,

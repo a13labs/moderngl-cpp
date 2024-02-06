@@ -1,40 +1,14 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/compute_shader.hpp"
-#include "mgl_core/debug.hpp"
 #include "mgl_opengl/context.hpp"
+
+#include "mgl_opengl_internal/utils.hpp"
+
+#include "mgl_core/debug.hpp"
 
 #include "glad/gl.h"
 
 namespace mgl::opengl
 {
-  inline void clean_glsl_name(char* name, int& name_len)
-  {
-    if(name_len && name[name_len - 1] == ']')
-    {
-      name_len -= 1;
-      while(name_len && name[name_len] != '[')
-      {
-        name_len -= 1;
-      }
-    }
-    name[name_len] = 0;
-  }
-
   compute_shader::compute_shader(const std::string& source)
   {
     int32_t glo = glCreateProgram();
@@ -118,7 +92,7 @@ namespace mgl::opengl
       glGetActiveUniform(glo, i, 256, &name_len, &size, (GLenum*)&type, name);
       int32_t location = glGetUniformLocation(glo, name);
 
-      clean_glsl_name(name, name_len);
+      mgl::opengl::internal::clean_glsl_name(name, name_len);
 
       if(location < 0)
       {
@@ -142,7 +116,7 @@ namespace mgl::opengl
       int32_t index = glGetUniformBlockIndex(glo, name);
       glGetActiveUniformBlockiv(glo, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
 
-      clean_glsl_name(name, name_len);
+      mgl::opengl::internal::clean_glsl_name(name, name_len);
 
       m_uniform_blocks_map.insert(
           { name, mgl::create_ref<mgl::opengl::uniform_block>(name, glo, index, size) });
@@ -151,7 +125,7 @@ namespace mgl::opengl
 
   void compute_shader::release()
   {
-    MGL_CORE_ASSERT(!released(), "Compute Shader already released");
+    MGL_CORE_ASSERT(m_glo != 0, "Compute Shader already released or not initialized");
     glDeleteShader(m_shader_glo);
     glDeleteProgram(m_glo);
     m_glo = 0;
@@ -159,7 +133,7 @@ namespace mgl::opengl
 
   void compute_shader::run(int32_t x, int32_t y, int32_t z)
   {
-    MGL_CORE_ASSERT(!released(), "Compute Shader already released");
+    MGL_CORE_ASSERT(m_glo != 0, "Compute Shader already released or not initialized");
     glUseProgram(m_glo);
     glDispatchCompute(x, y, z);
   }
