@@ -55,7 +55,7 @@ namespace mgl::opengl
 
   struct context_mode
   {
-    enum Enum
+    enum mode
     {
       DETECT,
       SHARE,
@@ -71,49 +71,49 @@ namespace mgl::opengl
 public:
     virtual ~context() = default;
 
-    int version_code();
+    int32_t version_code() const { return m_version_code; }
 
-    int max_samples();
+    int32_t max_samples() const { return m_max_samples; }
 
-    int max_integer_samples();
+    int32_t max_integer_samples() const { return m_max_integer_samples; }
 
-    int max_color_attachments();
+    int32_t max_color_attachments() const { return m_max_color_attachments; }
 
-    int max_texture_units();
+    int32_t max_texture_units() const { return m_max_texture_units; }
 
-    int default_texture_unit();
+    int32_t default_texture_unit() const { return m_default_texture_unit; }
 
-    float max_anisotropy();
+    float max_anisotropy() const { return m_max_anisotropy; }
 
-    const mgl::string_list& extensions() const;
+    const mgl::string_list& extensions() const { return m_extensions; }
 
-    framebuffer& screen();
+    framebuffer& screen() { return *m_default_framebuffer; }
 
-    int enable_flags();
+    int32_t enable_flags() const { return m_enable_flags; }
 
-    void set_enable_flags(int flags);
+    void set_enable_flags(int32_t flags);
 
-    void enable(int flags);
+    void enable(int32_t flags);
 
-    void disable(int flags);
+    void disable(int32_t flags);
 
-    void enable_direct(int value);
+    void enable_direct(int32_t value);
 
-    void disable_direct(int value);
+    void disable_direct(int32_t value);
 
     void finish();
 
-    void clear_samplers(int start = 0, int end = -1);
+    void clear_samplers(int32_t start = 0, int32_t end = -1);
 
-    int front_face();
+    int32_t front_face() const { return m_front_face; }
 
-    int cull_face();
+    int32_t cull_face() const { return m_cull_face; }
 
-    int depth_func();
+    int32_t depth_func() const { return m_depth_func; }
 
-    int blend_func_src();
+    int32_t blend_func_src() const { return m_blend_func_src; }
 
-    int blend_func_dst();
+    int32_t blend_func_dst() const { return m_blend_func_dst; }
 
     void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha);
 
@@ -126,15 +126,15 @@ public:
 
     void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
 
-    bool wireframe();
+    bool wireframe() const { return m_wireframe; }
 
-    bool multisample();
+    bool multisample() const { return m_multisample; }
 
-    int provoking_vertex();
+    int32_t provoking_vertex() const { return m_provoking_vertex; }
 
-    float polygon_offset_factor();
+    float polygon_offset_factor() const { return m_polygon_offset_factor; }
 
-    float polygon_offset_units();
+    float polygon_offset_units() const { return m_polygon_offset_units; }
 
     void copy_buffer(const buffer_ref& src,
                      const buffer_ref& dst,
@@ -144,7 +144,7 @@ public:
 
     void set_scissor(const mgl::rect& r) { m_bound_framebuffer->set_scissor(r); }
 
-    void set_scissor(int x, int y, int width, int height)
+    void set_scissor(int32_t x, int32_t y, int32_t width, int32_t height)
     {
       m_bound_framebuffer->set_scissor({ x, y, width, height });
     }
@@ -153,7 +153,7 @@ public:
 
     void set_viewport(const mgl::rect& r) { m_bound_framebuffer->set_viewport(r); }
 
-    void set_viewport(int x, int y, int width, int height)
+    void set_viewport(int32_t x, int32_t y, int32_t width, int32_t height)
     {
       m_bound_framebuffer->set_viewport({ x, y, width, height });
     }
@@ -163,23 +163,42 @@ public:
     void disable_scissor() { m_bound_framebuffer->disable_scissor(); }
 
     // Buffer
-    buffer_ref buffer(bool dynamic = false);
-    buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::uint32_buffer& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false);
-    buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false);
+    buffer_ref buffer(bool dynamic = false) { return buffer(nullptr, 0, dynamic); }
+    buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
+    }
+    buffer_ref buffer(const mgl::uint32_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
+    }
+    buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
+    }
+    buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
+    }
+    buffer_ref buffer(void* data, size_t size, bool dynamic);
 
     // Compute Shader
     compute_shader_ref compute_shader(const std::string& source);
 
     // Create Shader
-    static context_ref create_context(context_mode::Enum mode, int required = 330);
+    static context_ref create_context(context_mode::mode mode, int32_t required = 330);
 
     // Framebuffer
     framebuffer_ref framebuffer(const attachments_ref& color_attachments,
                                 attachment_ref depth_attachment);
-    framebuffer_ref framebuffer(const attachments_ref& color_attachments);
-    framebuffer_ref framebuffer(attachment_ref depth_attachment);
+    framebuffer_ref framebuffer(const attachments_ref& color_attachments)
+    {
+      return framebuffer(color_attachments, nullptr);
+    }
+    framebuffer_ref framebuffer(attachment_ref depth_attachment)
+    {
+      return framebuffer({}, depth_attachment);
+    }
 
     // Program
     program_ref program(const shaders& shaders,
@@ -194,42 +213,42 @@ public:
                     bool primitives_generated = false);
 
     // Renderbuffer
-    renderbuffer_ref renderbuffer(int width,
-                                  int height,
-                                  int components = 4,
-                                  int samples = 0,
+    renderbuffer_ref renderbuffer(int32_t width,
+                                  int32_t height,
+                                  int32_t components = 4,
+                                  int32_t samples = 0,
                                   const std::string& dtype = "f1");
-    renderbuffer_ref depth_renderbuffer(int width, int height, int samples = 0);
+    renderbuffer_ref depth_renderbuffer(int32_t width, int32_t height, int32_t samples = 0);
 
     // Sampler
     sampler_ref sampler();
 
     // Scope
     scope_ref scope(framebuffer_ref framebuffer = nullptr,
-                    int enable_flags = 0,
+                    int32_t enable_flags = 0,
                     const texture_bindings& textures = {},
                     const buffer_bindings& uniform_buffers = {},
                     const buffer_bindings& storage_buffers = {},
                     const sampler_bindings& samplers = {});
 
     // Texture
-    texture_2d_ref texture2d(int width,
-                             int height,
-                             int components,
+    texture_2d_ref texture2d(int32_t width,
+                             int32_t height,
+                             int32_t components,
                              const void* data = nullptr,
-                             int samples = 0,
-                             int alignment = 1,
+                             int32_t samples = 0,
+                             int32_t alignment = 1,
                              const std::string& dtype = "f1",
-                             int internal_format_override = 0);
+                             int32_t internal_format_override = 0);
 
-    texture_2d_ref texture2d(int width,
-                             int height,
-                             int components,
+    texture_2d_ref texture2d(int32_t width,
+                             int32_t height,
+                             int32_t components,
                              const mgl::uint8_buffer& data,
-                             int samples = 0,
-                             int alignment = 1,
+                             int32_t samples = 0,
+                             int32_t alignment = 1,
                              const std::string& dtype = "f1",
-                             int internal_format_override = 0)
+                             int32_t internal_format_override = 0)
     {
       return texture2d(width,
                        height,
@@ -241,41 +260,44 @@ public:
                        internal_format_override);
     }
 
-    texture_2d_ref depth_texture2d(
-        int width, int height, const void* data = nullptr, int samples = 0, int alignment = 0);
+    texture_2d_ref depth_texture2d(int32_t width,
+                                   int32_t height,
+                                   const void* data = nullptr,
+                                   int32_t samples = 0,
+                                   int32_t alignment = 0);
 
     // Texture3D
-    texture_3d_ref texture3d(int width,
-                             int height,
-                             int depth,
-                             int components,
+    texture_3d_ref texture3d(int32_t width,
+                             int32_t height,
+                             int32_t depth,
+                             int32_t components,
                              const void* data = nullptr,
-                             int alignment = 1,
+                             int32_t alignment = 1,
                              const std::string& dtype = "f1");
 
     // TextureArray
-    texture_array_ref texture_array(int width,
-                                    int height,
-                                    int layers,
-                                    int components,
+    texture_array_ref texture_array(int32_t width,
+                                    int32_t height,
+                                    int32_t layers,
+                                    int32_t components,
                                     const void* data = nullptr,
-                                    int alignment = 1,
+                                    int32_t alignment = 1,
                                     const std::string& dtype = "f1");
 
     // TextureCube
-    texture_cube_ref texture_cube(int width,
-                                  int height,
-                                  int components,
+    texture_cube_ref texture_cube(int32_t width,
+                                  int32_t height,
+                                  int32_t components,
                                   const void* data = nullptr,
-                                  int alignment = 1,
+                                  int32_t alignment = 1,
                                   const std::string& dtype = "f1",
-                                  int internal_format_override = 0);
+                                  int32_t internal_format_override = 0);
 
     // VertexArray
     vertex_array_ref vertex_array(program_ref program,
                                   mgl::opengl::vertex_buffer_list vertex_buffers,
                                   buffer_ref index_buffer = nullptr,
-                                  int index_element_size = 4,
+                                  int32_t index_element_size = 4,
                                   bool skip_errors = false,
                                   mgl::opengl::render_mode mode = mgl::opengl::render_mode::POINTS);
 
@@ -286,7 +308,7 @@ public:
     virtual bool is_valid() = 0;
 
     bool released();
-    context_mode::Enum mode();
+    context_mode::mode mode();
     void clear(const glm::vec4& color,
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
@@ -298,31 +320,29 @@ public:
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
 private:
-    buffer_ref buffer(void* data, size_t size, bool dynamic);
-
 protected:
     bool m_released;
-    context_mode::Enum m_mode;
+    context_mode::mode m_mode;
 
 private:
     friend class framebuffer;
 
-    int m_version_code;
-    int m_max_samples;
-    int m_max_integer_samples;
-    int m_max_color_attachments;
-    int m_max_texture_units;
-    int m_default_texture_unit;
+    int32_t m_version_code;
+    int32_t m_max_samples;
+    int32_t m_max_integer_samples;
+    int32_t m_max_color_attachments;
+    int32_t m_max_texture_units;
+    int32_t m_default_texture_unit;
     float m_max_anisotropy;
-    int m_enable_flags;
-    int m_front_face;
-    int m_cull_face;
-    int m_depth_func;
-    int m_blend_func_src;
-    int m_blend_func_dst;
+    int32_t m_enable_flags;
+    int32_t m_front_face;
+    int32_t m_cull_face;
+    int32_t m_depth_func;
+    int32_t m_blend_func_src;
+    int32_t m_blend_func_dst;
     bool m_wireframe;
     bool m_multisample;
-    int m_provoking_vertex;
+    int32_t m_provoking_vertex;
     float m_polygon_offset_factor;
     float m_polygon_offset_units;
     mgl::string_list m_extensions;
@@ -334,7 +354,7 @@ private:
   class ContextEGL : public context
   {
 public:
-    ContextEGL(context_mode::Enum mode, int required);
+    ContextEGL(context_mode::mode mode, int32_t required);
     virtual ~ContextEGL() override;
 
     virtual void enter() override;
@@ -352,7 +372,7 @@ private:
   {
 
 public:
-    ContextWGL(context_mode::Enum mode, int required);
+    ContextWGL(context_mode::mode mode, int32_t required);
     ContextWGL(){};
     virtual ~ContextWGL() override;
 
@@ -372,7 +392,7 @@ private:
   {
 
 public:
-    ContextCGL(context_mode::Enum mode, int required);
+    ContextCGL(context_mode::mode mode, int32_t required);
     virtual ~ContextCGL() override;
 
     virtual void enter() override;
@@ -384,155 +404,5 @@ private:
     gl_context m_context;
   };
 #endif
-
-  inline context_mode::Enum context::mode()
-  {
-    return m_mode;
-  }
-
-  inline bool context::released()
-  {
-    return m_released;
-  }
-
-  inline int context::version_code()
-  {
-    return m_version_code;
-  }
-
-  inline int context::max_samples()
-  {
-    return m_max_samples;
-  }
-
-  inline int context::max_integer_samples()
-  {
-    return m_max_integer_samples;
-  }
-
-  inline int context::max_color_attachments()
-  {
-    return m_max_color_attachments;
-  }
-
-  inline int context::max_texture_units()
-  {
-    return m_max_texture_units;
-  }
-
-  inline int context::default_texture_unit()
-  {
-    return m_default_texture_unit;
-  }
-
-  inline float context::max_anisotropy()
-  {
-    return m_max_anisotropy;
-  }
-
-  inline const mgl::string_list& context::extensions() const
-  {
-    return m_extensions;
-  }
-
-  inline framebuffer& context::screen()
-  {
-    return *m_default_framebuffer;
-  }
-
-  inline int context::enable_flags()
-  {
-    return m_enable_flags;
-  }
-
-  inline int context::front_face()
-  {
-    return m_front_face;
-  }
-
-  inline int context::cull_face()
-  {
-    return m_cull_face;
-  }
-
-  inline int context::depth_func()
-  {
-    return m_depth_func;
-  }
-
-  inline int context::blend_func_src()
-  {
-    return m_blend_func_src;
-  }
-
-  inline int context::blend_func_dst()
-  {
-    return m_blend_func_dst;
-  }
-
-  inline bool context::wireframe()
-  {
-    return m_wireframe;
-  }
-
-  inline bool context::multisample()
-  {
-    return m_multisample;
-  }
-
-  inline int context::provoking_vertex()
-  {
-    return m_provoking_vertex;
-  }
-
-  inline float context::polygon_offset_factor()
-  {
-    return m_polygon_offset_factor;
-  }
-
-  inline float context::polygon_offset_units()
-  {
-    return m_polygon_offset_units;
-  }
-
-  inline buffer_ref context::buffer(bool dynamic)
-  {
-    return buffer((void*)nullptr, 0, dynamic);
-  }
-
-  inline buffer_ref context::buffer(const mgl::float32_buffer& data, bool dynamic)
-  {
-    return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
-  }
-
-  inline buffer_ref context::buffer(const mgl::uint32_buffer& data, bool dynamic)
-  {
-    return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
-  }
-
-  inline buffer_ref context::buffer(const mgl::buffer<uint16_t>& data, bool dynamic)
-  {
-    return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
-  }
-
-  inline buffer_ref context::buffer(const mgl::uint8_buffer& data, bool dynamic)
-  {
-    return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
-  }
-
-  inline framebuffer_ref context::framebuffer(attachment_ref depth_attachment)
-  {
-    return framebuffer(attachments_ref(), depth_attachment);
-  }
-
-  inline framebuffer_ref context::framebuffer(const attachments_ref& color_attachments)
-  {
-    return framebuffer(color_attachments, attachment_ref(nullptr));
-  }
-
-  inline context_ref create_context(context_mode::Enum mode, int required = 330)
-  {
-    return context::create_context(mode, required);
-  }
 
 } // namespace  mgl::opengl

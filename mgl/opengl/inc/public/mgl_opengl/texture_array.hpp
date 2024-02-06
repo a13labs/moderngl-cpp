@@ -31,116 +31,69 @@ namespace mgl::opengl
   class texture_array
   {
 public:
+    texture_array::texture_array(int32_t w,
+                                 int32_t h,
+                                 int32_t layers,
+                                 int32_t components,
+                                 const void* data,
+                                 int32_t align,
+                                 const std::string& dtype);
+
     ~texture_array() = default;
 
     void release();
-    bool released();
+    bool released() const { return m_glo == 0; }
 
-    int width();
-    int height();
-    int layers();
-    int components();
+    int32_t width() const { return m_width; }
+    int32_t height() const { return m_height; }
+    int32_t layers() const { return m_layers; }
+    int32_t components() const { return m_components; }
 
-    bool repeat_x();
+    bool repeat_x() const { return m_repeat_x; }
     void set_repeat_x(bool value);
 
-    bool repeat_y();
+    bool repeat_y() const { return m_repeat_y; }
     void set_repeat_y(bool value);
 
-    const texture::filter& filter() const;
+    const texture::filter& filter() const { return m_filter; }
     void set_filter(const texture::filter& value);
 
     std::string swizzle();
     void set_swizzle(const std::string& value);
 
-    float anisotropy();
+    float anisotropy() const { return m_anisotropy; }
     void set_anisotropy(float value);
 
-    void read(mgl::uint8_buffer& dst, int alignment = 1, size_t write_offset = 0);
-    void read(buffer_ref& dst, int alignment = 1, size_t write_offset = 0);
+    void read(mgl::uint8_buffer& dst, int32_t align = 1, size_t dst_off = 0);
+    void read(buffer_ref& dst, int32_t align = 1, size_t dst_off = 0);
 
-    void write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int alignment = 1);
-    void write(const mgl::uint8_buffer& src, int alignment = 1);
-    void write(const buffer_ref& src, const mgl::cube& viewport, int alignment = 1);
-    void write(const buffer_ref& src, int alignment = 1);
+    void write(const mgl::uint8_buffer& src, const mgl::cube& v, int32_t align = 1);
+    void write(const mgl::uint8_buffer& src, int32_t align = 1);
+    void write(const buffer_ref& src, const mgl::cube& v, int32_t align = 1);
+    void write(const buffer_ref& src, int32_t align = 1);
 
-    void
-    bind_to_image(int unit, bool read = true, bool write = true, int level = 0, int format = 0);
-    void build_mipmaps(int base = 0, int max_level = 1000);
+    void bind_to_image(
+        int32_t unit, bool read = true, bool write = true, int32_t lvl = 0, int32_t format = 0);
+    void build_mipmaps(int32_t base = 0, int32_t max_lvl = 1000);
 
-    void use(int index = 0);
+    void use(int32_t index = 0);
 
-    int glo();
+    int32_t glo() const { return m_glo; }
 
 private:
-    friend class context;
-    texture_array() = default;
-
-    context* m_context;
     data_type* m_data_type;
-    int m_texture_obj;
-    int m_width;
-    int m_height;
-    int m_layers;
-    int m_components;
+    int32_t m_glo;
+    int32_t m_width;
+    int32_t m_height;
+    int32_t m_layers;
+    int32_t m_components;
     texture::filter m_filter;
-    int m_max_level;
+    int32_t m_max_level;
     bool m_repeat_x;
     bool m_repeat_y;
     float m_anisotropy;
-    bool m_released;
   };
 
   using texture_array_ref = mgl::ref<texture_array>;
-
-  inline int texture_array::glo()
-  {
-    return m_texture_obj;
-  }
-
-  inline bool texture_array::released()
-  {
-    return m_released;
-  }
-
-  inline int texture_array::components()
-  {
-    return m_components;
-  }
-
-  inline int texture_array::width()
-  {
-    return m_width;
-  }
-
-  inline int texture_array::height()
-  {
-    return m_height;
-  }
-
-  inline int texture_array::layers()
-  {
-    return m_layers;
-  }
-
-  inline bool texture_array::repeat_x()
-  {
-    return m_repeat_x;
-  }
-
-  inline bool texture_array::repeat_y()
-  {
-    return m_repeat_y;
-  }
-
-  inline const texture::filter& texture_array::filter() const
-  {
-    return m_filter;
-  }
-
-  inline float texture_array::anisotropy()
-  {
-    return m_anisotropy;
-  }
 
 } // namespace  mgl::opengl

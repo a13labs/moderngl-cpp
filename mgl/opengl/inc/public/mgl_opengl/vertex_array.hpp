@@ -28,84 +28,76 @@ namespace mgl::opengl
   class vertex_array
   {
 public:
+    vertex_array::vertex_array(program_ref program,
+                               mgl::opengl::vertex_buffer_list vertex_buffers,
+                               buffer_ref index_buffer,
+                               int32_t index_element_size,
+                               bool skip_errors,
+                               mgl::opengl::render_mode mode);
     ~vertex_array() = default;
 
 public:
     void release();
-    bool released();
+
+    bool released() const { return m_glo == 0; }
 
     void render(render_mode mode = render_mode::TRIANGLES,
-                int vertices = 0,
-                int first = 0,
-                int instances = 0);
-    void render(int instances);
-    void
-    render_indirect(const buffer_ref& buffer, render_mode mode, int count = -1, int first = -1);
+                int32_t vertices = 0,
+                int32_t first = 0,
+                int32_t instances = 0);
+
+    void render(int32_t instances) { render(mgl::opengl::TRIANGLES, 0, 0, instances); }
+
+    void render_indirect(const buffer_ref& buffer,
+                         render_mode mode,
+                         int32_t count = -1,
+                         int32_t first = -1);
+
     void transform(const buffer_ref& b,
                    render_mode mode,
-                   int vertices = -1,
-                   int first = 0,
-                   int instances = -1);
+                   int32_t vertices = -1,
+                   int32_t first = 0,
+                   int32_t instances = -1)
+    {
+      transform(mgl::ref_list<buffer>({ b }), mode, vertices, first, instances);
+    }
 
     void transform(const mgl::ref_list<buffer>& buffers,
                    render_mode mode,
-                   int vertices = -1,
-                   int first = 0,
-                   int instances = -1,
-                   int buffer_offset = 0);
+                   int32_t vertices = -1,
+                   int32_t first = 0,
+                   int32_t instances = -1,
+                   int32_t buffer_offset = 0);
 
-    void bind(int location,
+    void bind(int32_t location,
               const char* type,
               const buffer_ref& buffer,
               const char* format,
               size_t offset = 0,
-              int stride = 0,
-              int divisor = 0,
+              int32_t stride = 0,
+              int32_t divisor = 0,
               bool normalize = false);
 
     void set_index_buffer(const buffer_ref& value);
 
-    int vertices();
-    int instances();
-
     program_ref& program() { return m_program; }
 
-private:
-    friend class context;
-    vertex_array() = default;
+    int32_t vertex_array::vertices() const { return m_num_vertices; }
 
-    context* m_context;
+    int32_t vertex_array::instances() const { return m_num_instances; }
+
+    int32_t glo() const { return m_glo; }
+
+private:
+    int32_t m_glo;
     program_ref m_program;
     buffer_ref m_index_buffer;
-    int m_index_element_size;
-    int m_index_element_type;
-    int m_vertex_array_obj;
-    int m_num_vertices;
-    int m_num_instances;
-    bool m_released;
+    int32_t m_index_element_size;
+    int32_t m_index_element_type;
+    int32_t m_num_vertices;
+    int32_t m_num_instances;
   };
 
   using vertex_array_ref = mgl::ref<vertex_array>;
-
-  inline void vertex_array::transform(
-      const buffer_ref& b, render_mode mode, int vertices, int first, int instances)
-  {
-    transform(mgl::ref_list<buffer>({ b }), mode, vertices, first, instances);
-  }
-
-  inline void vertex_array::render(int instances)
-  {
-    render(mgl::opengl::TRIANGLES, 0, 0, instances);
-  }
-
-  inline int vertex_array::vertices()
-  {
-    return m_num_vertices;
-  }
-
-  inline int vertex_array::instances()
-  {
-    return m_num_instances;
-  }
 
 } // namespace  mgl::opengl

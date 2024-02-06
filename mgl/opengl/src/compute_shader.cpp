@@ -9,7 +9,8 @@
 
 namespace mgl::opengl
 {
-  compute_shader::compute_shader(const std::string& source)
+  compute_shader::compute_shader(context* ctx, const std::string& source)
+      : gl_object(ctx)
   {
     int32_t glo = glCreateProgram();
     MGL_CORE_ASSERT(glo, "cannot create program");
@@ -125,7 +126,7 @@ namespace mgl::opengl
 
   void compute_shader::release()
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Compute Shader already released or not initialized");
+    MGL_CORE_ASSERT(m_glo, "Compute Shader already released or not initialized");
     glDeleteShader(m_shader_glo);
     glDeleteProgram(m_glo);
     m_glo = 0;
@@ -133,7 +134,7 @@ namespace mgl::opengl
 
   void compute_shader::run(int32_t x, int32_t y, int32_t z)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Compute Shader already released or not initialized");
+    MGL_CORE_ASSERT(m_glo, "Compute Shader already released or not initialized");
     glUseProgram(m_glo);
     glDispatchCompute(x, y, z);
   }

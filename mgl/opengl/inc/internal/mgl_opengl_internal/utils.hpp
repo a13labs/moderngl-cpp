@@ -68,46 +68,4 @@ namespace mgl::opengl::internal
     MGL_CORE_ERROR("{0}", message);
   }
 
-  inline int32_t gl_max_texture_size()
-  {
-    int32_t max_texture_size = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
-    return max_texture_size;
-  }
-
-  inline int32_t gl_max_texture_units()
-  {
-    int32_t max_texture_units = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
-    return max_texture_units;
-  }
-
-  inline float gl_max_texture_max_anisotropy()
-  {
-    float max_texture_max_anisotropy = 0;
-    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &max_texture_max_anisotropy);
-    return max_texture_max_anisotropy;
-  }
-
-  inline int32_t gl_max_color_attachments()
-  {
-    int32_t max_color_attachments = 0;
-    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &max_color_attachments);
-    return max_color_attachments;
-  }
-
-  inline int32_t gl_max_samples()
-  {
-    int32_t max_samples = 0;
-    glGetIntegerv(GL_MAX_SAMPLES, &max_samples);
-    return max_samples;
-  }
-
-  inline int32_t gl_max_integer_samples()
-  {
-    int32_t max_integer_samples = 0;
-    glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &max_integer_samples);
-    return max_integer_samples;
-  }
-
 } // namespace mgl::opengl::internal

@@ -27,187 +27,76 @@
 
 namespace mgl::opengl
 {
-  framebuffer::framebuffer(const attachments_ref& color_attachments,
+  framebuffer::framebuffer(context* ctx)
+      : gl_object(ctx)
+  {
+    MGL_CORE_ASSERT(ctx, "invalid context");
+    MGL_CORE_ASSERT(ctx->m_default_framebuffer == nullptr, "default framebuffer already created");
+
+    // According to glGet docs:
+    // The initial value is GL_BACK if there are back buffers, otherwise it is GL_FRONT.
+
+    // According to glDrawBuffer docs:
+    // The symbolic constants GL_FRONT, GL_BACK, GL_LEFT, GL_RIGHT, and GL_FRONT_AND_BACK
+    // are not allowed in the bufs array since they may refer to multiple buffers.
+
+    // GL_COLOR_ATTACHMENT0 is causes error: 1282
+    // This value is temporarily ignored
+
+    // draw_buffers[0] = GL_COLOR_ATTACHMENT0;
+    // draw_buffers[0] = GL_BACK_LEFT;
+
+    int32_t bound_framebuffer = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
+
+#ifdef MGL_PLATFORM_MACOS
+    if(mode == context_mode::STANDALONE)
+    {
+      int32_t renderbuffer = 0;
+      glGenRenderbuffers(1, (GLuint*)&renderbuffer);
+      glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, 4, 4);
+
+      int32_t framebuffer = 0;
+      glGenFramebuffers(1, (GLuint*)&framebuffer);
+      glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+      glFramebufferRenderbuffer(
+          GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
+      bound_framebuffer = framebuffer;
+    }
+#endif
+
+    m_draw_buffers_len = 1;
+    m_draw_buffers = new unsigned[1];
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glGetIntegerv(GL_DRAW_BUFFER, (int32_t*)&m_draw_buffers[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, bound_framebuffer);
+
+    m_color_masks = { { true, true, true, true } };
+    m_depth_mask = true;
+
+    int32_t scissor_box[4] = {};
+    glGetIntegerv(GL_SCISSOR_BOX, (int32_t*)&scissor_box);
+
+    m_viewport = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
+
+    m_scissor_enabled = false;
+    m_scissor = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
+
+    m_width = scissor_box[2];
+    m_height = scissor_box[3];
+    m_dynamic = true;
+  }
+
+  framebuffer::framebuffer(context* ctx,
+                           const attachments_ref& color_attachments,
                            attachment_ref depth_attachment)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(color_attachments.size() ||
                         (color_attachments.size() == 0 && depth_attachment != nullptr),
                     "missing color attachments");
-    int32_t width = 0;
-    int32_t height = 0;
-    int32_t samples = 0;
-
-    int32_t i = 0;
-    for(auto&& attachment : color_attachments)
-    {
-      switch(attachment->attachment_type())
-      {
-        case attachment::type::TEXTURE: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-          MGL_CORE_ASSERT(texture, "not a texture2D");
-
-          if(texture->depth())
-          {
-            MGL_CORE_ASSERT(false, "color_attachments[{0}] is a depth attachment", i);
-            return;
-          }
-
-          if(i == 0)
-          {
-            width = texture->width();
-            height = texture->height();
-            samples = texture->samples();
-          }
-          else
-          {
-            if(texture->width() != width || texture->height() != height ||
-               texture->samples() != samples)
-            {
-              MGL_CORE_ASSERT(false, "the color_attachments have different sizes or samples");
-              return;
-            }
-          }
-        }
-        break;
-        case attachment::type::RENDERBUFFER: {
-          auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-          MGL_CORE_ASSERT(renderbuffer, "not a render buffer");
-
-          if(renderbuffer->depth())
-          {
-            MGL_CORE_ASSERT(false, "color_attachments[{0}] is a depth attachment", i);
-            return;
-          }
-
-          if(i == 0)
-          {
-            width = renderbuffer->width();
-            height = renderbuffer->height();
-            samples = renderbuffer->samples();
-          }
-          else
-          {
-            if(renderbuffer->width() != width || renderbuffer->height() != height ||
-               renderbuffer->samples() != samples)
-            {
-              MGL_CORE_ASSERT(false, "the color_attachments have different sizes or samples");
-              return;
-            }
-          }
-        }
-        break;
-        default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
-      }
-      i++;
-    }
-
-    if(depth_attachment != nullptr)
-    {
-      switch(depth_attachment->attachment_type())
-      {
-        case attachment::type::TEXTURE: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
-          MGL_CORE_ASSERT(texture, "not a texture_2d");
-
-          if(!texture->depth())
-          {
-            MGL_CORE_ASSERT(false, "the depth_attachment is a color attachment");
-            return;
-          }
-
-          if(color_attachments.size())
-          {
-            if(texture->width() != width || texture->height() != height ||
-               texture->samples() != samples)
-            {
-              MGL_CORE_ASSERT(false, "the depth_attachment have different sizes or samples");
-              return;
-            }
-          }
-          else
-          {
-            width = texture->width();
-            height = texture->height();
-            samples = texture->samples();
-          }
-        }
-        break;
-        case attachment::type::RENDERBUFFER: {
-          auto renderbuffer =
-              std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
-          MGL_CORE_ASSERT(renderbuffer, "not a render buffer");
-
-          if(!renderbuffer->depth())
-          {
-            MGL_CORE_ASSERT(false, "the depth_attachment is a color attachment");
-            return;
-          }
-
-          if(color_attachments.size())
-          {
-            if(renderbuffer->width() != width || renderbuffer->height() != height ||
-               renderbuffer->samples() != samples)
-            {
-              MGL_CORE_ASSERT(false, "the depth_attachment have different sizes or samples");
-              return;
-            }
-          }
-          else
-          {
-            width = renderbuffer->width();
-            height = renderbuffer->height();
-            samples = renderbuffer->samples();
-          }
-        }
-        break;
-        default:
-          MGL_CORE_ASSERT(false, "the depth_attachment must be a render buffer or texture");
-          return;
-      }
-    }
-
-    m_draw_buffers_len = color_attachments.size();
-    m_draw_buffers = new unsigned[color_attachments.size()];
-    m_color_masks = color_masks(color_attachments.size());
-
-    for(size_t i = 0; i < color_attachments.size(); ++i)
-    {
-      auto attachment = color_attachments[i];
-
-      m_draw_buffers[i] = GL_COLOR_ATTACHMENT0 + i;
-
-      switch(attachment->attachment_type())
-      {
-        case attachment::type::TEXTURE: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-          MGL_CORE_ASSERT(texture, "not a texture_2d");
-          m_color_masks[i] = { texture->components() >= 1,
-                               texture->components() >= 2,
-                               texture->components() >= 3,
-                               texture->components() >= 4 };
-        }
-        break;
-        case attachment::type::RENDERBUFFER: {
-          auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-          MGL_CORE_ASSERT(renderbuffer, "not a render buffer");
-          m_color_masks[i] = { renderbuffer->components() >= 1,
-                               renderbuffer->components() >= 2,
-                               renderbuffer->components() >= 3,
-                               renderbuffer->components() >= 4 };
-        }
-        break;
-        default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
-      }
-    }
-
-    m_depth_mask = (depth_attachment != nullptr);
-    m_viewport = { 0, 0, width, height };
-    m_dynamic = false;
-    m_scissor_enabled = false;
-    m_scissor = { 0, 0, width, height };
-    m_width = width;
-    m_height = height;
-    m_samples = samples;
 
     int32_t glo = 0;
     glGenFramebuffers(1, (GLuint*)&glo);
@@ -218,74 +107,127 @@ namespace mgl::opengl
       return;
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, glo);
+    m_glo = glo;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_glo);
 
     if(!color_attachments.size())
     {
       glDrawBuffer(GL_NONE); // No color buffer is drawn to.
     }
 
+    int32_t width = 0;
+    int32_t height = 0;
+    int32_t samples = 0;
+
+    m_draw_buffers_len = color_attachments.size();
+    m_draw_buffers = new unsigned[color_attachments.size()];
+    m_color_masks = color_masks(color_attachments.size());
+
+    int32_t i = 0;
     for(auto&& attachment : color_attachments)
     {
+      if(i == 0)
+      {
+        width = attachment->width();
+        height = attachment->height();
+        samples = attachment->samples();
+      }
+      else
+      {
+        MGL_CORE_ASSERT(attachment->width() == width, "color_attachments have different widths")
+        MGL_CORE_ASSERT(attachment->height() == height, "color_attachments have different heights")
+        MGL_CORE_ASSERT(attachment->samples() == samples,
+                        "color_attachments have different samples")
+      }
+
+      MGL_CORE_ASSERT(!attachment->depth(), "color_attachments[{0}] is a depth attachment", i);
+
+      m_draw_buffers[i] = GL_COLOR_ATTACHMENT0 + i;
+
+      m_color_masks[i] = { attachment->components() >= 1,
+                           attachment->components() >= 2,
+                           attachment->components() >= 3,
+                           attachment->components() >= 4 };
+
       switch(attachment->attachment_type())
       {
         case attachment::type::TEXTURE: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(attachment);
-          MGL_CORE_ASSERT(texture, "not a texture_2d");
-
           glFramebufferTexture2D(GL_FRAMEBUFFER,
                                  GL_COLOR_ATTACHMENT0 + i,
-                                 texture->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-                                 texture->glo(),
+                                 attachment->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+                                 attachment->glo(),
                                  0);
         }
         break;
         case attachment::type::RENDERBUFFER: {
-          auto renderbuffer = std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(attachment);
-          MGL_CORE_ASSERT(renderbuffer, "not a render buffer");
-
           glFramebufferRenderbuffer(
-              GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, renderbuffer->glo());
+              GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, attachment->glo());
         }
         break;
         default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
       }
+
+      i++;
     }
 
     if(depth_attachment)
     {
+      MGL_CORE_ASSERT(!depth_attachment->depth(), "the depth_attachment is a depth attachment", i);
+
+      if(width != 0 && height != 0 && samples != 0)
+      {
+        MGL_CORE_ASSERT(depth_attachment->width() == width,
+                        "the depth_attachment have different width")
+        MGL_CORE_ASSERT(depth_attachment->height() == height,
+                        "the depth_attachment have different height")
+        MGL_CORE_ASSERT(depth_attachment->samples() == samples,
+                        "the depth_attachment have different samples")
+      }
+      else
+      {
+        width = depth_attachment->width();
+        height = depth_attachment->height();
+        samples = depth_attachment->samples();
+      }
+
       switch(depth_attachment->attachment_type())
       {
         case attachment::type::TEXTURE: {
-          auto texture = std::dynamic_pointer_cast<texture_2d>(depth_attachment);
-          MGL_CORE_ASSERT(texture, "not a texture_2d");
-
           glFramebufferTexture2D(GL_FRAMEBUFFER,
                                  GL_DEPTH_ATTACHMENT,
-                                 texture->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-                                 texture->glo(),
+                                 depth_attachment->samples() ? GL_TEXTURE_2D_MULTISAMPLE
+                                                             : GL_TEXTURE_2D,
+                                 depth_attachment->glo(),
                                  0);
         }
         break;
         case attachment::type::RENDERBUFFER: {
-          auto renderbuffer =
-              std::dynamic_pointer_cast<mgl::opengl::renderbuffer>(depth_attachment);
-          MGL_CORE_ASSERT(renderbuffer, "not a render buffer");
-
           glFramebufferRenderbuffer(
-              GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->glo());
+              GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_attachment->glo());
         }
         break;
         default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
       }
     }
 
+    MGL_CORE_ASSERT(width != 0, "invalid width");
+    MGL_CORE_ASSERT(height != 0, "invalid height");
+    MGL_CORE_ASSERT(samples != 0, "invalid samples");
+
+    m_depth_mask = (depth_attachment != nullptr);
+    m_viewport = { 0, 0, width, height };
+    m_dynamic = false;
+    m_scissor_enabled = false;
+    m_scissor = { 0, 0, width, height };
+    m_width = width;
+    m_height = height;
+    m_samples = samples;
+
     int32_t status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_bound_framebuffer->m_glo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->m_bound_framebuffer->glo());
     MGL_CORE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is not complete");
-
-    m_glo = glo;
   }
 
   void framebuffer::release()
@@ -347,7 +289,7 @@ namespace mgl::opengl
       glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_glo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->m_bound_framebuffer->glo());
   }
 
   void framebuffer::use()
@@ -380,7 +322,7 @@ namespace mgl::opengl
 
     glDepthMask(m_depth_mask);
 
-    m_context->m_bound_framebuffer = shared_from_this();
+    m_ctx->m_bound_framebuffer = framebuffer_ref(this);
   }
 
   void framebuffer::read(mgl::uint8_buffer& dst,
@@ -433,7 +375,7 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, alignment);
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glReadPixels(x, y, width, height, base_format, pixel_type, ptr);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_glo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->m_bound_framebuffer->glo());
 
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
@@ -481,7 +423,7 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, alignment);
     glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
     glReadPixels(x, y, width, height, base_format, pixel_type, (void*)write_offset);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_glo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->m_bound_framebuffer->glo());
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
@@ -494,7 +436,7 @@ namespace mgl::opengl
                     "color_mask must be a match buffers len");
     m_color_masks = masks;
 
-    if(m_glo == m_context->m_bound_framebuffer->m_glo)
+    if(m_glo == m_ctx->m_bound_framebuffer->glo())
     {
       for(int i = 0; i < m_draw_buffers_len; ++i)
       {
@@ -509,7 +451,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     m_depth_mask = value;
 
-    if(m_glo == m_context->m_bound_framebuffer->m_glo)
+    if(m_glo == m_ctx->m_bound_framebuffer->glo())
     {
       glDepthMask(m_depth_mask);
     }
@@ -537,7 +479,7 @@ namespace mgl::opengl
         GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &depth_bits);
     glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &stencil_bits);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_context->m_bound_framebuffer->m_glo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->m_bound_framebuffer->glo());
 
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
@@ -548,7 +490,7 @@ namespace mgl::opengl
 
     m_viewport = r;
 
-    if(m_glo == m_context->m_bound_framebuffer->m_glo)
+    if(m_glo == m_ctx->m_bound_framebuffer->glo())
     {
       glViewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
     }
@@ -560,7 +502,7 @@ namespace mgl::opengl
 
     m_scissor = r;
 
-    if(m_glo == m_context->m_bound_framebuffer->m_glo)
+    if(m_glo == m_ctx->m_bound_framebuffer->glo())
     {
       glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
     }

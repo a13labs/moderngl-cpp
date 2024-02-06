@@ -15,6 +15,7 @@
 */
 #pragma once
 
+#include "gl_object.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
 
@@ -24,17 +25,18 @@ namespace mgl::opengl
 {
   class context;
 
-  class compute_shader
+  class compute_shader : public gl_object
   {
 public:
-    compute_shader(const std::string& source);
     ~compute_shader() = default;
-    void release();
-    const mgl::string_list uniforms() const;
-    const mgl::string_list uniform_blocks() const;
-    void run(int32_t x = 1, int32_t y = 1, int32_t z = 1);
 
-    bool released() const { return m_glo == 0; }
+    virtual void release() override final;
+
+    const mgl::string_list uniforms() const;
+
+    const mgl::string_list uniform_blocks() const;
+
+    void run(int32_t x = 1, int32_t y = 1, int32_t z = 1);
 
     const uniform_ref uniform(const std::string& name) const
     {
@@ -55,18 +57,19 @@ public:
     }
 
     size_t num_uniforms() const { return m_uniforms_map.size(); }
+
     size_t num_uniform_blocks() const { return m_uniform_blocks_map.size(); }
 
     const uniform_ref operator[](const std::string& name) const { return uniform(name); }
 
-    int32_t glo() const { return m_glo; }
-
 private:
-    int32_t m_glo;
+    friend class context;
+
+    compute_shader(context* ctx, const std::string& source);
+
     int32_t m_shader_glo;
     uniforms_dict m_uniforms_map;
     uniform_blocks_dict m_uniform_blocks_map;
-    bool m_released;
   };
 
   using compute_shader_ref = std::shared_ptr<compute_shader>;

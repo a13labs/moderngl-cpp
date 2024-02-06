@@ -26,25 +26,160 @@
 
 namespace mgl::opengl
 {
-  void vertex_array::release()
+  vertex_array::vertex_array(program_ref program,
+                             mgl::opengl::vertex_buffer_list vertex_buffers,
+                             buffer_ref index_buffer,
+                             int32_t index_element_size,
+                             bool skip_errors,
+                             mgl::opengl::render_mode mode)
   {
-    if(m_released)
+    MGL_CORE_ASSERT(program, "program is null");
+    MGL_CORE_ASSERT(!program->released(), "program already released");
+    MGL_CORE_ASSERT(index_element_size == 1 || index_element_size == 2 || index_element_size == 4,
+                    "index_element_size must be 1, 2, or 4");
+
+    m_glo = 0;
+
+#ifdef MGL_CORE_ENABLE_ASSERTS
+    int32_t i = 0;
+    for(auto&& v_data : vertex_buffers)
     {
+      if(v_data.buffer == nullptr)
+      {
+        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: empty vertex buffer", i);
+        return;
+      }
+
+      buffer_layout layout = v_data.buffer_layout;
+
+      if(layout.is_invalid())
+      {
+        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: invalid buffer layout", i);
+        return;
+      }
+
+      if(!v_data.attributes.size())
+      {
+        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: attributes must not be empty", i);
+        return;
+      }
+
+      if((int32_t)v_data.attributes.size() != layout.size())
+      {
+        MGL_CORE_ASSERT(false,
+                        "vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
+                        i,
+                        layout.size(),
+                        v_data.attributes.size());
+        return;
+      }
+
+      i++;
+    }
+#endif
+
+    m_num_vertices = 0;
+    m_num_instances = 1;
+    m_program = program;
+    m_index_buffer = index_buffer;
+    m_index_element_size = index_element_size;
+    const int32_t element_types[5] = { 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT };
+    m_index_element_type = element_types[index_element_size];
+    m_num_vertices = -1;
+
+    GLuint glo = 0;
+    glGenVertexArrays(1, &glo);
+
+    if(!glo)
+    {
+      MGL_CORE_ASSERT(glo, "cannot create vertex array");
       return;
     }
 
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    m_glo = glo;
 
-    m_released = true;
-    glDeleteVertexArrays(1, (GLuint*)&m_vertex_array_obj);
+    glBindVertexArray(m_glo);
+
+    if(m_index_buffer != nullptr)
+    {
+      m_num_vertices = (int32_t)(m_index_buffer->size() / index_element_size);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer->glo());
+    }
+
+    i = 0;
+    for(auto&& v_data : vertex_buffers)
+    {
+      auto buffer = v_data.buffer;
+      const char* format = v_data.buffer_layout.c_str();
+
+      buffer_layout layout = v_data.buffer_layout;
+
+      int32_t buf_vertices = (int32_t)(buffer->size() / layout.size());
+
+      if(!layout.divisor() && m_index_buffer == nullptr && (!i || m_num_vertices > buf_vertices))
+      {
+        m_num_vertices = buf_vertices;
+      }
+
+      glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
+
+      for(size_t j = 0; j < v_data.attributes.size(); ++j)
+      {
+
+        auto attribute = m_program->attribute(v_data.attributes[j]);
+
+        if(!attribute)
+        {
+          continue;
+        }
+
+        buffer_layout::element element = layout[j];
+        int32_t attribute_location = attribute->location();
+        int32_t attribute_rows_length = attribute->get_data_type()->rows_length;
+        int32_t attribute_scalar_type = attribute->get_data_type()->scalar_type;
+
+        char* ptr = (char*)(intptr_t)element.offset;
+        for(int32_t r = 0; r < attribute_rows_length; ++r)
+        {
+          int32_t location = attribute_location + r;
+          int32_t count = element.count / attribute_rows_length;
+
+          switch(attribute_scalar_type)
+          {
+            case GL_FLOAT:
+              glVertexAttribPointer(
+                  location, count, element.type, element.normalize, layout.stride(), ptr);
+              break;
+            case GL_DOUBLE:
+              glVertexAttribLPointer(location, count, element.type, layout.stride(), ptr);
+              break;
+            case GL_INT:
+              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
+              break;
+            case GL_UNSIGNED_INT:
+              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
+              break;
+          }
+
+          glVertexAttribDivisor(location, layout.divisor());
+          glEnableVertexAttribArray(location);
+          ptr += element.size / attribute_rows_length;
+        }
+      }
+      i++;
+    }
+  }
+
+  void vertex_array::release()
+  {
+    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
+    glDeleteVertexArrays(1, (GLuint*)&m_glo);
+    m_glo = 0;
   }
 
   void vertex_array::render(mgl::opengl::render_mode mode, int vertices, int first, int instances)
   {
-    MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
 
     if(vertices == 0)
     {
@@ -58,7 +193,7 @@ namespace mgl::opengl
     }
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_vertex_array_obj);
+    glBindVertexArray(m_glo);
 
     if(m_index_buffer != nullptr)
     {
@@ -77,12 +212,10 @@ namespace mgl::opengl
                                      int count,
                                      int first)
   {
-    MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_vertex_array_obj);
+    glBindVertexArray(m_glo);
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->glo());
 
     const void* ptr = (const void*)((GLintptr)first * 20);
@@ -104,9 +237,7 @@ namespace mgl::opengl
                                int instances,
                                int buffer_offset)
   {
-    MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
 
     MGL_CORE_ASSERT(m_program->num_varyings(), "the program has no varyings")
 
@@ -187,7 +318,7 @@ namespace mgl::opengl
     }
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_vertex_array_obj);
+    glBindVertexArray(m_glo);
 
     int i = 0;
     for(auto&& buffer : buffers)
@@ -230,9 +361,7 @@ namespace mgl::opengl
                           int divisor,
                           bool normalize)
   {
-    MGL_CORE_ASSERT(!m_released, "Vertex Array already released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
 
     MGL_CORE_ASSERT(!(type[0] == 'f' && normalize), "invalid normalize");
 
@@ -248,7 +377,7 @@ namespace mgl::opengl
 
     char* ptr = (char*)offset;
 
-    glBindVertexArray(m_vertex_array_obj);
+    glBindVertexArray(m_glo);
     glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
 
     switch(type[0])

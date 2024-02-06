@@ -16,6 +16,7 @@
 #pragma once
 #include "buffer.hpp"
 #include "color_mask.hpp"
+#include "gl_object.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/memory.hpp"
@@ -26,11 +27,9 @@ namespace mgl::opengl
 {
   class context;
 
-  class framebuffer : public mgl::ref_from_this<framebuffer>
+  class framebuffer : public gl_object
   {
 public:
-    framebuffer(const attachments_ref& color_attachments, attachment_ref depth_attachment);
-
     ~framebuffer() = default;
 
     bool released() const { return m_glo == 0; }
@@ -52,13 +51,11 @@ public:
 
     bool depth_mask() { return m_depth_mask; }
 
-    int width() { return m_width; }
+    int32_t width() { return m_width; }
 
-    int height() { return m_height; }
+    int32_t height() { return m_height; }
 
     void set_color_mask(const opengl::color_mask& mask) { set_color_mask({ mask }); }
-
-    int32_t glo() const { return m_glo; }
 
     void release();
     void set_viewport(const mgl::rect& r);
@@ -67,12 +64,12 @@ public:
     void set_color_mask(const opengl::color_masks& masks);
     void set_depth_mask(bool value);
 
-    void bits(int& red_bits,
-              int& green_bits,
-              int& blue_bits,
-              int& alpha_bits,
-              int& depth_bits,
-              int& stencil_bits);
+    void bits(int32_t& red_bits,
+              int32_t& green_bits,
+              int32_t& blue_bits,
+              int32_t& alpha_bits,
+              int32_t& depth_bits,
+              int32_t& stencil_bits);
 
     void clear(const glm::vec4& color,
                float depth = 0.0,
@@ -87,39 +84,44 @@ public:
 
     void read(mgl::uint8_buffer& dst,
               const mgl::rect& viewport = mgl::null_viewport_2d,
-              int components = 3,
-              int attachment = 0,
-              int alignment = 1,
+              int32_t components = 3,
+              int32_t attachment = 0,
+              int32_t alignment = 1,
               const char* dtype = "f1",
               size_t write_offset = 0);
 
     void read(buffer_ref dst,
               const mgl::rect& viewport = mgl::null_viewport_2d,
-              int components = 3,
-              int attachment = 0,
-              int alignment = 1,
+              int32_t components = 3,
+              int32_t attachment = 0,
+              int32_t alignment = 1,
               const char* dtype = "f1",
               size_t write_offset = 0);
 
     void use();
 
 private:
-    int m_glo;
+    friend class context;
+
+    framebuffer(context* ctx);
+    framebuffer(context* ctx,
+                const attachments_ref& color_attachments,
+                attachment_ref depth_attachment);
 
     mgl::rect m_viewport;
     bool m_scissor_enabled;
     mgl::rect m_scissor;
     color_masks m_color_masks;
 
-    int m_draw_buffers_len;
+    int32_t m_draw_buffers_len;
     unsigned* m_draw_buffers;
 
     // Flags this as a detected framebuffer we don't control the size of
     bool m_dynamic;
-    int m_width;
-    int m_height;
+    int32_t m_width;
+    int32_t m_height;
 
-    int m_samples;
+    int32_t m_samples;
     bool m_depth_mask;
   };
 

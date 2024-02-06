@@ -31,139 +31,94 @@ namespace mgl::opengl
   class texture_2d : public attachment, public texture
   {
 public:
+    texture_2d::texture_2d(int32_t w,
+                           int32_t h,
+                           int32_t components,
+                           const void* data,
+                           int32_t samples,
+                           int32_t align,
+                           const std::string& dtype,
+                           int32_t internal_format_override);
+
+    texture_2d::texture_2d(int32_t w, int32_t h, const void* data, int32_t samples, int32_t align);
+
     ~texture_2d() = default;
 
     virtual void release() override;
-    bool released();
+    bool released() const { return m_glo == 0; }
 
-    virtual attachment::type attachment_type() override;
-    virtual texture::type texture_type() override;
-    int width();
-    int height();
-    int samples();
-    bool depth();
-    int components();
+    virtual attachment::type attachment_type() override { return attachment::type::TEXTURE; }
 
-    bool repeat_x();
+    virtual texture::type texture_type() override { return texture::type::TEXTURE_2D; }
+
+    int32_t width() const { return m_width; }
+
+    int32_t height() const { return m_height; }
+
+    int32_t samples() const { return m_samples; }
+
+    bool depth() const { return m_depth; }
+
+    int32_t components() const { return m_components; }
+
+    bool repeat_x() const { return m_repeat_x; }
     void set_repeat_x(bool value);
 
-    bool repeat_y();
+    bool repeat_y() const { return m_repeat_y; }
     void set_repeat_y(bool value);
 
-    const texture::filter& filter() const;
+    const texture::filter& filter() const { return m_filter; }
     void set_filter(const texture::filter& value);
 
-    std::string swizzle();
-    void set_swizzle(const std::string& value);
-
-    mgl::opengl::compare_func compare_func();
+    mgl::opengl::compare_func compare_func() const { return m_compare_func; }
     void set_compare_func(mgl::opengl::compare_func value);
 
-    float anisotropy();
+    float anisotropy() const { return m_anisotropy; }
     void set_anisotropy(float value);
 
-    void read(mgl::uint8_buffer& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
-    void read(buffer_ref& dst, int level = 0, int alignment = 1, size_t write_offset = 0);
+    std::string swizzle() const;
+    void set_swizzle(const std::string& value);
 
-    void write(const mgl::uint8_buffer& src,
-               const mgl::rect& viewport,
-               int level = 0,
-               int alignment = 1);
-    void write(const mgl::uint8_buffer& src, int level = 0, int alignment = 1);
-    void write(const buffer_ref& src, const mgl::rect& viewport, int level = 0, int alignment = 1);
-    void write(const buffer_ref& src, int level = 0, int alignment = 1);
+    void read(mgl::uint8_buffer& dst, int32_t lvl = 0, int32_t align = 1, size_t dst_off = 0);
 
-    void resize(int width, int height, int components = 4, const mgl::uint8_buffer& data = {});
+    void read(buffer_ref& dst, int32_t lvl = 0, int32_t align = 1, size_t dst_off = 0);
 
     void
-    bind_to_image(int unit, bool read = true, bool write = true, int level = 0, int format = 0);
-    void build_mipmaps(int base = 0, int max_level = 1000);
+    write(const mgl::uint8_buffer& src, const mgl::rect& v, int32_t lvl = 0, int32_t align = 1);
 
-    virtual void use(int index = 0) override;
+    void write(const mgl::uint8_buffer& src, int32_t lvl = 0, int32_t align = 1);
 
-    int glo();
+    void write(const buffer_ref& src, const mgl::rect& v, int32_t lvl = 0, int32_t align = 1);
+
+    void write(const buffer_ref& src, int32_t lvl = 0, int32_t align = 1);
+
+    void resize(int32_t w, int32_t h, int32_t components = 4, const mgl::uint8_buffer& data = {});
+
+    void bind_to_image(
+        int32_t unit, bool read = true, bool write = true, int32_t lvl = 0, int32_t f = 0);
+
+    void build_mipmaps(int32_t base = 0, int32_t max_lvl = 1000);
+
+    virtual void use(int32_t index = 0) override;
+
+    int32_t glo() const { return m_glo; }
 
 private:
-    friend class context;
-    texture_2d() = default;
-
-    context* m_context;
+    int32_t m_glo;
     data_type* m_data_type;
-    int m_texture_obj;
-    int m_width;
-    int m_height;
+    int32_t m_width;
+    int32_t m_height;
     bool m_depth;
-    int m_samples;
-    int m_components;
+    int32_t m_samples;
+    int32_t m_components;
     texture::filter m_filter;
-    int m_max_level;
+    int32_t m_max_lvl;
     mgl::opengl::compare_func m_compare_func;
     float m_anisotropy;
     bool m_repeat_x;
     bool m_repeat_y;
-    bool m_released;
   };
 
   using texture_2d_ref = mgl::ref<texture_2d>;
-
-  inline int texture_2d::glo()
-  {
-    return m_texture_obj;
-  }
-
-  inline bool texture_2d::released()
-  {
-    return m_released;
-  }
-
-  inline int texture_2d::components()
-  {
-    return m_components;
-  }
-
-  inline int texture_2d::width()
-  {
-    return m_width;
-  }
-
-  inline int texture_2d::height()
-  {
-    return m_height;
-  }
-
-  inline int texture_2d::samples()
-  {
-    return m_samples;
-  }
-
-  inline bool texture_2d::depth()
-  {
-    return m_depth;
-  }
-
-  inline bool texture_2d::repeat_x()
-  {
-    return m_repeat_x;
-  }
-
-  inline bool texture_2d::repeat_y()
-  {
-    return m_repeat_y;
-  }
-
-  inline const texture::filter& texture_2d::filter() const
-  {
-    return m_filter;
-  }
-
-  inline mgl::opengl::compare_func texture_2d::compare_func()
-  {
-    return m_compare_func;
-  }
-
-  inline float texture_2d::anisotropy()
-  {
-    return m_anisotropy;
-  }
 
 } // namespace  mgl::opengl

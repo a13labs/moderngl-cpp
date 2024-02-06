@@ -23,13 +23,19 @@
 
 namespace mgl::opengl
 {
-  buffer::buffer(const void* data, size_t reserve, bool dynamic)
-      : m_size(reserve)
+  buffer::buffer(context* ctx, const void* data, size_t reserve, bool dynamic)
+      : gl_object(ctx)
+      , m_size(reserve)
       , m_dynamic(dynamic)
-      , m_glo(0)
   {
-    glGenBuffers(1, (GLuint*)&m_glo);
-    MGL_CORE_ASSERT(m_glo != GL_ZERO, "Error creating buffer");
+    GLuint glo = 0;
+    glGenBuffers(1, &glo);
+    if(glo == GL_ZERO)
+    {
+      MGL_CORE_ASSERT(false, "Error creating buffer");
+      return;
+    }
+    m_glo = glo;
     glBindBuffer(GL_ARRAY_BUFFER, m_glo);
     glBufferData(GL_ARRAY_BUFFER, reserve, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
   }

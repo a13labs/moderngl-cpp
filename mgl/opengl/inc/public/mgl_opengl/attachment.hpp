@@ -29,6 +29,18 @@ public:
 
     virtual ~attachment() = default;
     virtual attachment::type attachment_type() = 0;
+
+    virtual int32_t width() const = 0;
+
+    virtual int32_t height() const = 0;
+
+    virtual int32_t samples() const = 0;
+
+    virtual bool depth() const = 0;
+
+    virtual int32_t components() const = 0;
+
+    virtual int32_t glo() const = 0;
   };
 
   using attachment_ref = mgl::ref<attachment>;

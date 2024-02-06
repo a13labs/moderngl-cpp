@@ -31,7 +31,7 @@
 namespace mgl::opengl
 {
 
-  context_ref context::create_context(context_mode::Enum mode, int32_t required)
+  context_ref context::create_context(context_mode::mode mode, int32_t required)
   {
 
     context* ctx = nullptr;
@@ -144,69 +144,7 @@ namespace mgl::opengl
     ctx->m_max_anisotropy = 0.0;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, (GLfloat*)&ctx->m_max_anisotropy);
 
-    int32_t bound_framebuffer = 0;
-    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bound_framebuffer);
-
-#ifdef MGL_PLATFORM_MACOS
-    if(mode == context_mode::STANDALONE)
-    {
-      int32_t renderbuffer = 0;
-      glGenRenderbuffers(1, (GLuint*)&renderbuffer);
-      glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-      glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, 4, 4);
-
-      int32_t framebuffer = 0;
-      glGenFramebuffers(1, (GLuint*)&framebuffer);
-      glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-      glFramebufferRenderbuffer(
-          GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
-      bound_framebuffer = framebuffer;
-    }
-#endif
-    {
-      auto framebuffer = new mgl::opengl::framebuffer();
-      framebuffer->m_released = false;
-
-      framebuffer->m_context = ctx;
-
-      framebuffer->m_framebuffer_obj = 0;
-      framebuffer->m_draw_buffers_len = 1;
-      framebuffer->m_draw_buffers = new unsigned[1];
-
-      // According to glGet docs:
-      // The initial value is GL_BACK if there are back buffers, otherwise it is GL_FRONT.
-
-      // According to glDrawBuffer docs:
-      // The symbolic constants GL_FRONT, GL_BACK, GL_LEFT, GL_RIGHT, and GL_FRONT_AND_BACK
-      // are not allowed in the bufs array since they may refer to multiple buffers.
-
-      // GL_COLOR_ATTACHMENT0 is causes error: 1282
-      // This value is temporarily ignored
-
-      // framebuffer->draw_buffers[0] = GL_COLOR_ATTACHMENT0;
-      // framebuffer->draw_buffers[0] = GL_BACK_LEFT;
-
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      glGetIntegerv(GL_DRAW_BUFFER, (int32_t*)&framebuffer->m_draw_buffers[0]);
-      glBindFramebuffer(GL_FRAMEBUFFER, bound_framebuffer);
-
-      framebuffer->m_color_masks = { { true, true, true, true } };
-      framebuffer->m_depth_mask = true;
-
-      int32_t scissor_box[4] = {};
-      glGetIntegerv(GL_SCISSOR_BOX, (int32_t*)&scissor_box);
-
-      framebuffer->m_viewport = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
-
-      framebuffer->m_scissor_enabled = false;
-      framebuffer->m_scissor = { scissor_box[0], scissor_box[1], scissor_box[2], scissor_box[3] };
-
-      framebuffer->m_width = scissor_box[2];
-      framebuffer->m_height = scissor_box[3];
-      framebuffer->m_dynamic = true;
-
-      ctx->m_default_framebuffer = framebuffer_ref(framebuffer);
-    }
+    ctx->m_default_framebuffer = mgl::create_ref<mgl::opengl::framebuffer>(ctx);
 
     ctx->m_bound_framebuffer = ctx->m_default_framebuffer;
 
@@ -233,14 +171,14 @@ namespace mgl::opengl
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto buffer = new mgl::opengl::buffer(data, reserve, dynamic);
+    auto buffer = new mgl::opengl::buffer(this, data, reserve, dynamic);
     return buffer_ref(buffer);
   }
 
   compute_shader_ref context::compute_shader(const std::string& source)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto shader = new mgl::opengl::compute_shader(source);
+    auto shader = new mgl::opengl::compute_shader(this, source);
     return compute_shader_ref(shader);
   }
 
@@ -248,7 +186,7 @@ namespace mgl::opengl
                                        attachment_ref depth_attachment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto framebuffer = new mgl::opengl::framebuffer(color_attachments, depth_attachment);
+    auto framebuffer = new mgl::opengl::framebuffer(this, color_attachments, depth_attachment);
     return framebuffer_ref(framebuffer);
   }
 
@@ -315,99 +253,8 @@ namespace mgl::opengl
                                     int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(components < 1 || components > 4)
-    {
-      MGL_CORE_ERROR("Components must be 1, 2, 3 or 4, got: {0}", components);
-      return nullptr;
-    }
-
-    if((samples & (samples - 1)) || samples > m_max_samples)
-    {
-      MGL_CORE_ERROR("The number of samples is invalid got: {0}", samples);
-      return nullptr;
-    }
-
-    if(alignment != 1 && alignment != 2 && alignment != 4 && alignment != 8)
-    {
-      MGL_CORE_ERROR("The alignment must be 1, 2, 4 or 8, got: {0}", alignment);
-      return nullptr;
-    }
-
-    if(data != nullptr && samples)
-    {
-      MGL_CORE_ERROR("Multisample textures are not writable directly", alignment);
-      return nullptr;
-    }
-
-    auto data_type = from_dtype(dtype);
-
-    if(!data_type)
-    {
-      MGL_CORE_ERROR("Invalid data type got: '{0}'", dtype);
-      return nullptr;
-    }
-
-    int32_t texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-    int32_t pixel_type = data_type->gl_type;
-    int32_t base_format = data_type->base_format[components];
-    int32_t internal_format = internal_format_override ? internal_format_override
-                                                       : data_type->internal_format[components];
-
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
-
-    auto texture = new texture_2d();
-    texture->m_released = false;
-    texture->m_context = this;
-    texture->m_width = width;
-    texture->m_height = height;
-    texture->m_components = components;
-    texture->m_samples = samples;
-    texture->m_data_type = data_type;
-    texture->m_max_level = 0;
-    texture->m_compare_func = mgl::opengl::compare_func::NONE;
-    texture->m_anisotropy = 1.0f;
-    texture->m_depth = false;
-
-    auto filter = data_type->float_type ? GL_LINEAR : GL_NEAREST;
-    texture->m_filter = { filter, filter };
-
-    texture->m_repeat_x = true;
-    texture->m_repeat_y = true;
-    texture->m_texture_obj = 0;
-
-    glGenTextures(1, (GLuint*)&texture->m_texture_obj);
-
-    if(!texture->m_texture_obj)
-    {
-      MGL_CORE_ERROR("cannot create texture");
-      delete texture;
-      return nullptr;
-    }
-
-    glBindTexture(texture_target, texture->m_texture_obj);
-
-    if(samples)
-    {
-      glTexImage2DMultisample(texture_target, samples, internal_format, width, height, true);
-    }
-    else
-    {
-      glPixelStorei(GL_PACK_ALIGNMENT, alignment);
-      glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-      glTexImage2D(
-          texture_target, 0, internal_format, width, height, 0, base_format, pixel_type, data);
-      if(data_type->float_type)
-      {
-        glTexParameteri(texture_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      }
-      else
-      {
-        glTexParameteri(texture_target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      }
-    }
-
+    auto texture = new mgl::opengl::texture_2d(
+        width, height, components, data, samples, alignment, dtype, internal_format_override);
     return texture_2d_ref(texture);
   }
 
@@ -415,79 +262,7 @@ namespace mgl::opengl
       int32_t width, int32_t height, const void* data, int32_t samples, int32_t alignment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if((samples & (samples - 1)) || samples > m_max_samples)
-    {
-      MGL_CORE_ERROR("The number of samples is invalid got: {0}", samples);
-      return nullptr;
-    }
-
-    if(alignment != 1 && alignment != 2 && alignment != 4 && alignment != 8)
-    {
-      MGL_CORE_ERROR("The alignment must be 1, 2, 4 or 8, got: {0}", alignment);
-      return nullptr;
-    }
-
-    if(data != nullptr && samples)
-    {
-      MGL_CORE_ERROR("Multisample textures are not writable directly", alignment);
-      return nullptr;
-    }
-
-    auto texture = new texture_2d();
-    texture->m_released = false;
-    texture->m_context = this;
-    texture->m_width = width;
-    texture->m_height = height;
-    texture->m_components = 1;
-    texture->m_samples = samples;
-    texture->m_data_type = from_dtype("f4", 2);
-    texture->m_max_level = 0;
-    texture->m_compare_func = mgl::opengl::compare_func::EQUAL;
-    texture->m_anisotropy = 1.0f;
-    texture->m_depth = true;
-    texture->m_filter = { GL_LINEAR, GL_LINEAR };
-    texture->m_repeat_x = false;
-    texture->m_repeat_y = false;
-    texture->m_texture_obj = 0;
-
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
-    glGenTextures(1, (GLuint*)&texture->m_texture_obj);
-
-    if(!texture->m_texture_obj)
-    {
-      MGL_CORE_ERROR("cannot create texture");
-      delete texture;
-      return nullptr;
-    }
-
-    int32_t texture_target = samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-    int32_t pixel_type = GL_FLOAT;
-
-    glBindTexture(texture_target, texture->m_texture_obj);
-
-    if(samples)
-    {
-      glTexImage2DMultisample(texture_target, samples, GL_DEPTH_COMPONENT24, width, height, true);
-    }
-    else
-    {
-      glTexParameteri(texture_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glPixelStorei(GL_PACK_ALIGNMENT, alignment);
-      glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-      glTexImage2D(texture_target,
-                   0,
-                   GL_DEPTH_COMPONENT24,
-                   width,
-                   height,
-                   0,
-                   GL_DEPTH_COMPONENT,
-                   pixel_type,
-                   data);
-      glTexParameteri(texture_target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-      glTexParameteri(texture_target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-    }
-
+    auto texture = new mgl::opengl::texture_2d(width, height, data, samples, alignment);
     return texture_2d_ref(texture);
   }
 
@@ -500,76 +275,8 @@ namespace mgl::opengl
                                     const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(components < 1 || components > 4)
-    {
-      MGL_CORE_ERROR("Components must be 1, 2, 3 or 4, got: {0}", components);
-      return nullptr;
-    }
-
-    if(alignment != 1 && alignment != 2 && alignment != 4 && alignment != 8)
-    {
-      MGL_CORE_ERROR("The alignment must be 1, 2, 4 or 8, got: {0}", alignment);
-      return nullptr;
-    }
-
-    auto data_type = from_dtype(dtype);
-
-    if(!data_type)
-    {
-      MGL_CORE_ERROR("Invalid data type got: '{0}'", dtype);
-      return nullptr;
-    }
-
-    auto texture = new texture_3d();
-    texture->m_released = false;
-    texture->m_context = this;
-    texture->m_width = width;
-    texture->m_height = height;
-    texture->m_depth = depth;
-    texture->m_components = components;
-    texture->m_data_type = data_type;
-    texture->m_max_level = 0;
-
-    auto filter = data_type->float_type ? GL_LINEAR : GL_NEAREST;
-    texture->m_filter = { filter, filter };
-
-    texture->m_repeat_x = true;
-    texture->m_repeat_y = true;
-    texture->m_repeat_z = true;
-    texture->m_texture_obj = 0;
-
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
-    glGenTextures(1, (GLuint*)&texture->m_texture_obj);
-
-    if(!texture->m_texture_obj)
-    {
-      MGL_CORE_ERROR("cannot create texture");
-      delete texture;
-      return nullptr;
-    }
-
-    int32_t pixel_type = data_type->gl_type;
-    int32_t base_format = data_type->base_format[components];
-    int32_t internal_format = data_type->internal_format[components];
-
-    glBindTexture(GL_TEXTURE_3D, texture->m_texture_obj);
-
-    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    glTexImage3D(
-        GL_TEXTURE_3D, 0, internal_format, width, height, depth, 0, base_format, pixel_type, data);
-
-    if(data_type->float_type)
-    {
-      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    }
-    else
-    {
-      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    }
-
+    auto texture =
+        new mgl::opengl::texture_3d(width, height, depth, components, data, alignment, dtype);
     return texture_3d_ref(texture);
   }
 
@@ -582,83 +289,8 @@ namespace mgl::opengl
                                            const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(components < 1 || components > 4)
-    {
-      MGL_CORE_ERROR("Components must be 1, 2, 3 or 4, got: {0}", components);
-      return nullptr;
-    }
-
-    if(alignment != 1 && alignment != 2 && alignment != 4 && alignment != 8)
-    {
-      MGL_CORE_ERROR("The alignment must be 1, 2, 4 or 8, got: {0}", alignment);
-      return nullptr;
-    }
-
-    auto data_type = from_dtype(dtype);
-
-    if(!data_type)
-    {
-      MGL_CORE_ERROR("Invalid data type got: '{0}'", dtype);
-      return nullptr;
-    }
-
-    auto texture = new mgl::opengl::texture_array();
-    texture->m_released = false;
-    texture->m_context = this;
-    texture->m_width = width;
-    texture->m_height = height;
-    texture->m_layers = layers;
-    texture->m_components = components;
-    texture->m_data_type = data_type;
-    texture->m_max_level = 0;
-
-    auto filter = data_type->float_type ? GL_LINEAR : GL_NEAREST;
-    texture->m_filter = { filter, filter };
-
-    texture->m_repeat_x = true;
-    texture->m_repeat_y = true;
-    texture->m_texture_obj = 0;
-
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
-    glGenTextures(1, (GLuint*)&texture->m_texture_obj);
-
-    if(!texture->m_texture_obj)
-    {
-      MGL_CORE_ERROR("cannot create texture");
-      delete texture;
-      return nullptr;
-    }
-
-    int32_t pixel_type = data_type->gl_type;
-    int32_t base_format = data_type->base_format[components];
-    int32_t internal_format = data_type->internal_format[components];
-
-    glBindTexture(GL_TEXTURE_2D_ARRAY, texture->m_texture_obj);
-
-    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 layers,
-                 0,
-                 base_format,
-                 pixel_type,
-                 data);
-
-    if(data_type->float_type)
-    {
-      glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    }
-    else
-    {
-      glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    }
-
+    auto texture =
+        new mgl::opengl::texture_array(width, height, layers, components, data, alignment, dtype);
     return texture_array_ref(texture);
   }
 
@@ -670,137 +302,9 @@ namespace mgl::opengl
                                          const std::string& dtype,
                                          int32_t internal_format_override)
   {
-
     MGL_CORE_ASSERT(!released(), "Context already released");
-    if(components < 1 || components > 4)
-    {
-      MGL_CORE_ERROR("Components must be 1, 2, 3 or 4, got: {0}", components);
-      return nullptr;
-    }
-
-    if(alignment != 1 && alignment != 2 && alignment != 4 && alignment != 8)
-    {
-      MGL_CORE_ERROR("The alignment must be 1, 2, 4 or 8, got: {0}", alignment);
-      return nullptr;
-    }
-
-    auto data_type = from_dtype(dtype);
-
-    if(!data_type)
-    {
-      MGL_CORE_ERROR("Invalid data type got: '{0}'", dtype);
-      return nullptr;
-    }
-
-    auto texture = new mgl::opengl::texture_cube();
-    texture->m_released = false;
-    texture->m_context = this;
-    texture->m_width = width;
-    texture->m_height = height;
-    texture->m_components = components;
-    texture->m_data_type = data_type;
-    texture->m_max_level = 0;
-
-    auto filter = data_type->float_type ? GL_LINEAR : GL_NEAREST;
-    texture->m_filter = { filter, filter };
-
-    texture->m_texture_obj = 0;
-
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
-    glGenTextures(1, (GLuint*)&texture->m_texture_obj);
-
-    if(!texture->m_texture_obj)
-    {
-      MGL_CORE_ERROR("cannot create texture");
-      delete texture;
-      return nullptr;
-    }
-
-    int32_t pixel_type = data_type->gl_type;
-    int32_t base_format = data_type->base_format[components];
-    int32_t internal_format = internal_format_override ? internal_format_override
-                                                       : data_type->internal_format[components];
-
-    int32_t expected_size = width * components * data_type->size;
-    expected_size = (expected_size + alignment - 1) / alignment * alignment;
-    expected_size = expected_size * height * 6;
-
-    const char* ptr[6] = {
-      (const char*)data + expected_size * 0 / 6, (const char*)data + expected_size * 1 / 6,
-      (const char*)data + expected_size * 2 / 6, (const char*)data + expected_size * 3 / 6,
-      (const char*)data + expected_size * 4 / 6, (const char*)data + expected_size * 5 / 6,
-    };
-
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_texture_obj);
-
-    glPixelStorei(GL_PACK_ALIGNMENT, alignment);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[0]);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[1]);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[2]);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[3]);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[4]);
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-                 0,
-                 internal_format,
-                 width,
-                 height,
-                 0,
-                 base_format,
-                 pixel_type,
-                 ptr[5]);
-
-    if(data_type->float_type)
-    {
-      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    }
-    else
-    {
-      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    }
-
+    auto texture = new mgl::opengl::texture_cube(
+        width, height, components, data, alignment, dtype, internal_format_override);
     return texture_cube_ref(texture);
   }
 
@@ -812,143 +316,9 @@ namespace mgl::opengl
                                          mgl::opengl::render_mode mode)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-
-    int32_t i = 0;
-    for(auto&& v_data : vertex_buffers)
-    {
-      if(v_data.buffer == nullptr)
-      {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: empty vertex buffer", i);
-        return nullptr;
-      }
-
-      buffer_layout layout = v_data.buffer_layout;
-
-      if(layout.is_invalid())
-      {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: invalid buffer layout", i);
-        return nullptr;
-      }
-
-      if(!v_data.attributes.size())
-      {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: attributes must not be empty", i);
-        return nullptr;
-      }
-
-      if((int32_t)v_data.attributes.size() != layout.size())
-      {
-        MGL_CORE_ERROR("vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
-                       i,
-                       layout.size(),
-                       v_data.attributes.size());
-        return nullptr;
-      }
-
-      i++;
-    }
-
-    if(index_element_size != 1 && index_element_size != 2 && index_element_size != 4)
-    {
-      MGL_CORE_ERROR("index_element_size must be 1, 2, or 4, not %d", index_element_size);
-      return nullptr;
-    }
-
-    auto array = new mgl::opengl::vertex_array();
-    array->m_released = false;
-    array->m_context = this;
-    array->m_num_vertices = 0;
-    array->m_num_instances = 1;
-    array->m_program = program;
-    array->m_index_buffer = index_buffer;
-    array->m_index_element_size = index_element_size;
-    const int32_t element_types[5] = { 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT };
-    array->m_index_element_type = element_types[index_element_size];
-    array->m_num_vertices = -1;
-
-    array->m_vertex_array_obj = 0;
-    glGenVertexArrays(1, (GLuint*)&array->m_vertex_array_obj);
-
-    if(!array->m_vertex_array_obj)
-    {
-      MGL_CORE_ERROR("cannot create vertex array");
-      delete array;
-      return nullptr;
-    }
-
-    glBindVertexArray(array->m_vertex_array_obj);
-
-    if(array->m_index_buffer != nullptr)
-    {
-      array->m_num_vertices = (int32_t)(array->m_index_buffer->size() / index_element_size);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, array->m_index_buffer->glo());
-    }
-
-    i = 0;
-    for(auto&& v_data : vertex_buffers)
-    {
-      auto buffer = v_data.buffer;
-      const char* format = v_data.buffer_layout.c_str();
-
-      buffer_layout layout = v_data.buffer_layout;
-
-      int32_t buf_vertices = (int32_t)(buffer->size() / layout.size());
-
-      if(!layout.divisor() && array->m_index_buffer == nullptr &&
-         (!i || array->m_num_vertices > buf_vertices))
-      {
-        array->m_num_vertices = buf_vertices;
-      }
-
-      glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
-
-      for(size_t j = 0; j < v_data.attributes.size(); ++j)
-      {
-
-        auto attribute = array->m_program->attribute(v_data.attributes[j]);
-
-        if(!attribute)
-        {
-          continue;
-        }
-
-        buffer_layout::element element = layout[j];
-        int32_t attribute_location = attribute->location();
-        int32_t attribute_rows_length = attribute->get_data_type()->rows_length;
-        int32_t attribute_scalar_type = attribute->get_data_type()->scalar_type;
-
-        char* ptr = (char*)(intptr_t)element.offset;
-        for(int32_t r = 0; r < attribute_rows_length; ++r)
-        {
-          int32_t location = attribute_location + r;
-          int32_t count = element.count / attribute_rows_length;
-
-          switch(attribute_scalar_type)
-          {
-            case GL_FLOAT:
-              glVertexAttribPointer(
-                  location, count, element.type, element.normalize, layout.stride(), ptr);
-              break;
-            case GL_DOUBLE:
-              glVertexAttribLPointer(location, count, element.type, layout.stride(), ptr);
-              break;
-            case GL_INT:
-              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
-              break;
-            case GL_UNSIGNED_INT:
-              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
-              break;
-          }
-
-          glVertexAttribDivisor(location, layout.divisor());
-          glEnableVertexAttribArray(location);
-          ptr += element.size / attribute_rows_length;
-        }
-      }
-      i++;
-    }
-
-    return vertex_array_ref(array);
+    auto vertex_array = new mgl::opengl::vertex_array(
+        program, vertex_buffers, index_buffer, index_element_size, skip_errors, mode);
+    return vertex_array_ref(vertex_array);
   }
 
   void context::set_enable_flags(int32_t flags)
