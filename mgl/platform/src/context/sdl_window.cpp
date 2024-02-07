@@ -45,8 +45,8 @@ namespace mgl::platform
   {
     std::fill(key_forward_map, key_forward_map + 256, 0);
     std::fill(key_reverse_map, key_reverse_map + 256, 0);
-    std::fill(s_input_state.pressed_keys, s_input_state.pressed_keys + 256, 0);
-    std::fill(s_input_state.pressed_mouse_buttons, s_input_state.pressed_mouse_buttons + 256, 0);
+    std::fill(s_input_state.pressed_keys, s_input_state.pressed_keys + 95, 0);
+    std::fill(s_input_state.pressed_mouse_buttons, s_input_state.pressed_mouse_buttons + 4, 0);
   }
 
   inline void set_key_pressed_state(key::name key, bool value)
@@ -276,11 +276,11 @@ namespace mgl::platform
                   m_state.current_config.width,
                   m_state.current_config.height);
     m_api_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
-                                       SDL_WINDOWPOS_CENTERED,
-                                       SDL_WINDOWPOS_CENTERED,
-                                       m_state.current_config.width,
-                                       m_state.current_config.height,
-                                       flags);
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    m_state.current_config.width,
+                                    m_state.current_config.height,
+                                    flags);
 
     if(!m_api_window)
     {

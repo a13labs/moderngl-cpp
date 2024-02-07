@@ -1,6 +1,7 @@
 #pragma once
 
 #include "attribute.hpp"
+#include "gl_object.hpp"
 #include "shader.hpp"
 #include "subroutine.hpp"
 #include "uniform.hpp"
@@ -13,17 +14,14 @@
 
 namespace mgl::opengl
 {
+  class context;
+
   using shaders_outputs = mgl::string_list;
   using fragment_outputs = mgl::dict<std::string, int>;
 
-  class program
+  class program : public gl_object
   {
 public:
-    program(const shaders& shaders,
-            const shaders_outputs& outputs,
-            const fragment_outputs& fragment_outputs,
-            bool interleave);
-
     ~program() = default;
 
     void bind();
@@ -35,9 +33,7 @@ public:
     const mgl::string_list varyings();
     const mgl::string_list subroutines();
 
-    void release();
-
-    bool released() const { return m_glo == 0; }
+    virtual void release() override final;
 
     const attribute_ref attribute(const std::string& name) const
     {
@@ -104,10 +100,15 @@ public:
 
     const uniform_ref operator[](const std::string& name) const { return uniform(name); }
 
-    int32_t glo() const { return m_glo; }
-
 private:
-    int32_t m_glo;
+    friend class context;
+
+    program(const context_ref& ctx,
+            const shaders& shaders,
+            const shaders_outputs& outputs,
+            const fragment_outputs& fragment_outputs,
+            bool interleave);
+
     int32_t m_geometry_input;
     int32_t m_geometry_output;
     int32_t m_geometry_vertices;

@@ -10,10 +10,12 @@
 
 namespace mgl::opengl
 {
-  program::program(const shaders& shaders,
+  program::program(const context_ref& ctx,
+                   const shaders& shaders,
                    const shaders_outputs& outputs,
                    const fragment_outputs& fragment_outputs,
                    bool interleaved)
+      : gl_object(ctx)
   {
     static const int32_t SHADER_TYPE[5] = {
       GL_VERTEX_SHADER,       GL_FRAGMENT_SHADER,        GL_GEOMETRY_SHADER,

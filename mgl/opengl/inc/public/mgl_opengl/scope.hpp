@@ -26,22 +26,24 @@
 namespace mgl::opengl
 {
   class context;
+  using context_ref = mgl::ref<context>;
+
   struct texture_binding
   {
     texture_ref texture;
-    int binding;
+    int32_t binding;
   };
 
   struct buffer_binding
   {
     buffer_ref buffer;
-    int binding;
+    int32_t binding;
   };
 
   struct sampler_binding
   {
     sampler_ref sampler;
-    int binding;
+    int32_t binding;
   };
 
   using texture_bindings = mgl::list<texture_binding>;
@@ -51,37 +53,67 @@ namespace mgl::opengl
   class scope
   {
 public:
-    struct BindingData
+    struct binding_data
     {
-      int binding;
-      int type;
-      int gl_object;
+      int32_t binding;
+      int32_t type;
+      int32_t gl_object;
     };
 
-    scope(framebuffer_ref framebuffer,
+    ~scope();
+
+    void begin();
+    void end();
+
+private:
+    friend class context;
+
+    scope(const context_ref& ctx,
+          framebuffer_ref framebuffer,
           int32_t enable_flags,
           const texture_bindings& textures,
           const buffer_bindings& uniform_buffers,
           const buffer_bindings& storage_buffers,
           const sampler_bindings& samplers);
 
-    ~scope();
+    struct state
+    {
+      int32_t enable_flags;
+      framebuffer_ref framebuffer;
 
-    void release();
-    bool released();
+      state()
+          : enable_flags(0)
+          , framebuffer(nullptr)
+      { }
 
-    void begin();
-    void end();
+      state(int32_t flags, const framebuffer_ref& fb)
+          : enable_flags(flags)
+          , framebuffer(fb)
+      { }
 
-private:
+      bool operator==(const state& other) const
+      {
+        return enable_flags == other.enable_flags && framebuffer == other.framebuffer;
+      }
+
+      bool operator!=(const state& other) const { return !(*this == other); }
+
+      bool operator==(const state* other) const
+      {
+        return enable_flags == other->enable_flags && framebuffer == other->framebuffer;
+      }
+
+      bool operator!=(const state* other) const { return !(*this == other); }
+    };
+
     bool m_begin;
-    framebuffer_ref m_framebuffer;
-    framebuffer_ref m_old_framebuffer;
+    context_ref m_ctx;
     sampler_bindings m_samplers;
-    mgl::list<scope::BindingData> m_textures;
-    mgl::list<scope::BindingData> m_buffers;
-    int m_enable_flags;
-    int m_old_enable_flags;
+    mgl::list<scope::binding_data> m_textures;
+    mgl::list<scope::binding_data> m_buffers;
+
+    state m_scope_state;
+    state m_previous_state;
   };
 
   using scope_ref = mgl::ref<scope>;

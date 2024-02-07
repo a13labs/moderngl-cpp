@@ -23,8 +23,6 @@
 
 namespace mgl::opengl
 {
-  class context;
-
   class compute_shader : public gl_object
   {
 public:
@@ -65,7 +63,7 @@ public:
 private:
     friend class context;
 
-    compute_shader(context* ctx, const std::string& source);
+    compute_shader(const context_ref& ctx, const std::string& source);
 
     int32_t m_shader_glo;
     uniforms_dict m_uniforms_map;

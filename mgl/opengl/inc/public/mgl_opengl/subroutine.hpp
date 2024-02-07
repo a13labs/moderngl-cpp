@@ -21,8 +21,6 @@
 
 namespace mgl::opengl
 {
-  class context;
-
   class subroutine
   {
 public:
@@ -35,12 +33,19 @@ public:
       TESS_CONTROL_SHADER = 0x8E88,
     };
 
-    subroutine(const std::string& name, int index, subroutine::type type);
+    subroutine(const std::string& name, int32_t index, subroutine::type type);
+
     ~subroutine() = default;
+
+    int32_t index() const { return m_index; }
+
+    subroutine::type get_type() const { return m_type; }
+
+    const std::string& name() const { return m_name; }
 
 private:
     std::string m_name;
-    int m_index;
+    int32_t m_index;
     subroutine::type m_type;
   };
 

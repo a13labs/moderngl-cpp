@@ -18,6 +18,9 @@
 #include "mgl_core/memory.hpp"
 namespace mgl::opengl
 {
+  class context;
+  using context_ref = mgl::ref<context>;
+
   class attachment
   {
 public:
@@ -34,13 +37,15 @@ public:
 
     virtual int32_t height() const = 0;
 
+    virtual int32_t components() const = 0;
+
     virtual int32_t samples() const = 0;
 
     virtual bool depth() const = 0;
 
-    virtual int32_t components() const = 0;
-
     virtual int32_t glo() const = 0;
+
+    virtual context_ref& ctx() = 0;
   };
 
   using attachment_ref = mgl::ref<attachment>;

@@ -34,16 +34,17 @@ namespace mgl::opengl
   context_ref context::create_context(context_mode::mode mode, int32_t required)
   {
 
-    context* ctx = nullptr;
+    context* native_ctx = nullptr;
 
 #ifdef MGL_OPENGL_EGL
     MGL_CORE_INFO("Trying EGL context!");
-    ctx = new ContextEGL(mode, required);
-    if(!ctx->is_valid())
+    native_ctx = new ContextEGL(mode, required);
+
+    if(!native_ctx->is_valid())
     {
       MGL_CORE_INFO("EGL not supported!");
-      delete ctx;
-      ctx = nullptr;
+      delete native_ctx;
+      native_ctx = nullptr;
     }
     else
     {
@@ -52,12 +53,12 @@ namespace mgl::opengl
 #endif
 #ifdef MGL_OPENGL_WGL
     MGL_CORE_INFO("Trying WGL context!");
-    ctx = new ContextWGL(mode, required);
-    if(!ctx->is_valid())
+    native_ctx = new ContextWGL(mode, required);
+    if(!native_ctx->is_valid())
     {
       MGL_CORE_INFO("WGL not supported!");
-      delete ctx;
-      ctx = nullptr;
+      delete native_ctx;
+      native_ctx = nullptr;
     }
     else
     {
@@ -66,12 +67,12 @@ namespace mgl::opengl
 #endif
 #ifdef MGL_OPENGL_CGL
     MGL_CORE_INFO("Trying CGL context!");
-    ctx = new ContextCGL(mode, required);
-    if(!ctx->is_valid())
+    native_ctx = new ContextCGL(mode, required);
+    if(!native_ctx->is_valid())
     {
       MGL_CORE_INFO("CGL not supported!");
-      delete ctx;
-      ctx = nullptr;
+      delete native_ctx;
+      native_ctx = nullptr;
     }
     else
     {
@@ -79,11 +80,13 @@ namespace mgl::opengl
     }
 #endif
 
-    if(!ctx)
+    if(!native_ctx)
     {
       MGL_CORE_ERROR("Error creating context! No more backends available.");
       return nullptr;
     }
+
+    auto ctx = context_ref(native_ctx);
 
     ctx->m_wireframe = false;
 
@@ -99,7 +102,6 @@ namespace mgl::opengl
     {
       MGL_CORE_ERROR(
           "OpenGL version {0} not supported. Required {1}", ctx->m_version_code, required);
-      delete ctx;
       return nullptr;
     }
 
@@ -110,7 +112,6 @@ namespace mgl::opengl
     for(int32_t i = 0; i < num_extensions; i++)
     {
       const char* ext = (const char*)glGetStringi(GL_EXTENSIONS, i);
-      MGL_CORE_INFO("Found GL extension: {0}", ext);
       ctx->m_extensions.push_back(ext);
     }
 
@@ -144,7 +145,7 @@ namespace mgl::opengl
     ctx->m_max_anisotropy = 0.0;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, (GLfloat*)&ctx->m_max_anisotropy);
 
-    ctx->m_default_framebuffer = mgl::create_ref<mgl::opengl::framebuffer>(ctx);
+    ctx->m_default_framebuffer = framebuffer_ref(new mgl::opengl::framebuffer(ctx));
 
     ctx->m_bound_framebuffer = ctx->m_default_framebuffer;
 
@@ -165,20 +166,20 @@ namespace mgl::opengl
 
     glGetError(); // clear errors
 
-    return context_ref(ctx);
+    return ctx;
   }
 
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto buffer = new mgl::opengl::buffer(this, data, reserve, dynamic);
+    auto buffer = new mgl::opengl::buffer(shared_from_this(), data, reserve, dynamic);
     return buffer_ref(buffer);
   }
 
   compute_shader_ref context::compute_shader(const std::string& source)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto shader = new mgl::opengl::compute_shader(this, source);
+    auto shader = new mgl::opengl::compute_shader(shared_from_this(), source);
     return compute_shader_ref(shader);
   }
 
@@ -186,7 +187,8 @@ namespace mgl::opengl
                                        attachment_ref depth_attachment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto framebuffer = new mgl::opengl::framebuffer(this, color_attachments, depth_attachment);
+    auto framebuffer =
+        new mgl::opengl::framebuffer(shared_from_this(), color_attachments, depth_attachment);
     return framebuffer_ref(framebuffer);
   }
 
@@ -196,7 +198,9 @@ namespace mgl::opengl
                                bool interleaved)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto program = new mgl::opengl::program(shaders, outputs, fragment_outputs, interleaved);
+    MGL_CORE_INFO("Creating program");
+    auto program = new mgl::opengl::program(
+        shared_from_this(), shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);
   }
 
@@ -204,7 +208,8 @@ namespace mgl::opengl
   context::query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto query = new mgl::opengl::query(samples, any_samples, time_elapsed, primitives_generated);
+    auto query = new mgl::opengl::query(
+        shared_from_this(), samples, any_samples, time_elapsed, primitives_generated);
     return query_ref(query);
   }
 
@@ -212,21 +217,22 @@ namespace mgl::opengl
       int32_t width, int32_t height, int32_t components, int32_t samples, const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto renderbuffer = new mgl::opengl::renderbuffer(width, height, components, samples, dtype);
+    auto renderbuffer = new mgl::opengl::renderbuffer(
+        shared_from_this(), width, height, components, samples, dtype);
     return renderbuffer_ref(renderbuffer);
   }
 
   renderbuffer_ref context::depth_renderbuffer(int32_t width, int32_t height, int32_t samples)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto renderbuffer = new mgl::opengl::renderbuffer(width, height, samples);
+    auto renderbuffer = new mgl::opengl::renderbuffer(shared_from_this(), width, height, samples);
     return renderbuffer_ref(renderbuffer);
   }
 
   sampler_ref context::sampler()
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto sampler = new mgl::opengl::sampler();
+    auto sampler = new mgl::opengl::sampler(shared_from_this());
     return sampler_ref(sampler);
   }
 
@@ -238,8 +244,13 @@ namespace mgl::opengl
                            const sampler_bindings& samplers)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto scope = new mgl::opengl::scope(
-        framebuffer, enable_flags, textures, uniform_buffers, storage_buffers, samplers);
+    auto scope = new mgl::opengl::scope(shared_from_this(),
+                                        framebuffer,
+                                        enable_flags,
+                                        textures,
+                                        uniform_buffers,
+                                        storage_buffers,
+                                        samplers);
     return scope_ref(scope);
   }
 
@@ -253,8 +264,15 @@ namespace mgl::opengl
                                     int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto texture = new mgl::opengl::texture_2d(
-        width, height, components, data, samples, alignment, dtype, internal_format_override);
+    auto texture = new mgl::opengl::texture_2d(shared_from_this(),
+                                               width,
+                                               height,
+                                               components,
+                                               data,
+                                               samples,
+                                               alignment,
+                                               dtype,
+                                               internal_format_override);
     return texture_2d_ref(texture);
   }
 
@@ -262,7 +280,8 @@ namespace mgl::opengl
       int32_t width, int32_t height, const void* data, int32_t samples, int32_t alignment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto texture = new mgl::opengl::texture_2d(width, height, data, samples, alignment);
+    auto texture =
+        new mgl::opengl::texture_2d(shared_from_this(), width, height, data, samples, alignment);
     return texture_2d_ref(texture);
   }
 
@@ -275,8 +294,8 @@ namespace mgl::opengl
                                     const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto texture =
-        new mgl::opengl::texture_3d(width, height, depth, components, data, alignment, dtype);
+    auto texture = new mgl::opengl::texture_3d(
+        shared_from_this(), width, height, depth, components, data, alignment, dtype);
     return texture_3d_ref(texture);
   }
 
@@ -289,8 +308,8 @@ namespace mgl::opengl
                                            const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto texture =
-        new mgl::opengl::texture_array(width, height, layers, components, data, alignment, dtype);
+    auto texture = new mgl::opengl::texture_array(
+        shared_from_this(), width, height, layers, components, data, alignment, dtype);
     return texture_array_ref(texture);
   }
 
@@ -303,8 +322,14 @@ namespace mgl::opengl
                                          int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto texture = new mgl::opengl::texture_cube(
-        width, height, components, data, alignment, dtype, internal_format_override);
+    auto texture = new mgl::opengl::texture_cube(shared_from_this(),
+                                                 width,
+                                                 height,
+                                                 components,
+                                                 data,
+                                                 alignment,
+                                                 dtype,
+                                                 internal_format_override);
     return texture_cube_ref(texture);
   }
 
@@ -316,8 +341,13 @@ namespace mgl::opengl
                                          mgl::opengl::render_mode mode)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    auto vertex_array = new mgl::opengl::vertex_array(
-        program, vertex_buffers, index_buffer, index_element_size, skip_errors, mode);
+    auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(),
+                                                      program,
+                                                      vertex_buffers,
+                                                      index_buffer,
+                                                      index_element_size,
+                                                      skip_errors,
+                                                      mode);
     return vertex_array_ref(vertex_array);
   }
 

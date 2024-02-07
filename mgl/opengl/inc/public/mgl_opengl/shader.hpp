@@ -53,10 +53,8 @@ public:
     const std::string tess_evaluation(const shader_defines& defines = {});
 
 private:
-    void handle_includes(int depth = 0, int source_id = 0);
-
     std::string m_source;
-    int m_version_code;
+    int32_t m_version_code;
     shader::type m_type;
     mgl::string_list m_attributes;
   };

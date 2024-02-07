@@ -68,4 +68,38 @@ namespace mgl::opengl::internal
     MGL_CORE_ERROR("{0}", message);
   }
 
+  inline int swizzle_from_char(char c)
+  {
+    switch(c)
+    {
+      case 'R':
+      case 'r': return GL_RED;
+      case 'G':
+      case 'g': return GL_GREEN;
+      case 'B':
+      case 'b': return GL_BLUE;
+      case 'A':
+      case 'a': return GL_ALPHA;
+      case '0': return GL_ZERO;
+      case '1': return GL_ONE;
+    }
+    MGL_CORE_ASSERT(false, "Invalid swizzle");
+    return 0;
+  }
+
+  inline char char_from_swizzle(int c)
+  {
+    switch(c)
+    {
+      case GL_RED: return 'R';
+      case GL_GREEN: return 'G';
+      case GL_BLUE: return 'B';
+      case GL_ALPHA: return 'A';
+      case GL_ZERO: return '0';
+      case GL_ONE: return '1';
+    }
+    MGL_CORE_ASSERT(false, "Invalid swizzle");
+    return '?';
+  }
+
 } // namespace mgl::opengl::internal

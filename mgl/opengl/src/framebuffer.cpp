@@ -11,7 +11,7 @@
 
 namespace mgl::opengl
 {
-  framebuffer::framebuffer(context* ctx)
+  framebuffer::framebuffer(const context_ref& ctx)
       : gl_object(ctx)
   {
     MGL_CORE_ASSERT(ctx, "invalid context");
@@ -73,7 +73,7 @@ namespace mgl::opengl
     m_dynamic = true;
   }
 
-  framebuffer::framebuffer(context* ctx,
+  framebuffer::framebuffer(const context_ref& ctx,
                            const attachments_ref& color_attachments,
                            attachment_ref depth_attachment)
       : gl_object(ctx)
@@ -111,6 +111,10 @@ namespace mgl::opengl
     int32_t i = 0;
     for(auto&& attachment : color_attachments)
     {
+      MGL_CORE_ASSERT(!attachment->depth(), "color_attachments[{0}] is a depth attachment", i);
+      MGL_CORE_ASSERT(
+          attachment->ctx() == m_ctx, "color_attachments[{0}] is from a different context", i);
+
       if(i == 0)
       {
         width = attachment->width();
@@ -124,8 +128,6 @@ namespace mgl::opengl
         MGL_CORE_ASSERT(attachment->samples() == samples,
                         "color_attachments have different samples")
       }
-
-      MGL_CORE_ASSERT(!attachment->depth(), "color_attachments[{0}] is a depth attachment", i);
 
       m_draw_buffers[i] = GL_COLOR_ATTACHMENT0 + i;
 
@@ -158,6 +160,8 @@ namespace mgl::opengl
     if(depth_attachment)
     {
       MGL_CORE_ASSERT(!depth_attachment->depth(), "the depth_attachment is a depth attachment", i);
+      MGL_CORE_ASSERT(
+          depth_attachment->ctx() == m_ctx, "the depth_attachment is from a different context", i);
 
       if(width != 0 && height != 0 && samples != 0)
       {
@@ -225,7 +229,6 @@ namespace mgl::opengl
   void
   framebuffer::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     glBindFramebuffer(GL_FRAMEBUFFER, m_glo);
 
     if(m_glo)
@@ -278,7 +281,6 @@ namespace mgl::opengl
 
   void framebuffer::use()
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     glBindFramebuffer(GL_FRAMEBUFFER, m_glo);
 
     if(m_glo)
@@ -306,7 +308,7 @@ namespace mgl::opengl
 
     glDepthMask(m_depth_mask);
 
-    m_ctx->m_bound_framebuffer = framebuffer_ref(this);
+    m_ctx->m_bound_framebuffer = shared_from_this();
   }
 
   void framebuffer::read(mgl::uint8_buffer& dst,
@@ -317,7 +319,6 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t write_offset)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
     data_type* data_type = from_dtype(dtype);
@@ -372,7 +373,6 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t write_offset)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     MGL_CORE_ASSERT(alignment == 1 || alignment == 2 || alignment == 4 || alignment == 8,
                     "alignment must be 1, 2, 4 or 8");
     data_type* data_type = from_dtype(dtype);
@@ -415,7 +415,6 @@ namespace mgl::opengl
 
   void framebuffer::set_color_mask(const color_masks& masks)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     MGL_CORE_ASSERT(masks.size() != (size_t)m_draw_buffers_len,
                     "color_mask must be a match buffers len");
     m_color_masks = masks;
@@ -432,7 +431,6 @@ namespace mgl::opengl
 
   void framebuffer::set_depth_mask(bool value)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     m_depth_mask = value;
 
     if(m_glo == m_ctx->m_bound_framebuffer->glo())
@@ -448,7 +446,6 @@ namespace mgl::opengl
                          int& depth_bits,
                          int& stencil_bits)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
     MGL_CORE_ASSERT(!m_glo, "Only the default_framebuffer have bits");
     glBindFramebuffer(GL_FRAMEBUFFER, m_glo);
     glGetFramebufferAttachmentParameteriv(
@@ -470,7 +467,6 @@ namespace mgl::opengl
 
   void framebuffer::set_viewport(const mgl::rect& r)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
 
     m_viewport = r;
 
@@ -482,7 +478,6 @@ namespace mgl::opengl
 
   void framebuffer::set_scissor(const mgl::rect& r)
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Framebuffer already released");
 
     m_scissor = r;
 

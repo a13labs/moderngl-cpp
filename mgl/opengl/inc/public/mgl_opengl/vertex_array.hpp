@@ -16,30 +16,22 @@
 #pragma once
 #include "buffer.hpp"
 #include "enums.hpp"
+#include "gl_object.hpp"
 #include "program.hpp"
+#include "vertex_buffer.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
 
 namespace mgl::opengl
 {
-  class context;
-
-  class vertex_array
+  class vertex_array : public gl_object
   {
 public:
-    vertex_array::vertex_array(program_ref program,
-                               mgl::opengl::vertex_buffer_list vertex_buffers,
-                               buffer_ref index_buffer,
-                               int32_t index_element_size,
-                               bool skip_errors,
-                               mgl::opengl::render_mode mode);
     ~vertex_array() = default;
 
 public:
     void release();
-
-    bool released() const { return m_glo == 0; }
 
     void render(render_mode mode = render_mode::TRIANGLES,
                 int32_t vertices = 0,
@@ -82,14 +74,21 @@ public:
 
     program_ref& program() { return m_program; }
 
-    int32_t vertex_array::vertices() const { return m_num_vertices; }
+    int32_t vertices() const { return m_num_vertices; }
 
-    int32_t vertex_array::instances() const { return m_num_instances; }
-
-    int32_t glo() const { return m_glo; }
+    int32_t instances() const { return m_num_instances; }
 
 private:
-    int32_t m_glo;
+    friend class context;
+
+    vertex_array(const context_ref& ctx,
+                 program_ref program,
+                 mgl::opengl::vertex_buffer_list vertex_buffers,
+                 buffer_ref index_buffer,
+                 int32_t index_element_size,
+                 bool skip_errors,
+                 mgl::opengl::render_mode mode);
+
     program_ref m_program;
     buffer_ref m_index_buffer;
     int32_t m_index_element_size;

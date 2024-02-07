@@ -26,21 +26,25 @@
 
 namespace mgl::opengl
 {
-  renderbuffer::renderbuffer(
-      int32_t w, int32_t h, int32_t components, int32_t samples, const std::string& dtype)
+  renderbuffer::renderbuffer(const context_ref& ctx,
+                             int32_t w,
+                             int32_t h,
+                             int32_t components,
+                             int32_t samples,
+                             const std::string& dtype)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(components > 0 && components < 5, "Components must be 1, 2, 3 or 4");
     MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "Samples must be a power of 2");
-    MGL_CORE_ASSERT(samples <= mgl::opengl::internal::gl_max_samples(),
+    MGL_CORE_ASSERT(samples <= ctx->max_samples(),
                     "Samples must be less than or equal to {0}",
-                    mgl::opengl::internal::gl_max_samples());
+                    ctx->max_samples());
 
     auto data_type = from_dtype(dtype);
     MGL_CORE_ASSERT(data_type, "Invalid data type got: '{0}'", dtype);
 
     int32_t format = data_type->internal_format[components];
 
-    m_glo = 0;
     m_width = w;
     m_height = h;
     m_components = components;
@@ -70,12 +74,13 @@ namespace mgl::opengl
     }
   }
 
-  renderbuffer::renderbuffer(int32_t w, int32_t h, int32_t samples)
+  renderbuffer::renderbuffer(const context_ref& ctx, int32_t w, int32_t h, int32_t samples)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "Samples must be a power of 2");
-    MGL_CORE_ASSERT(samples <= mgl::opengl::internal::gl_max_samples(),
+    MGL_CORE_ASSERT(samples <= ctx->max_samples(),
                     "Samples must be less than or equal to {0}",
-                    mgl::opengl::internal::gl_max_samples());
+                    ctx->max_samples());
 
     m_glo = 0;
     m_width = w;

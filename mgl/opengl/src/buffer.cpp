@@ -23,7 +23,7 @@
 
 namespace mgl::opengl
 {
-  buffer::buffer(context* ctx, const void* data, size_t reserve, bool dynamic)
+  buffer::buffer(const context_ref& ctx, const void* data, size_t reserve, bool dynamic)
       : gl_object(ctx)
       , m_size(reserve)
       , m_dynamic(dynamic)

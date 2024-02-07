@@ -6,7 +6,6 @@
 
 namespace mgl::opengl
 {
-  class context;
   class buffer : public gl_object
   {
 public:
@@ -71,7 +70,7 @@ public:
 
 private:
     friend class context;
-    buffer(context* ctx, const void* data, size_t reserve, bool dynamic);
+    buffer(const context_ref& ctx, const void* data, size_t reserve, bool dynamic);
 
     size_t m_size;
     bool m_dynamic;

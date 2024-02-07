@@ -1,18 +1,3 @@
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #pragma once
 #include "attachment.hpp"
 #include "attribute.hpp"
@@ -66,10 +51,14 @@ namespace mgl::opengl
 
   using context_ref = mgl::ref<context>;
 
-  class context
+  class context : public mgl::ref_from_this<context>
   {
 public:
     virtual ~context() = default;
+
+    bool released() const { return m_released; }
+
+    context_mode::mode mode() const { return m_mode; }
 
     int32_t version_code() const { return m_version_code; }
 
@@ -88,6 +77,8 @@ public:
     const mgl::string_list& extensions() const { return m_extensions; }
 
     framebuffer& screen() { return *m_default_framebuffer; }
+
+    framebuffer_ref& current_framebuffer() { return m_bound_framebuffer; }
 
     int32_t enable_flags() const { return m_enable_flags; }
 
@@ -162,24 +153,40 @@ public:
 
     void disable_scissor() { m_bound_framebuffer->disable_scissor(); }
 
+    void clear(const glm::vec4& color,
+               float depth = 0.0,
+               const mgl::rect& viewport = mgl::null_viewport_2d);
+
+    void clear(float r,
+               float g,
+               float b,
+               float a = 0.0,
+               float depth = 0.0,
+               const mgl::rect& viewport = mgl::null_viewport_2d);
+
     // Buffer
     buffer_ref buffer(bool dynamic = false) { return buffer(nullptr, 0, dynamic); }
+
     buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false)
     {
       return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
     }
+
     buffer_ref buffer(const mgl::uint32_buffer& data, bool dynamic = false)
     {
       return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
     }
+
     buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false)
     {
       return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
     }
+
     buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false)
     {
       return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
     }
+
     buffer_ref buffer(void* data, size_t size, bool dynamic);
 
     // Compute Shader
@@ -191,6 +198,7 @@ public:
     // Framebuffer
     framebuffer_ref framebuffer(const attachments_ref& color_attachments,
                                 attachment_ref depth_attachment);
+
     framebuffer_ref framebuffer(const attachments_ref& color_attachments)
     {
       return framebuffer(color_attachments, nullptr);
@@ -307,19 +315,6 @@ public:
     virtual void release() = 0;
     virtual bool is_valid() = 0;
 
-    bool released();
-    context_mode::mode mode();
-    void clear(const glm::vec4& color,
-               float depth = 0.0,
-               const mgl::rect& viewport = mgl::null_viewport_2d);
-    void clear(float r,
-               float g,
-               float b,
-               float a = 0.0,
-               float depth = 0.0,
-               const mgl::rect& viewport = mgl::null_viewport_2d);
-
-private:
 protected:
     bool m_released;
     context_mode::mode m_mode;
@@ -405,4 +400,8 @@ private:
   };
 #endif
 
+  inline context_ref create_context(context_mode::mode mode, int32_t required = 330)
+  {
+    return context::create_context(mode, required);
+  }
 } // namespace  mgl::opengl

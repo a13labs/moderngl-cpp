@@ -19,19 +19,23 @@
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/data_type.hpp"
 
+#include "mgl_opengl_internal/utils.hpp"
+
 #include "mgl_core/debug.hpp"
 
 #include "glad/gl.h"
 
 namespace mgl::opengl
 {
-  texture_3d::texture_3d(int32_t w,
+  texture_3d::texture_3d(const context_ref& ctx,
+                         int32_t w,
                          int32_t h,
                          int32_t depth,
                          int32_t components,
                          const void* data,
                          int32_t align,
                          const std::string& dtype)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
     MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
@@ -67,7 +71,7 @@ namespace mgl::opengl
 
     GLuint glo = 0;
 
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
+    glActiveTexture(GL_TEXTURE0 + m_ctx->max_texture_units());
     glGenTextures(1, &glo);
 
     if(!glo)
@@ -123,7 +127,7 @@ namespace mgl::opengl
 
     char* ptr = (char*)dst.data() + dst_offset;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -143,7 +147,7 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -175,7 +179,7 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
     int32_t pixel_type = m_data_type->gl_type;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -207,7 +211,7 @@ namespace mgl::opengl
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -235,7 +239,7 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -263,7 +267,7 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -303,7 +307,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_glo, "texture already released");
     MGL_CORE_ASSERT(base <= max_lvl, "invalid base");
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, base);
@@ -322,7 +326,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     m_repeat_x = value;
@@ -340,7 +344,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     m_repeat_y = value;
@@ -358,7 +362,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     m_repeat_z = value;
@@ -378,7 +382,7 @@ namespace mgl::opengl
 
     m_filter = value;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
@@ -389,7 +393,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     int32_t swizzle_r = 0;
@@ -403,10 +407,10 @@ namespace mgl::opengl
     glGetTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_A, &swizzle_a);
 
     char swizzle[5] = {
-      char_from_swizzle(swizzle_r),
-      char_from_swizzle(swizzle_g),
-      char_from_swizzle(swizzle_b),
-      char_from_swizzle(swizzle_a),
+      internal::char_from_swizzle(swizzle_r),
+      internal::char_from_swizzle(swizzle_g),
+      internal::char_from_swizzle(swizzle_b),
+      internal::char_from_swizzle(swizzle_a),
       0,
     };
 
@@ -425,11 +429,11 @@ namespace mgl::opengl
     for(int32_t i = 0; swizzle[i]; ++i)
     {
       MGL_CORE_ASSERT(i < 4, "the swizzle is too long");
-      tex_swizzle[i] = swizzle_from_char(swizzle[i]);
+      tex_swizzle[i] = internal::swizzle_from_char(swizzle[i]);
       MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", swizzle[i]);
     }
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_3D, m_glo);
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, tex_swizzle[0]);

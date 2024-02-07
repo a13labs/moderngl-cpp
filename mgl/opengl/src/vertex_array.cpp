@@ -26,19 +26,20 @@
 
 namespace mgl::opengl
 {
-  vertex_array::vertex_array(program_ref program,
+  vertex_array::vertex_array(const context_ref& ctx,
+                             program_ref program,
                              mgl::opengl::vertex_buffer_list vertex_buffers,
                              buffer_ref index_buffer,
                              int32_t index_element_size,
                              bool skip_errors,
                              mgl::opengl::render_mode mode)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(program, "program is null");
     MGL_CORE_ASSERT(!program->released(), "program already released");
     MGL_CORE_ASSERT(index_element_size == 1 || index_element_size == 2 || index_element_size == 4,
                     "index_element_size must be 1, 2, or 4");
-
-    m_glo = 0;
+    MGL_CORE_ASSERT(program->ctx() == ctx, "program context mismatch");
 
 #ifdef MGL_CORE_ENABLE_ASSERTS
     int32_t i = 0;
@@ -261,6 +262,7 @@ namespace mgl::opengl
 
       // The rendering mode must match the input type in the geometry shader
       // points, lines, lines_adjacency, triangles, triangles_adjacency
+#ifdef MGL_CORE_ENABLE_ASSERTS
       switch(m_program->geometry_input())
       {
         case GL_POINTS:
@@ -295,6 +297,7 @@ namespace mgl::opengl
           return;
           break;
       }
+#endif
     }
     else
     {
@@ -345,7 +348,7 @@ namespace mgl::opengl
     }
 
     glEndTransformFeedback();
-    if(~m_context->enable_flags() & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
+    if(m_ctx->enable_flags() & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
       glDisable(GL_RASTERIZER_DISCARD);
     }

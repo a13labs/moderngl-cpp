@@ -10,7 +10,8 @@
 
 namespace mgl::opengl
 {
-  sampler::sampler()
+  sampler::sampler(const context_ref& ctx)
+      : gl_object(ctx)
   {
     m_filter = { GL_LINEAR, GL_LINEAR };
     m_anisotropy = 0.0;
@@ -41,6 +42,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "Sampler already released");
     glDeleteSamplers(1, (GLuint*)&m_glo);
+    m_glo = 0;
   }
 
   void sampler::use(int index)
@@ -97,7 +99,7 @@ namespace mgl::opengl
     glSamplerParameteri(m_glo, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
   }
 
-  void sampler::set_filter(const sampler::Filter& value)
+  void sampler::set_filter(const sampler::filter& value)
   {
     MGL_CORE_ASSERT(m_glo, "Sampler already released");
     m_filter = value;
@@ -123,13 +125,12 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo, "Sampler already released");
 
-    if(mgl::opengl::internal::gl_max_texture_max_anisotropy() == 0)
+    if(m_ctx->max_anisotropy() == 0)
     {
       return;
     }
 
-    m_anisotropy =
-        (float)MGL_MIN(MGL_MAX(value, 1.0), mgl::opengl::internal::gl_max_texture_max_anisotropy());
+    m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), m_ctx->max_anisotropy());
 
     glSamplerParameterf(m_glo, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
   }

@@ -34,46 +34,25 @@ public:
     };
 
     virtual ~texture() = default;
+
     virtual texture::type texture_type() = 0;
+
+    virtual int32_t width() const = 0;
+
+    virtual int32_t height() const = 0;
+
+    virtual int32_t components() const = 0;
+
     virtual void use(int index) = 0;
+
     virtual void release() = 0;
+
+    virtual int32_t glo() const = 0;
+
+    virtual context_ref& ctx() = 0;
   };
 
   using texture_ref = mgl::ref<mgl::opengl::texture>;
   using textures = mgl::ref_list<texture>;
-
-  inline int swizzle_from_char(char c)
-  {
-    switch(c)
-    {
-      case 'R':
-      case 'r': return 0x1903;
-      case 'G':
-      case 'g': return 0x1904;
-      case 'B':
-      case 'b': return 0x1905;
-      case 'A':
-      case 'a': return 0x1906;
-      case '0': return 0;
-      case '1': return 1;
-    }
-
-    return 0;
-  }
-
-  inline char char_from_swizzle(int c)
-  {
-    switch(c)
-    {
-      case 0x1903: return 'R';
-      case 0x1904: return 'G';
-      case 0x1905: return 'B';
-      case 0x1906: return 'A';
-      case 0: return '0';
-      case 1: return '1';
-    }
-
-    return '?';
-  }
 
 } // namespace  mgl::opengl

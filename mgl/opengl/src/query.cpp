@@ -7,8 +7,14 @@
 
 namespace mgl::opengl
 {
-  query::query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated)
+  query::query(const context_ref& ctx,
+               bool samples,
+               bool any_samples,
+               bool time_elapsed,
+               bool primitives_generated)
+      : m_ctx(ctx)
   {
+
     if(!(samples || any_samples || time_elapsed || primitives_generated))
     {
       samples = true;

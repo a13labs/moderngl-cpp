@@ -8,14 +8,23 @@ namespace mgl::opengl
   class varying
   {
 public:
-    varying(const std::string& name, int number, size_t array_length, int m_dimension);
+    varying(const std::string& name, int32_t number, size_t array_length, int32_t m_dimension);
+
     ~varying() = default;
+
+    const std::string& name() const { return m_name; }
+
+    int32_t number() const { return m_number; }
+
+    size_t array_length() const { return m_array_length; }
+
+    int32_t dimension() const { return m_dimension; }
 
 private:
     std::string m_name;
-    int m_number;
+    int32_t m_number;
     size_t m_array_length;
-    int m_dimension;
+    int32_t m_dimension;
   };
 
   using varying_ref = mgl::ref<varying>;

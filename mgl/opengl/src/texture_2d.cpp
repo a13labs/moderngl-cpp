@@ -29,7 +29,8 @@
 
 namespace mgl::opengl
 {
-  texture_2d::texture_2d(int32_t w,
+  texture_2d::texture_2d(const context_ref& ctx,
+                         int32_t w,
                          int32_t h,
                          int32_t components,
                          const void* data,
@@ -37,20 +38,19 @@ namespace mgl::opengl
                          int32_t align,
                          const std::string& dtype,
                          int32_t internal_format_override)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(components > 0 && components <= 4, "components must be between 1 and 4");
     MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
     MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
     MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0, "samples must be a power of 2");
-    MGL_CORE_ASSERT(!samples || samples <= internal::gl_max_samples(),
+    MGL_CORE_ASSERT(!samples || samples <= m_ctx->max_samples(),
                     "samples must be less than or equal to {0}",
-                    internal::gl_max_samples());
+                    m_ctx->max_samples());
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(!samples || !data, "Multisample textures are not writable directly");
-
-    m_glo = 0;
 
     auto data_type = from_dtype(dtype);
 
@@ -66,7 +66,7 @@ namespace mgl::opengl
     int32_t internal_format = internal_format_override ? internal_format_override
                                                        : data_type->internal_format[components];
 
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
 
     m_width = w;
     m_height = h;
@@ -120,14 +120,20 @@ namespace mgl::opengl
     }
   }
 
-  texture_2d::texture_2d(int32_t w, int32_t h, const void* data, int32_t samples, int32_t align)
+  texture_2d::texture_2d(const context_ref& ctx,
+                         int32_t w,
+                         int32_t h,
+                         const void* data,
+                         int32_t samples,
+                         int32_t align)
+      : gl_object(ctx)
   {
     MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
     MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
     MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0, "samples must be a power of 2");
-    MGL_CORE_ASSERT(!samples || samples <= internal::gl_max_samples(),
+    MGL_CORE_ASSERT(!samples || samples <= ctx->max_samples(),
                     "samples must be less than or equal to {0}",
-                    internal::gl_max_samples());
+                    ctx->max_samples());
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
@@ -149,7 +155,7 @@ namespace mgl::opengl
 
     GLuint glo = 0;
 
-    glActiveTexture(GL_TEXTURE0 + m_default_texture_unit);
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glGenTextures(1, (GLuint*)&glo);
 
     if(!glo)
@@ -214,7 +220,7 @@ namespace mgl::opengl
 
     char* ptr = (char*)dst.data() + dst_off;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -242,7 +248,7 @@ namespace mgl::opengl
     int base_format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -275,7 +281,7 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -310,7 +316,7 @@ namespace mgl::opengl
     int pixel_type = m_data_type->gl_type;
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -337,7 +343,7 @@ namespace mgl::opengl
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -368,7 +374,7 @@ namespace mgl::opengl
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D, m_glo);
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
@@ -412,7 +418,7 @@ namespace mgl::opengl
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     glTexParameteri(texture_target, GL_TEXTURE_BASE_LEVEL, base);
@@ -433,7 +439,7 @@ namespace mgl::opengl
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     m_repeat_x = value;
@@ -453,7 +459,7 @@ namespace mgl::opengl
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     m_repeat_y = value;
@@ -475,20 +481,20 @@ namespace mgl::opengl
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
     glTexParameteri(texture_target, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
     glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
   }
 
-  std::string texture_2d::swizzle()
+  std::string texture_2d::swizzle() const
   {
     MGL_CORE_ASSERT(m_glo != 0, "texture already released");
     MGL_CORE_ASSERT(!m_depth, "cannot get swizzle of depth textures");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     int swizzle_r = 0;
@@ -502,10 +508,10 @@ namespace mgl::opengl
     glGetTexParameteriv(texture_target, GL_TEXTURE_SWIZZLE_A, &swizzle_a);
 
     char swizzle[5] = {
-      char_from_swizzle(swizzle_r),
-      char_from_swizzle(swizzle_g),
-      char_from_swizzle(swizzle_b),
-      char_from_swizzle(swizzle_a),
+      internal::char_from_swizzle(swizzle_r),
+      internal::char_from_swizzle(swizzle_g),
+      internal::char_from_swizzle(swizzle_b),
+      internal::char_from_swizzle(swizzle_a),
       0,
     };
 
@@ -525,13 +531,13 @@ namespace mgl::opengl
     for(int i = 0; swizzle[i]; ++i)
     {
       MGL_CORE_ASSERT(i < 4, "the swizzle is too long");
-      tex_swizzle[i] = swizzle_from_char(swizzle[i]);
+      tex_swizzle[i] = internal::swizzle_from_char(swizzle[i]);
       MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", swizzle[i]);
     }
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     glTexParameteri(texture_target, GL_TEXTURE_SWIZZLE_R, tex_swizzle[0]);
@@ -557,7 +563,7 @@ namespace mgl::opengl
     m_compare_func = value;
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     if(m_compare_func == 0)
@@ -575,10 +581,10 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(m_glo != 0, "texture already released");
 
-    m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), m_context->max_anisotropy());
+    m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), m_ctx->max_anisotropy());
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     glTexParameterf(texture_target, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
@@ -597,7 +603,7 @@ namespace mgl::opengl
 
     if(m_width == width && m_height == height && m_components == components)
     {
-      glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+      glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
       glBindTexture(texture_target, m_glo);
 
       if(data.size() > 0)
@@ -616,7 +622,7 @@ namespace mgl::opengl
     int internal_format = m_data_type->internal_format[components];
     int format = m_data_type->base_format[components];
 
-    glActiveTexture(GL_TEXTURE0 + m_context->default_texture_unit());
+    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
     glBindTexture(texture_target, m_glo);
 
     glTexImage2D(GL_TEXTURE_2D,

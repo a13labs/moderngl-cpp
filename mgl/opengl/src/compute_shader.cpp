@@ -9,7 +9,7 @@
 
 namespace mgl::opengl
 {
-  compute_shader::compute_shader(context* ctx, const std::string& source)
+  compute_shader::compute_shader(const context_ref& ctx, const std::string& source)
       : gl_object(ctx)
   {
     int32_t glo = glCreateProgram();

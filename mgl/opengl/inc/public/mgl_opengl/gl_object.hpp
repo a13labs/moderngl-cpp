@@ -5,11 +5,12 @@
 namespace mgl::opengl
 {
   class context;
+  using context_ref = mgl::ref<context>;
 
   class gl_object
   {
 public:
-    gl_object(context* ctx)
+    gl_object(const context_ref& ctx)
         : m_ctx(ctx)
         , m_glo(0)
     { }
@@ -20,12 +21,26 @@ public:
 
     int32_t glo() const { return m_glo; }
 
-    context* ctx() { return m_ctx; }
+    context_ref& ctx() { return m_ctx; }
+
+    bool operator==(const gl_object& other) const
+    {
+      return m_glo == other.m_glo && m_ctx == other.m_ctx;
+    }
+
+    bool operator!=(const gl_object& other) const { return !(*this == other); }
+
+    bool operator==(const gl_object* other) const
+    {
+      return m_glo == other->m_glo && m_ctx == other->m_ctx;
+    }
+
+    bool operator!=(const gl_object* other) const { return !(*this == other); }
 
     virtual void release() = 0;
 
 protected:
-    context* m_ctx;
-    int32_t m_glo = 0;
+    context_ref m_ctx;
+    int32_t m_glo;
   };
 } // namespace mgl::opengl

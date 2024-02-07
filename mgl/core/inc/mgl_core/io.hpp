@@ -627,6 +627,17 @@ namespace mgl::io
     file->read(reinterpret_cast<char*>(buffer.data() + offset), size * sizeof(double));
   }
 
+  /**
+   * @brief read a text file into a string.
+   * @param file The file to read from.
+   */
+  inline std::string read_text(const istream_ref& file)
+  {
+    MGL_CORE_ASSERT(file->good() && !file->eof(), "read_text: file is not open");
+    std::string txt((std::istreambuf_iterator<char>(*file)), std::istreambuf_iterator<char>());
+    return txt;
+  }
+
   // Writing functions
 
   /**

@@ -21,8 +21,6 @@
 
 namespace mgl::opengl
 {
-  class context;
-
   class uniform_block
   {
 public:
