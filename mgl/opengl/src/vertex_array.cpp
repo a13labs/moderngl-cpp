@@ -51,9 +51,7 @@ namespace mgl::opengl
         return;
       }
 
-      buffer_layout layout = v_data.buffer_layout;
-
-      if(layout.is_invalid())
+      if(v_data.layout.is_invalid())
       {
         MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: invalid buffer layout", i);
         return;
@@ -65,12 +63,12 @@ namespace mgl::opengl
         return;
       }
 
-      if((int32_t)v_data.attributes.size() != layout.size())
+      if((int32_t)v_data.attributes.size() != v_data.layout.size())
       {
         MGL_CORE_ASSERT(false,
                         "vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
                         i,
-                        layout.size(),
+                        v_data.layout.size(),
                         v_data.attributes.size());
         return;
       }
@@ -111,13 +109,11 @@ namespace mgl::opengl
     for(auto&& v_data : vertex_buffers)
     {
       auto buffer = v_data.buffer;
-      const char* format = v_data.buffer_layout.c_str();
 
-      buffer_layout layout = v_data.buffer_layout;
+      int32_t buf_vertices = (int32_t)(buffer->size() / v_data.layout.size());
 
-      int32_t buf_vertices = (int32_t)(buffer->size() / layout.size());
-
-      if(!layout.divisor() && m_index_buffer == nullptr && (!i || m_num_vertices > buf_vertices))
+      if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
+         (!i || m_num_vertices > buf_vertices))
       {
         m_num_vertices = buf_vertices;
       }
@@ -130,9 +126,10 @@ namespace mgl::opengl
         {
           continue;
         }
+
         auto attr = m_program->get_attribute(v_data.attributes[j]);
 
-        buffer_layout::element element = layout[j];
+        buffer_layout::element element = v_data.layout[j];
         int32_t attribute_location = attr.location;
         int32_t attribute_rows_length = attr.data_type->rows_length;
         int32_t attribute_scalar_type = attr.data_type->scalar_type;
@@ -147,20 +144,20 @@ namespace mgl::opengl
           {
             case GL_FLOAT:
               glVertexAttribPointer(
-                  location, count, element.type, element.normalize, layout.stride(), ptr);
+                  location, count, element.type, element.normalize, v_data.layout.stride(), ptr);
               break;
             case GL_DOUBLE:
-              glVertexAttribLPointer(location, count, element.type, layout.stride(), ptr);
+              glVertexAttribLPointer(location, count, element.type, v_data.layout.stride(), ptr);
               break;
             case GL_INT:
-              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
+              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
               break;
             case GL_UNSIGNED_INT:
-              glVertexAttribIPointer(location, count, element.type, layout.stride(), ptr);
+              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
               break;
           }
 
-          glVertexAttribDivisor(location, layout.divisor());
+          glVertexAttribDivisor(location, v_data.layout.divisor());
           glEnableVertexAttribArray(location);
           ptr += element.size / attribute_rows_length;
         }
