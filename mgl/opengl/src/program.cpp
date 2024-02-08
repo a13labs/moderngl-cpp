@@ -381,8 +381,8 @@ namespace mgl::opengl
           glGetActiveSubroutineName(glo, type, i, 256, &name_len, name);
           int32_t index = glGetSubroutineIndex(glo, type, name);
 
-          m_subroutines_map.insert(
-              { name, mgl::create_ref<mgl::opengl::subroutine>(name, index, type) });
+          subroutine sub = { name, index, type };
+          m_subroutines_map.insert({ name, sub });
         }
       }
     }

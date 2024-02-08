@@ -2,7 +2,6 @@
 
 #include "gl_object.hpp"
 #include "shader.hpp"
-#include "subroutine.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
 
@@ -46,8 +45,25 @@ public:
       int32_t dimension;
     };
 
+    struct subroutine
+    {
+      enum type
+      {
+        VERTEX_SHADER = 0x8B31,
+        FRAGMENT_SHADER = 0x8B30,
+        GEOMETRY_SHADER = 0x8DD9,
+        TESS_EVALUATION_SHADER = 0x8E87,
+        TESS_CONTROL_SHADER = 0x8E88,
+      };
+
+      std::string name;
+      int32_t index;
+      subroutine::type shader;
+    };
+
     using varyings_dict = mgl::dict<std::string, varying>;
     using attributes_dict = mgl::dict<std::string, attribute>;
+    using subroutines_dict = mgl::dict<std::string, subroutine>;
 
     ~program() = default;
 
@@ -132,6 +148,18 @@ public:
       return m_varyings_map.at(name);
     }
 
+    bool has_subroutine(const std::string& name) const
+    {
+      return m_subroutines_map.find(name) != m_subroutines_map.end();
+    }
+
+    const subroutine& get_subroutine(const std::string& name) const
+    {
+      MGL_CORE_ASSERT(m_subroutines_map.find(name) != m_subroutines_map.end(),
+                      "Subroutine not found");
+      return m_subroutines_map.at(name);
+    }
+
     const uniform_ref uniform(const std::string& name) const
     {
       if(m_uniforms_map.find(name) == m_uniforms_map.end())
@@ -148,15 +176,6 @@ public:
         return nullptr;
       }
       return m_uniform_blocks_map.at(name);
-    }
-
-    const subroutine_ref subroutine(const std::string& name) const
-    {
-      if(m_subroutines_map.find(name) == m_subroutines_map.end())
-      {
-        return nullptr;
-      }
-      return m_subroutines_map.at(name);
     }
 
     int32_t geometry_input() const { return m_geometry_input; }
