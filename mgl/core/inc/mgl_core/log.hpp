@@ -5,7 +5,6 @@
  * The mgl::log namespace provides functions for logging messages at different levels of severity.
  * It also includes macros for convenient logging.
  */
-
 #pragma once
 #include "memory.hpp"
 #include "string.hpp"

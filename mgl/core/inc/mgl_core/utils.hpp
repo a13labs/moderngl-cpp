@@ -1,7 +1,6 @@
 /**
  * @brief This file contains utility functions for the mgl::core namespace.
  */
-
 #pragma once
 
 #include "containers.hpp"

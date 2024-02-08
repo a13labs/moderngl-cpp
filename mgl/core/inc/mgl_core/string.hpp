@@ -2,7 +2,6 @@
  * @file string.hpp
  * @brief This file contains the declaration of string manipulation functions and utilities.
  */
-
 #pragma once
 #include "containers.hpp"
 #include "memory.hpp"

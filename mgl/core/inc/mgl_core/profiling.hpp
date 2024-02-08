@@ -2,7 +2,6 @@
  * @file profiling.hpp
  * @brief This file contains the definitions and declarations related to profiling and instrumentation.
  */
-
 #pragma once
 
 #ifndef MGL_PROFILING

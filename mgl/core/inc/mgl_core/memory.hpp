@@ -2,7 +2,6 @@
  * @file memory.hpp
  * @brief This file contains the definition of various memory-related utilities.
  */
-
 #pragma once
 
 #include <memory>
