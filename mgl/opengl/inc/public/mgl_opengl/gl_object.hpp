@@ -21,7 +21,7 @@ public:
 
     int32_t glo() const { return m_glo; }
 
-    context_ref& ctx() { return m_ctx; }
+    const context_ref& ctx() const { return m_ctx; }
 
     bool operator==(const gl_object& other) const
     {

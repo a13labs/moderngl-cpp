@@ -43,9 +43,9 @@ public:
 
     virtual void use(int32_t index = 0) override;
 
-    virtual int32_t glo() const override { return m_glo; }
+    virtual int32_t glo() const override { return gl_object::glo(); }
 
-    virtual context_ref& ctx() override { return gl_object::ctx(); }
+    virtual const context_ref& ctx() const override { return gl_object::ctx(); }
 
     int32_t depth() const { return m_depth; }
 

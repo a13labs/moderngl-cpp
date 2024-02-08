@@ -49,7 +49,7 @@ public:
 
     virtual int32_t glo() const = 0;
 
-    virtual context_ref& ctx() = 0;
+    virtual const context_ref& ctx() const = 0;
   };
 
   using texture_ref = mgl::ref<mgl::opengl::texture>;

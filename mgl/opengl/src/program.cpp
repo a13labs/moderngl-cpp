@@ -294,7 +294,9 @@ namespace mgl::opengl
 
       internal::clean_glsl_name(name, name_len);
 
-      program::attribute attr = { name, attribute_lookup_table(type), location, array_length };
+      program::attribute attr = {
+        name, attribute_lookup_table(type), location, (size_t)array_length
+      };
       m_attributes_map.insert({ name, attr });
     }
 
@@ -312,7 +314,7 @@ namespace mgl::opengl
       glGetTransformFeedbackVarying(
           gl_object::glo(), i, 256, &name_len, &array_length, (GLenum*)&type, name);
 
-      program::varying varying = { name, i, array_length, dimension };
+      program::varying varying = { name, i, (size_t)array_length, dimension };
       m_varyings_map.insert({ name, varying });
     }
 

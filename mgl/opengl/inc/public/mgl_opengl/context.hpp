@@ -1,6 +1,5 @@
 #pragma once
 #include "attachment.hpp"
-#include "attribute.hpp"
 #include "buffer.hpp"
 #include "buffer_layout.hpp"
 #include "color_mask.hpp"
@@ -15,7 +14,6 @@
 #include "sampler.hpp"
 #include "scope.hpp"
 #include "shader.hpp"
-#include "subroutine.hpp"
 #include "texture.hpp"
 #include "texture_2d.hpp"
 #include "texture_3d.hpp"
@@ -23,7 +21,6 @@
 #include "texture_cube.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
-#include "varying.hpp"
 #include "vertex_array.hpp"
 #include "vertex_buffer.hpp"
 

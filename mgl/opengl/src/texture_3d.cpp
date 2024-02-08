@@ -45,8 +45,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
-    m_glo = 0;
-
     auto data_type = from_dtype(dtype);
 
     if(!data_type)
@@ -71,7 +69,7 @@ namespace mgl::opengl
 
     GLuint glo = 0;
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->max_texture_units());
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->max_texture_units());
     glGenTextures(1, &glo);
 
     if(!glo)
@@ -80,13 +78,13 @@ namespace mgl::opengl
       return;
     }
 
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
     int32_t pixel_type = data_type->gl_type;
     int32_t base_format = data_type->base_format[components];
     int32_t internal_format = data_type->internal_format[components];
 
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -106,14 +104,15 @@ namespace mgl::opengl
 
   void texture_3d::release()
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
-    glDeleteTextures(1, (GLuint*)&m_glo);
-    m_glo = 0;
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    GLuint glo = gl_object::glo();
+    glDeleteTextures(1, &glo);
+    gl_object::set_glo(GL_ZERO);
   }
 
   void texture_3d::read(mgl::uint8_buffer& dst, int32_t align, size_t dst_offset)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -127,8 +126,8 @@ namespace mgl::opengl
 
     char* ptr = (char*)dst.data() + dst_offset;
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -139,7 +138,7 @@ namespace mgl::opengl
 
   void texture_3d::read(buffer_ref& dst, int32_t align, size_t dst_offset)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -147,8 +146,8 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, dst->glo());
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -160,7 +159,7 @@ namespace mgl::opengl
 
   void texture_3d::write(const mgl::uint8_buffer& src, const mgl::cube& v, int32_t align)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -179,8 +178,8 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
     int32_t pixel_type = m_data_type->gl_type;
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -192,7 +191,7 @@ namespace mgl::opengl
 
   void texture_3d::write(const mgl::uint8_buffer& src, int32_t align)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -211,8 +210,8 @@ namespace mgl::opengl
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -224,7 +223,7 @@ namespace mgl::opengl
 
   void texture_3d::write(const buffer_ref& src, const mgl::cube& v, int32_t align)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -239,8 +238,8 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -252,7 +251,7 @@ namespace mgl::opengl
 
   void texture_3d::write(const buffer_ref& src, int32_t align)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
 
@@ -267,8 +266,8 @@ namespace mgl::opengl
     int32_t base_format = m_data_type->base_format[m_components];
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, src->glo());
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
@@ -280,7 +279,7 @@ namespace mgl::opengl
 
   void texture_3d::bind_to_image(int32_t unit, bool read, bool write, int32_t level, int32_t format)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(read || write, "Illegal access mode. Read or write needs to be enabled.");
 
     int32_t access = GL_READ_WRITE;
@@ -291,24 +290,24 @@ namespace mgl::opengl
 
     int32_t frmt = format ? format : m_data_type->internal_format[m_components];
 
-    glBindImageTexture(unit, m_glo, level, GL_TRUE, 0, access, frmt);
+    glBindImageTexture(unit, gl_object::glo(), level, GL_TRUE, 0, access, frmt);
   }
 
   void texture_3d::use(int32_t index)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
     glActiveTexture(GL_TEXTURE0 + index);
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
   }
 
   void texture_3d::build_mipmaps(int32_t base, int32_t max_lvl)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
     MGL_CORE_ASSERT(base <= max_lvl, "invalid base");
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, base);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, m_max_lvl);
@@ -324,10 +323,10 @@ namespace mgl::opengl
 
   void texture_3d::set_repeat_x(bool value)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     m_repeat_x = value;
 
@@ -342,10 +341,10 @@ namespace mgl::opengl
 
   void texture_3d::set_repeat_y(bool value)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     m_repeat_y = value;
 
@@ -360,10 +359,10 @@ namespace mgl::opengl
 
   void texture_3d::set_repeat_z(bool value)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     m_repeat_z = value;
 
@@ -378,12 +377,12 @@ namespace mgl::opengl
 
   void texture_3d::set_filter(const texture::filter& value)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
     m_filter = value;
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
@@ -391,10 +390,10 @@ namespace mgl::opengl
 
   std::string texture_3d::swizzle()
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     int32_t swizzle_r = 0;
     int32_t swizzle_g = 0;
@@ -419,7 +418,7 @@ namespace mgl::opengl
 
   void texture_3d::set_swizzle(const std::string& value)
   {
-    MGL_CORE_ASSERT(m_glo, "texture already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
 
     const char* swizzle = value.c_str();
     MGL_CORE_ASSERT(swizzle[0], "the swizzle is empty");
@@ -433,8 +432,8 @@ namespace mgl::opengl
       MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", swizzle[i]);
     }
 
-    glActiveTexture(GL_TEXTURE0 + m_ctx->default_texture_unit());
-    glBindTexture(GL_TEXTURE_3D, m_glo);
+    glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
+    glBindTexture(GL_TEXTURE_3D, gl_object::glo());
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_R, tex_swizzle[0]);
     if(tex_swizzle[1] != -1)

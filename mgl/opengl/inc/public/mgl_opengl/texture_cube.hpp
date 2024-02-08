@@ -42,7 +42,7 @@ public:
 
     virtual int32_t glo() const override { return gl_object::glo(); }
 
-    virtual context_ref& ctx() override { return gl_object::ctx(); }
+    virtual const context_ref& ctx() const override { return gl_object::ctx(); }
 
     const texture::filter& filter() const { return m_filter; }
 

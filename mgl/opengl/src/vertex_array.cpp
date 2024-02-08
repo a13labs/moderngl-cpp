@@ -97,9 +97,9 @@ namespace mgl::opengl
       return;
     }
 
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
-    glBindVertexArray(m_glo);
+    glBindVertexArray(gl_object::glo());
 
     if(m_index_buffer != nullptr)
     {
@@ -126,18 +126,16 @@ namespace mgl::opengl
 
       for(size_t j = 0; j < v_data.attributes.size(); ++j)
       {
-
-        auto attribute = m_program->attribute(v_data.attributes[j]);
-
-        if(!attribute)
+        if(!m_program->has_attribute(v_data.attributes[j]))
         {
           continue;
         }
+        auto attr = m_program->get_attribute(v_data.attributes[j]);
 
         buffer_layout::element element = layout[j];
-        int32_t attribute_location = attribute->location();
-        int32_t attribute_rows_length = attribute->get_data_type()->rows_length;
-        int32_t attribute_scalar_type = attribute->get_data_type()->scalar_type;
+        int32_t attribute_location = attr.location;
+        int32_t attribute_rows_length = attr.data_type->rows_length;
+        int32_t attribute_scalar_type = attr.data_type->scalar_type;
 
         char* ptr = (char*)(intptr_t)element.offset;
         for(int32_t r = 0; r < attribute_rows_length; ++r)
@@ -173,14 +171,15 @@ namespace mgl::opengl
 
   void vertex_array::release()
   {
-    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
-    glDeleteVertexArrays(1, (GLuint*)&m_glo);
-    m_glo = 0;
+    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    GLuint glo = gl_object::glo();
+    glDeleteVertexArrays(1, &glo);
+    gl_object::set_glo(GL_ZERO);
   }
 
   void vertex_array::render(mgl::opengl::render_mode mode, int vertices, int first, int instances)
   {
-    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
     if(vertices == 0)
     {
@@ -194,7 +193,7 @@ namespace mgl::opengl
     }
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_glo);
+    glBindVertexArray(gl_object::glo());
 
     if(m_index_buffer != nullptr)
     {
@@ -213,10 +212,10 @@ namespace mgl::opengl
                                      int count,
                                      int first)
   {
-    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_glo);
+    glBindVertexArray(gl_object::glo());
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->glo());
 
     const void* ptr = (const void*)((GLintptr)first * 20);
@@ -238,7 +237,7 @@ namespace mgl::opengl
                                int instances,
                                int buffer_offset)
   {
-    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
     MGL_CORE_ASSERT(m_program->num_varyings(), "the program has no varyings")
 
@@ -321,7 +320,7 @@ namespace mgl::opengl
     }
 
     glUseProgram(m_program->glo());
-    glBindVertexArray(m_glo);
+    glBindVertexArray(gl_object::glo());
 
     int i = 0;
     for(auto&& buffer : buffers)
@@ -348,7 +347,7 @@ namespace mgl::opengl
     }
 
     glEndTransformFeedback();
-    if(m_ctx->enable_flags() & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
+    if(gl_object::ctx()->enable_flags() & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
       glDisable(GL_RASTERIZER_DISCARD);
     }
@@ -364,7 +363,7 @@ namespace mgl::opengl
                           int divisor,
                           bool normalize)
   {
-    MGL_CORE_ASSERT(m_glo, "Vertex Array already released");
+    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
     MGL_CORE_ASSERT(!(type[0] == 'f' && normalize), "invalid normalize");
 
@@ -380,7 +379,7 @@ namespace mgl::opengl
 
     char* ptr = (char*)offset;
 
-    glBindVertexArray(m_glo);
+    glBindVertexArray(gl_object::glo());
     glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
 
     switch(type[0])

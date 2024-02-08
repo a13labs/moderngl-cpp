@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/renderbuffer.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/framebuffer.hpp"
@@ -60,9 +44,9 @@ namespace mgl::opengl
       return;
     }
 
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
-    glBindRenderbuffer(GL_RENDERBUFFER, m_glo);
+    glBindRenderbuffer(GL_RENDERBUFFER, gl_object::glo());
 
     if(samples == 0)
     {
@@ -82,7 +66,6 @@ namespace mgl::opengl
                     "Samples must be less than or equal to {0}",
                     ctx->max_samples());
 
-    m_glo = 0;
     m_width = w;
     m_height = h;
     m_components = 1;
@@ -98,9 +81,9 @@ namespace mgl::opengl
       return;
     }
 
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
-    glBindRenderbuffer(GL_RENDERBUFFER, m_glo);
+    glBindRenderbuffer(GL_RENDERBUFFER, gl_object::glo());
 
     if(samples == 0)
     {
@@ -114,9 +97,10 @@ namespace mgl::opengl
 
   void renderbuffer::release()
   {
-    MGL_CORE_ASSERT(m_glo, "render buffer already released");
-    glDeleteRenderbuffers(1, (GLuint*)&m_glo);
-    m_glo = 0;
+    MGL_CORE_ASSERT(!gl_object::released(), "render buffer already released");
+    GLuint glo = gl_object::glo();
+    glDeleteRenderbuffers(1, &glo);
+    gl_object::set_glo(GL_ZERO);
   }
 
 } // namespace  mgl::opengl

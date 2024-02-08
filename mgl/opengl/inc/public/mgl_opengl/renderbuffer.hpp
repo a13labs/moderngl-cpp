@@ -28,7 +28,7 @@ public:
 
     virtual int32_t glo() const override final { return gl_object::glo(); }
 
-    virtual context_ref& ctx() override final { return gl_object::ctx(); }
+    virtual const context_ref& ctx() const override final { return gl_object::ctx(); }
 
 private:
     friend class context;
