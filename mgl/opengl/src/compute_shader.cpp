@@ -77,7 +77,7 @@ namespace mgl::opengl
     }
 
     m_shader_glo = shader_glo;
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
     int32_t num_uniforms = 0;
 
@@ -93,7 +93,7 @@ namespace mgl::opengl
       glGetActiveUniform(glo, i, 256, &name_len, &size, (GLenum*)&type, name);
       int32_t location = glGetUniformLocation(glo, name);
 
-      mgl::opengl::internal::clean_glsl_name(name, name_len);
+      internal::clean_glsl_name(name, name_len);
 
       if(location < 0)
       {
@@ -117,7 +117,7 @@ namespace mgl::opengl
       int32_t index = glGetUniformBlockIndex(glo, name);
       glGetActiveUniformBlockiv(glo, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
 
-      mgl::opengl::internal::clean_glsl_name(name, name_len);
+      internal::clean_glsl_name(name, name_len);
 
       m_uniform_blocks_map.insert(
           { name, mgl::create_ref<mgl::opengl::uniform_block>(name, glo, index, size) });
@@ -126,40 +126,36 @@ namespace mgl::opengl
 
   void compute_shader::release()
   {
-    MGL_CORE_ASSERT(m_glo, "Compute Shader already released or not initialized");
+    MGL_CORE_ASSERT(!released(), "Compute Shader already released or not initialized");
     glDeleteShader(m_shader_glo);
-    glDeleteProgram(m_glo);
-    m_glo = 0;
+    glDeleteProgram(gl_object::glo());
+    gl_object::set_glo(GL_ZERO);
   }
 
   void compute_shader::run(int32_t x, int32_t y, int32_t z)
   {
-    MGL_CORE_ASSERT(m_glo, "Compute Shader already released or not initialized");
-    glUseProgram(m_glo);
+    MGL_CORE_ASSERT(!released(), "Compute Shader already released or not initialized");
+    glUseProgram(gl_object::glo());
     glDispatchCompute(x, y, z);
   }
 
   const mgl::string_list compute_shader::uniforms() const
   {
     auto result = mgl::string_list();
-
     for(auto&& a : m_uniforms_map)
     {
       result.push_back(a.first);
     }
-
     return result;
   }
 
   const mgl::string_list compute_shader::uniform_blocks() const
   {
     auto result = mgl::string_list();
-
     for(auto&& a : m_uniform_blocks_map)
     {
       result.push_back(a.first);
     }
-
     return result;
   }
 

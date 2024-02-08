@@ -40,6 +40,9 @@ public:
     virtual void release() = 0;
 
 protected:
+    void set_glo(int32_t glo) { m_glo = glo; }
+
+private:
     context_ref m_ctx;
     int32_t m_glo;
   };

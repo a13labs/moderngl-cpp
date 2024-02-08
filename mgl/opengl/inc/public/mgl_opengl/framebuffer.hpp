@@ -112,8 +112,7 @@ private:
     mgl::rect m_scissor;
     color_masks m_color_masks;
 
-    int32_t m_draw_buffers_len;
-    unsigned* m_draw_buffers;
+    mgl::list<uint32_t> m_draw_buffers;
 
     // Flags this as a detected framebuffer we don't control the size of
     bool m_dynamic;

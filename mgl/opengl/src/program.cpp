@@ -10,6 +10,83 @@
 
 namespace mgl::opengl
 {
+  static program::data_type gl_int = { 1, GL_INT, 1, 1, false };
+  static program::data_type gl_int_vec2 = { 2, GL_INT, 1, 2, false };
+  static program::data_type gl_int_vec3 = { 3, GL_INT, 1, 3, false };
+  static program::data_type gl_int_vec4 = { 4, GL_INT, 1, 4, false };
+  static program::data_type gl_unsigned_int = { 1, GL_UNSIGNED_INT, 1, 1, false };
+  static program::data_type gl_unsigned_int_vec2 = { 2, GL_UNSIGNED_INT, 1, 2, false };
+  static program::data_type gl_unsigned_int_vec3 = { 3, GL_UNSIGNED_INT, 1, 3, false };
+  static program::data_type gl_unsigned_int_vec4 = { 4, GL_UNSIGNED_INT, 1, 4, false };
+  static program::data_type gl_float = { 1, GL_FLOAT, 1, 1, true };
+  static program::data_type gl_float_vec2 = { 2, GL_FLOAT, 1, 2, true };
+  static program::data_type gl_float_vec3 = { 3, GL_FLOAT, 1, 3, true };
+  static program::data_type gl_float_vec4 = { 4, GL_FLOAT, 1, 4, true };
+  static program::data_type gl_double = { 1, GL_DOUBLE, 1, 1, false };
+  static program::data_type gl_double_vec2 = { 2, GL_DOUBLE, 1, 2, false };
+  static program::data_type gl_double_vec3 = { 3, GL_DOUBLE, 1, 3, false };
+  static program::data_type gl_double_vec4 = { 4, GL_DOUBLE, 1, 4, false };
+  static program::data_type gl_float_mat_2 = { 4, GL_FLOAT, 2, 2, true };
+  static program::data_type gl_float_mat_2x3 = { 6, GL_FLOAT, 2, 3, true };
+  static program::data_type gl_float_mat_2x4 = { 8, GL_FLOAT, 2, 4, true };
+  static program::data_type gl_float_mat_3x2 = { 6, GL_FLOAT, 3, 2, true };
+  static program::data_type gl_float_mat_3 = { 9, GL_FLOAT, 3, 3, true };
+  static program::data_type gl_float_mat_3x4 = { 12, GL_FLOAT, 3, 4, true };
+  static program::data_type gl_float_mat_4x2 = { 8, GL_FLOAT, 4, 2, true };
+  static program::data_type gl_float_mat_4x3 = { 12, GL_FLOAT, 4, 3, true };
+  static program::data_type gl_float_mat_4 = { 16, GL_FLOAT, 4, 4, true };
+  static program::data_type gl_double_mat_2 = { 4, GL_DOUBLE, 2, 2, false };
+  static program::data_type gl_double_mat_2x3 = { 6, GL_DOUBLE, 2, 3, false };
+  static program::data_type gl_double_mat_2x4 = { 8, GL_DOUBLE, 2, 4, false };
+  static program::data_type gl_double_mat_3x2 = { 6, GL_DOUBLE, 3, 2, false };
+  static program::data_type gl_double_mat_3 = { 9, GL_DOUBLE, 3, 3, false };
+  static program::data_type gl_double_mat_3x4 = { 12, GL_DOUBLE, 3, 4, false };
+  static program::data_type gl_double_mat_4x2 = { 8, GL_DOUBLE, 4, 2, false };
+  static program::data_type gl_double_mat_4x3 = { 12, GL_DOUBLE, 4, 3, false };
+  static program::data_type gl_double_mat_4 = { 16, GL_DOUBLE, 4, 4, false };
+
+  program::data_type* attribute_lookup_table(int32_t gl_type)
+  {
+    switch(gl_type)
+    {
+      case GL_INT: return &gl_int;
+      case GL_INT_VEC2: return &gl_int_vec2;
+      case GL_INT_VEC3: return &gl_int_vec3;
+      case GL_INT_VEC4: return &gl_int_vec4;
+      case GL_UNSIGNED_INT: return &gl_unsigned_int;
+      case GL_UNSIGNED_INT_VEC2: return &gl_unsigned_int_vec2;
+      case GL_UNSIGNED_INT_VEC3: return &gl_unsigned_int_vec3;
+      case GL_UNSIGNED_INT_VEC4: return &gl_unsigned_int_vec4;
+      case GL_FLOAT: return &gl_float;
+      case GL_FLOAT_VEC2: return &gl_float_vec2;
+      case GL_FLOAT_VEC3: return &gl_float_vec3;
+      case GL_FLOAT_VEC4: return &gl_float_vec4;
+      case GL_DOUBLE: return &gl_double;
+      case GL_DOUBLE_VEC2: return &gl_double_vec2;
+      case GL_DOUBLE_VEC3: return &gl_double_vec3;
+      case GL_DOUBLE_VEC4: return &gl_double_vec4;
+      case GL_FLOAT_MAT2: return &gl_float_mat_2;
+      case GL_FLOAT_MAT2x3: return &gl_float_mat_2x3;
+      case GL_FLOAT_MAT2x4: return &gl_float_mat_2x4;
+      case GL_FLOAT_MAT3x2: return &gl_float_mat_3x2;
+      case GL_FLOAT_MAT3: return &gl_float_mat_3;
+      case GL_FLOAT_MAT3x4: return &gl_float_mat_3x4;
+      case GL_FLOAT_MAT4x2: return &gl_float_mat_4x2;
+      case GL_FLOAT_MAT4x3: return &gl_float_mat_4x3;
+      case GL_FLOAT_MAT4: return &gl_float_mat_4;
+      case GL_DOUBLE_MAT2: return &gl_double_mat_2;
+      case GL_DOUBLE_MAT2x3: return &gl_double_mat_2x3;
+      case GL_DOUBLE_MAT2x4: return &gl_double_mat_2x4;
+      case GL_DOUBLE_MAT3x2: return &gl_double_mat_3x2;
+      case GL_DOUBLE_MAT3: return &gl_double_mat_3;
+      case GL_DOUBLE_MAT3x4: return &gl_double_mat_3x4;
+      case GL_DOUBLE_MAT4x2: return &gl_double_mat_4x2;
+      case GL_DOUBLE_MAT4x3: return &gl_double_mat_4x3;
+      case GL_DOUBLE_MAT4: return &gl_double_mat_4;
+      default: MGL_CORE_ASSERT(false, "invalid gl type"); return nullptr;
+    };
+  }
+
   program::program(const context_ref& ctx,
                    const shaders& shaders,
                    const shaders_outputs& outputs,
@@ -129,11 +206,10 @@ namespace mgl::opengl
       return;
     }
 
-    m_glo = glo;
+    gl_object::set_glo(glo);
 
     if(!shaders.sources[shader::type::GEOMETRY_SHADER].empty())
     {
-
       int32_t geometry_in = 0;
       int32_t geometry_out = 0;
       m_geometry_vertices = 0;
@@ -204,27 +280,26 @@ namespace mgl::opengl
     }
 
     int32_t num_attributes = 0;
-    glGetProgramiv(m_glo, GL_ACTIVE_ATTRIBUTES, &num_attributes);
+    glGetProgramiv(gl_object::glo(), GL_ACTIVE_ATTRIBUTES, &num_attributes);
 
     for(int32_t i = 0; i < num_attributes; ++i)
     {
-      int32_t type = 0;
-      int32_t array_length = 0;
-      int32_t name_len = 0;
+      GLenum type = 0;
+      GLint array_length = 0;
+      GLint name_len = 0;
       char name[256];
 
-      glGetActiveAttrib(m_glo, i, 256, &name_len, &array_length, (GLenum*)&type, name);
-      int32_t location = glGetAttribLocation(m_glo, name);
+      glGetActiveAttrib(gl_object::glo(), i, 256, &name_len, &array_length, &type, name);
+      int32_t location = glGetAttribLocation(gl_object::glo(), name);
 
-      mgl::opengl::internal::clean_glsl_name(name, name_len);
+      internal::clean_glsl_name(name, name_len);
 
-      m_attributes_map.insert(
-          { name,
-            mgl::create_ref<mgl::opengl::attribute>(name, type, m_glo, location, array_length) });
+      program::attribute attr = { name, attribute_lookup_table(type), location, array_length };
+      m_attributes_map.insert({ name, attr });
     }
 
     int32_t num_varyings = 0;
-    glGetProgramiv(m_glo, GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
+    glGetProgramiv(gl_object::glo(), GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
 
     for(int32_t i = 0; i < num_varyings; ++i)
     {
@@ -234,14 +309,15 @@ namespace mgl::opengl
       int32_t name_len = 0;
       char name[256];
 
-      glGetTransformFeedbackVarying(m_glo, i, 256, &name_len, &array_length, (GLenum*)&type, name);
+      glGetTransformFeedbackVarying(
+          gl_object::glo(), i, 256, &name_len, &array_length, (GLenum*)&type, name);
 
-      m_varyings_map.insert(
-          { name, mgl::create_ref<mgl::opengl::varying>(name, i, array_length, dimension) });
+      program::varying varying = { name, i, array_length, dimension };
+      m_varyings_map.insert({ name, varying });
     }
 
     int32_t num_uniforms = 0;
-    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORMS, &num_uniforms);
+    glGetProgramiv(gl_object::glo(), GL_ACTIVE_UNIFORMS, &num_uniforms);
 
     for(int32_t i = 0; i < num_uniforms; ++i)
     {
@@ -250,10 +326,10 @@ namespace mgl::opengl
       int32_t name_len = 0;
       char name[256];
 
-      glGetActiveUniform(m_glo, i, 256, &name_len, &size, (GLenum*)&type, name);
-      int32_t location = glGetUniformLocation(m_glo, name);
+      glGetActiveUniform(gl_object::glo(), i, 256, &name_len, &size, (GLenum*)&type, name);
+      int32_t location = glGetUniformLocation(gl_object::glo(), name);
 
-      mgl::opengl::internal::clean_glsl_name(name, name_len);
+      internal::clean_glsl_name(name, name_len);
 
       if(location < 0)
       {
@@ -261,11 +337,12 @@ namespace mgl::opengl
       }
 
       m_uniforms_map.insert(
-          { name, mgl::create_ref<mgl::opengl::uniform>(name, type, glo, location, size) });
+          { name,
+            mgl::create_ref<mgl::opengl::uniform>(name, type, gl_object::glo(), location, size) });
     }
 
     int32_t num_uniform_blocks = 0;
-    glGetProgramiv(m_glo, GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
+    glGetProgramiv(gl_object::glo(), GL_ACTIVE_UNIFORM_BLOCKS, &num_uniform_blocks);
 
     for(int32_t i = 0; i < num_uniform_blocks; ++i)
     {
@@ -273,17 +350,18 @@ namespace mgl::opengl
       int32_t name_len = 0;
       char name[256];
 
-      glGetActiveUniformBlockName(m_glo, i, 256, &name_len, name);
-      int32_t index = glGetUniformBlockIndex(m_glo, name);
-      glGetActiveUniformBlockiv(m_glo, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
+      glGetActiveUniformBlockName(gl_object::glo(), i, 256, &name_len, name);
+      int32_t index = glGetUniformBlockIndex(gl_object::glo(), name);
+      glGetActiveUniformBlockiv(gl_object::glo(), index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
 
-      mgl::opengl::internal::clean_glsl_name(name, name_len);
+      internal::clean_glsl_name(name, name_len);
 
       m_uniform_blocks_map.insert(
-          { name, mgl::create_ref<mgl::opengl::uniform_block>(name, glo, index, size) });
+          { name,
+            mgl::create_ref<mgl::opengl::uniform_block>(name, gl_object::glo(), index, size) });
     }
 
-    if(mgl::opengl::internal::gl_version_code() >= 400)
+    if(internal::gl_version_code() >= 400)
     {
       for(int32_t st = 0; st < shader::type::GENERIC_PROGRAM; ++st)
       {
@@ -312,85 +390,21 @@ namespace mgl::opengl
 
   void program::release()
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Vertex Array already released");
-    glDeleteProgram(m_glo);
-    m_glo = 0;
-  }
-
-  const mgl::string_list program::attributes(bool all)
-  {
-    auto result = mgl::string_list();
-
-    for(auto&& a : m_attributes_map)
-    {
-      if(!all && mgl::starts_with(a.first, "gl_"))
-      {
-        continue;
-      }
-      result.push_back(a.first);
-    }
-
-    return result;
-  }
-
-  const mgl::string_list program::uniforms()
-  {
-    auto result = mgl::string_list();
-
-    for(auto&& a : m_uniforms_map)
-    {
-      result.push_back(a.first);
-    }
-
-    return result;
-  }
-
-  const mgl::string_list program::uniform_blocks()
-  {
-    auto result = mgl::string_list();
-
-    for(auto&& a : m_uniform_blocks_map)
-    {
-      result.push_back(a.first);
-    }
-
-    return result;
-  }
-
-  const mgl::string_list program::varyings()
-  {
-    auto result = mgl::string_list();
-
-    for(auto&& a : m_varyings_map)
-    {
-      result.push_back(a.first);
-    }
-
-    return result;
-  }
-
-  const mgl::string_list program::subroutines()
-  {
-    auto result = mgl::string_list();
-
-    for(auto&& a : m_subroutines_map)
-    {
-      result.push_back(a.first);
-    }
-
-    return result;
+    MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
+    glDeleteProgram(gl_object::glo());
+    gl_object::set_glo(0);
   }
 
   void program::bind()
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Vertex Array already released");
-    glUseProgram(m_glo);
+    MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
+    glUseProgram(gl_object::glo());
   }
 
   void program::unbind()
   {
-    MGL_CORE_ASSERT(m_glo != 0, "Vertex Array already released");
-    glUseProgram(0);
+    MGL_CORE_ASSERT(!gl_object::released() != 0, "Program already released");
+    glUseProgram(GL_ZERO);
   }
 
 } // namespace  mgl::opengl

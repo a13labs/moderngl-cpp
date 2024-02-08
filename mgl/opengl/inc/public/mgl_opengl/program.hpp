@@ -1,14 +1,13 @@
 #pragma once
 
-#include "attribute.hpp"
 #include "gl_object.hpp"
 #include "shader.hpp"
 #include "subroutine.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
-#include "varying.hpp"
 
 #include "mgl_core/containers.hpp"
+#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
@@ -22,26 +21,115 @@ namespace mgl::opengl
   class program : public gl_object
   {
 public:
+    struct data_type
+    {
+      int32_t dimension;
+      int32_t scalar_type;
+      int32_t rows_length;
+      int32_t row_length;
+      bool normalizable;
+    };
+
+    struct attribute
+    {
+      std::string name;
+      data_type* data_type;
+      int32_t location;
+      size_t array_length;
+    };
+
+    struct varying
+    {
+      std::string name;
+      int32_t number;
+      size_t array_length;
+      int32_t dimension;
+    };
+
+    using varyings_dict = mgl::dict<std::string, varying>;
+    using attributes_dict = mgl::dict<std::string, attribute>;
+
     ~program() = default;
+
+    virtual void release() override final;
 
     void bind();
     void unbind();
 
-    const mgl::string_list attributes(bool all = true);
-    const mgl::string_list uniforms();
-    const mgl::string_list uniform_blocks();
-    const mgl::string_list varyings();
-    const mgl::string_list subroutines();
-
-    virtual void release() override final;
-
-    const attribute_ref attribute(const std::string& name) const
+    const mgl::string_list attributes(bool all = true) const
     {
-      if(m_attributes_map.find(name) == m_attributes_map.end())
+      auto result = mgl::string_list();
+      for(auto&& a : m_attributes_map)
       {
-        return nullptr;
+        if(!all && mgl::starts_with(a.first, "gl_"))
+        {
+          continue;
+        }
+        result.push_back(a.first);
       }
+      return result;
+    }
+
+    const mgl::string_list uniforms() const
+    {
+      auto result = mgl::string_list();
+      for(auto&& a : m_uniforms_map)
+      {
+        result.push_back(a.first);
+      }
+      return result;
+    }
+
+    const mgl::string_list uniform_blocks() const
+    {
+      auto result = mgl::string_list();
+      for(auto&& a : m_uniform_blocks_map)
+      {
+        result.push_back(a.first);
+      }
+      return result;
+    }
+
+    const mgl::string_list varyings() const
+    {
+      auto result = mgl::string_list();
+      for(auto&& a : m_varyings_map)
+      {
+        result.push_back(a.first);
+      }
+      return result;
+    }
+
+    const mgl::string_list subroutines() const
+    {
+      auto result = mgl::string_list();
+      for(auto&& a : m_subroutines_map)
+      {
+        result.push_back(a.first);
+      }
+      return result;
+    }
+
+    bool has_attribute(const std::string& name) const
+    {
+      return m_attributes_map.find(name) != m_attributes_map.end();
+    }
+
+    const attribute& get_attribute(const std::string& name) const
+    {
+      MGL_CORE_ASSERT(m_attributes_map.find(name) != m_attributes_map.end(), "Attribute not found");
       return m_attributes_map.at(name);
+    }
+
+    bool has_varying(const std::string& name) const
+    {
+      return m_varyings_map.find(name) != m_varyings_map.end();
+    }
+
+    const varying& get_varying(const std::string& name) const
+    {
+      MGL_CORE_ASSERT(m_varyings_map.find(name) != m_varyings_map.end(), "Varying not found");
+      return m_varyings_map.at(name);
     }
 
     const uniform_ref uniform(const std::string& name) const
@@ -60,15 +148,6 @@ public:
         return nullptr;
       }
       return m_uniform_blocks_map.at(name);
-    }
-
-    const varying_ref varying(const std::string& name) const
-    {
-      if(m_varyings_map.find(name) == m_varyings_map.end())
-      {
-        return nullptr;
-      }
-      return m_varyings_map.at(name);
     }
 
     const subroutine_ref subroutine(const std::string& name) const
