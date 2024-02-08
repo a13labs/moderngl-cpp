@@ -195,7 +195,6 @@ namespace mgl::opengl
                                bool interleaved)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_INFO("Creating program");
     auto program = new mgl::opengl::program(
         shared_from_this(), shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);

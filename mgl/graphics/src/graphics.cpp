@@ -18,10 +18,10 @@ namespace mgl::graphics
   void init()
   {
     MGL_PROFILE_FUNCTION("GRAPHICS INIT");
-    MGL_CORE_INFO("Loading default font...");
+    MGL_CORE_INFO("Loading default font.");
     auto font = mgl::create_ref<mgl::registry::truetype_font>(default_font, default_font_len);
     register_font("default", font);
-    MGL_CORE_INFO("Creating text vertex buffer and shader...");
+    MGL_CORE_INFO("Creating vertex buffer and shader for text rendering.");
     register_buffer("text_vb", mgl::create_ref<vertex_buffer>("4f", TEXT_BUFFER_SIZE, true));
     register_shader("text_shader", mgl::create_ref<builtins::text_shader>());
   }

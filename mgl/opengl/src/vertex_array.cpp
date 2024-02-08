@@ -110,12 +110,10 @@ namespace mgl::opengl
     {
       auto buffer = v_data.buffer;
 
-      int32_t buf_vertices = (int32_t)(buffer->size() / v_data.layout.size());
-
       if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
-         (!i || m_num_vertices > buf_vertices))
+         (!i || m_num_vertices > v_data.vertex_count))
       {
-        m_num_vertices = buf_vertices;
+        m_num_vertices = v_data.vertex_count;
       }
 
       glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
@@ -164,6 +162,8 @@ namespace mgl::opengl
       }
       i++;
     }
+
+    glBindVertexArray(0);
   }
 
   void vertex_array::release()
@@ -174,7 +174,10 @@ namespace mgl::opengl
     gl_object::set_glo(GL_ZERO);
   }
 
-  void vertex_array::render(mgl::opengl::render_mode mode, int vertices, int first, int instances)
+  void vertex_array::render(mgl::opengl::render_mode mode,
+                            int32_t vertices,
+                            int32_t first,
+                            int32_t instances)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
@@ -204,35 +207,39 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
-  void vertex_array::render_indirect(const buffer_ref& buffer,
+  void vertex_array::render_indirect(const buffer_ref& indirect_commands,
                                      mgl::opengl::render_mode mode,
-                                     int count,
-                                     int first)
+                                     int32_t count,
+                                     int32_t first)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    MGL_CORE_ASSERT(indirect_commands, "indirect_commands is null");
+    MGL_CORE_ASSERT(indirect_commands->size() >= (first + count) * sizeof(draw_indirect_command),
+                    "indirect_commands size is invalid");
 
     glUseProgram(m_program->glo());
     glBindVertexArray(gl_object::glo());
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, buffer->glo());
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirect_commands->glo());
 
-    const void* ptr = (const void*)((GLintptr)first * 20);
+    const void* ptr = (const void*)((GLintptr)first * sizeof(draw_indirect_command));
 
     if(m_index_buffer != nullptr)
     {
-      glMultiDrawElementsIndirect(mode, m_index_element_type, ptr, count, 20);
+      glMultiDrawElementsIndirect(
+          mode, m_index_element_type, ptr, count, sizeof(draw_indirect_command));
     }
     else
     {
-      glMultiDrawArraysIndirect(mode, ptr, count, 20);
+      glMultiDrawArraysIndirect(mode, ptr, count, sizeof(draw_indirect_command));
     }
   }
 
   void vertex_array::transform(const mgl::ref_list<buffer>& buffers,
                                mgl::opengl::render_mode mode,
-                               int vertices,
-                               int first,
-                               int instances,
-                               int buffer_offset)
+                               int32_t vertices,
+                               int32_t first,
+                               int32_t instances,
+                               int32_t buffer_offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
 
@@ -249,7 +256,7 @@ namespace mgl::opengl
       instances = m_num_instances;
     }
 
-    int output_mode = -1;
+    int32_t output_mode = -1;
 
     // If a geo shader is present we need to sanity check the the rendering mode
     if(m_program->geometry_output() > -1)
@@ -319,7 +326,7 @@ namespace mgl::opengl
     glUseProgram(m_program->glo());
     glBindVertexArray(gl_object::glo());
 
-    int i = 0;
+    int32_t i = 0;
     for(auto&& buffer : buffers)
     {
       glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER,
@@ -351,25 +358,19 @@ namespace mgl::opengl
     glFlush();
   }
 
-  void vertex_array::bind(int location,
-                          const char* type,
+  void vertex_array::bind(int32_t location,
+                          char type,
                           const buffer_ref& buffer,
-                          const char* format,
+                          const buffer_layout& layout,
                           size_t offset,
-                          int stride,
-                          int divisor,
+                          int32_t stride,
+                          int32_t divisor,
                           bool normalize)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-
-    MGL_CORE_ASSERT(!(type[0] == 'f' && normalize), "invalid normalize");
-
-    buffer_layout layout = buffer_layout(format);
-
-#ifdef MGL_CORE_ENABLE_ASSERTS
+    MGL_CORE_ASSERT(!(type == 'f' && normalize), "invalid normalize");
     MGL_CORE_ASSERT(!(layout.is_invalid() || layout.divisor() || layout.size() != 1),
                     "invalid format");
-#endif
 
     buffer_layout::element element = layout[0];
     MGL_CORE_ASSERT(element.type, "invalid format");
@@ -379,7 +380,7 @@ namespace mgl::opengl
     glBindVertexArray(gl_object::glo());
     glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
 
-    switch(type[0])
+    switch(type)
     {
       case 'f':
         glVertexAttribPointer(location, element.offset, element.type, normalize, stride, ptr);
@@ -396,7 +397,7 @@ namespace mgl::opengl
   void vertex_array::set_index_buffer(const buffer_ref& value)
   {
     m_index_buffer = value;
-    m_num_vertices = (int)(m_index_buffer->size() / 4);
+    m_num_vertices = (int32_t)(m_index_buffer->size() / sizeof(uint32_t));
   }
 
 } // namespace  mgl::opengl

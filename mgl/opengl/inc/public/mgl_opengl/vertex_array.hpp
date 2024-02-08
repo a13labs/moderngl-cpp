@@ -28,10 +28,17 @@ namespace mgl::opengl
   class vertex_array : public gl_object
   {
 public:
+    typedef struct
+    {
+      uint32_t count;
+      uint32_t instanceCount;
+      uint32_t first;
+      uint32_t baseInstance;
+    } draw_indirect_command;
+
     ~vertex_array() = default;
 
-public:
-    void release();
+    virtual void release() override;
 
     void render(render_mode mode = render_mode::TRIANGLES,
                 int32_t vertices = 0,
@@ -62,9 +69,9 @@ public:
                    int32_t buffer_offset = 0);
 
     void bind(int32_t location,
-              const char* type,
+              char type,
               const buffer_ref& buffer,
-              const char* format,
+              const buffer_layout& layout,
               size_t offset = 0,
               int32_t stride = 0,
               int32_t divisor = 0,
