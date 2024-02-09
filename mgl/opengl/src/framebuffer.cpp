@@ -166,7 +166,7 @@ namespace mgl::opengl
 
     if(depth_attachment)
     {
-      MGL_CORE_ASSERT(!depth_attachment->depth(), "the depth_attachment is a depth attachment");
+      MGL_CORE_ASSERT(depth_attachment->depth(), "the depth_attachment is a depth attachment");
       MGL_CORE_ASSERT(depth_attachment->ctx() == gl_object::ctx(),
                       "the depth_attachment is from a different context");
 
@@ -208,7 +208,6 @@ namespace mgl::opengl
 
     MGL_CORE_ASSERT(width != 0, "invalid width, neither color nor depth attachments");
     MGL_CORE_ASSERT(height != 0, "invalid height, neither color nor depth attachments");
-    MGL_CORE_ASSERT(samples != 0, "invalid samples, neither color nor depth attachments");
 
     m_depth_mask = (depth_attachment != nullptr);
     m_viewport = { 0, 0, width, height };
@@ -229,8 +228,8 @@ namespace mgl::opengl
 
   void framebuffer::release()
   {
-    MGL_CORE_ASSERT(m_dynamic, "Cannot release a non-dynamic framebuffer");
-    MGL_CORE_ASSERT(gl_object::glo(), "Framebuffer already released");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteFramebuffers(1, &glo);
     m_draw_buffers.clear();
@@ -240,6 +239,8 @@ namespace mgl::opengl
   void
   framebuffer::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
 
     if(m_dynamic)
@@ -292,6 +293,8 @@ namespace mgl::opengl
 
   void framebuffer::use()
   {
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
 
     if(m_dynamic)
@@ -330,6 +333,8 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t dst_off)
   {
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "alignment must be 1, 2, 4 or 8");
 
@@ -382,6 +387,8 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t dst_off)
   {
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "alignment must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(dst->ctx() == gl_object::ctx(), "buffer is from a different context");
@@ -431,6 +438,7 @@ namespace mgl::opengl
       return;
     }
 
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     for(int32_t i = 0; i < m_color_masks.size(); ++i)
     {
       glColorMaski(
@@ -447,6 +455,7 @@ namespace mgl::opengl
       return;
     }
 
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glDepthMask(m_depth_mask);
   }
 
@@ -457,7 +466,8 @@ namespace mgl::opengl
                          int32_t& depth_bits,
                          int32_t& stencil_bits)
   {
-    MGL_CORE_ASSERT(m_dynamic && !gl_object::released() || !m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
     glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &red_bits);
@@ -484,6 +494,7 @@ namespace mgl::opengl
       return;
     }
 
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glViewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
   }
 
@@ -496,6 +507,7 @@ namespace mgl::opengl
       return;
     }
 
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
   }
 

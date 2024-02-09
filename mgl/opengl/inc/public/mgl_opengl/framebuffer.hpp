@@ -17,7 +17,6 @@ public:
     ~framebuffer() = default;
 
     virtual void release() override;
-    ;
 
     const mgl::rect& viewport() const { return m_viewport; }
 
@@ -39,6 +38,8 @@ public:
                float depth = 0.0,
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
+    void clear() { clear(0, 0, 0, 0, 0, m_viewport); }
+
     const color_masks& color_mask() const { return m_color_masks; }
 
     bool depth_mask() { return m_depth_mask; }
@@ -46,6 +47,8 @@ public:
     int32_t width() { return m_width; }
 
     int32_t height() { return m_height; }
+
+    int32_t samples() { return m_samples; }
 
     void set_color_mask(const opengl::color_mask& mask) { set_color_mask({ mask }); }
 

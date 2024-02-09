@@ -148,6 +148,7 @@ namespace mgl::opengl
   void texture_cube::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteTextures(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -156,6 +157,7 @@ namespace mgl::opengl
   void texture_cube::read(mgl::uint8_buffer& dst, int face, int align, size_t write_offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -183,6 +185,7 @@ namespace mgl::opengl
   void texture_cube::read(buffer_ref& dst, int face, int align, size_t write_offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -207,6 +210,7 @@ namespace mgl::opengl
   texture_cube::write(const mgl::uint8_buffer& src, int face, const mgl::rect& viewport, int align)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -245,6 +249,7 @@ namespace mgl::opengl
   void texture_cube::write(const mgl::uint8_buffer& src, int face, int align)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -283,6 +288,7 @@ namespace mgl::opengl
   void texture_cube::write(const buffer_ref& src, int face, const mgl::rect& viewport, int align)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -310,6 +316,7 @@ namespace mgl::opengl
   void texture_cube::write(const buffer_ref& src, int face, int align)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "align must be 1, 2, 4 or 8");
     MGL_CORE_ASSERT(face >= 0 && face <= 5, "the face must be 0, 1, 2, 3, 4 or 5");
@@ -337,6 +344,7 @@ namespace mgl::opengl
   void texture_cube::bind_to_image(int unit, bool read, bool write, int level, int format)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(read || write, "Illegal access mode. Read or write needs to be enabled.");
 
     int access = GL_READ_WRITE;
@@ -361,6 +369,7 @@ namespace mgl::opengl
   void texture_cube::set_filter(const texture::filter& value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     m_filter = value;
 
@@ -374,6 +383,7 @@ namespace mgl::opengl
   std::string texture_cube::swizzle()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
     glBindTexture(GL_TEXTURE_CUBE_MAP, gl_object::glo());
@@ -402,17 +412,17 @@ namespace mgl::opengl
   void texture_cube::set_swizzle(const std::string& value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-
-    const char* swizzle = value.c_str();
-    MGL_CORE_ASSERT(swizzle[0], "the swizzle is empty");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(value.size() <= 4, "the swizzle is too long");
+    MGL_CORE_ASSERT(value.size() > 0, "the swizzle is empty");
 
     int tex_swizzle[4] = { -1, -1, -1, -1 };
 
-    for(int i = 0; swizzle[i]; ++i)
+    for(int i = 0; value[i]; ++i)
     {
       MGL_CORE_ASSERT(i < 4, "the swizzle is too long");
-      tex_swizzle[i] = internal::swizzle_from_char(swizzle[i]);
-      MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", swizzle[i]);
+      tex_swizzle[i] = internal::swizzle_from_char(value[i]);
+      MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", value[i]);
     }
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
@@ -436,6 +446,7 @@ namespace mgl::opengl
   void texture_cube::set_anisotropy(float value)
   {
     MGL_CORE_ASSERT(gl_object::glo(), "Texture2D already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), gl_object::ctx()->max_anisotropy());
 

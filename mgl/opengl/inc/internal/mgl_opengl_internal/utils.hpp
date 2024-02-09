@@ -19,15 +19,6 @@ namespace mgl::opengl::internal
     name[name_len] = 0;
   }
 
-  inline int32_t gl_version_code()
-  {
-    int32_t major = 0;
-    int32_t minor = 0;
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
-    return major * 100 + minor * 10;
-  }
-
   inline void framebuffer_error_message(int32_t status)
   {
     const char* message = "the framebuffer is not complete";

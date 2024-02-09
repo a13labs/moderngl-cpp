@@ -41,6 +41,7 @@ namespace mgl::opengl
   void sampler::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteSamplers(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -49,18 +50,21 @@ namespace mgl::opengl
   void sampler::use(int index)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glBindSampler(index, gl_object::glo());
   }
 
   void sampler::clear(int index)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glBindSampler(index, 0);
   }
 
   void sampler::set_repeat_x(bool value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_repeat_x = value;
 
     if(value)
@@ -75,6 +79,7 @@ namespace mgl::opengl
   void sampler::set_repeat_y(bool value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_repeat_y = value;
 
     if(value)
@@ -89,6 +94,7 @@ namespace mgl::opengl
   void sampler::set_repeat_z(bool value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_repeat_z = value;
 
     if(value)
@@ -103,6 +109,7 @@ namespace mgl::opengl
   void sampler::set_filter(const sampler::filter& value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_filter = value;
     glSamplerParameteri(gl_object::glo(), GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
     glSamplerParameteri(gl_object::glo(), GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
@@ -111,6 +118,7 @@ namespace mgl::opengl
   void sampler::set_compare_func(mgl::opengl::compare_func value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_compare_func = value;
     if(m_compare_func == mgl::opengl::compare_func::NONE)
     {
@@ -125,6 +133,7 @@ namespace mgl::opengl
   void sampler::set_anisotropy(float value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     if(gl_object::ctx()->max_anisotropy() == 0)
     {
@@ -139,6 +148,8 @@ namespace mgl::opengl
   void sampler::set_border_color(const glm::vec4& value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+
     m_border_color = value;
     glSamplerParameteri(gl_object::glo(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glSamplerParameteri(gl_object::glo(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
@@ -149,6 +160,7 @@ namespace mgl::opengl
   void sampler::set_min_lod(float value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_min_lod = value;
     glSamplerParameterf(gl_object::glo(), GL_TEXTURE_MIN_LOD, m_min_lod);
   }
@@ -156,6 +168,7 @@ namespace mgl::opengl
   void sampler::set_max_lod(float value)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Sampler already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     m_max_lod = value;
     glSamplerParameterf(gl_object::glo(), GL_TEXTURE_MAX_LOD, m_max_lod);
   }

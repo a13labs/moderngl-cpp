@@ -127,6 +127,7 @@ namespace mgl::opengl
   void compute_shader::release()
   {
     MGL_CORE_ASSERT(!released(), "Compute Shader already released or not initialized");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glDeleteShader(m_shader_glo);
     glDeleteProgram(gl_object::glo());
     gl_object::set_glo(GL_ZERO);
@@ -135,6 +136,7 @@ namespace mgl::opengl
   void compute_shader::run(int32_t x, int32_t y, int32_t z)
   {
     MGL_CORE_ASSERT(!released(), "Compute Shader already released or not initialized");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glUseProgram(gl_object::glo());
     glDispatchCompute(x, y, z);
   }

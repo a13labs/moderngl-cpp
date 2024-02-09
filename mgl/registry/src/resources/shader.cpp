@@ -16,7 +16,7 @@ namespace mgl::registry
                     "#version must appear on the first line");
 
     m_type = type;
-    m_version_code = mgl::to_int(lines[0].substr(sizeof("#version")));
+    m_version = mgl::to_int(lines[0].substr(sizeof("#version")));
     m_source = mgl::join('\n', lines, 1);
   }
 
@@ -155,7 +155,7 @@ namespace mgl::registry
     auto line = (int)str_defines.size() + 2;
 
     return std::format("#version {}\n#define {}\n{}\n#line {}\n{}",
-                       m_version_code,
+                       m_version,
                        s_shaders_text[type],
                        mgl::join('\n', str_defines),
                        line,
@@ -173,11 +173,8 @@ namespace mgl::registry
 
     auto line = (int)str_defines.size() + 1;
 
-    return std::format("#version {}\n{}\n#line {}\n{}",
-                       m_version_code,
-                       mgl::join('\n', str_defines),
-                       line,
-                       m_source);
+    return std::format(
+        "#version {}\n{}\n#line {}\n{}", m_version, mgl::join('\n', str_defines), line, m_source);
   }
 
 } // namespace mgl::registry

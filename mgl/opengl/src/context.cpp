@@ -93,12 +93,11 @@ namespace mgl::opengl
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-    ctx->m_version_code = major * 100 + minor * 10;
+    ctx->m_version = major * 100 + minor * 10;
 
-    if(ctx->m_version_code < required)
+    if(ctx->m_version < required)
     {
-      MGL_CORE_ERROR(
-          "OpenGL version {0} not supported. Required {1}", ctx->m_version_code, required);
+      MGL_CORE_ERROR("OpenGL version {0} not supported. Required {1}", ctx->m_version, required);
       return nullptr;
     }
 
@@ -169,6 +168,7 @@ namespace mgl::opengl
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto buffer = new mgl::opengl::buffer(shared_from_this(), data, reserve, dynamic);
     return buffer_ref(buffer);
   }
@@ -176,6 +176,7 @@ namespace mgl::opengl
   compute_shader_ref context::compute_shader(const std::string& source)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto shader = new mgl::opengl::compute_shader(shared_from_this(), source);
     return compute_shader_ref(shader);
   }
@@ -184,6 +185,7 @@ namespace mgl::opengl
                                        attachment_ref depth_attachment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto framebuffer =
         new mgl::opengl::framebuffer(shared_from_this(), color_attachments, depth_attachment);
     return framebuffer_ref(framebuffer);
@@ -195,6 +197,7 @@ namespace mgl::opengl
                                bool interleaved)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto program = new mgl::opengl::program(
         shared_from_this(), shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);
@@ -204,6 +207,7 @@ namespace mgl::opengl
   context::query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto query = new mgl::opengl::query(
         shared_from_this(), samples, any_samples, time_elapsed, primitives_generated);
     return query_ref(query);
@@ -213,6 +217,7 @@ namespace mgl::opengl
       int32_t width, int32_t height, int32_t components, int32_t samples, const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto renderbuffer = new mgl::opengl::renderbuffer(
         shared_from_this(), width, height, components, samples, dtype);
     return renderbuffer_ref(renderbuffer);
@@ -221,6 +226,7 @@ namespace mgl::opengl
   renderbuffer_ref context::depth_renderbuffer(int32_t width, int32_t height, int32_t samples)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto renderbuffer = new mgl::opengl::renderbuffer(shared_from_this(), width, height, samples);
     return renderbuffer_ref(renderbuffer);
   }
@@ -228,6 +234,7 @@ namespace mgl::opengl
   sampler_ref context::sampler()
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto sampler = new mgl::opengl::sampler(shared_from_this());
     return sampler_ref(sampler);
   }
@@ -240,6 +247,7 @@ namespace mgl::opengl
                            const sampler_bindings& samplers)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto scope = new mgl::opengl::scope(shared_from_this(),
                                         framebuffer,
                                         enable_flags,
@@ -260,6 +268,7 @@ namespace mgl::opengl
                                     int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto texture = new mgl::opengl::texture_2d(shared_from_this(),
                                                width,
                                                height,
@@ -276,6 +285,7 @@ namespace mgl::opengl
       int32_t width, int32_t height, const void* data, int32_t samples, int32_t alignment)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto texture =
         new mgl::opengl::texture_2d(shared_from_this(), width, height, data, samples, alignment);
     return texture_2d_ref(texture);
@@ -290,6 +300,7 @@ namespace mgl::opengl
                                     const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto texture = new mgl::opengl::texture_3d(
         shared_from_this(), width, height, depth, components, data, alignment, dtype);
     return texture_3d_ref(texture);
@@ -304,6 +315,7 @@ namespace mgl::opengl
                                            const std::string& dtype)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto texture = new mgl::opengl::texture_array(
         shared_from_this(), width, height, layers, components, data, alignment, dtype);
     return texture_array_ref(texture);
@@ -318,6 +330,7 @@ namespace mgl::opengl
                                          int32_t internal_format_override)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto texture = new mgl::opengl::texture_cube(shared_from_this(),
                                                  width,
                                                  height,
@@ -337,6 +350,7 @@ namespace mgl::opengl
                                          mgl::opengl::render_mode mode)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(),
                                                       program,
                                                       vertex_buffers,
@@ -350,6 +364,7 @@ namespace mgl::opengl
   void context::set_enable_flags(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     m_enable_flags = flags;
 
     if(flags & mgl::opengl::enable_flag::BLEND)
@@ -401,6 +416,7 @@ namespace mgl::opengl
   void context::enable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     m_enable_flags |= flags;
 
     if(flags & mgl::opengl::enable_flag::BLEND)
@@ -437,6 +453,7 @@ namespace mgl::opengl
   void context::disable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
 
     m_enable_flags &= ~flags;
 
@@ -477,8 +494,9 @@ namespace mgl::opengl
                             size_t read_offset,
                             size_t write_offset)
   {
-    MGL_CORE_ASSERT(read_offset >= 0 && write_offset >= 0, "buffer underflow");
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(read_offset >= 0 && write_offset >= 0, "buffer underflow");
 
     if(size < 0)
     {
@@ -496,24 +514,28 @@ namespace mgl::opengl
   void context::enable_direct(int32_t value)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     glEnable(value);
   }
 
   void context::disable_direct(int32_t value)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     glDisable(value);
   }
 
   void context::finish()
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     glFinish();
   }
 
   void context::clear_samplers(int32_t start, int32_t end)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
 
     start = MGL_MAX(start, 0);
     if(end == -1)
@@ -534,6 +556,7 @@ namespace mgl::opengl
   void context::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
     m_bound_framebuffer->clear(color, depth, viewport);
   }
@@ -541,6 +564,7 @@ namespace mgl::opengl
   void context::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
     m_bound_framebuffer->clear(r, g, b, a, depth, viewport);
   }
@@ -548,6 +572,7 @@ namespace mgl::opengl
   void context::set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     glBlendEquationSeparate(modeRGB, modeAlpha);
   }
 
@@ -557,6 +582,7 @@ namespace mgl::opengl
                                blend_factor dstAlpha)
   {
     MGL_CORE_ASSERT(!released(), "Context already released");
+    MGL_CORE_ASSERT(is_current(), "Context not current");
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
   }
 

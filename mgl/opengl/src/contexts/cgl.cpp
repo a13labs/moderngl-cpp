@@ -221,6 +221,15 @@ namespace mgl::opengl
   {
     return m_context != nullptr && !m_released;
   }
+
+  bool ContextCGL::is_current()
+  {
+    if(!m_context || m_released)
+      return false;
+
+    auto self = (CGLContextData*)m_context;
+    return self->ctx == CGLGetCurrentContext();
+  }
 } // namespace  mgl::opengl
 
 #endif

@@ -92,7 +92,6 @@ namespace mgl::opengl
     i = 0;
     for(auto&& v_data : vertex_buffers)
     {
-      auto buffer = v_data.buffer;
 
       if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
          (!i || m_num_vertices > v_data.vertex_count))
@@ -100,7 +99,7 @@ namespace mgl::opengl
         m_num_vertices = v_data.vertex_count;
       }
 
-      glBindBuffer(GL_ARRAY_BUFFER, buffer->glo());
+      glBindBuffer(GL_ARRAY_BUFFER, v_data.buffer->glo());
 
       for(size_t j = 0; j < v_data.attributes.size(); ++j)
       {
@@ -153,6 +152,7 @@ namespace mgl::opengl
   void vertex_array::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteVertexArrays(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -164,6 +164,7 @@ namespace mgl::opengl
                             int32_t instances)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     if(vertices == 0)
     {
@@ -197,6 +198,7 @@ namespace mgl::opengl
                                      int32_t first)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(indirect_commands, "indirect_commands is null");
     MGL_CORE_ASSERT(indirect_commands->size() >= (first + count) * sizeof(draw_indirect_command),
                     "indirect_commands size is invalid");
@@ -226,7 +228,7 @@ namespace mgl::opengl
                                int32_t buffer_offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(m_program->num_varyings(), "the program has no varyings")
 
     if(vertices < 0)
@@ -352,6 +354,7 @@ namespace mgl::opengl
                           bool normalize)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(!(type == 'f' && normalize), "invalid normalize");
     MGL_CORE_ASSERT(!(layout.is_invalid() || layout.divisor() || layout.size() != 1),
                     "invalid format");

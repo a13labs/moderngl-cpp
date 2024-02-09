@@ -98,6 +98,7 @@ namespace mgl::opengl
   void renderbuffer::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "render buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteRenderbuffers(1, &glo);
     gl_object::set_glo(GL_ZERO);

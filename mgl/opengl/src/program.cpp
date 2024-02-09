@@ -363,7 +363,7 @@ namespace mgl::opengl
             mgl::create_ref<mgl::opengl::uniform_block>(name, gl_object::glo(), index, size) });
     }
 
-    if(internal::gl_version_code() >= 400)
+    if(gl_object::ctx()->version() >= 400)
     {
       for(int32_t st = 0; st < shader::type::GENERIC_PROGRAM; ++st)
       {
@@ -393,6 +393,7 @@ namespace mgl::opengl
   void program::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glDeleteProgram(gl_object::glo());
     gl_object::set_glo(0);
   }
@@ -400,12 +401,14 @@ namespace mgl::opengl
   void program::bind()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glUseProgram(gl_object::glo());
   }
 
   void program::unbind()
   {
     MGL_CORE_ASSERT(!gl_object::released() != 0, "Program already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glUseProgram(GL_ZERO);
   }
 

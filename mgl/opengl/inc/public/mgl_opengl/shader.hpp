@@ -39,7 +39,7 @@ public:
 
 private:
     std::string m_source;
-    int32_t m_version_code;
+    int32_t m_version;
     shader::type m_type;
     mgl::string_list m_attributes;
   };

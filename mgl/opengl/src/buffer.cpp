@@ -27,6 +27,7 @@ namespace mgl::opengl
   void buffer::release()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     GLuint glo = gl_object::glo();
     glDeleteBuffers(1, &glo);
     gl_object::set_glo(ZERO);
@@ -35,6 +36,7 @@ namespace mgl::opengl
   void buffer::write(const void* src, size_t src_sz, size_t offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
     MGL_CORE_ASSERT(src_sz + offset <= m_size, "out of bounds")
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
@@ -45,6 +47,7 @@ namespace mgl::opengl
   void buffer::read(void* dst, size_t dst_sz, size_t read_sz, size_t read_off, size_t dst_off)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     if(read_sz == 0)
     {
@@ -55,7 +58,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(read_off >= 0, "invalid offset: {0}", read_off)
     MGL_CORE_ASSERT(dst_off >= 0, "invalid write offset: {0}", dst_off)
     MGL_CORE_ASSERT(m_size >= read_sz + read_off, "out of bounds")
-    MGL_CORE_ASSERT(dst_sz <= dst_off + read_sz, "out of bounds")
+    MGL_CORE_ASSERT(dst_sz >= dst_off + read_sz, "out of bounds")
 
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     auto map = glMapBufferRange(GL_ARRAY_BUFFER, read_off, read_sz, GL_MAP_READ_BIT);
@@ -68,6 +71,7 @@ namespace mgl::opengl
   void buffer::clear()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     char* map = (char*)glMapBufferRange(GL_ARRAY_BUFFER, 0, m_size, GL_MAP_WRITE_BIT);
@@ -79,6 +83,7 @@ namespace mgl::opengl
   void buffer::orphan(size_t size)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
 
     if(size == SIZE_MAX)
     {
@@ -93,6 +98,7 @@ namespace mgl::opengl
   void buffer::bind_to_uniform_block(int binding, size_t size, size_t offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 
@@ -107,6 +113,7 @@ namespace mgl::opengl
   void buffer::bind_to_storage_buffer(int binding, size_t size, size_t offset)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "Buffer already released");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     MGL_CORE_ASSERT(size >= 0, "invalid data size: {0}", size)
     MGL_CORE_ASSERT(offset >= 0, "invalid offset: {0}", offset)
 

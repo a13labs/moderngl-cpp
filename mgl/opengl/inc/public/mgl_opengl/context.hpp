@@ -57,7 +57,7 @@ public:
 
     context_mode::mode mode() const { return m_mode; }
 
-    int32_t version_code() const { return m_version_code; }
+    int32_t version() const { return m_version; }
 
     int32_t max_samples() const { return m_max_samples; }
 
@@ -311,6 +311,7 @@ public:
 
     virtual void release() = 0;
     virtual bool is_valid() = 0;
+    virtual bool is_current() = 0;
 
 protected:
     bool m_released;
@@ -319,7 +320,7 @@ protected:
 private:
     friend class framebuffer;
 
-    int32_t m_version_code;
+    int32_t m_version;
     int32_t m_max_samples;
     int32_t m_max_integer_samples;
     int32_t m_max_color_attachments;
@@ -353,6 +354,7 @@ public:
     virtual void exit() override;
     virtual void release() override;
     virtual bool is_valid() override;
+    virtual bool is_current() override;
 
 private:
     gl_context m_context;
@@ -372,6 +374,7 @@ public:
     virtual void exit() override;
     virtual void release() override;
     virtual bool is_valid() override;
+    virtual bool is_current() override;
 
 private:
     gl_context m_context;
@@ -391,6 +394,7 @@ public:
     virtual void exit() override;
     virtual void release() override;
     virtual bool is_valid() override;
+    virtual bool is_current() override;
 
 private:
     gl_context m_context;

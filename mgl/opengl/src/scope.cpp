@@ -103,6 +103,7 @@ namespace mgl::opengl
   void scope::begin()
   {
     MGL_CORE_ASSERT(!m_begin, "Scope already started");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
     m_begin = true;
 
     const int32_t& flags = m_scope_state.enable_flags;
@@ -133,6 +134,7 @@ namespace mgl::opengl
   void scope::end()
   {
     MGL_CORE_ASSERT(m_begin, "Scope not started");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
     const int32_t& flags = m_previous_state.enable_flags;
 
     m_ctx->set_enable_flags(flags);

@@ -321,5 +321,14 @@ namespace mgl::opengl
   {
     return m_context != nullptr && !m_released;
   }
+
+  bool ContextEGL::is_current()
+  {
+    if(!m_context || m_released)
+      return false;
+
+    auto self = (EGLContextData*)m_context;
+    return eglGetCurrentContext() == self->ctx;
+  }
 } // namespace  mgl::opengl
 #endif
