@@ -1,5 +1,6 @@
-#include "mgl_opengl/context.hpp"
-#include <gtest/gtest.h>
+#ifdef MGL_PLATFORM_WINDOWS
+#  include "mgl_opengl/context.hpp"
+#  include <gtest/gtest.h>
 
 TEST(ComputeShaderTest, ComputeShader)
 {
@@ -55,3 +56,9 @@ int main(int argc, char** argv)
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#else
+int main(int argc, char** argv)
+{
+  return 0;
+}
+#endif
