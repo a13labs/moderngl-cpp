@@ -50,7 +50,7 @@ public:
 
     int32_t samples() { return m_samples; }
 
-    void set_color_mask(const opengl::color_mask& mask) { set_color_mask({ mask }); }
+    void set_color_mask(const opengl::color_mask& mask);
 
     void set_viewport(const mgl::rect& r);
 

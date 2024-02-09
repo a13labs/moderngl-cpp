@@ -428,6 +428,20 @@ namespace mgl::opengl
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
   }
 
+  void framebuffer::set_color_mask(const opengl::color_mask& mask)
+  {
+    MGL_CORE_ASSERT(m_color_masks.size() == 1, "color_mask must be a match buffers len");
+    m_color_masks[0] = mask;
+
+    if(gl_object::ctx()->m_bound_framebuffer.get() != this)
+    {
+      return;
+    }
+
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    glColorMask(mask.r, mask.g, mask.b, mask.a);
+  }
+
   void framebuffer::set_color_mask(const color_masks& masks)
   {
     MGL_CORE_ASSERT(masks.size() == m_color_masks.size(), "color_mask must be a match buffers len");

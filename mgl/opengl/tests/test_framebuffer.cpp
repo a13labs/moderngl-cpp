@@ -3,9 +3,6 @@
 
 TEST(FramebufferTest, GeneralTests)
 {
-  static mgl::uint8_buffer pixels;
-  pixels.reserve(4 * 4 * 4);
-
   auto ctx = mgl::opengl::create_context(mgl::opengl::context_mode::STANDALONE);
   ASSERT_NE(ctx, nullptr);
 
@@ -26,7 +23,7 @@ TEST(FramebufferTest, GeneralTests)
 
   fbo->clear(0, 1, 0, 1);
 
-  pixels.resize(4 * 4 * 4);
+  static mgl::uint8_buffer pixels(4 * 4 * 4);
   fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
 
   for(size_t i = 0; i < pixels.size(); i += 4)
@@ -71,10 +68,6 @@ TEST(FramebufferTest, GeneralTests)
 
 TEST(FramebufferTest, HalfFloat)
 {
-  static mgl::float32_buffer data = { -1, -1, -1, 1, 1, -1, 1, 1 };
-  static mgl::uint8_buffer pixels;
-  pixels.reserve(4 * 4 * 4);
-
   auto ctx = mgl::opengl::create_context(mgl::opengl::context_mode::STANDALONE);
   ASSERT_NE(ctx, nullptr);
 
@@ -100,6 +93,7 @@ TEST(FramebufferTest, HalfFloat)
 
   ASSERT_NE(prg, nullptr);
 
+  static mgl::float32_buffer data = { -1, -1, -1, 1, 1, -1, 1, 1 };
   auto vbo = ctx->buffer(data);
   ASSERT_NE(vbo, nullptr);
 
@@ -119,7 +113,7 @@ TEST(FramebufferTest, HalfFloat)
   fbo->clear();
   vao->render(mgl::opengl::render_mode::TRIANGLE_STRIP);
 
-  pixels.resize(4 * 4 * 2);
+  static mgl::uint8_buffer pixels(4 * 4 * 2);
   fbo->read(pixels, mgl::rect(0, 0, 4, 4), 2);
 
   for(size_t i = 0; i < pixels.size(); i += 2)
@@ -134,6 +128,62 @@ TEST(FramebufferTest, HalfFloat)
   vao->release();
   vbo->release();
   prg->release();
+  ctx->release();
+}
+
+TEST(FramebufferTest, MaskTests)
+{
+  auto ctx = mgl::opengl::create_context(mgl::opengl::context_mode::STANDALONE);
+  ASSERT_NE(ctx, nullptr);
+
+  auto rbo = ctx->renderbuffer(4, 4);
+  ASSERT_NE(rbo, nullptr);
+
+  auto fbo = ctx->framebuffer({ rbo }, nullptr);
+  ASSERT_NE(fbo, nullptr);
+
+  fbo->use();
+  fbo->clear();
+
+  static mgl::uint8_buffer pixels((4 * 4 * 4));
+  fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
+
+  for(size_t i = 0; i < pixels.size(); i += 4)
+  {
+    ASSERT_EQ(pixels[i + 0], 0);
+    ASSERT_EQ(pixels[i + 1], 0);
+    ASSERT_EQ(pixels[i + 2], 0);
+    ASSERT_EQ(pixels[i + 3], 0);
+  }
+
+  fbo->set_color_mask({ true, false, true, false });
+  fbo->clear(0x19 / 255., 0x33 / 255., 0x4c / 255., 0x66 / 255.);
+
+  fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
+
+  for(size_t i = 0; i < pixels.size(); i += 4)
+  {
+    ASSERT_EQ(pixels[i + 0], 0x19);
+    ASSERT_EQ(pixels[i + 1], 0x00);
+    ASSERT_EQ(pixels[i + 2], 0x4c);
+    ASSERT_EQ(pixels[i + 3], 0x00);
+  }
+
+  fbo->set_color_mask({ false, true, false, true });
+  fbo->clear(0, 0x33 / 255., 0, 0x66 / 255.);
+
+  fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
+
+  for(size_t i = 0; i < pixels.size(); i += 4)
+  {
+    ASSERT_EQ(pixels[i + 0], 0x19);
+    ASSERT_EQ(pixels[i + 1], 0x33);
+    ASSERT_EQ(pixels[i + 2], 0x4c);
+    ASSERT_EQ(pixels[i + 3], 0x66);
+  }
+
+  fbo->release();
+  rbo->release();
   ctx->release();
 }
 
