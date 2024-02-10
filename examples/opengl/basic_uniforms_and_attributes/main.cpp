@@ -31,7 +31,7 @@ void example::on_update(float time, float frame_time)
   m_vao->render();
 
   m_rotation->set_value(time);
-  m_scale->set_value({ sin_scale * 0.75, 0.75 });
+  m_scale->set_value(glm::vec2(sin_scale * 0.75, 0.75));
 }
 
 bool example::on_load()
@@ -70,7 +70,7 @@ bool example::on_load()
   m_scale = m_program->uniform("scale");
   m_rotation = m_program->uniform("rotation");
 
-  m_scale->set_value({ width() / height() * 0.75, 0.25 });
+  m_scale->set_value(glm::vec2(width() / height() * 0.75, 0.25));
 
   mgl::float32_buffer vertices = {
     1.0,  0.0, //

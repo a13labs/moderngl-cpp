@@ -124,12 +124,6 @@ public:
 
     float polygon_offset_units() const { return m_polygon_offset_units; }
 
-    void copy_buffer(const buffer_ref& src,
-                     const buffer_ref& dst,
-                     size_t size,
-                     size_t read_offset,
-                     size_t write_offset);
-
     void set_scissor(const mgl::rect& r) { m_bound_framebuffer->set_scissor(r); }
 
     void set_scissor(int32_t x, int32_t y, int32_t width, int32_t height)
@@ -162,11 +156,14 @@ public:
                const mgl::rect& viewport = mgl::null_viewport_2d);
 
     // Buffer
-    buffer_ref buffer(bool dynamic = false) { return buffer(nullptr, 0, dynamic); }
-
-    buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false)
+    buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false)
     {
-      return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
+      return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
+    }
+
+    buffer_ref buffer(const mgl::uint16_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
     }
 
     buffer_ref buffer(const mgl::uint32_buffer& data, bool dynamic = false)
@@ -174,20 +171,40 @@ public:
       return buffer((void*)data.data(), data.size() * sizeof(uint32_t), dynamic);
     }
 
-    buffer_ref buffer(const mgl::buffer<uint16_t>& data, bool dynamic = false)
+    buffer_ref buffer(const mgl::int8_buffer& data, bool dynamic = false)
     {
-      return buffer((void*)data.data(), data.size() * sizeof(uint16_t), dynamic);
+      return buffer((void*)data.data(), data.size() * sizeof(int8_t), dynamic);
     }
 
-    buffer_ref buffer(const mgl::uint8_buffer& data, bool dynamic = false)
+    buffer_ref buffer(const mgl::int16_buffer& data, bool dynamic = false)
     {
-      return buffer((void*)data.data(), data.size() * sizeof(uint8_t), dynamic);
+      return buffer((void*)data.data(), data.size() * sizeof(int16_t), dynamic);
+    }
+
+    buffer_ref buffer(const mgl::int32_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(int32_t), dynamic);
+    }
+
+    buffer_ref buffer(const mgl::float32_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(float), dynamic);
+    }
+
+    buffer_ref buffer(const mgl::float64_buffer& data, bool dynamic = false)
+    {
+      return buffer((void*)data.data(), data.size() * sizeof(double), dynamic);
+    }
+
+    buffer_ref buffer(size_t reserve = 0, bool dynamic = false)
+    {
+      return buffer(nullptr, reserve, dynamic);
     }
 
     buffer_ref buffer(void* data, size_t size, bool dynamic);
 
     // Compute Shader
-    compute_shader_ref compute_shader(const std::string& source);
+    compute_shader_ref compute_shader(const std::string& source, const std::string& filename = "");
 
     // Create Shader
     static context_ref create_context(context_mode::mode mode, int32_t required = 330);
@@ -209,7 +226,8 @@ public:
     program_ref program(const shaders& shaders,
                         const shaders_outputs& outputs = {},
                         const fragment_outputs& fragment_outputs = {},
-                        bool interleaved = true);
+                        bool interleaved = true,
+                        const std::string& filename = "");
 
     // Query
     query_ref query(bool samples = false,

@@ -22,19 +22,18 @@ namespace mgl::opengl
                                const std::string& dtype)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
-    MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
-    MGL_CORE_ASSERT(layers > 0, "depth must be greater than 0");
-    MGL_CORE_ASSERT(components > 0 && components < 5, "components must be 1, 2, 3 or 4");
-
+    MGL_CORE_ASSERT(w > 0, "[TextureArray] Width must be greater than 0.");
+    MGL_CORE_ASSERT(h > 0, "[TextureArray] Height must be greater than 0.");
+    MGL_CORE_ASSERT(components > 0 && components < 5,
+                    "[TextureArray] Components must be 1, 2, 3 or 4.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
-      MGL_CORE_ASSERT(false, "Invalid data type got: '{0}'", dtype);
+      MGL_CORE_ASSERT(false, "[TextureArray] Invalid data type got '{0}'.", dtype);
       return;
     }
 
@@ -58,7 +57,7 @@ namespace mgl::opengl
 
     if(!glo)
     {
-      MGL_CORE_ASSERT(false, "Failed to create texture");
+      MGL_CORE_ASSERT(false, "[TextureArray] Failed to create texture.");
       return;
     }
 
@@ -89,8 +88,9 @@ namespace mgl::opengl
 
   void texture_array::release()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     GLuint glo = gl_object::glo();
     glDeleteTextures(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -98,15 +98,17 @@ namespace mgl::opengl
 
   void texture_array::read(mgl::uint8_buffer& dst, int32_t align, size_t dst_off)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     size_t expected_size = m_width * m_components * m_data_type->size;
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * m_height * m_layers;
-    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size, "out of bounds");
+    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size,
+                    "[TextureArray] Destination out of bounds.");
 
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
@@ -119,16 +121,15 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glGetTexImage(GL_TEXTURE_2D_ARRAY, 0, base_format, pixel_type, ptr);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::read(buffer_ref& dst, int32_t align, size_t dst_off)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
@@ -141,16 +142,15 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glGetTexImage(GL_TEXTURE_2D_ARRAY, 0, base_format, pixel_type, (void*)dst_off);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::write(const mgl::uint8_buffer& src, const mgl::cube& viewport, int32_t align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     int32_t x = viewport.x;
     int32_t y = viewport.y;
@@ -162,7 +162,7 @@ namespace mgl::opengl
     size_t expected_size = width * m_components * m_data_type->size;
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * height * layers;
-    MGL_CORE_ASSERT(src.size() >= expected_size, "out of bounds");
+    MGL_CORE_ASSERT(src.size() >= expected_size, "[TextureArray] Destination out of bounds.");
 
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
@@ -183,16 +183,15 @@ namespace mgl::opengl
                     base_format,
                     pixel_type,
                     src.data());
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::write(const mgl::uint8_buffer& src, int32_t align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     int32_t x = 0;
     int32_t y = 0;
@@ -204,7 +203,7 @@ namespace mgl::opengl
     size_t expected_size = width * m_components * m_data_type->size;
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * height * layers;
-    MGL_CORE_ASSERT(src.size() >= expected_size, "out of bounds");
+    MGL_CORE_ASSERT(src.size() >= expected_size, "[TextureArray] Destination out of bounds.");
 
     int32_t pixel_type = m_data_type->gl_type;
     int32_t base_format = m_data_type->base_format[m_components];
@@ -225,16 +224,15 @@ namespace mgl::opengl
                     base_format,
                     pixel_type,
                     src.data());
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::write(const buffer_ref& src, const mgl::cube& viewport, int32_t align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     int32_t x = viewport.x;
     int32_t y = viewport.y;
@@ -255,16 +253,15 @@ namespace mgl::opengl
     glTexSubImage3D(
         GL_TEXTURE_2D_ARRAY, 0, x, y, z, width, height, layers, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_array::write(const buffer_ref& src, int32_t align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
+                    "[TextureArray] Alignment must be 1, 2, 4 or 8.");
 
     int32_t x = 0;
     int32_t y = 0;
@@ -285,16 +282,16 @@ namespace mgl::opengl
     glTexSubImage3D(
         GL_TEXTURE_2D_ARRAY, 0, x, y, z, width, height, layers, base_format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void
   texture_array::bind_to_image(int32_t unit, bool read, bool write, int32_t level, int32_t format)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(read || write, "Illegal access mode. Read or write needs to be enabled.");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
+    MGL_CORE_ASSERT(read || write,
+                    "[TextureArray] Illegal access mode. Read or write needs to be enabled.");
 
     int32_t access = GL_READ_WRITE;
     if(read && !write)
@@ -309,8 +306,9 @@ namespace mgl::opengl
 
   void texture_array::use(int32_t index)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D_ARRAY, gl_object::glo());
@@ -318,8 +316,10 @@ namespace mgl::opengl
 
   void texture_array::build_mipmaps(int32_t base, int32_t max_level)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(base <= max_level, "invalid base");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
+    MGL_CORE_ASSERT(base <= max_level, "[TextureArray] Invalid base.");
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D_ARRAY, gl_object::glo());
@@ -338,8 +338,9 @@ namespace mgl::opengl
 
   void texture_array::set_repeat_x(bool value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D_ARRAY, gl_object::glo());
@@ -357,8 +358,9 @@ namespace mgl::opengl
 
   void texture_array::set_repeat_y(bool value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D_ARRAY, gl_object::glo());
@@ -376,8 +378,9 @@ namespace mgl::opengl
 
   void texture_array::set_filter(const texture::filter& value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     m_filter = value;
 
@@ -390,8 +393,9 @@ namespace mgl::opengl
 
   std::string texture_array::swizzle()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
     glBindTexture(GL_TEXTURE_2D_ARRAY, gl_object::glo());
@@ -419,18 +423,19 @@ namespace mgl::opengl
 
   void texture_array::set_swizzle(const std::string& value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(value.size() <= 4, "the swizzle is too long");
-    MGL_CORE_ASSERT(value.size() > 0, "the swizzle is empty");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
+    MGL_CORE_ASSERT(value.size() <= 4, "[TextureArray] Swizzle is too long.");
+    MGL_CORE_ASSERT(value.size() > 0, "[TextureArray] Swizzle is empty.");
 
     int32_t tex_swizzle[4] = { -1, -1, -1, -1 };
 
     for(int32_t i = 0; value[i]; ++i)
     {
-      MGL_CORE_ASSERT(i < 4, "the swizzle is too long");
       tex_swizzle[i] = internal::swizzle_from_char(value[i]);
-      MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", value[i]);
+      MGL_CORE_ASSERT(
+          tex_swizzle[i] != -1, "[TextureArray] '{0}' is not a valid swizzle parameter.", value[i]);
     }
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());
@@ -453,8 +458,9 @@ namespace mgl::opengl
 
   void texture_array::set_anisotropy(float value)
   {
-    MGL_CORE_ASSERT(gl_object::glo(), "Texture2D already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[TextureArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[TextureArray] Resource context not current.");
 
     m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), gl_object::ctx()->max_anisotropy());
 

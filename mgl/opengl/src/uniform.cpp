@@ -137,7 +137,7 @@ namespace mgl::opengl
       case GL_DOUBLE_MAT4x2: return &gl_double_mat_4x2;
       case GL_DOUBLE_MAT4x3: return &gl_double_mat_4x3;
       case GL_DOUBLE_MAT4: return &gl_double_mat_4;
-      default: MGL_CORE_ASSERT(false, "invalid gl type"); return nullptr;
+      default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); return nullptr;
     };
   }
 
@@ -159,7 +159,8 @@ namespace mgl::opengl
 
   void uniform::set_value(void* data, size_t size)
   {
-    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size), "invalid data size");
+    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size),
+                    "[Uniform] Invalid data size.");
 
     char* ptr = (char*)data;
 
@@ -415,14 +416,15 @@ namespace mgl::opengl
         glUniformMatrix4dv(m_location, m_size, false, (double*)ptr);
       }
       break;
-      default: MGL_CORE_ASSERT(false, "invalid gl type"); break;
+      default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); break;
     }
   }
 
   void uniform::get_value(void* data, size_t size)
   {
 
-    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size), "invalid data size");
+    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size),
+                    "[Uniform] Invalid data size.");
 
     char* ptr = (char*)data;
     glUseProgram(m_program_obj);
@@ -743,7 +745,7 @@ namespace mgl::opengl
               m_program_obj, m_location + i, (double*)(ptr + i * m_data_type->element_size));
         }
         break;
-        default: MGL_CORE_ASSERT(false, "invalid gl type"); break;
+        default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); break;
       }
     }
   }

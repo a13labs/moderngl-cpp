@@ -14,9 +14,9 @@ namespace mgl::opengl
   framebuffer::framebuffer(const context_ref& ctx)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(gl_object::ctx(), "invalid context");
+    MGL_CORE_ASSERT(gl_object::ctx(), "[Framebuffer] Invalid context.");
     MGL_CORE_ASSERT(gl_object::ctx()->m_default_framebuffer == nullptr,
-                    "default framebuffer already created");
+                    "[Framebuffer] Default framebuffer already created.");
 
     // According to glGet docs:
     // The initial value is GL_BACK if there are back buffers, otherwise it is GL_FRONT.
@@ -84,7 +84,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(color_attachments.size() ||
                         (color_attachments.size() == 0 && depth_attachment != nullptr),
-                    "missing color attachments");
+                    "[Framebuffer] Missing color attachments.");
 
     GLuint glo = 0;
     int32_t width = 0;
@@ -95,7 +95,7 @@ namespace mgl::opengl
 
     if(!glo)
     {
-      MGL_CORE_ASSERT(false, "Failed to create framebuffer");
+      MGL_CORE_ASSERT(false, "[Framebuffer] Failed to create framebuffer.");
       return;
     }
 
@@ -114,9 +114,11 @@ namespace mgl::opengl
       int32_t i = 0;
       for(auto&& attachment : color_attachments)
       {
-        MGL_CORE_ASSERT(!attachment->depth(), "color_attachments[{0}] is a depth attachment", i);
+        MGL_CORE_ASSERT(!attachment->depth(),
+                        "[Framebuffer] 'color_attachments[{0}]' is a depth attachment.",
+                        i);
         MGL_CORE_ASSERT(attachment->ctx() == gl_object::ctx(),
-                        "color_attachments[{0}] is from a different context",
+                        "[Framebuffer] 'color_attachments[{0}]' is from a different context.",
                         i);
 
         if(i == 0)
@@ -127,11 +129,15 @@ namespace mgl::opengl
         }
         else
         {
-          MGL_CORE_ASSERT(attachment->width() == width, "color_attachments have different widths")
+          MGL_CORE_ASSERT(attachment->width() == width,
+                          "[Framebuffer] 'color_attachments[{0}]' have different widths.",
+                          i)
           MGL_CORE_ASSERT(attachment->height() == height,
-                          "color_attachments have different heights")
+                          "[Framebuffer] 'color_attachments[{0}]' have different heights.",
+                          i)
           MGL_CORE_ASSERT(attachment->samples() == samples,
-                          "color_attachments have different samples")
+                          "[Framebuffer] 'color_attachments[{0}]' have different samples.",
+                          i)
         }
 
         GLenum draw_buffer = GL_COLOR_ATTACHMENT0 + i;
@@ -157,7 +163,7 @@ namespace mgl::opengl
                 GL_FRAMEBUFFER, draw_buffer, GL_RENDERBUFFER, attachment->glo());
           }
           break;
-          default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
+          default: MGL_CORE_ASSERT(false, "[Framebuffer] Invalid attachment type."); return;
         }
 
         i++;
@@ -166,18 +172,19 @@ namespace mgl::opengl
 
     if(depth_attachment)
     {
-      MGL_CORE_ASSERT(depth_attachment->depth(), "the depth_attachment is a depth attachment");
+      MGL_CORE_ASSERT(depth_attachment->depth(),
+                      "[Framebuffer] 'depth_attachment' is not a depth attachment.");
       MGL_CORE_ASSERT(depth_attachment->ctx() == gl_object::ctx(),
-                      "the depth_attachment is from a different context");
+                      "[Framebuffer] 'depth_attachment' is from a different context.");
 
       if(width != 0 && height != 0 && samples != 0)
       {
         MGL_CORE_ASSERT(depth_attachment->width() == width,
-                        "the depth_attachment have different width")
+                        "[Framebuffer] 'depth_attachment' have different width.")
         MGL_CORE_ASSERT(depth_attachment->height() == height,
-                        "the depth_attachment have different height")
+                        "[Framebuffer] 'depth_attachment' have different height.")
         MGL_CORE_ASSERT(depth_attachment->samples() == samples,
-                        "the depth_attachment have different samples")
+                        "[Framebuffer] 'depth_attachment' have different samples.")
       }
       else
       {
@@ -202,12 +209,14 @@ namespace mgl::opengl
               GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_attachment->glo());
         }
         break;
-        default: MGL_CORE_ASSERT(false, "invalid attachment type"); return;
+        default: MGL_CORE_ASSERT(false, "[Framebuffer] Invalid attachment. type"); return;
       }
     }
 
-    MGL_CORE_ASSERT(width != 0, "invalid width, neither color nor depth attachments");
-    MGL_CORE_ASSERT(height != 0, "invalid height, neither color nor depth attachments");
+    MGL_CORE_ASSERT(width != 0,
+                    "[Framebuffer] Invalid width, neither color nor depth attachments.");
+    MGL_CORE_ASSERT(height != 0,
+                    "[Framebuffer] Invalid height, neither color nor depth attachments.");
 
     m_depth_mask = (depth_attachment != nullptr);
     m_viewport = { 0, 0, width, height };
@@ -220,7 +229,8 @@ namespace mgl::opengl
 
 #ifdef MGL_CORE_ENABLE_ASSERTS
     int32_t status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    MGL_CORE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is not complete");
+    MGL_CORE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE,
+                    "[Framebuffer] Framebuffer is not complete.");
 #endif
 
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::ctx()->m_bound_framebuffer->glo());
@@ -228,8 +238,9 @@ namespace mgl::opengl
 
   void framebuffer::release()
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     GLuint glo = gl_object::glo();
     glDeleteFramebuffers(1, &glo);
     m_draw_buffers.clear();
@@ -239,8 +250,9 @@ namespace mgl::opengl
   void
   framebuffer::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
 
     if(m_dynamic)
@@ -293,8 +305,9 @@ namespace mgl::opengl
 
   void framebuffer::use()
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
 
     if(m_dynamic)
@@ -333,25 +346,26 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t dst_off)
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "alignment must be 1, 2, 4 or 8");
+                    "[Framebuffer] Alignment must be 1, 2, 4 or 8.");
 
     data_type* data_type = from_dtype(dtype);
-    MGL_CORE_ASSERT(data_type != nullptr, "invalid dtype");
+    MGL_CORE_ASSERT(data_type != nullptr, "[Framebuffer] Invalid data type.");
 
     bool read_depth = false;
 
     if(attachment == -1)
     {
-      MGL_CORE_ASSERT(m_depth_mask, "no depth attachment");
+      MGL_CORE_ASSERT(m_depth_mask, "[Framebuffer] No depth attachment.");
       components = 1;
       read_depth = true;
     }
     else
     {
-      MGL_CORE_ASSERT(attachment < m_draw_buffers.size(), "invalid attachment");
+      MGL_CORE_ASSERT(attachment < m_draw_buffers.size(), "[Framebuffer] Invalid attachment.");
     }
 
     mgl::rect view = v;
@@ -364,7 +378,8 @@ namespace mgl::opengl
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * view.height;
 
-    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size, "out of bounds");
+    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size,
+                    "[Framebuffer] Destination out of bounds.");
 
     int32_t pixel_type = data_type->gl_type;
     int32_t base_format = read_depth ? GL_DEPTH_COMPONENT : data_type->base_format[components];
@@ -387,26 +402,27 @@ namespace mgl::opengl
                          const char* dtype,
                          size_t dst_off)
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "alignment must be 1, 2, 4 or 8");
+                    "[Framebuffer] Alignment must be 1, 2, 4 or 8.");
     MGL_CORE_ASSERT(dst->ctx() == gl_object::ctx(), "buffer is from a different context");
 
     data_type* data_type = from_dtype(dtype);
-    MGL_CORE_ASSERT(data_type != nullptr, "invalid dtype");
+    MGL_CORE_ASSERT(data_type != nullptr, "[Framebuffer] Invalid data type.");
 
     bool read_depth = false;
 
     if(attachment == -1)
     {
-      MGL_CORE_ASSERT(m_depth_mask, "no depth attachment");
+      MGL_CORE_ASSERT(m_depth_mask, "[Framebuffer] No depth attachment.");
       components = 1;
       read_depth = true;
     }
     else
     {
-      MGL_CORE_ASSERT(attachment < m_draw_buffers.size(), "invalid attachment");
+      MGL_CORE_ASSERT(attachment < m_draw_buffers.size(), "[Framebuffer] Invalid attachment.");
     }
 
     mgl::rect view = v;
@@ -430,7 +446,8 @@ namespace mgl::opengl
 
   void framebuffer::set_color_mask(const opengl::color_mask& mask)
   {
-    MGL_CORE_ASSERT(m_color_masks.size() == 1, "color_mask must be a match buffers len");
+    MGL_CORE_ASSERT(m_color_masks.size() == 1,
+                    "[Framebuffer] color_mask must be a match buffers len.");
     m_color_masks[0] = mask;
 
     if(gl_object::ctx()->m_bound_framebuffer.get() != this)
@@ -438,13 +455,14 @@ namespace mgl::opengl
       return;
     }
 
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glColorMask(mask.r, mask.g, mask.b, mask.a);
   }
 
   void framebuffer::set_color_mask(const color_masks& masks)
   {
-    MGL_CORE_ASSERT(masks.size() == m_color_masks.size(), "color_mask must be a match buffers len");
+    MGL_CORE_ASSERT(masks.size() == m_color_masks.size(),
+                    "[Framebuffer] color_mask must be a match buffers len.");
     m_color_masks = masks;
 
     if(gl_object::ctx()->m_bound_framebuffer.get() != this)
@@ -452,7 +470,7 @@ namespace mgl::opengl
       return;
     }
 
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     for(int32_t i = 0; i < m_color_masks.size(); ++i)
     {
       glColorMaski(
@@ -469,7 +487,7 @@ namespace mgl::opengl
       return;
     }
 
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glDepthMask(m_depth_mask);
   }
 
@@ -480,8 +498,9 @@ namespace mgl::opengl
                          int32_t& depth_bits,
                          int32_t& stencil_bits)
   {
-    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic, "invalid framebuffer");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_dynamic && !gl_object::released() || m_dynamic,
+                    "[Framebuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::glo());
     glGetFramebufferAttachmentParameteriv(
         GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &red_bits);
@@ -508,7 +527,7 @@ namespace mgl::opengl
       return;
     }
 
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glViewport(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height);
   }
 
@@ -521,7 +540,7 @@ namespace mgl::opengl
       return;
     }
 
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Framebuffer] Resource context not current.");
     glScissor(m_scissor.x, m_scissor.y, m_scissor.width, m_scissor.height);
   }
 

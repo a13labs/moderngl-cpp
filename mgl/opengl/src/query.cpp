@@ -51,7 +51,7 @@ namespace mgl::opengl
 
   void query::begin()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     if(m_glo[query::keys::SAMPLES_PASSED])
     {
       glBeginQuery(GL_SAMPLES_PASSED, m_glo[query::keys::SAMPLES_PASSED]);
@@ -75,7 +75,7 @@ namespace mgl::opengl
 
   void query::end()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     if(m_glo[query::keys::SAMPLES_PASSED])
     {
       glEndQuery(GL_SAMPLES_PASSED);
@@ -99,7 +99,7 @@ namespace mgl::opengl
 
   void query::begin_render()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     if(m_glo[query::keys::ANY_SAMPLES_PASSED])
     {
       glBeginConditionalRender(m_glo[query::keys::ANY_SAMPLES_PASSED], GL_QUERY_NO_WAIT);
@@ -116,14 +116,14 @@ namespace mgl::opengl
 
   void query::end_render()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     glEndConditionalRender();
   }
 
   int query::samples()
   {
-    MGL_CORE_ASSERT(m_glo[query::keys::SAMPLES_PASSED], "No samples query");
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_glo[query::keys::SAMPLES_PASSED], "[Query] No samples query.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     int samples = 0;
     glGetQueryObjectiv(m_glo[query::keys::SAMPLES_PASSED], GL_QUERY_RESULT, &samples);
     return samples;
@@ -131,8 +131,8 @@ namespace mgl::opengl
 
   int query::primitives()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_glo[query::keys::PRIMITIVES_GENERATED], "No primitives query");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    MGL_CORE_ASSERT(m_glo[query::keys::PRIMITIVES_GENERATED], "[Query] No primitives query.");
     int primitives = 0;
     glGetQueryObjectiv(m_glo[query::keys::PRIMITIVES_GENERATED], GL_QUERY_RESULT, &primitives);
     return primitives;
@@ -140,8 +140,8 @@ namespace mgl::opengl
 
   int query::elapsed()
   {
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_glo[query::keys::TIME_ELAPSED], "No time query");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    MGL_CORE_ASSERT(m_glo[query::keys::TIME_ELAPSED], "[Query] No time query.");
     int elapsed = 0;
     glGetQueryObjectiv(m_glo[query::keys::TIME_ELAPSED], GL_QUERY_RESULT, &elapsed);
     return elapsed;

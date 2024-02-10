@@ -65,7 +65,7 @@ bool example::on_load()
   m_scale = m_program->uniform("scale");
   m_rotation = m_program->uniform("rotation");
 
-  m_scale->set_value({ 0.5, aspect_ratio() * 0.5 });
+  m_scale->set_value(glm::vec2(0.5, aspect_ratio() * 0.5));
 
   mgl::float32_buffer vertices = {
     1.0,  0.0, //

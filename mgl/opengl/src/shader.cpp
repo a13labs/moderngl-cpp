@@ -15,7 +15,7 @@ namespace mgl::opengl
   {
     if(depth > 10)
     {
-      MGL_CORE_ERROR("Too many includes");
+      MGL_CORE_ERROR("[Shader] Too many includes");
       return "";
     }
 
@@ -46,7 +46,7 @@ namespace mgl::opengl
     src = handle_includes(src, 0);
     auto lines = mgl::split(src, '\n');
     MGL_CORE_ASSERT(mgl::starts_with(lines[0], "#version"),
-                    "#version must appear on the first line");
+                    "[Shader] #version must appear on the first line");
 
     m_type = type;
     m_version = mgl::to_int(lines[0].substr(sizeof("#version")));

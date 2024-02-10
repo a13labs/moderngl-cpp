@@ -24,23 +24,26 @@ namespace mgl::opengl
                          int32_t internal_format_override)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(components > 0 && components <= 4, "components must be between 1 and 4");
-    MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
-    MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
-    MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0, "samples must be a power of 2");
+    MGL_CORE_ASSERT(components > 0 && components <= 4,
+                    "[Texture2D] Components must be between 1 and 4.");
+    MGL_CORE_ASSERT(w > 0, "[Texture2D] Width must be greater than 0.");
+    MGL_CORE_ASSERT(h > 0, "[Texture2D] Height must be greater than 0.");
+    MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0,
+                    "[Texture2D] Samples must be a power of 2.");
     MGL_CORE_ASSERT(!samples || samples <= gl_object::ctx()->max_samples(),
-                    "samples must be less than or equal to {0}",
+                    "[Texture2D] Samples must be less than or equal to {0}.",
                     gl_object::ctx()->max_samples());
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(!samples || !data, "Multisample textures are not writable directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(!samples || !data,
+                    "[Texture2D] Multisample textures are not writable directly.");
 
     auto data_type = from_dtype(dtype);
 
     if(!data_type)
     {
-      MGL_CORE_ASSERT(false, "Invalid data type got: '{0}'", dtype);
+      MGL_CORE_ASSERT(false, "[Texture2D] Invalid data type got '{0}'.", dtype);
       return;
     }
 
@@ -74,7 +77,7 @@ namespace mgl::opengl
 
     if(!glo)
     {
-      MGL_CORE_ASSERT(false, "cannot create texture");
+      MGL_CORE_ASSERT(false, "[Texture2D] Cannot create texture.");
       return;
     }
 
@@ -112,16 +115,18 @@ namespace mgl::opengl
                          int32_t align)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(w > 0, "width must be greater than 0");
-    MGL_CORE_ASSERT(h > 0, "height must be greater than 0");
-    MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0, "samples must be a power of 2");
+    MGL_CORE_ASSERT(w > 0, "[Texture2D] Width must be greater than 0.");
+    MGL_CORE_ASSERT(h > 0, "[Texture2D] Height must be greater than 0.");
+    MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0,
+                    "[Texture2D] Samples must be a power of 2.");
     MGL_CORE_ASSERT(!samples || samples <= ctx->max_samples(),
-                    "samples must be less than or equal to {0}",
+                    "[Texture2D] Samples must be less than or equal to {0}.",
                     ctx->max_samples());
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(!samples || !data, "Multisample textures are not writable directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(!samples || !data,
+                    "[Texture2D] Multisample textures are not writable directly.");
 
     gl_object::set_glo(0);
     m_width = w;
@@ -144,7 +149,7 @@ namespace mgl::opengl
 
     if(!glo)
     {
-      MGL_CORE_ASSERT(false, "cannot create texture");
+      MGL_CORE_ASSERT(false, "[Texture2D] Cannot create texture.");
       return;
     }
 
@@ -174,8 +179,8 @@ namespace mgl::opengl
 
   void texture_2d::release()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     GLuint glo = gl_object::glo();
     glDeleteTextures(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -183,12 +188,12 @@ namespace mgl::opengl
 
   void texture_2d::read(mgl::uint8_buffer& dst, int lvl, int align, size_t dst_off)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int width = m_width / (1 << lvl);
     int height = m_height / (1 << lvl);
@@ -200,7 +205,8 @@ namespace mgl::opengl
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * height;
 
-    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size, "out of bounds");
+    MGL_CORE_ASSERT(dst.size() >= dst_off + expected_size,
+                    "[Texture2D] Destination out of bounds.");
 
     int pixel_type = m_data_type->gl_type;
     int base_format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
@@ -213,18 +219,16 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glGetTexImage(GL_TEXTURE_2D, lvl, base_format, pixel_type, ptr);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::read(buffer_ref& dst, int lvl, int align, size_t dst_off)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int width = m_width / (1 << lvl);
     int height = m_height / (1 << lvl);
@@ -243,18 +247,16 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glGetTexImage(GL_TEXTURE_2D, lvl, base_format, pixel_type, (void*)dst_off);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::write(const mgl::uint8_buffer& src, const mgl::rect& v, int lvl, int align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = v.x;
     int y = v.y;
@@ -265,7 +267,7 @@ namespace mgl::opengl
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * height;
 
-    MGL_CORE_ASSERT(src.size() >= expected_size, "out of bounds");
+    MGL_CORE_ASSERT(src.size() >= expected_size, "[Texture2D] Destination out of bounds.");
 
     int pixel_type = m_data_type->gl_type;
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
@@ -276,18 +278,16 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glTexSubImage2D(GL_TEXTURE_2D, lvl, x, y, width, height, format, pixel_type, src.data());
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::write(const mgl::uint8_buffer& src, int lvl, int align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = 0;
     int y = 0;
@@ -301,7 +301,7 @@ namespace mgl::opengl
     expected_size = (expected_size + align - 1) / align * align;
     expected_size = expected_size * height;
 
-    MGL_CORE_ASSERT(src.size() >= expected_size, "out of bounds");
+    MGL_CORE_ASSERT(src.size() >= expected_size, "[Texture2D] Destination out of bounds.");
 
     int pixel_type = m_data_type->gl_type;
     int format = m_depth ? GL_DEPTH_COMPONENT : m_data_type->base_format[m_components];
@@ -312,18 +312,16 @@ namespace mgl::opengl
     glPixelStorei(GL_PACK_ALIGNMENT, align);
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glTexSubImage2D(GL_TEXTURE_2D, lvl, x, y, width, height, format, pixel_type, src.data());
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::write(const buffer_ref& src, const mgl::rect& v, int lvl, int align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = v.x;
     int y = v.y;
@@ -341,18 +339,16 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glTexSubImage2D(GL_TEXTURE_2D, lvl, x, y, width, height, format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::write(const buffer_ref& src, int lvl, int align)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
-                    "align must be 1, 2, 4 or 8");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "invalid lvl");
-    MGL_CORE_ASSERT(!m_samples, "multisample textures cannot be read directly");
+                    "[Texture2D] Alignment must be 1, 2, 4 or 8.");
+    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = 0;
     int y = 0;
@@ -373,14 +369,12 @@ namespace mgl::opengl
     glPixelStorei(GL_UNPACK_ALIGNMENT, align);
     glTexSubImage2D(GL_TEXTURE_2D, lvl, x, y, width, height, format, pixel_type, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void texture_2d::bind_to_image(int unit, bool read, bool write, int lvl, int format)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(read || write, "Illegal access mode. Read or write needs to be enabled.");
 
     int access = GL_READ_WRITE;
@@ -396,8 +390,8 @@ namespace mgl::opengl
 
   void texture_2d::use(int index)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
@@ -407,8 +401,8 @@ namespace mgl::opengl
 
   void texture_2d::build_mipmaps(int base, int max_level)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(base <= max_level, "invalid base");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -430,8 +424,8 @@ namespace mgl::opengl
 
   void texture_2d::set_repeat_x(bool value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
@@ -451,8 +445,8 @@ namespace mgl::opengl
 
   void texture_2d::set_repeat_y(bool value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
@@ -472,8 +466,8 @@ namespace mgl::opengl
 
   void texture_2d::set_filter(const texture::filter& value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
 
     m_filter = value;
 
@@ -487,9 +481,9 @@ namespace mgl::opengl
 
   std::string texture_2d::swizzle() const
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(!m_depth, "cannot get swizzle of depth textures");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
+    MGL_CORE_ASSERT(!m_depth, "[Texture2D] Cannot get swizzle of depth textures.");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
@@ -519,19 +513,19 @@ namespace mgl::opengl
 
   void texture_2d::set_swizzle(const std::string& value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(!m_depth, "cannot set swizzle for depth textures");
-    MGL_CORE_ASSERT(value.size() <= 4, "the swizzle is too long");
-    MGL_CORE_ASSERT(value.size() > 0, "the swizzle is empty");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
+    MGL_CORE_ASSERT(!m_depth, "[Texture2D] Cannot set swizzle for depth textures.");
+    MGL_CORE_ASSERT(value.size() <= 4, "[Texture2D] Swizzle is too long.");
+    MGL_CORE_ASSERT(value.size() > 0, "[Texture2D] Swizzle is empty.");
 
     int tex_swizzle[4] = { -1, -1, -1, -1 };
 
     for(int i = 0; value[i]; ++i)
     {
-      MGL_CORE_ASSERT(i < 4, "the swizzle is too long");
       tex_swizzle[i] = internal::swizzle_from_char(value[i]);
-      MGL_CORE_ASSERT(tex_swizzle[i] != -1, "'{0}' is not a valid swizzle parameter", value[i]);
+      MGL_CORE_ASSERT(
+          tex_swizzle[i] != -1, "[Texture2D] '{0}' is not a valid swizzle parameter.", value[i]);
     }
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -556,9 +550,9 @@ namespace mgl::opengl
 
   void texture_2d::set_compare_func(mgl::opengl::compare_func value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_depth, "only depth textures have compare_func");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
+    MGL_CORE_ASSERT(m_depth, "[Texture2D] Only depth textures have compare function.");
 
     m_compare_func = value;
 
@@ -579,8 +573,8 @@ namespace mgl::opengl
 
   void texture_2d::set_anisotropy(float value)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
 
     m_anisotropy = (float)MGL_MIN(MGL_MAX(value, 1.0), gl_object::ctx()->max_anisotropy());
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -593,13 +587,14 @@ namespace mgl::opengl
 
   void texture_2d::resize(int width, int height, int components, const mgl::uint8_buffer& data)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "texture already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(width > 0, "width must be greater than 0");
-    MGL_CORE_ASSERT(height > 0, "height must be greater than 0");
-    MGL_CORE_ASSERT(components > 0 && components <= 4, "components must be between 1 and 4");
-    MGL_CORE_ASSERT(!m_samples, "cannot resize multisample textures");
-    MGL_CORE_ASSERT(!m_depth, "cannot resize depth textures");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Texture2D] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
+    MGL_CORE_ASSERT(width > 0, "[Texture2D] Width must be greater than 0.");
+    MGL_CORE_ASSERT(height > 0, "[Texture2D] Height must be greater than 0.");
+    MGL_CORE_ASSERT(components > 0 && components <= 4,
+                    "[Texture2D] components must be between 1 and 4");
+    MGL_CORE_ASSERT(!m_samples, "[Texture2D] Cannot resize multisample textures.");
+    MGL_CORE_ASSERT(!m_depth, "[Texture2D] Cannot resize depth textures.");
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 

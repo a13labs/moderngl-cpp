@@ -1,0 +1,14 @@
+#include "mgl_opengl/context.hpp"
+#include <gtest/gtest.h>
+
+TEST(GenericTest, GeneralTests)
+{
+  auto ctx = mgl::opengl::create_context(mgl::opengl::context_mode::STANDALONE);
+  ASSERT_NE(ctx, nullptr);
+}
+
+int main(int argc, char** argv)
+{
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

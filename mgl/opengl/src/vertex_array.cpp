@@ -19,11 +19,11 @@ namespace mgl::opengl
                              mgl::opengl::render_mode mode)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(program, "program is null");
-    MGL_CORE_ASSERT(!program->released(), "program already released");
+    MGL_CORE_ASSERT(program, "[VertexArray] Invalid program.");
+    MGL_CORE_ASSERT(!program->released(), "[VertexArray] Program already released.");
     MGL_CORE_ASSERT(index_element_size == 1 || index_element_size == 2 || index_element_size == 4,
-                    "index_element_size must be 1, 2, or 4");
-    MGL_CORE_ASSERT(program->ctx() == ctx, "program context mismatch");
+                    "[VertexArray] 'index_element_size' must be 1, 2, or 4.");
+    MGL_CORE_ASSERT(program->ctx() == ctx, "[VertexArray] Program context mismatch.");
 
 #ifdef MGL_CORE_ENABLE_ASSERTS
     int32_t i = 0;
@@ -31,29 +31,31 @@ namespace mgl::opengl
     {
       if(v_data.buffer == nullptr)
       {
-        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: empty vertex buffer", i);
+        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' empty vertex buffer.", i);
         return;
       }
 
       if(v_data.layout.is_invalid())
       {
-        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: invalid buffer layout", i);
+        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' invalid buffer layout.", i);
         return;
       }
 
       if(!v_data.attributes.size())
       {
-        MGL_CORE_ASSERT(false, "vertex_buffers[{0}]: attributes must not be empty", i);
+        MGL_CORE_ASSERT(
+            false, "[VertexArray] 'vertex_buffers[{0}]' attributes must not be empty.", i);
         return;
       }
 
       if((int32_t)v_data.attributes.size() != v_data.layout.size())
       {
-        MGL_CORE_ASSERT(false,
-                        "vertex_buffers[{0}]: format and attributes size mismatch {1} != {2}",
-                        i,
-                        v_data.layout.size(),
-                        v_data.attributes.size());
+        MGL_CORE_ASSERT(
+            false,
+            "[VertexArray] 'vertex_buffers[{0}]' format and attributes size mismatch {1} != {2}.",
+            i,
+            v_data.layout.size(),
+            v_data.attributes.size());
         return;
       }
 
@@ -75,7 +77,7 @@ namespace mgl::opengl
 
     if(!glo)
     {
-      MGL_CORE_ASSERT(glo, "cannot create vertex array");
+      MGL_CORE_ASSERT(glo, "[VertexArray] Cannot create vertex array.");
       return;
     }
 
@@ -151,8 +153,9 @@ namespace mgl::opengl
 
   void vertex_array::release()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
     GLuint glo = gl_object::glo();
     glDeleteVertexArrays(1, &glo);
     gl_object::set_glo(GL_ZERO);
@@ -163,12 +166,13 @@ namespace mgl::opengl
                             int32_t first,
                             int32_t instances)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
 
     if(vertices == 0)
     {
-      MGL_CORE_ASSERT(m_num_vertices > 0, "cannot detect the number of vertices");
+      MGL_CORE_ASSERT(m_num_vertices > 0, "[VertexArray] Cannot detect the number of vertices.");
       vertices = m_num_vertices;
     }
 
@@ -189,7 +193,6 @@ namespace mgl::opengl
     {
       glDrawArraysInstanced(mode, first, vertices, instances);
     }
-    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "OpenGL error");
   }
 
   void vertex_array::render_indirect(const buffer_ref& indirect_commands,
@@ -197,11 +200,12 @@ namespace mgl::opengl
                                      int32_t count,
                                      int32_t first)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(indirect_commands, "indirect_commands is null");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
+    MGL_CORE_ASSERT(indirect_commands, "[VertexArray] Invalid 'indirect_commands'.");
     MGL_CORE_ASSERT(indirect_commands->size() >= (first + count) * sizeof(draw_indirect_command),
-                    "indirect_commands size is invalid");
+                    "[VertexArray] 'indirect_commands' size is invalid.");
 
     glUseProgram(m_program->glo());
     glBindVertexArray(gl_object::glo());
@@ -227,13 +231,14 @@ namespace mgl::opengl
                                int32_t instances,
                                int32_t buffer_offset)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_program->num_varyings(), "the program has no varyings")
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
+    MGL_CORE_ASSERT(m_program->num_varyings(), "[VertexArray] Program has no varyings.")
 
     if(vertices < 0)
     {
-      MGL_CORE_ASSERT(m_num_vertices >= 0, "cannot detect the number of vertices");
+      MGL_CORE_ASSERT(m_num_vertices >= 0, "[VertexArray] Cannot detect the number of vertices.");
       vertices = m_num_vertices;
     }
 
@@ -256,33 +261,36 @@ namespace mgl::opengl
       {
         case GL_POINTS:
           MGL_CORE_ASSERT(mode == GL_POINTS,
-                          "Geometry shader expects POINTS as input. Change the "
+                          "[VertexArray] Geometry shader expects POINTS as input. Change the "
                           "transform mode.");
           break;
         case GL_LINES:
-          MGL_CORE_ASSERT(mode == GL_LINES || mode == GL_LINE_STRIP || mode == GL_LINE_LOOP ||
-                              mode == GL_LINES_ADJACENCY,
-                          "Geometry shader expects LINES, LINE_STRIP, GL_LINE_LOOP or "
-                          "GL_LINES_ADJACENCY as input. Change the rendering mode.");
+          MGL_CORE_ASSERT(
+              mode == GL_LINES || mode == GL_LINE_STRIP || mode == GL_LINE_LOOP ||
+                  mode == GL_LINES_ADJACENCY,
+              "[VertexArray] Geometry shader expects LINES, LINE_STRIP, GL_LINE_LOOP or "
+              "GL_LINES_ADJACENCY as input. Change the rendering mode.");
           break;
         case GL_LINES_ADJACENCY:
-          MGL_CORE_ASSERT(mode == GL_LINES_ADJACENCY || mode == GL_LINE_STRIP_ADJACENCY,
-                          "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY "
-                          "as input. Change the rendering mode.");
+          MGL_CORE_ASSERT(
+              mode == GL_LINES_ADJACENCY || mode == GL_LINE_STRIP_ADJACENCY,
+              "[VertexArray] Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY "
+              "as input. Change the rendering mode.");
           break;
         case GL_TRIANGLES:
           MGL_CORE_ASSERT(mode == GL_TRIANGLES || mode == GL_TRIANGLE_STRIP ||
                               mode == GL_TRIANGLE_FAN,
-                          "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP "
+                          "[VertexArray] Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP "
                           "or GL_TRIANGLE_FAN as input. Change the rendering mode.");
           break;
         case GL_TRIANGLES_ADJACENCY:
           MGL_CORE_ASSERT(mode == GL_TRIANGLES_ADJACENCY || mode == GL_TRIANGLE_STRIP_ADJACENCY,
-                          "Geometry shader expects GL_TRIANGLES_ADJACENCY or "
+                          "[VertexArray] Geometry shader expects GL_TRIANGLES_ADJACENCY or "
                           "GL_TRIANGLE_STRIP_ADJACENCY as input. Change the rendering mode.");
           break;
         default:
-          MGL_CORE_ERROR("Unexpected geometry shader input mode: %d", m_program->geometry_input());
+          MGL_CORE_ERROR("[VertexArray] Unexpected geometry shader input mode '{0}'.",
+                         m_program->geometry_input());
           return;
           break;
       }
@@ -305,7 +313,7 @@ namespace mgl::opengl
         case GL_TRIANGLE_FAN:
         case GL_TRIANGLES_ADJACENCY:
         case GL_TRIANGLE_STRIP_ADJACENCY: output_mode = GL_TRIANGLES; break;
-        default: MGL_CORE_ASSERT(false, "Primitive mode not supported"); return;
+        default: MGL_CORE_ASSERT(false, "[VertexArray] Primitive mode not supported."); return;
       }
     }
 
@@ -353,14 +361,15 @@ namespace mgl::opengl
                           int32_t divisor,
                           bool normalize)
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Vertex Array already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
-    MGL_CORE_ASSERT(!(type == 'f' && normalize), "invalid normalize");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
+    MGL_CORE_ASSERT(!(type == 'f' && normalize), "[VertexArray] Invalid normalize.");
     MGL_CORE_ASSERT(!(layout.is_invalid() || layout.divisor() || layout.size() != 1),
-                    "invalid format");
+                    "[VertexArray] [VertexArray] Invalid format.");
 
     buffer_layout::element element = layout[0];
-    MGL_CORE_ASSERT(element.type, "invalid format");
+    MGL_CORE_ASSERT(element.type, "[VertexArray] Invalid format.");
 
     char* ptr = (char*)offset;
 
@@ -374,7 +383,7 @@ namespace mgl::opengl
         break;
       case 'i': glVertexAttribIPointer(location, element.offset, element.type, stride, ptr); break;
       case 'd': glVertexAttribLPointer(location, element.offset, element.type, stride, ptr); break;
-      default: MGL_CORE_ASSERT(false, "invalid type"); return;
+      default: MGL_CORE_ASSERT(false, "[VertexArray] Invalid type."); return;
     }
 
     glVertexAttribDivisor(location, divisor);

@@ -18,14 +18,15 @@ namespace mgl::opengl
                              const std::string& dtype)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(components > 0 && components < 5, "Components must be 1, 2, 3 or 4");
-    MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "Samples must be a power of 2");
+    MGL_CORE_ASSERT(components > 0 && components < 5,
+                    "[Renderbuffer] Components must be 1, 2, 3 or 4.");
+    MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "[Renderbuffer] Samples must be a power of 2.");
     MGL_CORE_ASSERT(samples <= ctx->max_samples(),
-                    "Samples must be less than or equal to {0}",
+                    "[Renderbuffer] Samples must be less than or equal to {0}.",
                     ctx->max_samples());
 
     auto data_type = from_dtype(dtype);
-    MGL_CORE_ASSERT(data_type, "Invalid data type got: '{0}'", dtype);
+    MGL_CORE_ASSERT(data_type, "[Renderbuffer] Invalid data type got '{0}'.", dtype);
 
     int32_t format = data_type->internal_format[components];
 
@@ -40,7 +41,7 @@ namespace mgl::opengl
     glGenRenderbuffers(1, &glo);
     if(!glo)
     {
-      MGL_CORE_ASSERT(false, "Cannot create render buffer");
+      MGL_CORE_ASSERT(false, "[Renderbuffer] Cannot create render buffer.");
       return;
     }
 
@@ -61,9 +62,9 @@ namespace mgl::opengl
   renderbuffer::renderbuffer(const context_ref& ctx, int32_t w, int32_t h, int32_t samples)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "Samples must be a power of 2");
+    MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "[Renderbuffer] Samples must be a power of 2.");
     MGL_CORE_ASSERT(samples <= ctx->max_samples(),
-                    "Samples must be less than or equal to {0}",
+                    "[Renderbuffer] Samples must be less than or equal to {0}.",
                     ctx->max_samples());
 
     m_width = w;
@@ -77,7 +78,7 @@ namespace mgl::opengl
     glGenRenderbuffers(1, &glo);
     if(!glo)
     {
-      MGL_CORE_ERROR("Cannot create render buffer");
+      MGL_CORE_ERROR("[Renderbuffer] Cannot create render buffer.");
       return;
     }
 
@@ -97,8 +98,9 @@ namespace mgl::opengl
 
   void renderbuffer::release()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "render buffer already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[Renderbuffer] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Renderbuffer] Resource context not current.");
     GLuint glo = gl_object::glo();
     glDeleteRenderbuffers(1, &glo);
     gl_object::set_glo(GL_ZERO);

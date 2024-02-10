@@ -91,8 +91,10 @@ namespace mgl::opengl
                    const shaders& shaders,
                    const shaders_outputs& outputs,
                    const fragment_outputs& fragment_outputs,
-                   bool interleaved)
+                   bool interleaved,
+                   const std::string& filename)
       : gl_object(ctx)
+      , m_filename(filename)
   {
     static const int32_t SHADER_TYPE[5] = {
       GL_VERTEX_SHADER,       GL_FRAGMENT_SHADER,        GL_GEOMETRY_SHADER,
@@ -107,7 +109,7 @@ namespace mgl::opengl
     m_transform = shaders.sources[shader::type::FRAGMENT_SHADER].empty();
 
     int32_t glo = glCreateProgram();
-    MGL_CORE_ASSERT(glo, "cannot create program");
+    MGL_CORE_ASSERT(glo, "[Program] Cannot create program.");
 
     int32_t shader_objs[] = { 0, 0, 0, 0, 0 };
 
@@ -121,7 +123,7 @@ namespace mgl::opengl
       const char* source_str = shaders.sources[i].c_str();
 
       int32_t shader_glo = glCreateShader(SHADER_TYPE[i]);
-      MGL_CORE_ASSERT(shader_glo, "cannot create shader object");
+      MGL_CORE_ASSERT(shader_glo, "[Program] Cannot create shader object.");
 
       glShaderSource(shader_glo, 1, &source_str, 0);
       glCompileShader(shader_glo);
@@ -133,16 +135,23 @@ namespace mgl::opengl
       {
         int32_t log_len = 0;
         glGetShaderiv(shader_glo, GL_INFO_LOG_LENGTH, &log_len);
-
         char* log = new char[log_len];
         glGetShaderInfoLog(shader_glo, log_len, &log_len, log);
-        glDeleteShader(shader_glo);
-
-        MGL_CORE_ERROR("GLSL Compiler failed ({0}):{1}", SHADER_NAME[i], log);
-
+        if(m_filename.size() > 0)
+        {
+          MGL_CORE_ERROR("[Program] [{0}] GLSL compilation failed '{1}': {2}",
+                         m_filename.c_str(),
+                         SHADER_NAME[i],
+                         log);
+        }
+        else
+        {
+          MGL_CORE_ERROR("[Program] GLSL compilation failed '{0}': {1}", SHADER_NAME[i], log);
+        }
         delete[] log;
+        glDeleteShader(shader_glo);
         glDeleteProgram(glo);
-        MGL_CORE_ASSERT(false, "GLSL Compiler failed");
+        MGL_CORE_ASSERT(false, "[Program] GLSL Compiler failed.");
         return;
       }
 
@@ -186,23 +195,15 @@ namespace mgl::opengl
 
     if(!linked)
     {
-      const char* message = "GLSL Linker failed";
-      const char* title = "Program";
-      const char* underline = "=======";
-
       int32_t log_len = 0;
       glGetProgramiv(glo, GL_INFO_LOG_LENGTH, &log_len);
 
       char* log = new char[log_len];
       glGetProgramInfoLog(glo, log_len, &log_len, log);
-
-      glDeleteProgram(glo);
-
-      MGL_CORE_ERROR("{0}\n\n{1}\n{2}\n{3}\n", message, title, underline, log);
-
+      MGL_CORE_ERROR("[Program] GLSL link failed: {0}", log);
       delete[] log;
       glDeleteProgram(glo);
-      MGL_CORE_ASSERT(false, "GLSL Linker failed");
+      MGL_CORE_ASSERT(false, "[Program] GLSL Linker failed.");
       return;
     }
 
@@ -392,23 +393,24 @@ namespace mgl::opengl
 
   void program::release()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Program] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Program] Resource context not current.");
     glDeleteProgram(gl_object::glo());
     gl_object::set_glo(0);
   }
 
   void program::bind()
   {
-    MGL_CORE_ASSERT(!gl_object::released(), "Program already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released(), "[Program] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Program] Resource context not current.");
     glUseProgram(gl_object::glo());
   }
 
   void program::unbind()
   {
-    MGL_CORE_ASSERT(!gl_object::released() != 0, "Program already released");
-    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!gl_object::released() != 0,
+                    "[Program] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Program] Resource context not current.");
     glUseProgram(GL_ZERO);
   }
 

@@ -18,8 +18,8 @@ namespace mgl::opengl
                const sampler_bindings& samplers)
       : m_ctx(ctx)
   {
-    MGL_CORE_ASSERT(framebuffer, "Framebuffer is null");
-    MGL_CORE_ASSERT(framebuffer->ctx() == m_ctx, "Framebuffer context mismatch");
+    MGL_CORE_ASSERT(framebuffer, "[Scope] Invalid framebuffer.");
+    MGL_CORE_ASSERT(framebuffer->ctx() == m_ctx, "[Scope] Framebuffer context mismatch.");
 
     m_scope_state = { enable_flags, framebuffer };
 
@@ -35,8 +35,8 @@ namespace mgl::opengl
       int32_t texture_type;
       int32_t texture_obj;
 
-      MGL_CORE_ASSERT(t.texture, "Texture is null");
-      MGL_CORE_ASSERT(t.texture->ctx() == m_ctx, "Texture context mismatch");
+      MGL_CORE_ASSERT(t.texture, "[Scope] Invalid texture.");
+      MGL_CORE_ASSERT(t.texture->ctx() == m_ctx, "[Scope] Texture context mismatch.");
 
       texture_obj = t.texture->glo();
 
@@ -44,7 +44,7 @@ namespace mgl::opengl
       {
         case texture::type::TEXTURE_2D: {
           auto texture = std::dynamic_pointer_cast<texture_2d>(t.texture);
-          MGL_CORE_ASSERT(texture != nullptr, "invalid texture");
+          MGL_CORE_ASSERT(texture != nullptr, "[Scope] Invalid texture type.");
           texture_type = texture->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
         }
         break;
@@ -56,7 +56,7 @@ namespace mgl::opengl
           texture_type = GL_TEXTURE_CUBE_MAP;
         }
         break;
-        default: MGL_CORE_ASSERT(false, "Invalid texture type"); return;
+        default: MGL_CORE_ASSERT(false, "[Scope] Invalid texture type."); return;
       }
 
       int32_t binding = t.binding;
@@ -69,7 +69,7 @@ namespace mgl::opengl
     i = 0;
     for(auto&& b : uniform_buffers)
     {
-      MGL_CORE_ASSERT(b.buffer, "buffer is null");
+      MGL_CORE_ASSERT(b.buffer, "[Scope] Buffer is not valid.");
 
       m_buffers[i].binding = b.binding;
       m_buffers[i].gl_object = b.buffer->glo();
@@ -79,7 +79,7 @@ namespace mgl::opengl
 
     for(auto&& b : storage_buffers)
     {
-      MGL_CORE_ASSERT(b.buffer, "buffer is null");
+      MGL_CORE_ASSERT(b.buffer, "[Scope] Buffer is not valid.");
 
       m_buffers[i].binding = b.binding;
       m_buffers[i].gl_object = b.buffer->glo();
@@ -92,7 +92,7 @@ namespace mgl::opengl
 
   scope::~scope()
   {
-    MGL_CORE_ASSERT(!m_begin, "Scope not ended");
+    MGL_CORE_ASSERT(!m_begin, "[Scope] Scope not ended.");
     m_scope_state = { enable_flag::INVALID, nullptr };
     m_previous_state = { enable_flag::INVALID, nullptr };
     m_samplers.clear();
@@ -102,8 +102,8 @@ namespace mgl::opengl
 
   void scope::begin()
   {
-    MGL_CORE_ASSERT(!m_begin, "Scope already started");
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(!m_begin, "[Scope] Scope already started.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Scope] Resource context not current.");
     m_begin = true;
 
     const int32_t& flags = m_scope_state.enable_flags;
@@ -126,15 +126,15 @@ namespace mgl::opengl
 
     for(auto&& sampler : m_samplers)
     {
-      MGL_CORE_ASSERT(sampler.sampler, "invalid sampler");
+      MGL_CORE_ASSERT(sampler.sampler, "[Scope] Invalid sampler.");
       sampler.sampler->use(sampler.binding);
     }
   }
 
   void scope::end()
   {
-    MGL_CORE_ASSERT(m_begin, "Scope not started");
-    MGL_CORE_ASSERT(m_ctx->is_current(), "Context not current");
+    MGL_CORE_ASSERT(m_begin, "[Scope] Scope not started.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Scope] Resource context not current.");
     const int32_t& flags = m_previous_state.enable_flags;
 
     m_ctx->set_enable_flags(flags);
@@ -145,7 +145,7 @@ namespace mgl::opengl
 
     for(auto&& sampler : m_samplers)
     {
-      MGL_CORE_ASSERT(sampler.sampler, "invalid sampler");
+      MGL_CORE_ASSERT(sampler.sampler, "[Scope] Invalid sampler.");
       sampler.sampler->clear(sampler.binding);
     }
 

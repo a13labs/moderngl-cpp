@@ -221,73 +221,73 @@ public:
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::vec2& value)
+    void get_uniform_value(const std::string& name, glm::vec2& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::vec3& value)
+    void get_uniform_value(const std::string& name, glm::vec3& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::vec4& value)
+    void get_uniform_value(const std::string& name, glm::vec4& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat2& value)
+    void get_uniform_value(const std::string& name, glm::mat2& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat2x3& value)
+    void get_uniform_value(const std::string& name, glm::mat2x3& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat2x4& value)
+    void get_uniform_value(const std::string& name, glm::mat2x4& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat3& value)
+    void get_uniform_value(const std::string& name, glm::mat3& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat3x2& value)
+    void get_uniform_value(const std::string& name, glm::mat3x2& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat3x4& value)
+    void get_uniform_value(const std::string& name, glm::mat3x4& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat4& value)
+    void get_uniform_value(const std::string& name, glm::mat4& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat4x2& value)
+    void get_uniform_value(const std::string& name, glm::mat4x2& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);
     }
 
-    void get_uniform_value(const std::string& name, const glm::mat4x3& value)
+    void get_uniform_value(const std::string& name, glm::mat4x3& value)
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       (*m_program)[name]->get_value(value);

@@ -25,7 +25,7 @@ public:
     void allocate()
     {
       MGL_CORE_ASSERT(!m_buffer, "Buffer is already allocated");
-      m_buffer = mgl::platform::current_context()->buffer(is_dynamic());
+      m_buffer = mgl::platform::current_context()->buffer(m_size, is_dynamic());
       m_buffer->orphan(m_size);
       m_pos = 0;
     }

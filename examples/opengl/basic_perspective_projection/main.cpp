@@ -92,9 +92,9 @@ bool example::on_load()
   m_program->uniform("ratio")->set_value(aspect_ratio());
   m_program->uniform("fovy")->set_value(60.f);
 
-  m_program->uniform("eye")->set_value({ 3.f, 3.f, 3.f });
-  m_program->uniform("center")->set_value({ 0.f, 0.f, 0.f });
-  m_program->uniform("up")->set_value({ 0.f, 0.f, 1.f });
+  m_program->uniform("eye")->set_value(glm::vec3(3.f, 3.f, 3.f));
+  m_program->uniform("center")->set_value(glm::vec3(0.f, 0.f, 0.f));
+  m_program->uniform("up")->set_value(glm::vec3(0.f, 0.f, 1.f));
 
   mgl::float32_buffer grid;
 
