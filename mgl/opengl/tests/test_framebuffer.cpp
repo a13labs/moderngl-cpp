@@ -156,7 +156,7 @@ TEST(FramebufferTest, MaskTests)
     ASSERT_EQ(pixels[i + 3], 0);
   }
 
-  fbo->set_color_mask({ true, false, true, false });
+  fbo->set_color_mask(mgl::opengl::color_mask(true, false, true, false));
   fbo->clear(0x19 / 255., 0x33 / 255., 0x4c / 255., 0x66 / 255.);
 
   fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
@@ -169,7 +169,7 @@ TEST(FramebufferTest, MaskTests)
     ASSERT_EQ(pixels[i + 3], 0x00);
   }
 
-  fbo->set_color_mask({ false, true, false, true });
+  fbo->set_color_mask(mgl::opengl::color_mask(false, true, false, true));
   fbo->clear(0, 0x33 / 255., 0, 0x66 / 255.);
 
   fbo->read(pixels, mgl::rect(0, 0, 4, 4), 4);
