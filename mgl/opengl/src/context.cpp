@@ -28,58 +28,126 @@
 namespace mgl::opengl
 {
 
+#ifdef MGL_DEBUG
+  const static std::string opengl_debug_source_str[6] = {
+    "API", "WINDOW_SYSTEM", "SHADER_COMPILER", "THIRD_PARTY", "APPLICATION", "OTHER",
+  };
+
+  const static std::string opengl_debug_type_str[6] = {
+    "ERROR", "DEPRECATED BEHAVIOR", "UNDEFINED BEHAVIOR", "PORTABILITY", "PERFORMANCE", "OTHER"
+  };
+
+  const char* opengl_debug_severity_str[4] = { "HIGH", "MEDIUM", "LOW", "INFO" };
+
+  void opengl_message_callback(GLenum source,
+                               GLenum type,
+                               GLuint id,
+                               GLenum severity,
+                               GLsizei length,
+                               const GLchar* message,
+                               const void* userParam)
+  {
+    int sev_idx, t_idx, src_idx;
+
+    switch(severity)
+    {
+      case GL_DEBUG_SEVERITY_HIGH: sev_idx = 0; break;
+      case GL_DEBUG_SEVERITY_MEDIUM: sev_idx = 1; break;
+      case GL_DEBUG_SEVERITY_LOW: sev_idx = 2; break;
+      default: sev_idx = 3; break;
+    }
+
+    switch(type)
+    {
+      case GL_DEBUG_TYPE_ERROR: t_idx = 0; break;
+      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: t_idx = 1; break;
+      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: t_idx = 2; break;
+      case GL_DEBUG_TYPE_PORTABILITY: t_idx = 3; break;
+      case GL_DEBUG_TYPE_PERFORMANCE: t_idx = 4; break;
+      default: t_idx = 5; break;
+    }
+
+    switch(source)
+    {
+      case GL_DEBUG_SOURCE_API: src_idx = 0; break;
+      case GL_DEBUG_SOURCE_WINDOW_SYSTEM: src_idx = 1; break;
+      case GL_DEBUG_SOURCE_SHADER_COMPILER: src_idx = 2; break;
+      case GL_DEBUG_SOURCE_THIRD_PARTY: src_idx = 3; break;
+      case GL_DEBUG_SOURCE_APPLICATION: src_idx = 4; break;
+      default: src_idx = 5; break;
+    }
+
+    if(t_idx == 0)
+    {
+      log::error("[GL DEBUG] ({0}) {1}, {2}: {3}",
+                 opengl_debug_severity_str[sev_idx],
+                 opengl_debug_source_str[src_idx],
+                 opengl_debug_type_str[t_idx],
+                 message);
+    }
+    else
+    {
+      log::debug("[GL DEBUG] ({0}) {1}, {2}: {3}\n",
+                 opengl_debug_severity_str[sev_idx],
+                 opengl_debug_source_str[src_idx],
+                 opengl_debug_type_str[t_idx],
+                 message);
+    }
+  }
+#endif
+
   context_ref context::create_context(context_mode::mode mode, int32_t required)
   {
 
     context* native_ctx = nullptr;
 
 #ifdef MGL_OPENGL_EGL
-    MGL_CORE_INFO("Trying EGL context!");
+    MGL_CORE_INFO("[EGL Context] Trying EGL context!");
     native_ctx = new ContextEGL(mode, required);
 
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("EGL not supported!");
+      MGL_CORE_INFO("[EGL Context] EGL not supported!");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("EGL supported!");
+      MGL_CORE_INFO("[EGL Context] EGL supported!");
     }
 #endif
 #ifdef MGL_OPENGL_WGL
-    MGL_CORE_INFO("Trying WGL context!");
+    MGL_CORE_INFO("[WGL Context] Trying WGL context!");
     native_ctx = new ContextWGL(mode, required);
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("WGL not supported!");
+      MGL_CORE_INFO("[WGL Context] WGL not supported!");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("WGL supported!");
+      MGL_CORE_INFO("[WGL Context] WGL supported!");
     }
 #endif
 #ifdef MGL_OPENGL_CGL
-    MGL_CORE_INFO("Trying CGL context!");
+    MGL_CORE_INFO("[CGL Context] Trying CGL context!");
     native_ctx = new ContextCGL(mode, required);
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("CGL not supported!");
+      MGL_CORE_INFO("[CGL Context] CGL not supported!");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("CGL supported!");
+      MGL_CORE_INFO("[CGL Context] CGL supported!");
     }
 #endif
 
     if(!native_ctx)
     {
-      MGL_CORE_ERROR("Error creating context! No more backends available.");
+      MGL_CORE_ERROR("[GL Context] Error creating context! No more backends available.");
       return nullptr;
     }
 
@@ -97,9 +165,26 @@ namespace mgl::opengl
 
     if(ctx->m_version < required)
     {
-      MGL_CORE_ERROR("OpenGL version {0} not supported. Required {1}", ctx->m_version, required);
+      MGL_CORE_ERROR(
+          "[GL Context] OpenGL version {0} not supported. Required {1}", ctx->m_version, required);
       return nullptr;
     }
+
+#ifdef MGL_DEBUG
+    if(ctx->m_version >= 430)
+    {
+      glEnable(GL_DEBUG_OUTPUT);
+      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      glDebugMessageCallback(opengl_message_callback, nullptr);
+      glDebugMessageControl(
+          GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+    }
+    else
+    {
+      MGL_CORE_WARN("[GL Context] Debug output not supported in OpenGL version {0}",
+                    ctx->m_version);
+    }
+#endif
 
     // Load extensions
     int32_t num_extensions = 0;
@@ -167,16 +252,16 @@ namespace mgl::opengl
 
   buffer_ref context::buffer(void* data, size_t reserve, bool dynamic)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto buffer = new mgl::opengl::buffer(shared_from_this(), data, reserve, dynamic);
     return buffer_ref(buffer);
   }
 
   compute_shader_ref context::compute_shader(const std::string& source)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto shader = new mgl::opengl::compute_shader(shared_from_this(), source);
     return compute_shader_ref(shader);
   }
@@ -184,8 +269,8 @@ namespace mgl::opengl
   framebuffer_ref context::framebuffer(const attachments_ref& color_attachments,
                                        attachment_ref depth_attachment)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto framebuffer =
         new mgl::opengl::framebuffer(shared_from_this(), color_attachments, depth_attachment);
     return framebuffer_ref(framebuffer);
@@ -196,8 +281,8 @@ namespace mgl::opengl
                                const fragment_outputs& fragment_outputs,
                                bool interleaved)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto program = new mgl::opengl::program(
         shared_from_this(), shaders, outputs, fragment_outputs, interleaved);
     return program_ref(program);
@@ -206,8 +291,8 @@ namespace mgl::opengl
   query_ref
   context::query(bool samples, bool any_samples, bool time_elapsed, bool primitives_generated)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto query = new mgl::opengl::query(
         shared_from_this(), samples, any_samples, time_elapsed, primitives_generated);
     return query_ref(query);
@@ -216,8 +301,8 @@ namespace mgl::opengl
   renderbuffer_ref context::renderbuffer(
       int32_t width, int32_t height, int32_t components, int32_t samples, const std::string& dtype)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto renderbuffer = new mgl::opengl::renderbuffer(
         shared_from_this(), width, height, components, samples, dtype);
     return renderbuffer_ref(renderbuffer);
@@ -225,16 +310,16 @@ namespace mgl::opengl
 
   renderbuffer_ref context::depth_renderbuffer(int32_t width, int32_t height, int32_t samples)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto renderbuffer = new mgl::opengl::renderbuffer(shared_from_this(), width, height, samples);
     return renderbuffer_ref(renderbuffer);
   }
 
   sampler_ref context::sampler()
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto sampler = new mgl::opengl::sampler(shared_from_this());
     return sampler_ref(sampler);
   }
@@ -246,8 +331,8 @@ namespace mgl::opengl
                            const buffer_bindings& storage_buffers,
                            const sampler_bindings& samplers)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto scope = new mgl::opengl::scope(shared_from_this(),
                                         framebuffer,
                                         enable_flags,
@@ -267,8 +352,8 @@ namespace mgl::opengl
                                     const std::string& dtype,
                                     int32_t internal_format_override)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto texture = new mgl::opengl::texture_2d(shared_from_this(),
                                                width,
                                                height,
@@ -284,8 +369,8 @@ namespace mgl::opengl
   texture_2d_ref context::depth_texture2d(
       int32_t width, int32_t height, const void* data, int32_t samples, int32_t alignment)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto texture =
         new mgl::opengl::texture_2d(shared_from_this(), width, height, data, samples, alignment);
     return texture_2d_ref(texture);
@@ -299,8 +384,8 @@ namespace mgl::opengl
                                     int32_t alignment,
                                     const std::string& dtype)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto texture = new mgl::opengl::texture_3d(
         shared_from_this(), width, height, depth, components, data, alignment, dtype);
     return texture_3d_ref(texture);
@@ -314,8 +399,8 @@ namespace mgl::opengl
                                            int32_t alignment,
                                            const std::string& dtype)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto texture = new mgl::opengl::texture_array(
         shared_from_this(), width, height, layers, components, data, alignment, dtype);
     return texture_array_ref(texture);
@@ -329,8 +414,8 @@ namespace mgl::opengl
                                          const std::string& dtype,
                                          int32_t internal_format_override)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto texture = new mgl::opengl::texture_cube(shared_from_this(),
                                                  width,
                                                  height,
@@ -349,8 +434,8 @@ namespace mgl::opengl
                                          bool skip_errors,
                                          mgl::opengl::render_mode mode)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(),
                                                       program,
                                                       vertex_buffers,
@@ -363,8 +448,8 @@ namespace mgl::opengl
 
   void context::set_enable_flags(int32_t flags)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     m_enable_flags = flags;
 
     if(flags & mgl::opengl::enable_flag::BLEND)
@@ -415,8 +500,8 @@ namespace mgl::opengl
 
   void context::enable(int32_t flags)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     m_enable_flags |= flags;
 
     if(flags & mgl::opengl::enable_flag::BLEND)
@@ -452,8 +537,8 @@ namespace mgl::opengl
 
   void context::disable(int32_t flags)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
 
     m_enable_flags &= ~flags;
 
@@ -494,8 +579,8 @@ namespace mgl::opengl
                             size_t read_offset,
                             size_t write_offset)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     MGL_CORE_ASSERT(read_offset >= 0 && write_offset >= 0, "buffer underflow");
 
     if(size < 0)
@@ -504,7 +589,7 @@ namespace mgl::opengl
     }
 
     MGL_CORE_ASSERT((read_offset + size <= src->size() && write_offset + size <= dst->size()),
-                    "buffer overflow");
+                    "[GL Context] Buffer overflow.");
 
     glBindBuffer(GL_COPY_READ_BUFFER, src->glo());
     glBindBuffer(GL_COPY_WRITE_BUFFER, dst->glo());
@@ -513,29 +598,29 @@ namespace mgl::opengl
 
   void context::enable_direct(int32_t value)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     glEnable(value);
   }
 
   void context::disable_direct(int32_t value)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     glDisable(value);
   }
 
   void context::finish()
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     glFinish();
   }
 
   void context::clear_samplers(int32_t start, int32_t end)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
 
     start = MGL_MAX(start, 0);
     if(end == -1)
@@ -555,24 +640,22 @@ namespace mgl::opengl
 
   void context::clear(const glm::vec4& color, float depth, const mgl::rect& viewport)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     m_bound_framebuffer->clear(color, depth, viewport);
   }
 
   void context::clear(float r, float g, float b, float a, float depth, const mgl::rect& viewport)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
-    MGL_CORE_ASSERT(m_bound_framebuffer, "Context already released");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     m_bound_framebuffer->clear(r, g, b, a, depth, viewport);
   }
 
   void context::set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     glBlendEquationSeparate(modeRGB, modeAlpha);
   }
 
@@ -581,8 +664,8 @@ namespace mgl::opengl
                                blend_factor srcAlpha,
                                blend_factor dstAlpha)
   {
-    MGL_CORE_ASSERT(!released(), "Context already released");
-    MGL_CORE_ASSERT(is_current(), "Context not current");
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Context not current.");
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
   }
 

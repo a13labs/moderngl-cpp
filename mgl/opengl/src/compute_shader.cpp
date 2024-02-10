@@ -139,6 +139,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "Context not current");
     glUseProgram(gl_object::glo());
     glDispatchCompute(x, y, z);
+    glMemoryBarrier(GL_ALL_BARRIER_BITS);
   }
 
   const mgl::string_list compute_shader::uniforms() const

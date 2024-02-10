@@ -16,9 +16,9 @@ public:
     void clear();
     void orphan(size_t size);
 
-    void bind_to_uniform_block(int binding = 0, size_t size = 0, size_t offset = 0);
+    void bind_to_uniform_block(int binding = 0, size_t size = SIZE_MAX, size_t offset = 0);
 
-    void bind_to_storage_buffer(int binding = 0, size_t size = 0, size_t offset = 0);
+    void bind_to_storage_buffer(int binding = 0, size_t size = SIZE_MAX, size_t offset = 0);
 
     bool dynamic() const { return m_dynamic; }
 
@@ -26,22 +26,22 @@ public:
 
     void read(mgl::float32_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0)
     {
-      read(dst.data(), dst.size(), size, offset, write_offset);
+      read(dst.data(), dst.size() * sizeof(float), size, offset, write_offset);
     }
 
     void read(mgl::uint32_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0)
     {
-      read(dst.data(), dst.size(), size, offset, write_offset);
+      read(dst.data(), dst.size() * sizeof(uint32_t), size, offset, write_offset);
     }
 
     void read(mgl::uint8_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0)
     {
-      read(dst.data(), dst.size(), size, offset, write_offset);
+      read(dst.data(), dst.size() * sizeof(uint8_buffer), size, offset, write_offset);
     }
 
     void read(mgl::int32_buffer& dst, size_t size = 0, size_t offset = 0, size_t write_offset = 0)
     {
-      read(dst.data(), dst.size(), size, offset, write_offset);
+      read(dst.data(), dst.size() * sizeof(int32_t), size, offset, write_offset);
     }
 
     void read(void* dst, size_t dst_sz, size_t read_sz, size_t read_off, size_t dst_off);
