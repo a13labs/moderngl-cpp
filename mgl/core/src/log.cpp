@@ -9,9 +9,9 @@ namespace mgl
 {
   namespace log
   {
-    void log(level lvl, const std::string& msg)
+    void log(level lvl, const std::string& msg, const char* file, int line)
     {
-      log_log((int)lvl, __FILE__, __LINE__, msg.c_str());
+      log_log((int)lvl, file, line, msg.c_str());
     }
 
   } // namespace log

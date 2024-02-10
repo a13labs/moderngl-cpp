@@ -79,19 +79,19 @@ namespace mgl::opengl
 
     if(t_idx == 0)
     {
-      log::error("[GL DEBUG] ({0}) {1}, {2}: {3}",
-                 opengl_debug_severity_str[sev_idx],
-                 opengl_debug_source_str[src_idx],
-                 opengl_debug_type_str[t_idx],
-                 message);
+      MGL_CORE_ERROR("[GL DEBUG] ({0}) {1}, {2}: {3}",
+                     opengl_debug_severity_str[sev_idx],
+                     opengl_debug_source_str[src_idx],
+                     opengl_debug_type_str[t_idx],
+                     message);
     }
     else
     {
-      log::debug("[GL DEBUG] ({0}) {1}, {2}: {3}\n",
-                 opengl_debug_severity_str[sev_idx],
-                 opengl_debug_source_str[src_idx],
-                 opengl_debug_type_str[t_idx],
-                 message);
+      MGL_CORE_ERROR("[GL DEBUG] ({0}) {1}, {2}: {3}\n",
+                     opengl_debug_severity_str[sev_idx],
+                     opengl_debug_source_str[src_idx],
+                     opengl_debug_type_str[t_idx],
+                     message);
     }
   }
 #endif
