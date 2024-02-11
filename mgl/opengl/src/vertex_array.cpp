@@ -94,7 +94,6 @@ namespace mgl::opengl
     i = 0;
     for(auto&& v_data : vertex_buffers)
     {
-
       if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
          (!i || m_num_vertices > v_data.vertex_count))
       {

@@ -124,6 +124,12 @@ private:
 
     virtual void api_disable_program() = 0;
 
+    virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                                 const mgl::platform::api::index_buffer_ref& index_buffer,
+                                 int32_t count,
+                                 int32_t offset,
+                                 render_mode mode) = 0;
+
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) = 0;
 
@@ -315,6 +321,23 @@ public:
     }
 
     static void disable_program() { render_api::instance().api_disable_program(); }
+
+    static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                            const mgl::platform::api::index_buffer_ref& index_buffer,
+                            int32_t count,
+                            int32_t offset,
+                            render_mode mode)
+    {
+      render_api::instance().api_render_call(vertex_buffer, index_buffer, count, offset, mode);
+    }
+
+    static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                            int32_t count,
+                            int32_t offset,
+                            render_mode mode)
+    {
+      render_api::instance().api_render_call(vertex_buffer, nullptr, count, offset, mode);
+    }
 
     static program_ref create_program(const std::string& vs_source,
                                       const std::string& fs_source,

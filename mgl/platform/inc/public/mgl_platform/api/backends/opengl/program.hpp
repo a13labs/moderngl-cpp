@@ -639,6 +639,8 @@ public:
       m_program->set_value(name, value, size);
     }
 
+    mgl::opengl::program_ref& native() { return m_program; }
+
 protected:
     mgl::opengl::program_ref m_program;
   };

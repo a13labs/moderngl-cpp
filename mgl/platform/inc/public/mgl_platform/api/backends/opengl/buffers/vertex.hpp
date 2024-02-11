@@ -164,10 +164,13 @@ public:
     {
       MGL_CORE_ASSERT(m_buffer, "Buffer is not initialized");
       m_buffer->orphan(size);
+      m_size = size;
       m_pos = 0;
     }
 
     virtual size_t needle() const override final { return m_pos; }
+
+    mgl::opengl::buffer_ref& native() { return m_buffer; }
 
 private:
     size_t m_pos;

@@ -108,6 +108,12 @@ private:
 
     virtual void api_disable_program() override final;
 
+    virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                                 const mgl::platform::api::index_buffer_ref& index_buffer,
+                                 int32_t count,
+                                 int32_t offset,
+                                 render_mode mode) override final;
+
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) override final;
 

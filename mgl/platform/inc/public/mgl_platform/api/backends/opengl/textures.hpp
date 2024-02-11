@@ -46,7 +46,10 @@ public:
       m_texture->write(src, v, lvl, align);
     }
 
+    mgl::opengl::texture_2d_ref& native() { return m_texture; }
+
 private:
+    friend class opengl_api;
     mgl::opengl::texture_2d_ref m_texture;
   };
 } // namespace mgl::platform::api::backends::opengl
