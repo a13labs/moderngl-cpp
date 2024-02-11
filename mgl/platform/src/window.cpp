@@ -2,7 +2,6 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_platform/api/opengl.hpp"
 #include "mgl_platform/context/sdl_window.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"

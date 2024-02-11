@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-#include "mgl_platform/api/opengl.hpp"
+#include "mgl_platform/api/core.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"

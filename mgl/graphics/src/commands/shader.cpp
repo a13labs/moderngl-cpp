@@ -1,6 +1,5 @@
 #include "mgl_graphics/commands/shader.hpp"
 #include "mgl_core/debug.hpp"
-#include "mgl_platform/api/opengl.hpp"
 
 namespace mgl::graphics
 {

@@ -1,5 +1,6 @@
 #include "mgl_graphics/textures/texture2d.hpp"
 #include "mgl_core/debug.hpp"
+#include "mgl_platform/api/render_api.hpp"
 
 namespace mgl::graphics
 {
@@ -16,10 +17,10 @@ namespace mgl::graphics
     MGL_CORE_ASSERT(m_texture == nullptr, "Texture already loaded");
     MGL_CORE_ASSERT(m_image != nullptr, "Image is null");
     auto tex = mgl::platform::api::create_texture_2d(m_image->width(),
-                                                   m_image->height(),
-                                                   m_image->channels(),
-                                                   m_image->buffer(),
-                                                   m_opts.samples);
+                                                     m_image->height(),
+                                                     m_image->channels(),
+                                                     m_image->buffer(),
+                                                     m_opts.samples);
     tex->set_filter({ (int)m_opts.min_filter, (int)m_opts.mag_filter });
     m_texture = tex;
   }

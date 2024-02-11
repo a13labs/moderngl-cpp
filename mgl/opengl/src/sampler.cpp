@@ -4,7 +4,7 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/math.hpp"
 
-#include "mgl_opengl_internal/utils.hpp"
+#include "mgl_opengl_internal.hpp"
 
 #include "glad/gl.h"
 

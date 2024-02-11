@@ -2,7 +2,6 @@
 
 #include "mgl_core/string.hpp"
 #include "mgl_graphics/shader.hpp"
-#include "mgl_platform/api/opengl.hpp"
 
 namespace mgl::graphics::builtins
 {

@@ -11,10 +11,11 @@ add_library(mgl::platform::static ALIAS mgl_platform_static)
 target_include_directories(
     mgl_platform_static
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc/public>
   PRIVATE 
     ${CMAKE_CURRENT_BINARY_DIR}/inc
     ${CMAKE_BINARY_DIR}/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc/internal
 )
 
 # Link library to required external libraries

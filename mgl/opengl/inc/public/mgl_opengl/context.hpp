@@ -229,6 +229,11 @@ public:
                         bool interleaved = true,
                         const std::string& filename = "");
 
+    program_ref program(const shaders& shaders, const std::string& filename)
+    {
+      return program(shaders, {}, {}, true, filename);
+    }
+
     // Query
     query_ref query(bool samples = false,
                     bool any_samples = false,

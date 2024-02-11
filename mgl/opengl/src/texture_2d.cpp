@@ -4,7 +4,7 @@
 #include "mgl_opengl/data_type.hpp"
 #include "mgl_opengl/framebuffer.hpp"
 
-#include "mgl_opengl_internal/utils.hpp"
+#include "mgl_opengl_internal.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/math.hpp"

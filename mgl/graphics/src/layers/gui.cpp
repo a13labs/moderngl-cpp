@@ -6,10 +6,10 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/profiling.hpp"
-#include "mgl_registry/resources/image.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
 #include "mgl_platform/window.hpp"
+#include "mgl_registry/resources/image.hpp"
 
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -252,7 +252,7 @@ namespace mgl::graphics::layers
     mgl::platform::api::enable_state(mgl::graphics::enable_flag::BLEND);
     mgl::platform::api::set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
     mgl::platform::api::set_blend_func(mgl::graphics::blend_factor::SRC_ALPHA,
-                                     mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
+                                       mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
     mgl::platform::api::enable_scissor();
 
@@ -269,15 +269,14 @@ namespace mgl::graphics::layers
       vb->upload(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
       ib->upload(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
 
-      mgl::platform::api::geom_data geom = {
-        vb->api(),
-        vb->layout(),
-        ib->api(),
-        ib->element_size(),
-        (uint32_t)mgl::graphics::render_mode::TRIANGLES,
-      };
+      mgl::platform::api::vertex_array_ref vao =
+          mgl::platform::api::create_vertex_array(vb->api(),
+                                                  vb->layout(),
+                                                  ib->api(),
+                                                  ib->element_size(),
+                                                  (uint32_t)mgl::graphics::render_mode::TRIANGLES);
 
-      geom.allocate();
+      vao->allocate();
 
       int idx_buffer_offset = 0;
       for(int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
@@ -291,20 +290,20 @@ namespace mgl::graphics::layers
         else
         {
           mgl::platform::api::set_scissor(static_cast<int>(pcmd->ClipRect.x),
-                                        static_cast<int>(fb_height - pcmd->ClipRect.w),
-                                        static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
-                                        static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
+                                          static_cast<int>(fb_height - pcmd->ClipRect.w),
+                                          static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
+                                          static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
           auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           tex->bind(0);
 
-          mgl::platform::api::draw(geom, glm::mat4(1.0f), pcmd->ElemCount, idx_buffer_offset, 0);
+          mgl::platform::api::draw(vao, glm::mat4(1.0f), pcmd->ElemCount, idx_buffer_offset, 0);
 
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
 
-      geom.deallocate();
+      vao->deallocate();
     }
 
     mgl::platform::api::clear_samplers(0, 1);
