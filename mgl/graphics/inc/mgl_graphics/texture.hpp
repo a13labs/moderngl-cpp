@@ -3,7 +3,6 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
-#include "mgl_platform/api/core.hpp"
 
 namespace mgl::graphics
 {
@@ -32,26 +31,15 @@ public:
 
     ~texture() = default;
 
-    void bind(int index)
-    {
-      MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
-      m_texture->use(index);
-    }
+    virtual void bind(int index) = 0;
 
-    void unload()
-    {
-      MGL_CORE_ASSERT(m_texture != nullptr, "Texture is not loaded")
-      m_texture->release();
-    }
-
-    const mgl::platform::api::texture_ref& api() { return m_texture; }
+    virtual void unload() = 0;
 
     virtual texture::type texture_type() = 0;
-    virtual void prepare() = 0;
-    virtual void load() = 0;
 
-protected:
-    mgl::platform::api::texture_ref m_texture = nullptr;
+    virtual void prepare() = 0;
+
+    virtual void load() = 0;
   };
 
   struct texture_opts

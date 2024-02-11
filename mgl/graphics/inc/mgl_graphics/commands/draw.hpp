@@ -1,16 +1,18 @@
 #pragma once
 
 #include "mgl_graphics/batch.hpp"
-#include "mgl_graphics/buffer.hpp"
 #include "mgl_graphics/command.hpp"
+
+#include "mgl_platform/api/buffers/index.hpp"
+#include "mgl_platform/api/buffers/vertex.hpp"
 
 namespace mgl::graphics
 {
   class draw_command : public render_command
   {
 public:
-    draw_command(const vertex_buffer_ref& vertex_buffer,
-                 const index_buffer_ref& index_buffer = nullptr,
+    draw_command(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                 const mgl::platform::api::index_buffer_ref& index_buffer = nullptr,
                  render_mode mode = render_mode::TRIANGLES,
                  glm::mat4 model_view = glm::mat4(1.0f),
                  size_t count = 0,
@@ -28,8 +30,8 @@ public:
     void execute() override;
 
 private:
-    vertex_buffer_ref m_vertex_buffer;
-    index_buffer_ref m_index_buffer;
+    mgl::platform::api::vertex_buffer_ref m_vertex_buffer;
+    mgl::platform::api::index_buffer_ref m_index_buffer;
     render_mode m_mode;
     glm::mat4 m_model_view;
     size_t m_count;

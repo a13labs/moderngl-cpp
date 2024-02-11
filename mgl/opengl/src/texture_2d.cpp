@@ -192,7 +192,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int width = m_width / (1 << lvl);
@@ -227,7 +227,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int width = m_width / (1 << lvl);
@@ -255,7 +255,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = v.x;
@@ -286,7 +286,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = 0;
@@ -320,7 +320,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = v.x;
@@ -347,7 +347,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Texture2D] Resource context not current.");
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
-    MGL_CORE_ASSERT(lvl < m_max_lvl, "[Texture2D] Invalid level.");
+    MGL_CORE_ASSERT(lvl <= m_max_lvl, "[Texture2D] Invalid level.");
     MGL_CORE_ASSERT(!m_samples, "[Texture2D] Multisample textures cannot be read directly.");
 
     int x = 0;

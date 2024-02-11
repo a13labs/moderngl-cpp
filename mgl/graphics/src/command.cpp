@@ -5,6 +5,9 @@
 #include "mgl_graphics/commands/texture.hpp"
 #include "mgl_graphics/graphics.hpp"
 
+#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/window.hpp"
+
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
 
@@ -94,8 +97,8 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::set_blend_equation_command>(modeRGB, modeAlpha));
   }
 
-  void render_script::draw(const vertex_buffer_ref& vertex_array,
-                           const index_buffer_ref& index_buffer,
+  void render_script::draw(const mgl::platform::api::vertex_buffer_ref& vertex_array,
+                           const mgl::platform::api::index_buffer_ref& index_buffer,
                            render_mode mode,
                            glm::mat4 transform,
                            size_t count,
@@ -214,11 +217,12 @@ namespace mgl::graphics
     MGL_PROFILE_FUNCTION("RENDER_SCRIPT");
     if(m_render_target != nullptr)
     {
-      m_render_target->use();
+      MGL_CORE_ASSERT(false, "Render target not implemented");
+      // m_render_target->use();
     }
     else
     {
-      mgl::platform::api::bind_screen_framebuffer();
+      mgl::platform::api::render_api::bind_screen_framebuffer();
     }
 
     for(auto& command : m_commands)
@@ -240,7 +244,7 @@ namespace mgl::graphics
 
     auto shader = get_shader("text_shader");
     MGL_CORE_ASSERT(shader != nullptr, "Text shader is null");
-    auto vb = std::static_pointer_cast<vertex_buffer>(get_buffer("text_vb"));
+    auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("text_vb"));
 
     set_projection(glm::ortho(0.0f,
                               static_cast<float>(mgl::platform::current_window().width()),

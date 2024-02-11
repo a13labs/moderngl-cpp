@@ -1,4 +1,5 @@
 #include "mgl_opengl/context.hpp"
+#include "mgl_platform/api/backends/opengl/api.hpp"
 #include "mgl_platform/window.hpp"
 
 class example : public mgl::platform::window
@@ -19,7 +20,7 @@ class example : public mgl::platform::window
 
 void example::on_update(float time, float frame_time)
 {
-  const auto ctx = current_context();
+  const auto ctx = mgl::platform::api::backends::opengl_api::current_context();
   ctx->clear(1.0, 1.0, 1.0);
   ctx->enable(mgl::opengl::enable_flag::BLEND);
   m_rotation->set_value(time);
@@ -30,7 +31,8 @@ bool example::on_load()
 {
   set_title("Alpha Blending");
 
-  const auto ctx = current_context();
+  const auto ctx = mgl::platform::api::backends::opengl_api::current_context();
+
   m_program = ctx->program({
       R"(
                 #version 330

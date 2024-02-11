@@ -116,8 +116,6 @@ public:
 
     void toggle_full_screen() { m_api_window->toggle_full_screen(); }
 
-    const api::context_ref& current_context() const;
-
     const window_config& config() const { return m_config; }
 
     static window& current();
@@ -148,18 +146,12 @@ protected:
 
 private:
     bool m_running;
-    api::context_ref m_context;
     mgl::Timer m_timer;
     mgl::scope<api_window> m_api_window;
     window_config m_config;
   };
 
   window_config load_window_configuration(const std::string& filename);
-
-  inline const api::context_ref& current_context()
-  {
-    return window::current().current_context();
-  }
 
   inline window& current_window()
   {

@@ -8,7 +8,9 @@ namespace mgl::graphics
     m_batch_data.push_back({ t, count, offset, instance_count });
   }
 
-  void batch::reset(const vertex_buffer_ref& vb, const index_buffer_ref& ib, render_mode m)
+  void batch::reset(const mgl::platform::api::vertex_buffer_ref& vb,
+                    const mgl::platform::api::index_buffer_ref& ib,
+                    render_mode m)
   {
     m_batch_data.clear();
     m_mode = m;

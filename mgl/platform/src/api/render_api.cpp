@@ -1,5 +1,5 @@
 #include "mgl_platform/api/render_api.hpp"
-#include "mgl_platform/api/backends/opengl.hpp"
+#include "mgl_platform/api/backends/opengl/api.hpp"
 
 namespace mgl::platform::api
 {

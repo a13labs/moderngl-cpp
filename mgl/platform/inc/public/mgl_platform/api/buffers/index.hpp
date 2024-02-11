@@ -1,8 +1,8 @@
 #pragma once
 
-#include "mgl_graphics/buffer.hpp"
+#include "mgl_platform/api/buffer.hpp"
 
-namespace mgl::graphics
+namespace mgl::platform::api
 {
   class index_buffer : public buffer
   {
@@ -12,9 +12,7 @@ public:
         , m_element_size(element_size)
     { }
 
-    index_buffer(const index_buffer&) = delete;
-
-    ~index_buffer() = default;
+    virtual ~index_buffer() = default;
 
     uint16_t element_size() const { return m_element_size; }
 
@@ -23,4 +21,4 @@ private:
   };
 
   using index_buffer_ref = mgl::ref<index_buffer>;
-} // namespace mgl::graphics
+} // namespace mgl::platform::api

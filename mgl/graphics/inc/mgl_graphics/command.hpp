@@ -1,13 +1,13 @@
 #pragma once
 #include "batch.hpp"
-#include "buffers/index.hpp"
-#include "buffers/vertex.hpp"
 #include "enums.hpp"
 #include "glm/glm.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 
-#include "mgl_platform/api/core.hpp"
+#include "mgl_platform/api/buffers/index.hpp"
+#include "mgl_platform/api/buffers/vertex.hpp"
+#include "mgl_platform/api/framebuffer.hpp"
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
@@ -71,8 +71,8 @@ public:
 
     void set_blend_func(blend_factor src, blend_factor dst) { set_blend_func(src, dst, src, dst); }
 
-    void draw(const vertex_buffer_ref& vertex_array,
-              const index_buffer_ref& index_buffer = nullptr,
+    void draw(const mgl::platform::api::vertex_buffer_ref& vertex_array,
+              const mgl::platform::api::index_buffer_ref& index_buffer = nullptr,
               render_mode mode = render_mode::TRIANGLES,
               glm::mat4 model_view = glm::mat4(1.0f),
               size_t count = 0,

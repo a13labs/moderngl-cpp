@@ -64,7 +64,7 @@ public:
 
     void set_index_buffer(const buffer_ref& value);
 
-    program_ref& program() { return m_program; }
+    const program& program() const { return *m_program; }
 
     int32_t vertices() const { return m_num_vertices; }
 

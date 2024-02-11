@@ -1,8 +1,8 @@
 #pragma once
 
-#include "mgl_graphics/buffer.hpp"
+#include "mgl_platform/api/buffer.hpp"
 
-namespace mgl::graphics
+namespace mgl::platform::api
 {
   class vertex_buffer : public buffer
   {
@@ -12,9 +12,7 @@ public:
         , m_layout(layout)
     { }
 
-    vertex_buffer(const vertex_buffer&) = delete;
-
-    ~vertex_buffer() = default;
+    virtual ~vertex_buffer() = default;
 
     const std::string& layout() const { return m_layout; }
 
@@ -23,4 +21,4 @@ protected:
   };
 
   using vertex_buffer_ref = mgl::ref<vertex_buffer>;
-} // namespace mgl::graphics
+} // namespace mgl::platform::api
