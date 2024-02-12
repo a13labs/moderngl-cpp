@@ -4,8 +4,7 @@
 #include "mgl_core/memory.hpp"
 
 #include "mgl_platform/api/batch_data.hpp"
-#include "mgl_platform/api/buffers/index.hpp"
-#include "mgl_platform/api/buffers/vertex.hpp"
+#include "mgl_platform/api/buffers.hpp"
 
 #include <glm/glm.hpp>
 

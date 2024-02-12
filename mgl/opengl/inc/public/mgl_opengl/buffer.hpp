@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 
 #include "gl_object.hpp"
@@ -25,7 +26,7 @@ public:
     /**
      * @brief Releases the buffer object.
      */
-    virtual void release() override final;
+    void release();
 
     /**
      * @brief Clears the buffer data.
@@ -66,9 +67,25 @@ public:
      */
     size_t size() const { return m_size; }
 
-    void read(mgl::uint8_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    /*
+    * @brief returns the current position within the buffer.
+    */
+    size_t needle() const { return m_pos; }
+
+    /**
+     * @brief Seeks to a position within the buffer.
+     * @param offset The offset to seek to.
+     */
+    void seek(size_t offset)
     {
-      read(dst.data(), dst.size() * sizeof(uint8_buffer), n_bytes, off, dst_off);
+      MGL_CORE_ASSERT(offset < m_size, "Offset is out of bounds");
+      m_pos = offset;
+    }
+
+    void
+    download(mgl::uint8_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    {
+      download(dst.data(), dst.size() * sizeof(uint8_buffer), n_bytes, off, dst_off);
     }
 
     /**
@@ -79,9 +96,9 @@ public:
      * @param dst_off The offset within the destination buffer to write to.
      */
     void
-    read(mgl::uint16_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    download(mgl::uint16_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(uint16_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(uint16_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -92,9 +109,9 @@ public:
      * @param dst_off The offset within the destination buffer to write to.
      */
     void
-    read(mgl::uint32_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    download(mgl::uint32_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(uint32_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(uint32_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -105,9 +122,9 @@ public:
      * @param dst_off The offset within the destination buffer to write to.
      */
     void
-    read(mgl::uint64_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    download(mgl::uint64_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(uint64_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(uint64_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -117,9 +134,10 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void read(mgl::int8_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void
+    download(mgl::int8_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(int8_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(int8_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -129,9 +147,10 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void read(mgl::int16_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void
+    download(mgl::int16_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(int16_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(int16_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -141,9 +160,10 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void read(mgl::int32_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void
+    download(mgl::int32_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(int32_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(int32_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -153,9 +173,10 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void read(mgl::int64_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void
+    download(mgl::int64_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(int64_t), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(int64_t), n_bytes, off, dst_off);
     }
 
     /**
@@ -165,10 +186,12 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void
-    read(mgl::float32_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void download(mgl::float32_buffer& dst,
+                  size_t n_bytes = SIZE_MAX,
+                  size_t off = 0,
+                  size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(float), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(float), n_bytes, off, dst_off);
     }
 
     /**
@@ -178,10 +201,12 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void
-    read(mgl::float64_buffer& dst, size_t n_bytes = SIZE_MAX, size_t off = 0, size_t dst_off = 0)
+    void download(mgl::float64_buffer& dst,
+                  size_t n_bytes = SIZE_MAX,
+                  size_t off = 0,
+                  size_t dst_off = 0)
     {
-      read(dst.data(), dst.size() * sizeof(double), n_bytes, off, dst_off);
+      download(dst.data(), dst.size() * sizeof(double), n_bytes, off, dst_off);
     }
 
     /**
@@ -191,16 +216,16 @@ public:
      * @param off The offset within the buffer to read from.
      * @param dst_off The offset within the destination buffer to write to.
      */
-    void read(void* dst, size_t dst_sz, size_t n_bytes, size_t off, size_t dst_off);
+    void download(void* dst, size_t dst_sz, size_t n_bytes, size_t off, size_t dst_off);
 
     /**
      * @brief Writes data to the buffer from a uint8_buffer.
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::uint8_buffer& src, size_t off = 0)
+    void upload(const mgl::uint8_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(uint8_t), off);
+      upload(src.data(), src.size() * sizeof(uint8_t), off);
     }
 
     /**
@@ -208,9 +233,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::uint16_buffer& src, size_t off = 0)
+    void upload(const mgl::uint16_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(uint16_t), off);
+      upload(src.data(), src.size() * sizeof(uint16_t), off);
     }
 
     /**
@@ -218,9 +243,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::uint32_buffer& src, size_t off = 0)
+    void upload(const mgl::uint32_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(uint32_t), off);
+      upload(src.data(), src.size() * sizeof(uint32_t), off);
     }
 
     /**
@@ -228,9 +253,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::uint64_buffer& src, size_t off = 0)
+    void upload(const mgl::uint64_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(uint64_t), off);
+      upload(src.data(), src.size() * sizeof(uint64_t), off);
     }
 
     /**
@@ -238,9 +263,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::int8_buffer& src, size_t off = 0)
+    void upload(const mgl::int8_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(int8_t), off);
+      upload(src.data(), src.size() * sizeof(int8_t), off);
     }
 
     /**
@@ -248,9 +273,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::int16_buffer& src, size_t off = 0)
+    void upload(const mgl::int16_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(int16_t), off);
+      upload(src.data(), src.size() * sizeof(int16_t), off);
     }
 
     /**
@@ -258,9 +283,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::int32_buffer& src, size_t off = 0)
+    void upload(const mgl::int32_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(int), off);
+      upload(src.data(), src.size() * sizeof(int), off);
     }
 
     /**
@@ -268,9 +293,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::int64_buffer& src, size_t off = 0)
+    void upload(const mgl::int64_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(int64_t), off);
+      upload(src.data(), src.size() * sizeof(int64_t), off);
     }
 
     /**
@@ -278,9 +303,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::float32_buffer& src, size_t off = 0)
+    void upload(const mgl::float32_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(float), off);
+      upload(src.data(), src.size() * sizeof(float), off);
     }
 
     /**
@@ -288,9 +313,9 @@ public:
      * @param src The source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const mgl::float64_buffer& src, size_t off = 0)
+    void upload(const mgl::float64_buffer& src, size_t off = 0)
     {
-      write(src.data(), src.size() * sizeof(double), off);
+      upload(src.data(), src.size() * sizeof(double), off);
     }
 
     /**
@@ -299,7 +324,129 @@ public:
      * @param src_sz The size of the source buffer.
      * @param off The offset within the buffer to write to.
      */
-    void write(const void* src, size_t src_sz, size_t off = 0);
+    void upload(const void* src, size_t src_sz, size_t off = 0);
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     * @param size The size of the data to write.
+     */
+    void write(const void* data, size_t size)
+    {
+      MGL_CORE_ASSERT(m_pos + size <= m_size, "Buffer overflow");
+      upload(data, size, m_pos);
+      m_pos += size;
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::uint8_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(uint8_t), m_pos);
+      m_pos += data.size() * sizeof(uint8_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::uint16_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(uint16_t), m_pos);
+      m_pos += data.size() * sizeof(uint16_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::uint32_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(uint32_t), m_pos);
+      m_pos += data.size() * sizeof(uint32_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::uint64_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(uint64_t), m_pos);
+      m_pos += data.size() * sizeof(uint64_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::int8_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(int8_t), m_pos);
+      m_pos += data.size() * sizeof(int8_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::int16_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(int16_t), m_pos);
+      m_pos += data.size() * sizeof(int16_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::int32_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(int32_t), m_pos);
+      m_pos += data.size() * sizeof(int32_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(mgl::int64_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(int64_t), m_pos);
+      m_pos += data.size() * sizeof(int64_t);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(float32_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(float), m_pos);
+      m_pos += data.size() * sizeof(float);
+    }
+
+    /**
+     * @brief Writes data to the buffer.
+     * @param data The data to write.
+     */
+    void write(float64_buffer& data)
+    {
+      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
+      upload(data.data(), data.size() * sizeof(double), m_pos);
+      m_pos += data.size() * sizeof(double);
+    }
 
     /**
      * @brief Copies data from the buffer to another buffer.
@@ -336,6 +483,7 @@ private:
 
     size_t m_size; ///< The size of the buffer.
     bool m_dynamic; ///< True if the buffer is dynamic, false otherwise.
+    size_t m_pos; ///< The current position within the buffer.
   };
 
 } // namespace  mgl::opengl

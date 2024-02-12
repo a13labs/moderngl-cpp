@@ -25,11 +25,11 @@ TEST(ContextText, StandaloneContext)
   ASSERT_EQ(buf2->glo(), 1);
 
   ctx1->enter();
-  buf1->read(out);
+  buf1->download(out);
   ASSERT_EQ(in_1, out);
 
   ctx2->enter();
-  buf2->read(out);
+  buf2->download(out);
   ASSERT_EQ(in_2, out);
 
   ctx1->release();

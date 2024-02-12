@@ -29,7 +29,7 @@ namespace mgl::opengl
 
     if(!egl_version)
     {
-      MGL_CORE_ERROR("Error loading EGL");
+      MGL_CORE_ERROR("[EGL Context] Error loading EGL.");
       return;
     }
 
@@ -44,7 +44,8 @@ namespace mgl::opengl
         EGLint num_devices;
         if(!eglQueryDevicesEXT(0, NULL, &num_devices))
         {
-          MGL_CORE_ERROR("eglQueryDevicesEXT failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglQueryDevicesEXT failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -52,7 +53,9 @@ namespace mgl::opengl
         if(device_index >= num_devices)
         {
           MGL_CORE_ERROR(
-              "requested device index %d, but found %d devices", device_index, num_devices);
+              "[EGL Context] (standalone) Requested device index {0}, but found {1} devices.",
+              device_index,
+              num_devices);
           delete res;
           return;
         }
@@ -60,7 +63,8 @@ namespace mgl::opengl
         EGLDeviceEXT* devices = (EGLDeviceEXT*)malloc(sizeof(EGLDeviceEXT) * num_devices);
         if(!eglQueryDevicesEXT(num_devices, devices, &num_devices))
         {
-          MGL_CORE_ERROR("eglQueryDevicesEXT failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglQueryDevicesEXT failed (0x{0:x}).",
+                         eglGetError());
           free(devices);
           delete res;
           return;
@@ -71,7 +75,8 @@ namespace mgl::opengl
         res->dpy = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, device, 0);
         if(res->dpy == EGL_NO_DISPLAY)
         {
-          MGL_CORE_ERROR("eglGetPlatformDisplayEXT failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglGetPlatformDisplayEXT failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -79,7 +84,8 @@ namespace mgl::opengl
         EGLint major, minor;
         if(!eglInitialize(res->dpy, &major, &minor))
         {
-          MGL_CORE_ERROR("eglInitialize failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglInitialize failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -101,14 +107,15 @@ namespace mgl::opengl
         EGLint num_configs = 0;
         if(!eglChooseConfig(res->dpy, config_attribs, &res->cfg, 1, &num_configs))
         {
-          MGL_CORE_ERROR("eglChooseConfig failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglChooseConfig failed (0x{0:x}),",
+                         eglGetError());
           delete res;
           return;
         }
 
         if(!eglBindAPI(EGL_OPENGL_API))
         {
-          MGL_CORE_ERROR("eglBindAPI failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("eglBindAPI failed (0x{0:x})", eglGetError());
           delete res;
           return;
         }
@@ -127,14 +134,16 @@ namespace mgl::opengl
         res->ctx = eglCreateContext(res->dpy, res->cfg, EGL_NO_CONTEXT, ctxattribs);
         if(!res->ctx)
         {
-          MGL_CORE_ERROR("eglCreateContext failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglCreateContext failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
 
         if(!eglMakeCurrent(res->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, res->ctx))
         {
-          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (standalone) eglMakeCurrent failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -146,7 +155,8 @@ namespace mgl::opengl
         EGLContext ctx_share = eglGetCurrentContext();
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) eglGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[EGL Context] (share) eglGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -154,7 +164,8 @@ namespace mgl::opengl
         res->wnd = eglGetCurrentSurface(EGL_DRAW);
         if(!res->wnd)
         {
-          MGL_CORE_ERROR("(share) m_eglGetCurrentSurface failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) m_eglGetCurrentSurface failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -162,7 +173,8 @@ namespace mgl::opengl
         res->dpy = eglGetCurrentDisplay();
         if(res->dpy == EGL_NO_DISPLAY)
         {
-          MGL_CORE_ERROR("eglGetCurrentDisplay failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) eglGetCurrentDisplay failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -184,14 +196,14 @@ namespace mgl::opengl
         EGLint num_configs = 0;
         if(!eglChooseConfig(res->dpy, config_attribs, &res->cfg, 1, &num_configs))
         {
-          MGL_CORE_ERROR("eglChooseConfig failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) eglChooseConfig failed (0x{0:x}).", eglGetError());
           delete res;
           return;
         }
 
         if(!eglBindAPI(EGL_OPENGL_API))
         {
-          MGL_CORE_ERROR("eglBindAPI failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) eglBindAPI failed (0x{0:x}).", eglGetError());
           delete res;
           return;
         }
@@ -210,14 +222,14 @@ namespace mgl::opengl
         res->ctx = eglCreateContext(res->dpy, res->cfg, ctx_share, ctxattribs);
         if(!res->ctx)
         {
-          MGL_CORE_ERROR("eglCreateContext failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) eglCreateContext failed (0x{0:x}).", eglGetError());
           delete res;
           return;
         }
 
         if(!eglMakeCurrent(res->dpy, res->wnd, res->wnd, res->ctx))
         {
-          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (share) eglMakeCurrent failed (0x{0:x}).", eglGetError());
           delete res;
           return;
         }
@@ -229,7 +241,8 @@ namespace mgl::opengl
         EGLContext ctx_share = eglGetCurrentContext();
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) eglGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[EGL Context] (attached) eglGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -237,7 +250,8 @@ namespace mgl::opengl
         res->wnd = eglGetCurrentSurface(EGL_DRAW);
         if(!res->wnd)
         {
-          MGL_CORE_ERROR("(share) m_eglGetCurrentSurface failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (attached) m_eglGetCurrentSurface failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -245,7 +259,8 @@ namespace mgl::opengl
         res->dpy = eglGetCurrentDisplay();
         if(res->dpy == EGL_NO_DISPLAY)
         {
-          MGL_CORE_ERROR("eglGetCurrentDisplay failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (attached) eglGetCurrentDisplay failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
@@ -253,14 +268,15 @@ namespace mgl::opengl
         res->ctx = ctx_share;
         if(!eglMakeCurrent(res->dpy, res->wnd, res->wnd, res->ctx))
         {
-          MGL_CORE_ERROR("eglMakeCurrent failed (0x%x)", eglGetError());
+          MGL_CORE_ERROR("[EGL Context] (attached) eglMakeCurrent failed (0x{0:x}).",
+                         eglGetError());
           delete res;
           return;
         }
         break;
       }
       default: {
-        MGL_CORE_ERROR("Detect mode not supported");
+        MGL_CORE_ERROR("[EGL Context] Detect mode not supported");
         delete res;
         return;
       }
@@ -270,13 +286,14 @@ namespace mgl::opengl
 
     if(!gl_version)
     {
-      MGL_CORE_ERROR("Error loading OpenGL");
+      MGL_CORE_ERROR("[EGL Context] Error loading OpenGL.");
       return;
     }
     else
     {
-      MGL_CORE_INFO(
-          "OpenGL {0}.{1}", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
+      MGL_CORE_INFO("[EGL Context] OpenGL '{0}.{1}'.",
+                    GLAD_VERSION_MAJOR(gl_version),
+                    GLAD_VERSION_MINOR(gl_version));
     }
 
     m_context = res;

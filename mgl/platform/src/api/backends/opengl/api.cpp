@@ -1,7 +1,5 @@
 #include "mgl_platform/api/backends/opengl/api.hpp"
-#include "mgl_platform/api/backends/opengl/buffer.hpp"
-#include "mgl_platform/api/backends/opengl/buffers/index.hpp"
-#include "mgl_platform/api/backends/opengl/buffers/vertex.hpp"
+#include "mgl_platform/api/backends/opengl/buffers.hpp"
 #include "mgl_platform/api/backends/opengl/program.hpp"
 #include "mgl_platform/api/backends/opengl/textures.hpp"
 
@@ -343,8 +341,10 @@ namespace mgl::platform::api::backends
 
   buffer_ref opengl_api::api_create_buffer(size_t size, bool dynamic)
   {
-    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    return mgl::create_ref<opengl::buffer>(size, dynamic);
+    // MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    // return mgl::create_ref<opengl::buffer>(size, dynamic);
+    MGL_CORE_ASSERT(false, "Not implemented");
+    return nullptr;
   }
 
   program_ref opengl_api::api_create_program(const std::string& vs_source,

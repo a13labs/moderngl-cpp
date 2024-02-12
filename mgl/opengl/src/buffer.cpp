@@ -11,6 +11,7 @@ namespace mgl::opengl
       : gl_object(ctx)
       , m_size(reserve)
       , m_dynamic(dynamic)
+      , m_pos(0)
   {
     GLuint glo = 0;
     glGenBuffers(1, &glo);
@@ -32,9 +33,11 @@ namespace mgl::opengl
     GLuint glo = gl_object::glo();
     glDeleteBuffers(1, &glo);
     gl_object::set_glo(ZERO);
+    m_size = 0;
+    m_pos = 0;
   }
 
-  void buffer::read(void* dst, size_t dst_sz, size_t n_bytes, size_t off, size_t dst_off)
+  void buffer::download(void* dst, size_t dst_sz, size_t n_bytes, size_t off, size_t dst_off)
   {
     if(n_bytes == SIZE_MAX)
     {
@@ -55,7 +58,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error writing to buffer.");
   }
 
-  void buffer::write(const void* src, size_t src_sz, size_t off)
+  void buffer::upload(const void* src, size_t src_sz, size_t off)
   {
     MGL_CORE_ASSERT(!gl_object::released(), "[Buffer] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Buffer] Resource context not current.");
@@ -64,6 +67,7 @@ namespace mgl::opengl
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     glBufferSubData(GL_ARRAY_BUFFER, (GLintptr)off, src_sz, src);
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error writing to buffer.");
+    m_pos = 0;
   }
 
   void buffer::clear()
@@ -76,6 +80,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error mapping buffer.");
     std::fill(map, map + m_size, 0);
     glUnmapBuffer(GL_ARRAY_BUFFER);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error writing to buffer.");
+    m_pos = 0;
   }
 
   void buffer::orphan(size_t size)
@@ -91,6 +97,7 @@ namespace mgl::opengl
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     glBufferData(GL_ARRAY_BUFFER, size, 0, m_dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     m_size = size;
+    m_pos = 0;
   }
 
   void buffer::bind_to_uniform_block(int binding, size_t size, size_t off)
@@ -141,6 +148,7 @@ namespace mgl::opengl
     glBindBuffer(GL_COPY_READ_BUFFER, glo());
     glBindBuffer(GL_COPY_WRITE_BUFFER, dst->glo());
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, off, dst_off, size);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error copying buffer.");
   }
 
   void buffer::copy(
@@ -162,6 +170,7 @@ namespace mgl::opengl
     glBindBuffer(GL_COPY_READ_BUFFER, src->glo());
     glBindBuffer(GL_COPY_WRITE_BUFFER, dst->glo());
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, off, dst_off, size);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error copying buffer.");
   }
 
 } // namespace  mgl::opengl

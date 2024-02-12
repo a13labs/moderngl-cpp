@@ -1,7 +1,6 @@
 #pragma once
 
-#include "buffers/index.hpp"
-#include "buffers/vertex.hpp"
+#include "buffers.hpp"
 #include "enums.hpp"
 #include "program.hpp"
 #include "textures.hpp"

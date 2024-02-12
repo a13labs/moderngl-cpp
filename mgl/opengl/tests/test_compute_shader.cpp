@@ -46,7 +46,7 @@ TEST(ComputeShaderTest, ComputeShaderWithBuffer)
   buf2->bind_to_storage_buffer(1);
   compute_shader->run();
 
-  buf2->read(out);
+  buf2->download(out);
 
   ASSERT_EQ(out[0], 2);
   ASSERT_EQ(out[1], 4);
@@ -106,7 +106,7 @@ TEST(ComputeShaderTest, ComputeShaderWithUniform)
   compute_shader->set_value("factor", 4.0f);
   compute_shader->run();
 
-  buf2->read(out);
+  buf2->download(out);
 
   ASSERT_EQ(out[0], 4);
   ASSERT_EQ(out[1], 8);

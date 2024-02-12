@@ -147,7 +147,7 @@ void main()
     compute_shader->run(H, 1);
 
     // print out
-    last_buffer->read(out);
+    last_buffer->download(out);
     auto output = nc::frombuffer<float>((char*)out.data(), out_size).astype<uint8_t>();
     output = nc::multiply<uint8_t>(output, 255);
 

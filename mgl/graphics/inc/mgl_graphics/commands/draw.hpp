@@ -3,8 +3,7 @@
 #include "mgl_graphics/batch.hpp"
 #include "mgl_graphics/command.hpp"
 
-#include "mgl_platform/api/buffers/index.hpp"
-#include "mgl_platform/api/buffers/vertex.hpp"
+#include "mgl_platform/api/buffers.hpp"
 
 namespace mgl::graphics
 {

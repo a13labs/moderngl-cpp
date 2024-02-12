@@ -2,7 +2,7 @@
 
 #include "mgl_graphics/manager.hpp"
 
-#include "mgl_platform/api/buffer.hpp"
+#include "mgl_platform/api/buffers.hpp"
 
 namespace mgl::graphics
 {

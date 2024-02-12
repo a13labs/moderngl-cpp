@@ -14,7 +14,7 @@ TEST(BufferTest, CopyTestNoOffset)
 
   // copy all elements from buf1 to buf2
   buf1->copy_to(buf2);
-  buf2->read(out);
+  buf2->download(out);
   ASSERT_EQ(in, out);
 
   buf1->release();
@@ -40,7 +40,7 @@ TEST(BufferTest, CopyTestWithOffset)
   buf1->copy_to(buf2, 2 * sizeof(float), 6 * sizeof(float), 4 * sizeof(float));
   buf1->copy_to(buf2, 2 * sizeof(float), 0 * sizeof(float), 6 * sizeof(float));
 
-  buf2->read(out);
+  buf2->download(out);
   ASSERT_EQ(expected, out);
 
   buf1->release();
@@ -57,7 +57,7 @@ TEST(BufferTest, NewTest)
   mgl::float32_buffer out = { 0, 0, 0, 0 };
 
   auto buf = ctx->buffer(in);
-  buf->read(out);
+  buf->download(out);
   ASSERT_EQ(in, out);
 
   buf->release();
@@ -74,8 +74,8 @@ TEST(BufferTest, WriteTest)
 
   auto buf = ctx->buffer(4 * sizeof(float));
 
-  buf->write(in);
-  buf->read(out);
+  buf->upload(in);
+  buf->download(out);
   ASSERT_EQ(in, out);
 
   buf->release();
@@ -94,9 +94,9 @@ TEST(BufferTest, WriteTestWithOffset)
 
   auto buf = ctx->buffer(8 * sizeof(float));
 
-  buf->write(in_1, 4 * sizeof(float));
-  buf->write(in_2, 0 * sizeof(float));
-  buf->read(out);
+  buf->upload(in_1, 4 * sizeof(float));
+  buf->upload(in_2, 0 * sizeof(float));
+  buf->download(out);
   ASSERT_EQ(expected, out);
 
   buf->release();
@@ -113,7 +113,7 @@ TEST(BufferTest, ReadTest)
 
   auto buf = ctx->buffer(in);
 
-  buf->read(out);
+  buf->download(out);
 
   ASSERT_EQ(in, out);
 

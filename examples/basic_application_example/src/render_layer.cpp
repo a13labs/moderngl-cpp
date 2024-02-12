@@ -3,7 +3,7 @@
 
 #include "imgui/imgui.h"
 #include "mgl_application/application.hpp"
-#include "mgl_platform/api/buffer.hpp"
+#include "mgl_platform/api/buffers.hpp"
 
 static mgl::platform::api::vertex_buffer_ref s_vbo = nullptr;
 

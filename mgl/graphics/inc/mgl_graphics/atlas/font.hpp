@@ -7,7 +7,7 @@
 #include "mgl_registry/resources/font.hpp"
 #include "mgl_registry/resources/image.hpp"
 
-#include "mgl_platform/api/buffers/vertex.hpp"
+#include "mgl_platform/api/buffers.hpp"
 
 namespace mgl::graphics
 {

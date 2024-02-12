@@ -5,8 +5,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-#include "mgl_platform/api/buffers/index.hpp"
-#include "mgl_platform/api/buffers/vertex.hpp"
+#include "mgl_platform/api/buffers.hpp"
 #include "mgl_platform/api/framebuffer.hpp"
 
 #include "mgl_core/containers.hpp"
