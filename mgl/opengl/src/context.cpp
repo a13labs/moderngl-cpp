@@ -102,52 +102,52 @@ namespace mgl::opengl
     context* native_ctx = nullptr;
 
 #ifdef MGL_OPENGL_EGL
-    MGL_CORE_INFO("[EGL Context] Trying EGL context!");
+    MGL_CORE_INFO("[GL Context] Trying EGL context.");
     native_ctx = new ContextEGL(mode, required);
 
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("[EGL Context] EGL not supported!");
+      MGL_CORE_INFO("[GL Context] EGL not supported.");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("[EGL Context] EGL supported!");
+      MGL_CORE_INFO("[GL Context] EGL supported.");
     }
 #endif
 #ifdef MGL_OPENGL_WGL
-    MGL_CORE_INFO("[WGL Context] Trying WGL context!");
+    MGL_CORE_INFO("[GL Context] Trying WGL context.");
     native_ctx = new ContextWGL(mode, required);
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("[WGL Context] WGL not supported!");
+      MGL_CORE_INFO("[GL Context] WGL not supported.");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("[WGL Context] WGL supported!");
+      MGL_CORE_INFO("[GL Context] WGL supported.");
     }
 #endif
 #ifdef MGL_OPENGL_CGL
-    MGL_CORE_INFO("[CGL Context] Trying CGL context!");
+    MGL_CORE_INFO("[GL Context] Trying CGL context.");
     native_ctx = new ContextCGL(mode, required);
     if(!native_ctx->is_valid())
     {
-      MGL_CORE_INFO("[CGL Context] CGL not supported!");
+      MGL_CORE_INFO("[GL Context] CGL not supported.");
       delete native_ctx;
       native_ctx = nullptr;
     }
     else
     {
-      MGL_CORE_INFO("[CGL Context] CGL supported!");
+      MGL_CORE_INFO("[GL Context] CGL supported.");
     }
 #endif
 
     if(!native_ctx)
     {
-      MGL_CORE_ERROR("[GL Context] Error creating context! No more backends available.");
+      MGL_CORE_ERROR("[GL Context] Error creating context. No more backends available.");
       return nullptr;
     }
 
@@ -447,58 +447,6 @@ namespace mgl::opengl
     return vertex_array_ref(vertex_array);
   }
 
-  void context::set_enable_flags(int32_t flags)
-  {
-    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
-    MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
-    m_enable_flags = flags;
-
-    if(flags & mgl::opengl::enable_flag::BLEND)
-    {
-      glEnable(GL_BLEND);
-    }
-    else
-    {
-      glDisable(GL_BLEND);
-    }
-
-    if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
-    {
-      glEnable(GL_DEPTH_TEST);
-    }
-    else
-    {
-      glDisable(GL_DEPTH_TEST);
-    }
-
-    if(flags & mgl::opengl::enable_flag::CULL_FACE)
-    {
-      glEnable(GL_CULL_FACE);
-    }
-    else
-    {
-      glDisable(GL_CULL_FACE);
-    }
-
-    if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
-    {
-      glEnable(GL_RASTERIZER_DISCARD);
-    }
-    else
-    {
-      glDisable(GL_RASTERIZER_DISCARD);
-    }
-
-    if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
-    {
-      glEnable(GL_PROGRAM_POINT_SIZE);
-    }
-    else
-    {
-      glDisable(GL_PROGRAM_POINT_SIZE);
-    }
-  }
-
   void context::enable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
@@ -508,31 +456,39 @@ namespace mgl::opengl
     if(flags & mgl::opengl::enable_flag::BLEND)
     {
       glEnable(GL_BLEND);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on enabling GL_BLEND");
     }
 
     if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
     {
       glEnable(GL_DEPTH_TEST);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on enabling GL_DEPTH_TEST");
     }
 
     if(flags & mgl::opengl::enable_flag::CULL_FACE)
     {
       glEnable(GL_CULL_FACE);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on enabling GL_CULL_FACE");
     }
 
     if(flags & mgl::opengl::enable_flag::STENCIL_TEST)
     {
       glEnable(GL_STENCIL_TEST);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on enabling GL_STENCIL_TEST");
     }
 
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
       glEnable(GL_RASTERIZER_DISCARD);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR,
+                      "[GL Context] Fail on enabling RASTERIZER_DISCARD");
     }
 
     if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
     {
       glEnable(GL_PROGRAM_POINT_SIZE);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR,
+                      "[GL Context] Fail on enabling GL_PROGRAM_POINT_SIZE");
     }
   }
 
@@ -546,31 +502,40 @@ namespace mgl::opengl
     if(flags & mgl::opengl::enable_flag::BLEND)
     {
       glDisable(GL_BLEND);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on disabling GL_BLEND");
     }
 
     if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
     {
       glDisable(GL_DEPTH_TEST);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on disabling GL_DEPTH_TEST");
     }
 
     if(flags & mgl::opengl::enable_flag::CULL_FACE)
     {
       glDisable(GL_CULL_FACE);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on disabling GL_CULL_FACE");
     }
 
     if(flags & mgl::opengl::enable_flag::STENCIL_TEST)
     {
       glDisable(GL_STENCIL_TEST);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR,
+                      "[GL Context] Fail on disabling GL_STENCIL_TEST");
     }
 
     if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
     {
       glDisable(GL_RASTERIZER_DISCARD);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR,
+                      "[GL Context] Fail on disabling RASTERIZER_DISCARD");
     }
 
     if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
     {
       glDisable(GL_PROGRAM_POINT_SIZE);
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR,
+                      "[GL Context] Fail on disabling GL_PROGRAM_POINT_SIZE");
     }
   }
 
@@ -579,6 +544,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
     glEnable(value);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on enable_direct");
   }
 
   void context::disable_direct(int32_t value)
@@ -586,6 +552,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
     glDisable(value);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on disable_direct");
   }
 
   void context::finish()
@@ -593,6 +560,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
     glFinish();
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on glFinish");
   }
 
   void context::clear_samplers(int32_t start, int32_t end)
@@ -635,6 +603,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
     glBlendEquationSeparate(modeRGB, modeAlpha);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on glBlendEquationSeparate");
   }
 
   void context::set_blend_func(blend_factor srcRGB,
@@ -645,6 +614,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Context] Fail on glBlendFuncSeparate");
   }
 
 } // namespace  mgl::opengl

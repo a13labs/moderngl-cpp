@@ -75,6 +75,9 @@ namespace mgl::opengl
     m_width = scissor_box[2];
     m_height = scissor_box[3];
     m_dynamic = true;
+
+    // clear any errors
+    glGetError();
   }
 
   framebuffer::framebuffer(const context_ref& ctx,
@@ -168,6 +171,9 @@ namespace mgl::opengl
 
         i++;
       }
+
+      // clear any errors
+      glGetError();
     }
 
     if(depth_attachment)
@@ -301,6 +307,9 @@ namespace mgl::opengl
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, gl_object::ctx()->m_bound_framebuffer->glo());
+
+    // clear any errors
+    glGetError();
   }
 
   void framebuffer::use()
@@ -336,6 +345,9 @@ namespace mgl::opengl
     glDepthMask(m_depth_mask);
 
     gl_object::ctx()->m_bound_framebuffer = shared_from_this();
+
+    // clear any error
+    glGetError();
   }
 
   void framebuffer::read(mgl::uint8_buffer& dst,

@@ -22,6 +22,7 @@ namespace mgl::opengl
     gl_object::set_glo(glo);
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     glBufferData(GL_ARRAY_BUFFER, reserve, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Program] Error on creating buffer.");
   }
 
   void buffer::release()

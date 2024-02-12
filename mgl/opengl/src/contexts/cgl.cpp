@@ -68,7 +68,7 @@ namespace mgl::opengl
 
         if(!pixelformat)
         {
-          MGL_CORE_ERROR("cannot find a suitable OpenGL pixel format.");
+          MGL_CORE_ERROR("[CGL Context] (standalone) Cannot find a suitable OpenGL pixel format.");
           delete res;
           return;
         }
@@ -86,7 +86,7 @@ namespace mgl::opengl
 
         if(CGLSetCurrentContext(cgl_context) != kCGLNoError)
         {
-          MGL_CORE_ERROR("CGLSetCurrentContext failed");
+          MGL_CORE_ERROR("[CGL Context] (standalone) CGLSetCurrentContext failed.");
           CGLDestroyContext(cgl_context);
           delete res;
           return;
@@ -99,7 +99,8 @@ namespace mgl::opengl
         CGLContextObj ctx_share = CGLGetCurrentContext();
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) CGLGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[CGL Context] (share) CGLGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -108,7 +109,7 @@ namespace mgl::opengl
 
         if(!pixelformat)
         {
-          MGL_CORE_ERROR("cannot find a suitable OpenGL pixel format");
+          MGL_CORE_ERROR("[CGL Context] (share) cannot find a suitable OpenGL pixel format.");
           delete res;
           return;
         }
@@ -117,7 +118,7 @@ namespace mgl::opengl
         CGLError error = CGLCreateContext(pixelformat, ctx_share, &cgl_context);
         if(error != kCGLNoError)
         {
-          MGL_CORE_ERROR("(share) CGLCreateContext.");
+          MGL_CORE_ERROR("[CGL Context] (share) CGLCreateContext.");
           delete res;
           return;
         }
@@ -126,7 +127,7 @@ namespace mgl::opengl
 
         if(CGLSetCurrentContext(res->ctx) != kCGLNoError)
         {
-          MGL_CORE_ERROR("CGLSetCurrentContext failed");
+          MGL_CORE_ERROR("[CGL Context] CGLSetCurrentContext failed.");
           CGLDestroyContext(res->ctx);
           delete res;
           return;
@@ -139,7 +140,8 @@ namespace mgl::opengl
         CGLContextObj ctx_share = CGLGetCurrentContext();
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) CGLGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[CGL Context] (attached) CGLGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -148,7 +150,7 @@ namespace mgl::opengl
 
         if(CGLSetCurrentContext(res->ctx) != kCGLNoError)
         {
-          MGL_CORE_ERROR("CGLSetCurrentContext failed");
+          MGL_CORE_ERROR("[CGL Context] (attached) (CGLSetCurrentContext failed.");
           CGLDestroyContext(res->ctx);
           delete res;
           return;
@@ -156,7 +158,7 @@ namespace mgl::opengl
         break;
       }
       default: {
-        MGL_CORE_ERROR("Detect mode not supported");
+        MGL_CORE_ERROR("[CGL Context] Detect mode not supported.");
         delete res;
         return;
         break;
@@ -167,13 +169,14 @@ namespace mgl::opengl
 
     if(!gl_version)
     {
-      MGL_CORE_ERROR("Error loading OpenGL");
+      MGL_CORE_ERROR("[CGL Context] Error loading OpenGL.");
       return;
     }
     else
     {
-      MGL_CORE_INFO(
-          "OpenGL {0}.{1}", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
+      MGL_CORE_INFO("[CGL Context] OpenGL version '{0}.{1}' found.",
+                    GLAD_VERSION_MAJOR(gl_version),
+                    GLAD_VERSION_MINOR(gl_version));
     }
 
     m_context = res;

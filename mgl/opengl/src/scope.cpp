@@ -109,7 +109,7 @@ namespace mgl::opengl
     const int32_t& flags = m_scope_state.enable_flags;
 
     m_previous_state = { m_ctx->enable_flags(), m_ctx->current_framebuffer() };
-    m_ctx->set_enable_flags(flags);
+    m_ctx->enable(flags);
 
     m_scope_state.framebuffer->use();
 
@@ -137,7 +137,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(m_ctx->is_current(), "[Scope] Resource context not current.");
     const int32_t& flags = m_previous_state.enable_flags;
 
-    m_ctx->set_enable_flags(flags);
+    m_ctx->enable(flags);
 
     m_previous_state.framebuffer->use();
 

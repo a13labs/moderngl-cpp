@@ -79,8 +79,6 @@ public:
 
     int32_t enable_flags() const { return m_enable_flags; }
 
-    void set_enable_flags(int32_t flags);
-
     void enable(int32_t flags);
 
     void disable(int32_t flags);

@@ -389,6 +389,7 @@ namespace mgl::opengl
         }
       }
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Program] Error on creating program.");
   }
 
   void program::release()

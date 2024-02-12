@@ -105,6 +105,7 @@ namespace mgl::opengl
         glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       }
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on creating texture 2d.");
   }
 
   texture_2d::texture_2d(const context_ref& ctx,
@@ -175,6 +176,7 @@ namespace mgl::opengl
       glTexParameteri(texture_target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
       glTexParameteri(texture_target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on creating texture 2d.");
   }
 
   void texture_2d::release()

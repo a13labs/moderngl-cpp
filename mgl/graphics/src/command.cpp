@@ -100,12 +100,11 @@ namespace mgl::graphics
   void render_script::draw(const mgl::platform::api::vertex_buffer_ref& vertex_array,
                            const mgl::platform::api::index_buffer_ref& index_buffer,
                            render_mode mode,
-                           glm::mat4 transform,
                            size_t count,
                            size_t offset)
   {
     submit(mgl::create_ref<mgl::graphics::draw_command>(
-        vertex_array, index_buffer, mode, transform, count, offset));
+        vertex_array, index_buffer, mode, count, offset));
   }
 
   void render_script::draw_batch(const batch_ref& batch)
@@ -265,7 +264,7 @@ namespace mgl::graphics
     int32_t first = vb->needle() / sizeof(glm::vec4);
     float scale = static_cast<float>(size) / atlas->pixel_height();
     atlas->text_to_vertices({ x, y }, text, vb, vertices, scale, scale);
-    draw(vb, nullptr, render_mode::TRIANGLES, glm::mat4(1.0f), vertices, first);
+    draw(vb, nullptr, render_mode::TRIANGLES, vertices, first);
 
     disable_shader();
     clear_samplers(0, 1);

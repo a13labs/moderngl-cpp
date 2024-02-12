@@ -9,9 +9,11 @@
 #ifdef MGL_DEBUG
 #  if defined(MGL_PLATFORM_WINDOWS)
 #    define MGL_DEBUGBREAK() __debugbreak()
-#  elif defined(MGL_PLATFORM_LINUX) or defined(MGL_PLATFORM_MACOS)
+#  elif defined(MGL_PLATFORM_LINUX)
 #    include <signal.h>
 #    define MGL_DEBUGBREAK() raise(SIGTRAP)
+#  elif defined(MGL_PLATFORM_MACOS)
+#    define MGL_DEBUGBREAK() __builtin_trap()
 #  else
 #    error "Platform doesn't support debugbreak yet!"
 #  endif

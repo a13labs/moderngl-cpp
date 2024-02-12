@@ -220,7 +220,7 @@ namespace mgl::platform
   {
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-      MGL_CORE_TRACE("Window: Error initializing SDL");
+      MGL_CORE_TRACE("[SDL Window] Error initializing SDL.");
       return false;
     }
 
@@ -256,7 +256,7 @@ namespace mgl::platform
       }
     }
 
-    MGL_CORE_INFO("Window: Creating window {0},{1} with OpenGL support",
+    MGL_CORE_INFO("[SDL Window] Creating window ({0},{1}) with OpenGL support.",
                   m_state.current_config.width,
                   m_state.current_config.height);
     m_api_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
@@ -269,7 +269,7 @@ namespace mgl::platform
     if(!m_api_window)
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error creating window, '{0}'.", error);
+      MGL_CORE_TRACE("[SDL Window] Error creating window, '{0}'.", error);
       SDL_Quit();
       return false;
     }
@@ -278,7 +278,7 @@ namespace mgl::platform
     if(!m_context)
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error creating OpenGL context, '{0}'.", error);
+      MGL_CORE_TRACE("[SDL Window] Error creating OpenGL context, '{0}'.", error);
       SDL_DestroyWindow(m_api_window);
       m_api_window = nullptr;
       SDL_Quit();
@@ -293,7 +293,7 @@ namespace mgl::platform
     if(!SDL_GetWindowWMInfo(m_api_window, &wmi))
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error retrieving window information: {0}.", error);
+      MGL_CORE_TRACE("[SDL Window] Error retrieving window information: {0}.", error);
       SDL_GL_DeleteContext(m_context);
       SDL_DestroyWindow(m_api_window);
       m_context = nullptr;

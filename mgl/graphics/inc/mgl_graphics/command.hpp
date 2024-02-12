@@ -74,7 +74,6 @@ public:
     void draw(const mgl::platform::api::vertex_buffer_ref& vertex_array,
               const mgl::platform::api::index_buffer_ref& index_buffer = nullptr,
               render_mode mode = render_mode::TRIANGLES,
-              glm::mat4 model_view = glm::mat4(1.0f),
               size_t count = 0,
               size_t offset = 0);
 
