@@ -78,6 +78,8 @@ public:
     virtual ~vertex_buffer() = default;
 
     virtual const std::string& layout() const = 0;
+
+    virtual const mgl::string_list& attributes() const = 0;
   };
 
   class index_buffer : public buffer

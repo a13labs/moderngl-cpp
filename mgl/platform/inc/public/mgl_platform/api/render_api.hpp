@@ -129,8 +129,10 @@ private:
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) = 0;
 
-    virtual vertex_buffer_ref
-    api_create_vertex_buffer(size_t size, const std::string& layout, bool dynamic) = 0;
+    virtual vertex_buffer_ref api_create_vertex_buffer(const std::string& layout,
+                                                       mgl::string_list attrs,
+                                                       size_t size,
+                                                       bool dynamic) = 0;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
 
@@ -399,25 +401,29 @@ public:
 
     static vertex_buffer_ref create_vertex_buffer(const float32_buffer& data,
                                                   const std::string& layout,
+                                                  mgl::string_list attrs,
                                                   bool dynamic = false)
     {
       MGL_CORE_ASSERT(data.size() > 0, "Invalid vertex buffer data");
       auto buffer = render_api::instance().api_create_vertex_buffer(
-          data.size() * sizeof(float), layout, dynamic);
+          layout, attrs, data.size() * sizeof(float), dynamic);
       MGL_CORE_ASSERT(buffer != nullptr, "Vertex buffer is null");
       buffer->upload(data);
       return buffer;
     }
 
-    static vertex_buffer_ref create_vertex_buffer(const std::string& layout, bool dynamic = false)
+    static vertex_buffer_ref
+    create_vertex_buffer(const std::string& layout, mgl::string_list attrs, bool dynamic = false)
     {
-      return render_api::instance().api_create_vertex_buffer(0, layout, dynamic);
+      return render_api::instance().api_create_vertex_buffer(layout, attrs, 0, dynamic);
     }
 
-    static vertex_buffer_ref
-    create_vertex_buffer(size_t size, const std::string& layout, bool dynamic = false)
+    static vertex_buffer_ref create_vertex_buffer(size_t size,
+                                                  const std::string& layout,
+                                                  mgl::string_list attrs,
+                                                  bool dynamic = false)
     {
-      return render_api::instance().api_create_vertex_buffer(size, layout, dynamic);
+      return render_api::instance().api_create_vertex_buffer(layout, attrs, size, dynamic);
     }
 
     static buffer_ref create_buffer(size_t size, bool dynamic = false)

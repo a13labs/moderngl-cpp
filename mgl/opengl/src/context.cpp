@@ -440,14 +440,6 @@ namespace mgl::opengl
     return vertex_array_ref(vertex_array);
   }
 
-  vertex_array_ref context::vertex_array(int32_t index_element_size)
-  {
-    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
-    MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
-    auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(), index_element_size);
-    return vertex_array_ref(vertex_array);
-  }
-
   void context::enable(int32_t flags)
   {
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");

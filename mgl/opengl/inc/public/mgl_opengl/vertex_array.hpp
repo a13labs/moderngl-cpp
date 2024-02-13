@@ -37,18 +37,16 @@ public:
                          int32_t count = 0,
                          int32_t first = 0);
 
-    void transform(const program_ref& prg,
-                   const buffer_ref& b,
+    void transform(const buffer_ref& b,
                    render_mode mode,
                    int32_t vertices = 0,
                    int32_t first = 0,
                    int32_t instances = 1)
     {
-      transform(prg, mgl::ref_list<buffer>({ b }), mode, vertices, first, instances);
+      transform(mgl::ref_list<buffer>({ b }), mode, vertices, first, instances);
     }
 
-    void transform(const program_ref& prg,
-                   const mgl::ref_list<buffer>& buffers,
+    void transform(const mgl::ref_list<buffer>& buffers,
                    render_mode mode,
                    int32_t vertices = 0,
                    int32_t first = 0,
@@ -88,21 +86,8 @@ private:
                  buffer_ref index_buffer,
                  int32_t element_size);
 
-    vertex_array(const context_ref& ctx,
-                 const program_ref& prg,
-                 mgl::opengl::vertex_buffer vertex_buffer,
-                 buffer_ref index_buffer,
-                 int32_t element_size)
-        : vertex_array(ctx,
-                       prg,
-                       mgl::opengl::vertex_buffer_list({ vertex_buffer }),
-                       index_buffer,
-                       element_size)
-    { }
-
-    vertex_array(const context_ref& ctx, int32_t element_size);
-
-    buffer_ref m_index_buffer;
+    program_ref m_prg;
+    buffer_ref m_ibo;
     int32_t m_element_size;
     int32_t m_element_type;
     int32_t m_num_vertices;

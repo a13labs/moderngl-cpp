@@ -10,23 +10,24 @@ namespace mgl::opengl
 {
   struct vertex_buffer
   {
-    buffer_ref buffer;
-    buffer_layout layout;
-    mgl::string_list attributes;
+    buffer_ref buffer = nullptr;
+    buffer_layout layout = buffer_layout("");
+    mgl::string_list attributes = {};
     int32_t vertex_count = 0;
 
     vertex_buffer(buffer_ref buffer, buffer_layout layout, mgl::string_list attributes)
         : buffer(buffer)
         , layout(layout)
         , attributes(attributes)
-        , vertex_count(buffer->size() / layout.size())
-    { }
+    {
+      if(buffer)
+      {
+        vertex_count = buffer->size() / layout.size();
+      }
+    }
 
     vertex_buffer(buffer_ref buffer, const std::string& layout, mgl::string_list attributes)
-        : buffer(buffer)
-        , layout(layout)
-        , attributes(attributes)
-        , vertex_count(buffer->size() / layout.size())
+        : vertex_buffer(buffer, buffer_layout(layout), attributes)
     { }
   };
 

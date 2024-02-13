@@ -20,7 +20,7 @@ public:
 
     virtual ~buffer() = default;
 
-    virtual void allocate() override final
+    virtual void allocate() override
     {
       MGL_CORE_ASSERT(!m_buffer, "Buffer is already allocated");
       auto& ctx = opengl_api::current_context();
@@ -28,7 +28,7 @@ public:
       m_buffer->orphan(m_req_size);
     }
 
-    virtual void free() override final
+    virtual void free() override
     {
       MGL_CORE_ASSERT(m_buffer, "Buffer is not allocated");
       m_buffer->release();
@@ -187,28 +187,49 @@ public:
 
     mgl::opengl::buffer_ref& native() { return m_buffer; }
 
+protected:
+    mgl::opengl::buffer_ref m_buffer;
+
 private:
     size_t m_req_size;
     bool m_req_dynamic;
-    mgl::opengl::buffer_ref m_buffer;
   };
 
   class vertex_buffer : public buffer<mgl::platform::api::vertex_buffer>
   {
 public:
-    vertex_buffer(const std::string& layout, size_t size = 0, bool dynamic = false)
+    vertex_buffer(const std::string& layout,
+                  const mgl::string_list attrs,
+                  size_t size = 0,
+                  bool dynamic = false)
         : buffer(size, dynamic)
-        , m_layout(layout)
+        , m_vbo(nullptr, layout, attrs)
     { }
+
+    virtual void allocate() override final
+    {
+      buffer::allocate();
+      m_vbo.buffer = m_buffer;
+      m_vbo.vertex_count = m_buffer->size() / m_vbo.layout.size();
+    }
+
+    virtual void free() override final
+    {
+      buffer::free();
+      m_vbo.buffer = nullptr;
+      m_vbo.vertex_count = 0;
+    }
 
     virtual ~vertex_buffer() = default;
 
-    virtual const std::string& layout() const override final { return m_layout.layout(); }
+    virtual const std::string& layout() const override final { return m_vbo.layout.layout(); }
 
-    const mgl::opengl::buffer_layout& native_layout() const { return m_layout; }
+    virtual const mgl::string_list& attributes() const override final { return m_vbo.attributes; }
+
+    const mgl::opengl::vertex_buffer& native_vbo() const { return m_vbo; }
 
 private:
-    mgl::opengl::buffer_layout m_layout;
+    mgl::opengl::vertex_buffer m_vbo;
   };
 
   class index_buffer : public buffer<mgl::platform::api::index_buffer>

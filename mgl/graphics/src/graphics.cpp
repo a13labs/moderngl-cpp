@@ -25,9 +25,9 @@ namespace mgl::graphics
     auto font = mgl::create_ref<mgl::registry::truetype_font>(default_font, default_font_len);
     register_font("default", font);
     MGL_CORE_INFO("Creating vertex buffer and shader for text rendering.");
-    register_buffer(
-        "text_vb",
-        mgl::platform::api::render_api::create_vertex_buffer(TEXT_BUFFER_SIZE, "2f 2f", true));
+    register_buffer("text_vb",
+                    mgl::platform::api::render_api::create_vertex_buffer(
+                        TEXT_BUFFER_SIZE, "2f 2f", { "i_position", "i_uv" }, true));
     register_shader("text_shader", mgl::create_ref<builtins::text_shader>());
   }
 

@@ -325,8 +325,6 @@ public:
                                   buffer_ref index_buffer = nullptr,
                                   int32_t index_element_size = 4);
 
-    vertex_array_ref vertex_array(int32_t index_element_size = 4);
-
     virtual void enter() = 0;
     virtual void exit() = 0;
 

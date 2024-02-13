@@ -115,8 +115,10 @@ private:
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) override final;
 
-    virtual vertex_buffer_ref
-    api_create_vertex_buffer(size_t size, const std::string& layout, bool dynamic) override final;
+    virtual vertex_buffer_ref api_create_vertex_buffer(const std::string& layout,
+                                                       mgl::string_list attrs,
+                                                       size_t size,
+                                                       bool dynamic) override final;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) override final;
 

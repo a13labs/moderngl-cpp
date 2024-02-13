@@ -282,23 +282,21 @@ namespace mgl::platform::api::backends
 
     auto prg = std::static_pointer_cast<opengl::program>(m_state_data.current_program);
     auto vbo = std::static_pointer_cast<opengl::vertex_buffer>(vb);
-    auto vao = m_ctx->vertex_array();
-    auto opengl_vbo = mgl::opengl::vertex_buffer(
-        vbo->native(), vbo->native_layout(), prg->native()->attributes());
 
-    if(ib != nullptr)
+    if(ib)
     {
       auto ibo = std::static_pointer_cast<opengl::index_buffer>(ib);
-      vao->update(prg->native(), opengl_vbo, ibo->native(), ibo->element_size());
+      auto vao = m_ctx->vertex_array(
+          prg->native(), { vbo->native_vbo() }, ibo->native(), ibo->element_size());
+      vao->render(internal::to_api(mode), count, offset);
+      vao->release();
     }
     else
     {
-      vao->update(prg->native(), opengl_vbo);
+      auto vao = m_ctx->vertex_array(prg->native(), { vbo->native_vbo() });
+      vao->render(internal::to_api(mode), count, offset);
+      vao->release();
     }
-
-    vao->render(internal::to_api(mode), count, offset);
-
-    vao->release();
   }
 
   index_buffer_ref
@@ -308,11 +306,13 @@ namespace mgl::platform::api::backends
     return mgl::create_ref<opengl::index_buffer>(size, element_size, dynamic);
   }
 
-  vertex_buffer_ref
-  opengl_api::api_create_vertex_buffer(size_t size, const std::string& layout, bool dynamic)
+  vertex_buffer_ref opengl_api::api_create_vertex_buffer(const std::string& layout,
+                                                         mgl::string_list attrs,
+                                                         size_t size,
+                                                         bool dynamic)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    return mgl::create_ref<opengl::vertex_buffer>(layout, size, dynamic);
+    return mgl::create_ref<opengl::vertex_buffer>(layout, attrs, size, dynamic);
   }
 
   buffer_ref opengl_api::api_create_buffer(size_t size, bool dynamic)
