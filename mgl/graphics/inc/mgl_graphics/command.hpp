@@ -3,7 +3,7 @@
 #include "enums.hpp"
 #include "glm/glm.hpp"
 #include "shader.hpp"
-#include "texture.hpp"
+#include "textures.hpp"
 
 #include "mgl_platform/api/buffers.hpp"
 #include "mgl_platform/api/framebuffer.hpp"

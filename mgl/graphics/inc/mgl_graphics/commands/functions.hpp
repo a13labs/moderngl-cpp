@@ -10,7 +10,7 @@ public:
         : m_color(color)
     { }
 
-    void execute() override final;
+    void execute() override final { mgl::platform::api::render_api::clear(m_color); }
 
 private:
     glm::vec4 m_color;
@@ -24,7 +24,10 @@ public:
         , m_size(size)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::set_viewport(m_position, m_size);
+    }
 
 private:
     glm::vec2 m_position;
@@ -38,7 +41,7 @@ public:
         : m_view(view)
     { }
 
-    void execute() override final;
+    void execute() override final { mgl::platform::api::render_api::set_view_matrix(m_view); }
 
 private:
     glm::mat4 m_view;
@@ -51,7 +54,10 @@ public:
         : m_projection(projection)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::set_projection_matrix(m_projection);
+    }
 
 private:
     glm::mat4 m_projection;
@@ -70,7 +76,10 @@ public:
         , m_dstAlpha(dstAlpha)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::set_blend_func(m_srcRGB, m_dstRGB, m_srcAlpha, m_dstAlpha);
+    }
 
 private:
     blend_factor m_srcRGB;
@@ -87,7 +96,10 @@ public:
         , m_modeAlpha(modeAlpha)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::set_blend_equation(m_modeRGB, m_modeAlpha);
+    }
 
 private:
     blend_equation_mode m_modeRGB;
@@ -102,7 +114,10 @@ public:
         , m_end(end)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::clear_samplers(m_start, m_end);
+    }
 
 private:
     int m_start;

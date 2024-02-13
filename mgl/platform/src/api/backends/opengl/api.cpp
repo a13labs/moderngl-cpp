@@ -271,6 +271,28 @@ namespace mgl::platform::api::backends
     m_state_data.current_program = nullptr;
   }
 
+  void opengl_api::api_bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture)
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    switch(texture->texture_type())
+    {
+      case mgl::platform::api::texture::type::TEXTURE_2D: {
+        auto tex = std::static_pointer_cast<opengl::texture_2d>(texture);
+        tex->bind(unit);
+        break;
+      }
+      case mgl::platform::api::texture::type::TEXTURE_3D: {
+        MGL_CORE_ASSERT(false, "Not implemented");
+        break;
+      }
+      case mgl::platform::api::texture::type::TEXTURE_CUBE: {
+        MGL_CORE_ASSERT(false, "Not implemented");
+        break;
+      }
+      default: MGL_CORE_ASSERT(false, "Unknown texture type");
+    }
+  }
+
   void opengl_api::api_render_call(const mgl::platform::api::vertex_buffer_ref& vb,
                                    const mgl::platform::api::index_buffer_ref& ib,
                                    int32_t count,

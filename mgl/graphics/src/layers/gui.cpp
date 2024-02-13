@@ -1,7 +1,7 @@
 #include "mgl_graphics/layers/gui.hpp"
 #include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/shaders/gui.hpp"
-#include "mgl_graphics/textures/texture2d.hpp"
+#include "mgl_graphics/textures.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
@@ -287,7 +287,7 @@ namespace mgl::graphics::layers
               static_cast<int32_t>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
           auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
-          tex->bind(0);
+          mgl::platform::api::render_api::bind_texture(0, tex->api());
 
           mgl::platform::api::render_api::render_call(vb,
                                                       ib,
@@ -300,8 +300,7 @@ namespace mgl::graphics::layers
       }
     }
 
-    prg->unbind();
-
+    mgl::platform::api::render_api::disable_program();
     mgl::platform::api::render_api::clear_samplers(0, 1);
     mgl::platform::api::render_api::disable_program();
     mgl::platform::api::render_api::disable_scissor();

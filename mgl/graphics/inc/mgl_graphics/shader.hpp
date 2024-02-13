@@ -158,14 +158,6 @@ public:
     virtual void prepare() = 0;
     virtual void load() = 0;
 
-    void bind()
-    {
-      MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
-      mgl::platform::api::render_api::enable_program(m_program);
-    }
-
-    void unbind() { mgl::platform::api::render_api::disable_program(); }
-
     void unload()
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
@@ -472,7 +464,7 @@ public:
       }
     }
 
-    mgl::platform::api::program_ref& api() { return m_program; }
+    const mgl::platform::api::program_ref& api() const { return m_program; }
 
 protected:
     mgl::platform::api::program_ref m_program = nullptr;

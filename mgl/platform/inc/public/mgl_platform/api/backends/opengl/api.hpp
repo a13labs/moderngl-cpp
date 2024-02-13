@@ -106,6 +106,9 @@ private:
 
     virtual void api_disable_program() override final;
 
+    virtual void api_bind_texture(int32_t unit,
+                                  const mgl::platform::api::texture_ref& texture) override final;
+
     virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                                  const mgl::platform::api::index_buffer_ref& index_buffer,
                                  int32_t count,

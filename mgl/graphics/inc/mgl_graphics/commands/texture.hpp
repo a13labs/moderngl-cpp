@@ -1,7 +1,9 @@
 #pragma once
 
 #include "mgl_graphics/command.hpp"
-#include "mgl_graphics/texture.hpp"
+#include "mgl_graphics/textures.hpp"
+
+#include "mgl_platform/api/render_api.hpp"
 
 namespace mgl::graphics
 {
@@ -13,7 +15,10 @@ public:
         , m_texture(texture)
     { }
 
-    void execute() override final;
+    void execute() override final
+    {
+      mgl::platform::api::render_api::bind_texture(m_slot, m_texture->api());
+    }
 
 private:
     texture_ref m_texture;

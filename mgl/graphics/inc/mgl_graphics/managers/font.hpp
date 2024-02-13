@@ -2,7 +2,7 @@
 
 #include "mgl_graphics/atlas/font.hpp"
 #include "mgl_graphics/manager.hpp"
-#include "mgl_graphics/textures/texture2d.hpp"
+#include "mgl_graphics/textures.hpp"
 #include "mgl_registry/resources/font.hpp"
 
 namespace mgl::graphics

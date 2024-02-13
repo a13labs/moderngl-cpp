@@ -7,8 +7,6 @@
 #include "managers/font.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
 
 namespace mgl::graphics
 {

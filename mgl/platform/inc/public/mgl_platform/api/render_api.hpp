@@ -37,9 +37,7 @@ public:
     enum class dialect
     {
       OPENGL,
-      VULKAN,
-      METAL,
-      DIRECTX
+      UNKNOWN
     };
 
     virtual ~render_api() = default;
@@ -119,6 +117,8 @@ private:
     virtual void api_set_program_uniform(const std::string& uniform, const glm::mat4x3& value) = 0;
 
     virtual void api_disable_program() = 0;
+
+    virtual void api_bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture) = 0;
 
     virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                                  const mgl::platform::api::index_buffer_ref& index_buffer,
@@ -314,6 +314,11 @@ public:
     }
 
     static void disable_program() { render_api::instance().api_disable_program(); }
+
+    static void bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture)
+    {
+      render_api::instance().api_bind_texture(unit, texture);
+    }
 
     static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                             const mgl::platform::api::index_buffer_ref& index_buffer,
