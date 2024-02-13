@@ -7,6 +7,5 @@ class custom_shader : public mgl::graphics::shader
   custom_shader() = default;
 
   virtual void prepare() override final;
-  virtual mgl::string_list& attributes() override final;
   virtual void load() override final;
 };

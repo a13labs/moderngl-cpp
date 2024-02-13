@@ -1,7 +1,7 @@
 #version 330
 
-in vec2 in_vert;
-in vec3 in_color;
+layout(location = 0) in vec2 in_vert;
+layout(location = 1) in vec3 in_color;
 out vec3 v_color;    // Goes to the fragment shader
 
 void main() {

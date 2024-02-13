@@ -62,8 +62,6 @@ private:
 
     virtual void api_enable_program(const program_ref& program) override final;
 
-    virtual void api_set_program_attributes(const mgl::string_list& attributes) override final;
-
     virtual void api_set_program_uniform(const std::string& uniform, bool value) override final;
 
     virtual void api_set_program_uniform(const std::string& uniform, int32_t value) override final;

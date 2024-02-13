@@ -17,7 +17,7 @@ namespace mgl::graphics::builtins
 
     m_program = mgl::platform::api::render_api::create_program(
         mgl::shaders::imgui::vertex_shader_source(), mgl::shaders::imgui::fragment_shader_source());
-    set_uniform_value("Texture", 0);
+    set_uniform_value("tex", 0);
   }
 
   void gui_shader::prepare() { }

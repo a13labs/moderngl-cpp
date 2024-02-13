@@ -22,7 +22,6 @@ namespace mgl::platform::api
     // The current shader, view and projection matrices are stored in the render, as they are
     // used by multiple commands
     program_ref current_program;
-    mgl::string_list attributes;
 
     // Transform matrices
     glm::mat4 view_matrix;
@@ -88,8 +87,6 @@ private:
     virtual void api_set_projection_matrix(const glm::mat4& matrix) = 0;
 
     virtual void api_enable_program(const mgl::platform::api::program_ref& program) = 0;
-
-    virtual void api_set_program_attributes(const mgl::string_list& attributes) = 0;
 
     virtual void api_set_program_uniform(const std::string& uniform, bool value) = 0;
 
@@ -237,11 +234,6 @@ public:
     static void enable_program(const mgl::platform::api::program_ref& program)
     {
       render_api::instance().api_enable_program(program);
-    }
-
-    static void set_program_attributes(const mgl::string_list& attributes)
-    {
-      render_api::instance().api_set_program_attributes(attributes);
     }
 
     static void set_program_uniform(const std::string& uniform, bool value)

@@ -11,11 +11,6 @@ public:
     text_shader() = default;
 
     virtual void prepare() override final;
-    virtual mgl::string_list& attributes() override final
-    {
-      static mgl::string_list attributes = { "vertex" };
-      return attributes;
-    }
     virtual void load() override final;
   };
 

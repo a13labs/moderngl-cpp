@@ -156,23 +156,15 @@ public:
     virtual ~shader() = default;
 
     virtual void prepare() = 0;
-    virtual const mgl::string_list& attributes() = 0;
     virtual void load() = 0;
-
-    mgl::platform::api::program_ref& api() { return m_program; }
 
     void bind()
     {
       MGL_CORE_ASSERT(m_program != nullptr, "Program is null");
       mgl::platform::api::render_api::enable_program(m_program);
-      mgl::platform::api::render_api::set_program_attributes(attributes());
     }
 
-    void unbind()
-    {
-      MGL_CORE_ASSERT(false, "Not implemented");
-      mgl::platform::api::render_api::disable_program();
-    }
+    void unbind() { mgl::platform::api::render_api::disable_program(); }
 
     void unload()
     {
@@ -479,6 +471,8 @@ public:
         case uniform_type::MAT4X3: m_program->set_value(name, value.data.mat4x3); break;
       }
     }
+
+    mgl::platform::api::program_ref& api() { return m_program; }
 
 protected:
     mgl::platform::api::program_ref m_program = nullptr;

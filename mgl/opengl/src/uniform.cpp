@@ -418,6 +418,7 @@ namespace mgl::opengl
       break;
       default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); break;
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Uniform] Failed to set uniform value.");
   }
 
   void uniform::get_value(void* data, size_t size)

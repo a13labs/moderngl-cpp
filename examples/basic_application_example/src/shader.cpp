@@ -5,8 +5,6 @@
 #include "shaders/fragment/example.hpp"
 #include "shaders/vertex/example.hpp"
 
-static mgl::string_list s_attributes = { "in_vert", "in_color" };
-
 void custom_shader::load()
 {
   MGL_CORE_ASSERT(mgl::shaders::example::vertex_shader_source().size() > 0,
@@ -19,8 +17,3 @@ void custom_shader::load()
 }
 
 void custom_shader::prepare() { }
-
-mgl::string_list& custom_shader::attributes()
-{
-  return s_attributes;
-}

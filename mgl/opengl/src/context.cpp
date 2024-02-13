@@ -431,19 +431,20 @@ namespace mgl::opengl
   vertex_array_ref context::vertex_array(program_ref program,
                                          mgl::opengl::vertex_buffer_list vertex_buffers,
                                          buffer_ref index_buffer,
-                                         int32_t index_element_size,
-                                         bool skip_errors,
-                                         mgl::opengl::render_mode mode)
+                                         int32_t index_element_size)
   {
     MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
     MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
-    auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(),
-                                                      program,
-                                                      vertex_buffers,
-                                                      index_buffer,
-                                                      index_element_size,
-                                                      skip_errors,
-                                                      mode);
+    auto vertex_array = new mgl::opengl::vertex_array(
+        shared_from_this(), program, vertex_buffers, index_buffer, index_element_size);
+    return vertex_array_ref(vertex_array);
+  }
+
+  vertex_array_ref context::vertex_array(int32_t index_element_size)
+  {
+    MGL_CORE_ASSERT(!released(), "[GL Context] Context already released or not valid.");
+    MGL_CORE_ASSERT(is_current(), "[GL Context] Resource context not current.");
+    auto vertex_array = new mgl::opengl::vertex_array(shared_from_this(), index_element_size);
     return vertex_array_ref(vertex_array);
   }
 

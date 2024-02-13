@@ -283,6 +283,8 @@ namespace mgl::opengl
     int32_t num_attributes = 0;
     glGetProgramiv(gl_object::glo(), GL_ACTIVE_ATTRIBUTES, &num_attributes);
 
+    // std::vector<std::pair<std::string, attribute>> attributes;
+
     for(int32_t i = 0; i < num_attributes; ++i)
     {
       GLenum type = 0;
@@ -300,6 +302,15 @@ namespace mgl::opengl
       };
       m_attributes_map.insert({ name, attr });
     }
+
+    // std::sort(attributes.begin(), attributes.end(), [](const auto& a, const auto& b) {
+    //   return a.second.location < b.second.location;
+    // });
+
+    // for(auto&& attr : attributes)
+    // {
+    //   m_attributes_map.insert(attr);
+    // }
 
     int32_t num_varyings = 0;
     glGetProgramiv(gl_object::glo(), GL_TRANSFORM_FEEDBACK_VARYINGS, &num_varyings);
@@ -405,6 +416,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!gl_object::released(), "[Program] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Program] Resource context not current.");
     glUseProgram(gl_object::glo());
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Program] Error on binding program.");
   }
 
   void program::unbind()

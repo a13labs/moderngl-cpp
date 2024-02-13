@@ -1,15 +1,16 @@
 #version 330
 
-in vec2 Position;
-in vec2 UV;
-in vec4 Color;
-out vec2 Frag_UV;
-out vec4 Frag_Color;
+layout(location = 0) in vec2 i_position;
+layout(location = 1) in vec2 i_uv;
+layout(location = 2) in vec4 i_color;
 
-uniform mat4 ProjMtx;
+out vec2 f_uv;
+out vec4 f_color;
+
+uniform mat4 projection;
 
 void main() {
-    Frag_UV = UV;
-    Frag_Color = Color;
-    gl_Position = ProjMtx * vec4(Position.xy, 0, 1);
+    f_uv = i_uv;
+    f_color = i_color;
+    gl_Position = projection * vec4(i_position.xy, 0, 1);
 }

@@ -399,6 +399,7 @@ namespace mgl::opengl
 
     glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(texture_target, gl_object::glo());
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::build_mipmaps(int base, int max_level)
@@ -422,6 +423,7 @@ namespace mgl::opengl
 
     m_filter = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR };
     m_max_lvl = max_level;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::set_repeat_x(bool value)
@@ -443,6 +445,7 @@ namespace mgl::opengl
     }
 
     glTexParameteri(texture_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::set_repeat_y(bool value)
@@ -464,6 +467,7 @@ namespace mgl::opengl
     }
 
     glTexParameteri(texture_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::set_filter(const texture::filter& value)
@@ -479,6 +483,7 @@ namespace mgl::opengl
     glBindTexture(texture_target, gl_object::glo());
     glTexParameteri(texture_target, GL_TEXTURE_MIN_FILTER, m_filter.min_filter);
     glTexParameteri(texture_target, GL_TEXTURE_MAG_FILTER, m_filter.mag_filter);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   std::string texture_2d::swizzle() const
@@ -510,6 +515,7 @@ namespace mgl::opengl
       0,
     };
 
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
     return swizzle;
   }
 
@@ -548,6 +554,7 @@ namespace mgl::opengl
         }
       }
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::set_compare_func(mgl::opengl::compare_func value)
@@ -571,6 +578,7 @@ namespace mgl::opengl
       glTexParameteri(texture_target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
       glTexParameteri(texture_target, GL_TEXTURE_COMPARE_FUNC, m_compare_func);
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::set_anisotropy(float value)
@@ -585,6 +593,7 @@ namespace mgl::opengl
     glBindTexture(texture_target, gl_object::glo());
 
     glTexParameterf(texture_target, GL_TEXTURE_MAX_ANISOTROPY, m_anisotropy);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
   void texture_2d::resize(int width, int height, int components, const mgl::uint8_buffer& data)
@@ -615,7 +624,7 @@ namespace mgl::opengl
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, pixel_type, data.data());
       }
 
-      return;
+      MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
     }
 
     int internal_format = m_data_type->internal_format[components];
@@ -637,6 +646,7 @@ namespace mgl::opengl
     m_width = width;
     m_height = height;
     m_components = components;
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[GL Texture2D] Error on binding texture 2d.");
   }
 
 } // namespace  mgl::opengl

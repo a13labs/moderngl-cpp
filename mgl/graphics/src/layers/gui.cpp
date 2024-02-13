@@ -240,14 +240,7 @@ namespace mgl::graphics::layers
       return;
 
     auto prg = get_shader("gui");
-
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
-
-    mgl::platform::api::render_api::enable_program(prg->api());
-    mgl::platform::api::render_api::set_program_attributes(prg->attributes());
-
-    prg->set_uniform_value("ProjMtx",
-                           glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
@@ -260,6 +253,10 @@ namespace mgl::graphics::layers
 
     auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("gui_vb"));
     auto ib = std::static_pointer_cast<mgl::platform::api::index_buffer>(get_buffer("gui_ib"));
+
+    mgl::platform::api::render_api::enable_program(prg->api());
+    mgl::platform::api::render_api::set_projection_matrix(
+        glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
     {
@@ -301,6 +298,8 @@ namespace mgl::graphics::layers
         }
       }
     }
+
+    prg->unbind();
 
     mgl::platform::api::render_api::clear_samplers(0, 1);
     mgl::platform::api::render_api::disable_program();

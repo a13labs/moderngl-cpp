@@ -94,44 +94,7 @@ namespace mgl::opengl
       }
       break;
       case context_mode::SHARE: {
-        res->standalone = false;
-
-        CGLContextObj ctx_share = CGLGetCurrentContext();
-        if(!ctx_share)
-        {
-          MGL_CORE_ERROR(
-              "[CGL Context] (share) CGLGetCurrentContext: cannot detect OpenGL context.");
-          delete res;
-          return;
-        }
-
-        CGLPixelFormatObj pixelformat = CGLGetPixelFormat(ctx_share);
-
-        if(!pixelformat)
-        {
-          MGL_CORE_ERROR("[CGL Context] (share) cannot find a suitable OpenGL pixel format.");
-          delete res;
-          return;
-        }
-
-        CGLContextObj cgl_context = nullptr;
-        CGLError error = CGLCreateContext(pixelformat, ctx_share, &cgl_context);
-        if(error != kCGLNoError)
-        {
-          MGL_CORE_ERROR("[CGL Context] (share) CGLCreateContext.");
-          delete res;
-          return;
-        }
-
-        res->ctx = cgl_context;
-
-        if(CGLSetCurrentContext(res->ctx) != kCGLNoError)
-        {
-          MGL_CORE_ERROR("[CGL Context] CGLSetCurrentContext failed.");
-          CGLDestroyContext(res->ctx);
-          delete res;
-          return;
-        }
+        MGL_CORE_ASSERT(false, "[CGL Context] (share) Share mode not supported.")
         break;
       }
       case context_mode::ATTACHED: {

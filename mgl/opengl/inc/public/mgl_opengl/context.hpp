@@ -323,9 +323,9 @@ public:
     vertex_array_ref vertex_array(program_ref program,
                                   mgl::opengl::vertex_buffer_list vertex_buffers,
                                   buffer_ref index_buffer = nullptr,
-                                  int32_t index_element_size = 4,
-                                  bool skip_errors = false,
-                                  mgl::opengl::render_mode mode = mgl::opengl::render_mode::POINTS);
+                                  int32_t index_element_size = 4);
+
+    vertex_array_ref vertex_array(int32_t index_element_size = 4);
 
     virtual void enter() = 0;
     virtual void exit() = 0;

@@ -170,11 +170,6 @@ namespace mgl::platform::api::backends
     }
   }
 
-  void opengl_api::api_set_program_attributes(const mgl::string_list& attributes)
-  {
-    m_state_data.attributes = attributes;
-  }
-
   void opengl_api::api_set_program_uniform(const std::string& uniform, bool value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
@@ -274,11 +269,10 @@ namespace mgl::platform::api::backends
 
     m_state_data.current_program->unbind();
     m_state_data.current_program = nullptr;
-    m_state_data.attributes.clear();
   }
 
-  void opengl_api::api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
-                                   const mgl::platform::api::index_buffer_ref& index_buffer,
+  void opengl_api::api_render_call(const mgl::platform::api::vertex_buffer_ref& vb,
+                                   const mgl::platform::api::index_buffer_ref& ib,
                                    int32_t count,
                                    int32_t offset,
                                    render_mode mode)
@@ -286,43 +280,25 @@ namespace mgl::platform::api::backends
     MGL_PROFILE_FUNCTION("API_RENDER_CALL");
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
 
-    if(m_state_data.current_program == nullptr)
-    {
-      MGL_CORE_ASSERT(false, "No program is bound.");
-      return;
-    }
-
     auto prg = std::static_pointer_cast<opengl::program>(m_state_data.current_program);
-    auto vbo = std::static_pointer_cast<opengl::vertex_buffer>(vertex_buffer);
+    auto vbo = std::static_pointer_cast<opengl::vertex_buffer>(vb);
+    auto vao = m_ctx->vertex_array();
+    auto opengl_vbo = mgl::opengl::vertex_buffer(
+        vbo->native(), vbo->native_layout(), prg->native()->attributes());
 
-    if(index_buffer == nullptr)
+    if(ib != nullptr)
     {
-      auto vao = m_ctx->vertex_array(prg->native(),
-                                     { { vbo->native(), vbo->layout(), m_state_data.attributes } },
-                                     nullptr,
-                                     4,
-                                     false,
-                                     internal::to_api(mode));
-
-      vao->render(internal::to_api(mode), count, offset);
-
-      vao->release();
+      auto ibo = std::static_pointer_cast<opengl::index_buffer>(ib);
+      vao->update(prg->native(), opengl_vbo, ibo->native(), ibo->element_size());
     }
     else
     {
-      auto ibo = std::static_pointer_cast<opengl::index_buffer>(index_buffer);
-
-      auto vao = m_ctx->vertex_array(prg->native(),
-                                     { { vbo->native(), vbo->layout(), m_state_data.attributes } },
-                                     ibo->native(),
-                                     ibo->element_size(),
-                                     false,
-                                     internal::to_api(mode));
-
-      vao->render(internal::to_api(mode), count, offset);
-
-      vao->release();
+      vao->update(prg->native(), opengl_vbo);
     }
+
+    vao->render(internal::to_api(mode), count, offset);
+
+    vao->release();
   }
 
   index_buffer_ref

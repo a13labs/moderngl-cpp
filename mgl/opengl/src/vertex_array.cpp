@@ -11,66 +11,17 @@
 namespace mgl::opengl
 {
   vertex_array::vertex_array(const context_ref& ctx,
-                             program_ref program,
+                             const program_ref& prg,
                              mgl::opengl::vertex_buffer_list vertex_buffers,
                              buffer_ref index_buffer,
-                             int32_t index_element_size,
-                             bool skip_errors,
-                             mgl::opengl::render_mode mode)
+                             int32_t element_size)
       : gl_object(ctx)
   {
-    MGL_CORE_ASSERT(program, "[VertexArray] Invalid program.");
-    MGL_CORE_ASSERT(!program->released(), "[VertexArray] Program already released.");
-    MGL_CORE_ASSERT(index_element_size == 1 || index_element_size == 2 || index_element_size == 4,
-                    "[VertexArray] 'index_element_size' must be 1, 2, or 4.");
-    MGL_CORE_ASSERT(program->ctx() == ctx, "[VertexArray] Program context mismatch.");
-
-#ifdef MGL_CORE_ENABLE_ASSERTS
-    int32_t i = 0;
-    for(auto&& v_data : vertex_buffers)
-    {
-      if(v_data.buffer == nullptr)
-      {
-        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' empty vertex buffer.", i);
-        return;
-      }
-
-      if(v_data.layout.is_invalid())
-      {
-        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' invalid buffer layout.", i);
-        return;
-      }
-
-      if(!v_data.attributes.size())
-      {
-        MGL_CORE_ASSERT(
-            false, "[VertexArray] 'vertex_buffers[{0}]' attributes must not be empty.", i);
-        return;
-      }
-
-      if((int32_t)v_data.attributes.size() != v_data.layout.size())
-      {
-        MGL_CORE_ASSERT(
-            false,
-            "[VertexArray] 'vertex_buffers[{0}]' format and attributes size mismatch {1} != {2}.",
-            i,
-            v_data.layout.size(),
-            v_data.attributes.size());
-        return;
-      }
-
-      i++;
-    }
-#endif
-
-    m_num_vertices = 0;
-    m_num_instances = 1;
-    m_program = program;
-    m_index_buffer = index_buffer;
-    m_index_element_size = index_element_size;
-    const int32_t element_types[5] = { 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT };
-    m_index_element_type = element_types[index_element_size];
-    m_num_vertices = -1;
+    MGL_CORE_ASSERT(prg, "[VertexArray] Invalid program.");
+    MGL_CORE_ASSERT(!prg->released(), "[VertexArray] Program already released.");
+    MGL_CORE_ASSERT(prg->ctx() == ctx, "[VertexArray] Program context mismatch.");
+    MGL_CORE_ASSERT(element_size == 1 || element_size == 2 || element_size == 4,
+                    "[VertexArray] 'element_size' must be 1, 2, or 4.");
 
     GLuint glo = 0;
     glGenVertexArrays(1, &glo);
@@ -83,71 +34,37 @@ namespace mgl::opengl
 
     gl_object::set_glo(glo);
 
-    glBindVertexArray(gl_object::glo());
+    update(prg, vertex_buffers, index_buffer, element_size);
 
-    if(m_index_buffer != nullptr)
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
+  }
+
+  vertex_array::vertex_array(const context_ref& ctx, int32_t element_size)
+      : gl_object(ctx)
+  {
+    MGL_CORE_ASSERT(element_size == 1 || element_size == 2 || element_size == 4,
+                    "[VertexArray] 'element_size' must be 1, 2, or 4.");
+
+    static const int32_t element_types[5] = {
+      0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT
+    };
+
+    m_num_vertices = 0;
+    m_index_buffer = nullptr;
+    m_element_size = element_size;
+    m_element_type = element_types[element_size];
+
+    GLuint glo = 0;
+    glGenVertexArrays(1, &glo);
+
+    if(!glo)
     {
-      m_num_vertices = (int32_t)(m_index_buffer->size() / index_element_size);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer->glo());
+      MGL_CORE_ASSERT(glo, "[VertexArray] Cannot create vertex array.");
+      return;
     }
 
-    i = 0;
-    for(auto&& v_data : vertex_buffers)
-    {
-      if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
-         (!i || m_num_vertices > v_data.vertex_count))
-      {
-        m_num_vertices = v_data.vertex_count;
-      }
-
-      glBindBuffer(GL_ARRAY_BUFFER, v_data.buffer->glo());
-
-      for(size_t j = 0; j < v_data.attributes.size(); ++j)
-      {
-        if(!m_program->has_attribute(v_data.attributes[j]))
-        {
-          continue;
-        }
-
-        auto attr = m_program->get_attribute(v_data.attributes[j]);
-
-        buffer_layout::element element = v_data.layout[j];
-        int32_t attribute_location = attr.location;
-        int32_t attribute_rows_length = attr.data_type->rows_length;
-        int32_t attribute_scalar_type = attr.data_type->scalar_type;
-
-        char* ptr = (char*)(intptr_t)element.offset;
-        for(int32_t r = 0; r < attribute_rows_length; ++r)
-        {
-          int32_t location = attribute_location + r;
-          int32_t count = element.count / attribute_rows_length;
-
-          switch(attribute_scalar_type)
-          {
-            case GL_FLOAT:
-              glVertexAttribPointer(
-                  location, count, element.type, element.normalize, v_data.layout.stride(), ptr);
-              break;
-            case GL_DOUBLE:
-              glVertexAttribLPointer(location, count, element.type, v_data.layout.stride(), ptr);
-              break;
-            case GL_INT:
-              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
-              break;
-            case GL_UNSIGNED_INT:
-              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
-              break;
-          }
-
-          glVertexAttribDivisor(location, v_data.layout.divisor());
-          glEnableVertexAttribArray(location);
-          ptr += element.size / attribute_rows_length;
-        }
-      }
-      i++;
-    }
-
-    glBindVertexArray(0);
+    gl_object::set_glo(glo);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
   }
 
   void vertex_array::release()
@@ -168,6 +85,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!gl_object::released(),
                     "[VertexArray] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
+    MGL_CORE_ASSERT(instances > 0, "[VertexArray] Invalid number of instances. Requires > 0.")
 
     if(vertices == 0)
     {
@@ -175,23 +93,18 @@ namespace mgl::opengl
       vertices = m_num_vertices;
     }
 
-    if(instances == 0)
-    {
-      instances = m_num_instances;
-    }
-
-    glUseProgram(m_program->glo());
     glBindVertexArray(gl_object::glo());
-
     if(m_index_buffer != nullptr)
     {
-      const void* ptr = (const void*)((GLintptr)first * m_index_element_size);
-      glDrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
+      const void* ptr = (const void*)((GLintptr)first * m_element_size);
+      glDrawElementsInstanced(mode, vertices, m_element_type, ptr, instances);
     }
     else
     {
       glDrawArraysInstanced(mode, first, vertices, instances);
     }
+    glBindVertexArray(0);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
   }
 
   void vertex_array::render_indirect(const buffer_ref& indirect_commands,
@@ -206,7 +119,6 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(indirect_commands->size() >= (first + count) * sizeof(draw_indirect_command),
                     "[VertexArray] 'indirect_commands' size is invalid.");
 
-    glUseProgram(m_program->glo());
     glBindVertexArray(gl_object::glo());
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirect_commands->glo());
 
@@ -214,16 +126,18 @@ namespace mgl::opengl
 
     if(m_index_buffer != nullptr)
     {
-      glMultiDrawElementsIndirect(
-          mode, m_index_element_type, ptr, count, sizeof(draw_indirect_command));
+      glMultiDrawElementsIndirect(mode, m_element_type, ptr, count, sizeof(draw_indirect_command));
     }
     else
     {
       glMultiDrawArraysIndirect(mode, ptr, count, sizeof(draw_indirect_command));
     }
+    glBindVertexArray(0);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
   }
 
-  void vertex_array::transform(const mgl::ref_list<buffer>& buffers,
+  void vertex_array::transform(const program_ref& prg,
+                               const mgl::ref_list<buffer>& buffers,
                                mgl::opengl::render_mode mode,
                                int32_t vertices,
                                int32_t first,
@@ -233,7 +147,8 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!gl_object::released(),
                     "[VertexArray] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
-    MGL_CORE_ASSERT(m_program->num_varyings(), "[VertexArray] Program has no varyings.")
+    MGL_CORE_ASSERT(prg->num_varyings(), "[VertexArray] Program has no varyings.")
+    MGL_CORE_ASSERT(instances > 0, "[VertexArray] Invalid number of instances. Requires > 0.")
 
     if(vertices < 0)
     {
@@ -241,22 +156,17 @@ namespace mgl::opengl
       vertices = m_num_vertices;
     }
 
-    if(instances < 0)
-    {
-      instances = m_num_instances;
-    }
-
     int32_t output_mode = -1;
 
     // If a geo shader is present we need to sanity check the the rendering mode
-    if(m_program->geometry_output() > -1)
+    if(prg->geometry_output() > -1)
     {
-      output_mode = m_program->geometry_output();
+      output_mode = prg->geometry_output();
 
       // The rendering mode must match the input type in the geometry shader
       // points, lines, lines_adjacency, triangles, triangles_adjacency
 #ifdef MGL_CORE_ENABLE_ASSERTS
-      switch(m_program->geometry_input())
+      switch(prg->geometry_input())
       {
         case GL_POINTS:
           MGL_CORE_ASSERT(mode == GL_POINTS,
@@ -289,7 +199,7 @@ namespace mgl::opengl
           break;
         default:
           MGL_CORE_ERROR("[VertexArray] Unexpected geometry shader input mode '{0}'.",
-                         m_program->geometry_input());
+                         prg->geometry_input());
           return;
           break;
       }
@@ -316,7 +226,7 @@ namespace mgl::opengl
       }
     }
 
-    glUseProgram(m_program->glo());
+    glUseProgram(prg->glo());
     glBindVertexArray(gl_object::glo());
 
     int32_t i = 0;
@@ -335,8 +245,8 @@ namespace mgl::opengl
 
     if(m_index_buffer != nullptr)
     {
-      const void* ptr = (const void*)((GLintptr)first * m_index_element_size);
-      glDrawElementsInstanced(mode, vertices, m_index_element_type, ptr, instances);
+      const void* ptr = (const void*)((GLintptr)first * m_element_size);
+      glDrawElementsInstanced(mode, vertices, m_element_type, ptr, instances);
     }
     else
     {
@@ -387,12 +297,138 @@ namespace mgl::opengl
 
     glVertexAttribDivisor(location, divisor);
     glEnableVertexAttribArray(location);
+    glBindVertexArray(0);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
   }
 
-  void vertex_array::set_index_buffer(const buffer_ref& value)
+  void vertex_array::update(const program_ref& prg,
+                            mgl::opengl::vertex_buffer_list vertex_buffers,
+                            const buffer_ref& index_buffer,
+                            int32_t element_size)
   {
-    m_index_buffer = value;
-    m_num_vertices = (int32_t)(m_index_buffer->size() / sizeof(uint32_t));
+    MGL_CORE_ASSERT(!gl_object::released(),
+                    "[VertexArray] Resource already released or not valid.");
+    MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[VertexArray] Resource context not current.");
+    MGL_CORE_ASSERT(prg, "[VertexArray] Invalid program.");
+    MGL_CORE_ASSERT(!prg->released(), "[VertexArray] Program already released.");
+    MGL_CORE_ASSERT(prg->ctx() == ctx(), "[VertexArray] Program context mismatch.");
+    MGL_CORE_ASSERT(element_size == 1 || element_size == 2 || element_size == 4,
+                    "[VertexArray] 'element_size' must be 1, 2, or 4.");
+
+    static const int32_t element_types[5] = {
+      0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_UNSIGNED_INT
+    };
+
+#ifdef MGL_CORE_ENABLE_ASSERTS
+    int32_t i = 0;
+    for(auto&& v_data : vertex_buffers)
+    {
+      if(v_data.buffer == nullptr)
+      {
+        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' empty vertex buffer.", i);
+        return;
+      }
+
+      if(v_data.layout.is_invalid())
+      {
+        MGL_CORE_ASSERT(false, "[VertexArray] 'vertex_buffers[{0}]' invalid buffer layout.", i);
+        return;
+      }
+
+      if(!v_data.attributes.size())
+      {
+        MGL_CORE_ASSERT(
+            false, "[VertexArray] 'vertex_buffers[{0}]' attributes must not be empty.", i);
+        return;
+      }
+
+      if((int32_t)v_data.attributes.size() != v_data.layout.size())
+      {
+        MGL_CORE_ASSERT(
+            false,
+            "[VertexArray] 'vertex_buffers[{0}]' format and attributes size mismatch {1} != {2}.",
+            i,
+            v_data.layout.size(),
+            v_data.attributes.size());
+        return;
+      }
+
+      i++;
+    }
+#endif
+
+    m_num_vertices = 0;
+    m_index_buffer = index_buffer;
+    m_element_size = element_size;
+    m_element_type = element_types[element_size];
+
+    glBindVertexArray(gl_object::glo());
+
+    if(m_index_buffer != nullptr)
+    {
+      m_num_vertices = (int32_t)(m_index_buffer->size() / element_size);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer->glo());
+    }
+
+    i = 0;
+    for(auto&& v_data : vertex_buffers)
+    {
+      if(!v_data.layout.divisor() && m_index_buffer == nullptr &&
+         (!i || m_num_vertices > v_data.vertex_count))
+      {
+        m_num_vertices = v_data.vertex_count;
+      }
+
+      glBindBuffer(GL_ARRAY_BUFFER, v_data.buffer->glo());
+
+      for(size_t j = 0; j < v_data.attributes.size(); ++j)
+      {
+        MGL_CORE_ASSERT(prg->has_attribute(v_data.attributes[j]),
+                        "[VertexArray] Invalid attribute location.")
+
+        auto attr = prg->get_attribute(v_data.attributes[j]);
+        int32_t attribute_location = attr.location;
+
+        MGL_CORE_ASSERT(v_data.layout.elements().size() > attr.location,
+                        "[VertexArray] Invalid attribute location.");
+
+        buffer_layout::element element = v_data.layout[attr.location];
+        int32_t attribute_rows_length = attr.data_type->rows_length;
+        int32_t attribute_scalar_type = attr.data_type->scalar_type;
+
+        char* ptr = (char*)(intptr_t)element.offset;
+        for(int32_t r = 0; r < attribute_rows_length; ++r)
+        {
+          int32_t location = attribute_location + r;
+          int32_t count = element.count / attribute_rows_length;
+
+          switch(attribute_scalar_type)
+          {
+            case GL_FLOAT:
+              glVertexAttribPointer(
+                  location, count, element.type, element.normalize, v_data.layout.stride(), ptr);
+              break;
+            case GL_DOUBLE:
+              glVertexAttribLPointer(location, count, element.type, v_data.layout.stride(), ptr);
+              break;
+            case GL_INT:
+              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
+              break;
+            case GL_UNSIGNED_INT:
+              glVertexAttribIPointer(location, count, element.type, v_data.layout.stride(), ptr);
+              break;
+          }
+
+          glVertexAttribDivisor(location, v_data.layout.divisor());
+          glEnableVertexAttribArray(location);
+          ptr += element.size / attribute_rows_length;
+        }
+      }
+      i++;
+    }
+
+    glBindVertexArray(0);
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[VertexArray] OpenGL error.");
   }
 
 } // namespace  mgl::opengl
