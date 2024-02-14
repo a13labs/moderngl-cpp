@@ -89,6 +89,8 @@ public:
     virtual void toggle_full_screen() = 0;
     virtual mgl::size get_drawable_size() = 0;
 
+    virtual bool is_minimized() = 0;
+
     virtual int width() = 0;
     virtual int height() = 0;
     virtual float aspect_ratio() = 0;

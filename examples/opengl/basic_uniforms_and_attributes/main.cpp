@@ -2,7 +2,7 @@
 
 #include "mgl_core/math.hpp"
 #include "mgl_opengl/context.hpp"
-#include "mgl_platform/api/backends/opengl/api.hpp"
+#include "mgl_platform/api/opengl/api.hpp"
 #include "mgl_platform/window.hpp"
 
 class example : public mgl::platform::window
@@ -23,7 +23,7 @@ class example : public mgl::platform::window
 
 void example::on_update(float time, float frame_time)
 {
-  const auto ctx = mgl::platform::api::backends::opengl_api::current_context();
+  const auto ctx = mgl::platform::api::backends::ogl_api::current_context();
 
   float sin_scale = static_cast<float>(sin(mgl::math::deg2rad(time * 60)));
 
@@ -39,7 +39,7 @@ bool example::on_load()
 {
   set_title("Uniforms and Attributes Example");
 
-  const auto ctx = mgl::platform::api::backends::opengl_api::current_context();
+  const auto ctx = mgl::platform::api::backends::ogl_api::current_context();
   m_program = ctx->program({
       R"(
                 #version 330

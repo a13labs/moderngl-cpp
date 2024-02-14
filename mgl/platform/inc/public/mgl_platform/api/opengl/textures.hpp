@@ -9,15 +9,17 @@
 #include "mgl_opengl/texture_3d.hpp"
 #include "mgl_opengl/texture_cube.hpp"
 
-namespace mgl::platform::api::backends::opengl
+namespace mgl::platform::api::backends
 {
+  class ogl_texture_2d;
+  using ogl_texture_2d_ref = mgl::ref<ogl_texture_2d>;
 
-  class texture_2d : public mgl::platform::api::texture_2d
+  class ogl_texture_2d : public mgl::platform::api::texture_2d
   {
 public:
-    texture_2d(const mgl::size& size, int32_t components, int32_t samples);
+    ogl_texture_2d(const mgl::size& size, int32_t components, int32_t samples);
 
-    virtual ~texture_2d() = default;
+    virtual ~ogl_texture_2d() = default;
 
     virtual void release() override final { m_texture->release(); }
 
@@ -52,4 +54,4 @@ private:
     friend class opengl_api;
     mgl::opengl::texture_2d_ref m_texture;
   };
-} // namespace mgl::platform::api::backends::opengl
+} // namespace mgl::platform::api::backends

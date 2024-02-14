@@ -6,24 +6,24 @@
 #include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/buffer_layout.hpp"
 
-namespace mgl::platform::api::backends::opengl
+namespace mgl::platform::api::backends
 {
   template <typename T>
-  class buffer : public T
+  class ogl_buffer : public T
   {
 public:
-    buffer(size_t size, bool dynamic)
+    ogl_buffer(size_t size, bool dynamic)
         : m_buffer(nullptr)
         , m_req_size(size)
         , m_req_dynamic(dynamic)
     { }
 
-    virtual ~buffer() = default;
+    virtual ~ogl_buffer() = default;
 
     virtual void allocate() override
     {
       MGL_CORE_ASSERT(!m_buffer, "Buffer is already allocated");
-      auto& ctx = opengl_api::current_context();
+      auto& ctx = ogl_api::current_context();
       m_buffer = ctx->buffer(m_req_size, m_req_dynamic);
       m_buffer->orphan(m_req_size);
     }
@@ -195,32 +195,32 @@ private:
     bool m_req_dynamic;
   };
 
-  class vertex_buffer : public buffer<mgl::platform::api::vertex_buffer>
+  class ogl_vertex_buffer : public ogl_buffer<mgl::platform::api::vertex_buffer>
   {
 public:
-    vertex_buffer(const std::string& layout,
-                  const mgl::string_list attrs,
-                  size_t size = 0,
-                  bool dynamic = false)
-        : buffer(size, dynamic)
+    ogl_vertex_buffer(const std::string& layout,
+                      const mgl::string_list attrs,
+                      size_t size = 0,
+                      bool dynamic = false)
+        : ogl_buffer(size, dynamic)
         , m_vbo(nullptr, layout, attrs)
     { }
 
+    virtual ~ogl_vertex_buffer() = default;
+
     virtual void allocate() override final
     {
-      buffer::allocate();
+      ogl_buffer::allocate();
       m_vbo.buffer = m_buffer;
       m_vbo.vertex_count = m_buffer->size() / m_vbo.layout.size();
     }
 
     virtual void free() override final
     {
-      buffer::free();
+      ogl_buffer::free();
       m_vbo.buffer = nullptr;
       m_vbo.vertex_count = 0;
     }
-
-    virtual ~vertex_buffer() = default;
 
     virtual const std::string& layout() const override final { return m_vbo.layout.layout(); }
 
@@ -232,15 +232,15 @@ private:
     mgl::opengl::vertex_buffer m_vbo;
   };
 
-  class index_buffer : public buffer<mgl::platform::api::index_buffer>
+  class ogl_index_buffer : public ogl_buffer<mgl::platform::api::index_buffer>
   {
 public:
-    index_buffer(size_t size = 0, uint16_t element_size = 4, bool dynamic = false)
-        : buffer(size, dynamic)
+    ogl_index_buffer(size_t size = 0, uint16_t element_size = 4, bool dynamic = false)
+        : ogl_buffer(size, dynamic)
         , m_element_size(element_size)
     { }
 
-    virtual ~index_buffer() = default;
+    virtual ~ogl_index_buffer() = default;
 
     virtual uint16_t element_size() const override final { return m_element_size; }
 
@@ -248,7 +248,7 @@ private:
     uint16_t m_element_size;
   };
 
-  using vertex_buffer_ref = mgl::ref<vertex_buffer>;
-  using index_buffer_ref = mgl::ref<index_buffer>;
+  using ogl_vertex_buffer_ref = mgl::ref<ogl_vertex_buffer>;
+  using ogl_index_buffer_ref = mgl::ref<ogl_index_buffer>;
 
-} // namespace mgl::platform::api::backends::opengl
+} // namespace mgl::platform::api::backends

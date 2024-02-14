@@ -432,4 +432,9 @@ namespace mgl::platform
     return { x, y };
   }
 
+  bool sdl_window::is_minimized()
+  {
+    return SDL_GetWindowFlags(m_api_window) & SDL_WINDOW_MINIMIZED;
+  }
+
 } // namespace  mgl::platform

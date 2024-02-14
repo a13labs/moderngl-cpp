@@ -4,6 +4,7 @@
 #include "enums.hpp"
 #include "program.hpp"
 #include "textures.hpp"
+#include "vertex_array.hpp"
 
 #include "mgl_registry/resources/image.hpp"
 
@@ -133,6 +134,9 @@ private:
                                                        mgl::string_list attrs,
                                                        size_t size,
                                                        bool dynamic) = 0;
+
+    virtual vertex_array_ref api_create_vertex_array(const vertex_buffer_ref& vbo,
+                                                     const index_buffer_ref ibo) = 0;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
 
@@ -429,6 +433,12 @@ public:
                                                   bool dynamic = false)
     {
       return render_api::instance().api_create_vertex_buffer(layout, attrs, size, dynamic);
+    }
+
+    static vertex_array_ref create_vertex_array(const vertex_buffer_ref& vbo,
+                                                const index_buffer_ref ibo)
+    {
+      return render_api::instance().api_create_vertex_array(vbo, ibo);
     }
 
     static buffer_ref create_buffer(size_t size, bool dynamic = false)

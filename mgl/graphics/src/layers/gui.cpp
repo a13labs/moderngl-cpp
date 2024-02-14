@@ -259,6 +259,8 @@ namespace mgl::graphics::layers
     mgl::platform::api::render_api::set_projection_matrix(
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
+    auto vao = mgl::platform::api::render_api::create_vertex_array(vb, ib);
+
     for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
     {
       const ImDrawList* cmd_list = draw_data->CmdLists[n];
@@ -289,16 +291,15 @@ namespace mgl::graphics::layers
           auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
           mgl::platform::api::render_api::bind_texture(0, tex->api());
 
-          mgl::platform::api::render_api::render_call(vb,
-                                                      ib,
-                                                      pcmd->ElemCount,
-                                                      idx_buffer_offset,
-                                                      mgl::platform::api::render_mode::TRIANGLES);
+          vao->render(
+              mgl::platform::api::render_mode::TRIANGLES, pcmd->ElemCount, idx_buffer_offset);
 
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
     }
+
+    vao->release();
 
     mgl::platform::api::render_api::disable_program();
     mgl::platform::api::render_api::clear_samplers(0, 1);

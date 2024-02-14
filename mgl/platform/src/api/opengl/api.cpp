@@ -1,7 +1,8 @@
-#include "mgl_platform/api/backends/opengl/api.hpp"
-#include "mgl_platform/api/backends/opengl/buffers.hpp"
-#include "mgl_platform/api/backends/opengl/program.hpp"
-#include "mgl_platform/api/backends/opengl/textures.hpp"
+#include "mgl_platform/api/opengl/api.hpp"
+#include "mgl_platform/api/opengl/buffers.hpp"
+#include "mgl_platform/api/opengl/program.hpp"
+#include "mgl_platform/api/opengl/textures.hpp"
+#include "mgl_platform/api/opengl/vertex_array.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
@@ -30,7 +31,7 @@ namespace mgl::platform::api::backends
 
   // static const char* quad_layout = "2f 2f";
 
-  bool opengl_api::api_init()
+  bool ogl_api::api_init()
   {
     m_ctx = mgl::opengl::create_context(mgl::opengl::context_mode::ATTACHED, 330);
 
@@ -48,84 +49,83 @@ namespace mgl::platform::api::backends
     return true;
   }
 
-  void opengl_api::api_shutdown()
+  void ogl_api::api_shutdown()
   {
     MGL_PROFILE_FUNCTION("API_SHUTDOWN");
     // s_quad->deallocate();
     // delete s_quad;
   }
 
-  void opengl_api::api_bind_screen_framebuffer()
+  void ogl_api::api_bind_screen_framebuffer()
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->screen().use();
   }
 
-  void opengl_api::api_update_window_size(const glm::ivec2& size)
+  void ogl_api::api_update_window_size(const glm::ivec2& size)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->screen().set_viewport({ 0, 0, size.x, size.y });
   }
 
-  void opengl_api::api_enable_scissor()
+  void ogl_api::api_enable_scissor()
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->enable_scissor();
   }
 
-  void opengl_api::api_disable_scissor()
+  void ogl_api::api_disable_scissor()
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->disable_scissor();
   }
 
-  void opengl_api::api_set_scissor(const glm::vec2& position, const glm::vec2& size)
+  void ogl_api::api_set_scissor(const glm::vec2& position, const glm::vec2& size)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->set_scissor(position.x, position.y, size.x, size.y);
   }
 
-  void opengl_api::api_enable_state(int32_t state)
+  void ogl_api::api_enable_state(int32_t state)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->enable(state);
   }
 
-  void opengl_api::api_disable_state(int32_t state)
+  void ogl_api::api_disable_state(int32_t state)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->disable(state);
   }
 
-  void opengl_api::api_clear(const glm::vec4& color)
+  void ogl_api::api_clear(const glm::vec4& color)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->clear(color);
   }
 
-  void opengl_api::api_set_viewport(const glm::vec2& position, const glm::vec2& size)
+  void ogl_api::api_set_viewport(const glm::vec2& position, const glm::vec2& size)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->set_viewport(position.x, position.y, size.x, size.y);
   }
 
-  void opengl_api::api_clear_samplers(int32_t start, int32_t end)
+  void ogl_api::api_clear_samplers(int32_t start, int32_t end)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->clear_samplers(start, end);
   }
 
-  void opengl_api::api_set_blend_equation(blend_equation_mode modeRGB,
-                                          blend_equation_mode modeAlpha)
+  void ogl_api::api_set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->set_blend_equation(internal::to_api(modeRGB), internal::to_api(modeAlpha));
   }
 
-  void opengl_api::api_set_blend_func(blend_factor srcRGB,
-                                      blend_factor dstRGB,
-                                      blend_factor srcAlpha,
-                                      blend_factor dstAlpha)
+  void ogl_api::api_set_blend_func(blend_factor srcRGB,
+                                   blend_factor dstRGB,
+                                   blend_factor srcAlpha,
+                                   blend_factor dstAlpha)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->set_blend_func(internal::to_api(srcRGB),
@@ -134,7 +134,7 @@ namespace mgl::platform::api::backends
                           internal::to_api(dstAlpha));
   }
 
-  void opengl_api::api_set_view_matrix(const glm::mat4& matrix)
+  void ogl_api::api_set_view_matrix(const glm::mat4& matrix)
   {
     m_state_data.view_matrix = matrix;
     if(m_state_data.current_program != nullptr)
@@ -143,7 +143,7 @@ namespace mgl::platform::api::backends
     }
   }
 
-  void opengl_api::api_set_projection_matrix(const glm::mat4& matrix)
+  void ogl_api::api_set_projection_matrix(const glm::mat4& matrix)
   {
     m_state_data.projection_matrix = matrix;
     if(m_state_data.current_program != nullptr)
@@ -152,7 +152,7 @@ namespace mgl::platform::api::backends
     }
   }
 
-  void opengl_api::api_enable_program(const program_ref& prg)
+  void ogl_api::api_enable_program(const program_ref& prg)
   {
     MGL_CORE_ASSERT(prg != nullptr, "Program is null");
     m_state_data.current_program = prg;
@@ -170,97 +170,97 @@ namespace mgl::platform::api::backends
     }
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, bool value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, bool value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, int32_t value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, int32_t value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, float value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, float value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::vec2& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::vec3& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::vec4& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x3& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x4& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x2& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x4& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x2& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x3& value)
+  void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
     m_state_data.current_program->set_value(uniform, value);
   }
 
-  void opengl_api::api_disable_program()
+  void ogl_api::api_disable_program()
   {
     if(m_state_data.current_program == nullptr)
     {
@@ -271,13 +271,13 @@ namespace mgl::platform::api::backends
     m_state_data.current_program = nullptr;
   }
 
-  void opengl_api::api_bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture)
+  void ogl_api::api_bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     switch(texture->texture_type())
     {
       case mgl::platform::api::texture::type::TEXTURE_2D: {
-        auto tex = std::static_pointer_cast<opengl::texture_2d>(texture);
+        auto tex = std::static_pointer_cast<ogl_texture_2d>(texture);
         tex->bind(unit);
         break;
       }
@@ -293,78 +293,69 @@ namespace mgl::platform::api::backends
     }
   }
 
-  void opengl_api::api_render_call(const mgl::platform::api::vertex_buffer_ref& vb,
-                                   const mgl::platform::api::index_buffer_ref& ib,
-                                   int32_t count,
-                                   int32_t offset,
-                                   render_mode mode)
+  void ogl_api::api_render_call(const mgl::platform::api::vertex_buffer_ref& vb,
+                                const mgl::platform::api::index_buffer_ref& ib,
+                                int32_t count,
+                                int32_t offset,
+                                render_mode mode)
   {
     MGL_PROFILE_FUNCTION("API_RENDER_CALL");
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-
-    auto prg = std::static_pointer_cast<opengl::program>(m_state_data.current_program);
-    auto vbo = std::static_pointer_cast<opengl::vertex_buffer>(vb);
-
-    if(ib)
-    {
-      auto ibo = std::static_pointer_cast<opengl::index_buffer>(ib);
-      auto vao = m_ctx->vertex_array(
-          prg->native(), { vbo->native_vbo() }, ibo->native(), ibo->element_size());
-      vao->render(internal::to_api(mode), count, offset);
-      vao->release();
-    }
-    else
-    {
-      auto vao = m_ctx->vertex_array(prg->native(), { vbo->native_vbo() });
-      vao->render(internal::to_api(mode), count, offset);
-      vao->release();
-    }
+    auto vao = create_vertex_array(vb, ib);
+    vao->render(mode, count, offset);
+    vao->release();
   }
 
   index_buffer_ref
-  opengl_api::api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic)
+  ogl_api::api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    return mgl::create_ref<opengl::index_buffer>(size, element_size, dynamic);
+    return mgl::create_ref<ogl_index_buffer>(size, element_size, dynamic);
   }
 
-  vertex_buffer_ref opengl_api::api_create_vertex_buffer(const std::string& layout,
-                                                         mgl::string_list attrs,
-                                                         size_t size,
-                                                         bool dynamic)
+  vertex_buffer_ref ogl_api::api_create_vertex_buffer(const std::string& layout,
+                                                      mgl::string_list attrs,
+                                                      size_t size,
+                                                      bool dynamic)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    return mgl::create_ref<opengl::vertex_buffer>(layout, attrs, size, dynamic);
+    return mgl::create_ref<ogl_vertex_buffer>(layout, attrs, size, dynamic);
   }
 
-  buffer_ref opengl_api::api_create_buffer(size_t size, bool dynamic)
+  vertex_array_ref ogl_api::api_create_vertex_array(const vertex_buffer_ref& vbo,
+                                                    const index_buffer_ref ibo)
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    MGL_CORE_ASSERT(m_state_data.current_program, "No program bound");
+    return mgl::create_ref<ogl_vertex_array>(m_state_data.current_program, vbo, ibo);
+  }
+
+  buffer_ref ogl_api::api_create_buffer(size_t size, bool dynamic)
   {
     // MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    // return mgl::create_ref<opengl::buffer>(size, dynamic);
+    // return mgl::create_ref<ogl_buffer>(size, dynamic);
     MGL_CORE_ASSERT(false, "Not implemented");
     return nullptr;
   }
 
-  program_ref opengl_api::api_create_program(const std::string& vs_source,
-                                             const std::string& fs_source,
-                                             const std::string& gs_source,
-                                             const std::string& tes_source,
-                                             const std::string& tcs_source,
-                                             const std::string& filename)
+  program_ref ogl_api::api_create_program(const std::string& vs_source,
+                                          const std::string& fs_source,
+                                          const std::string& gs_source,
+                                          const std::string& tes_source,
+                                          const std::string& tcs_source,
+                                          const std::string& filename)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
 
-    return mgl::create_ref<opengl::program>(
+    return mgl::create_ref<ogl_program>(
         vs_source, fs_source, gs_source, tes_source, tcs_source, filename);
   }
 
-  texture_2d_ref opengl_api::api_create_texture_2d(int32_t width,
-                                                   int32_t height,
-                                                   int32_t components,
-                                                   int32_t samples)
+  texture_2d_ref
+  ogl_api::api_create_texture_2d(int32_t width, int32_t height, int32_t components, int32_t samples)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    return mgl::create_ref<opengl::texture_2d>(mgl::size{ width, height }, components, samples);
+    return mgl::create_ref<ogl_texture_2d>(mgl::size{ width, height }, components, samples);
   }
 
 }; // namespace mgl::platform::api::backends

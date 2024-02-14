@@ -5,12 +5,12 @@
 
 namespace mgl::platform::api::backends
 {
-  class opengl_api : public render_api
+  class ogl_api : public render_api
   {
 public:
-    opengl_api() { }
+    ogl_api() { }
 
-    virtual ~opengl_api() = default;
+    virtual ~ogl_api() = default;
 
     mgl::opengl::context_ref& get_context() { return m_ctx; }
 
@@ -20,7 +20,7 @@ public:
     {
       auto& api = mgl::platform::api::render_api::instance();
       MGL_CORE_ASSERT(api.api() == render_api::dialect::OPENGL, "Invalid API");
-      return static_cast<mgl::platform::api::backends::opengl_api&>(api).get_context();
+      return static_cast<mgl::platform::api::backends::ogl_api&>(api).get_context();
     }
 
 private:
@@ -106,11 +106,10 @@ private:
 
     virtual void api_disable_program() override final;
 
-    virtual void api_bind_texture(int32_t unit,
-                                  const mgl::platform::api::texture_ref& texture) override final;
+    virtual void api_bind_texture(int32_t unit, const texture_ref& texture) override final;
 
-    virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
-                                 const mgl::platform::api::index_buffer_ref& index_buffer,
+    virtual void api_render_call(const vertex_buffer_ref& vertex_buffer,
+                                 const index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
                                  render_mode mode) override final;
@@ -122,6 +121,9 @@ private:
                                                        mgl::string_list attrs,
                                                        size_t size,
                                                        bool dynamic) override final;
+
+    virtual vertex_array_ref api_create_vertex_array(const vertex_buffer_ref& vbo,
+                                                     const index_buffer_ref ibo) override final;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) override final;
 

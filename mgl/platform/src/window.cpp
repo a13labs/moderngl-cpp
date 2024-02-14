@@ -89,7 +89,14 @@ namespace mgl::platform
     while(m_running)
     {
       m_api_window->process_events();
+
       auto frame_time = m_timer.next_frame();
+
+      if(m_api_window->is_minimized())
+      {
+        continue;
+      }
+
       on_update(frame_time.current, frame_time.delta);
       m_api_window->swap_buffers();
 
@@ -109,6 +116,10 @@ namespace mgl::platform
 
   bool window::on_window_resize(window_resize_event& event)
   {
+    if(!m_running)
+    {
+      return true;
+    }
     auto size = m_api_window->get_drawable_size();
     mgl::platform::api::render_api::update_window_size(glm::vec2(size.width, size.height));
     return true;

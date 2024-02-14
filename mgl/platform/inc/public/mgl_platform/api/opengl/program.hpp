@@ -7,19 +7,22 @@
 
 #include "mgl_opengl/program.hpp"
 
-namespace mgl::platform::api::backends::opengl
+namespace mgl::platform::api::backends
 {
-  class program : public mgl::platform::api::program
+  class ogl_program;
+  using ogl_program_ref = mgl::ref<ogl_program>;
+
+  class ogl_program : public mgl::platform::api::program
   {
 public:
-    program(const std::string& vs_source,
-            const std::string& fs_source,
-            const std::string& gs_source = "",
-            const std::string& tes_source = "",
-            const std::string& tcs_source = "",
-            const std::string& filename = "");
+    ogl_program(const std::string& vs_source,
+                const std::string& fs_source,
+                const std::string& gs_source = "",
+                const std::string& tes_source = "",
+                const std::string& tcs_source = "",
+                const std::string& filename = "");
 
-    virtual ~program() = default;
+    virtual ~ogl_program() = default;
 
     virtual void release() override final { m_program->release(); }
 
@@ -646,4 +649,4 @@ protected:
   };
 
   using program_ref = mgl::ref<program>;
-} // namespace mgl::platform::api::backends::opengl
+} // namespace mgl::platform::api::backends
