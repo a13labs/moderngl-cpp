@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/query.hpp"
 #include "mgl_opengl/context.hpp"
 
@@ -23,53 +7,91 @@
 
 namespace mgl::opengl
 {
+  query::query(const context_ref& ctx,
+               bool samples,
+               bool any_samples,
+               bool time_elapsed,
+               bool primitives_generated)
+      : m_ctx(ctx)
+  {
+
+    if(!(samples || any_samples || time_elapsed || primitives_generated))
+    {
+      samples = true;
+      any_samples = true;
+      time_elapsed = true;
+      primitives_generated = true;
+    }
+
+    m_glo[query::keys::SAMPLES_PASSED] = 0;
+    m_glo[query::keys::ANY_SAMPLES_PASSED] = 0;
+    m_glo[query::keys::TIME_ELAPSED] = 0;
+    m_glo[query::keys::PRIMITIVES_GENERATED] = 0;
+
+    if(samples)
+    {
+      glGenQueries(1, (GLuint*)&m_glo[query::keys::SAMPLES_PASSED]);
+    }
+
+    if(any_samples)
+    {
+      glGenQueries(1, (GLuint*)&m_glo[query::keys::ANY_SAMPLES_PASSED]);
+    }
+
+    if(time_elapsed)
+    {
+      glGenQueries(1, (GLuint*)&m_glo[query::keys::TIME_ELAPSED]);
+    }
+
+    if(primitives_generated)
+    {
+      glGenQueries(1, (GLuint*)&m_glo[query::keys::PRIMITIVES_GENERATED]);
+    }
+  }
+
   void query::begin()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
-    if(m_query_obj[query::keys::SAMPLES_PASSED])
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    if(m_glo[query::keys::SAMPLES_PASSED])
     {
-      glBeginQuery(GL_SAMPLES_PASSED, m_query_obj[query::keys::SAMPLES_PASSED]);
+      glBeginQuery(GL_SAMPLES_PASSED, m_glo[query::keys::SAMPLES_PASSED]);
     }
 
-    if(m_query_obj[query::keys::ANY_SAMPLES_PASSED])
+    if(m_glo[query::keys::ANY_SAMPLES_PASSED])
     {
-      glBeginQuery(GL_ANY_SAMPLES_PASSED, m_query_obj[query::keys::ANY_SAMPLES_PASSED]);
+      glBeginQuery(GL_ANY_SAMPLES_PASSED, m_glo[query::keys::ANY_SAMPLES_PASSED]);
     }
 
-    if(m_query_obj[query::keys::TIME_ELAPSED])
+    if(m_glo[query::keys::TIME_ELAPSED])
     {
-      glBeginQuery(GL_TIME_ELAPSED, m_query_obj[query::keys::TIME_ELAPSED]);
+      glBeginQuery(GL_TIME_ELAPSED, m_glo[query::keys::TIME_ELAPSED]);
     }
 
-    if(m_query_obj[query::keys::PRIMITIVES_GENERATED])
+    if(m_glo[query::keys::PRIMITIVES_GENERATED])
     {
-      glBeginQuery(GL_PRIMITIVES_GENERATED, m_query_obj[query::keys::PRIMITIVES_GENERATED]);
+      glBeginQuery(GL_PRIMITIVES_GENERATED, m_glo[query::keys::PRIMITIVES_GENERATED]);
     }
   }
 
   void query::end()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
-    if(m_query_obj[query::keys::SAMPLES_PASSED])
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    if(m_glo[query::keys::SAMPLES_PASSED])
     {
       glEndQuery(GL_SAMPLES_PASSED);
     }
 
-    if(m_query_obj[query::keys::ANY_SAMPLES_PASSED])
+    if(m_glo[query::keys::ANY_SAMPLES_PASSED])
     {
       glEndQuery(GL_ANY_SAMPLES_PASSED);
     }
 
-    if(m_query_obj[query::keys::TIME_ELAPSED])
+    if(m_glo[query::keys::TIME_ELAPSED])
     {
       glEndQuery(GL_TIME_ELAPSED);
     }
 
-    if(m_query_obj[query::keys::PRIMITIVES_GENERATED])
+    if(m_glo[query::keys::PRIMITIVES_GENERATED])
     {
       glEndQuery(GL_PRIMITIVES_GENERATED);
     }
@@ -77,16 +99,14 @@ namespace mgl::opengl
 
   void query::begin_render()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-
-    if(m_query_obj[query::keys::ANY_SAMPLES_PASSED])
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    if(m_glo[query::keys::ANY_SAMPLES_PASSED])
     {
-      glBeginConditionalRender(m_query_obj[query::keys::ANY_SAMPLES_PASSED], GL_QUERY_NO_WAIT);
+      glBeginConditionalRender(m_glo[query::keys::ANY_SAMPLES_PASSED], GL_QUERY_NO_WAIT);
     }
-    else if(m_query_obj[query::keys::SAMPLES_PASSED])
+    else if(m_glo[query::keys::SAMPLES_PASSED])
     {
-      glBeginConditionalRender(m_query_obj[query::keys::SAMPLES_PASSED], GL_QUERY_NO_WAIT);
+      glBeginConditionalRender(m_glo[query::keys::SAMPLES_PASSED], GL_QUERY_NO_WAIT);
     }
     else
     {
@@ -96,36 +116,34 @@ namespace mgl::opengl
 
   void query::end_render()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     glEndConditionalRender();
   }
 
   int query::samples()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_glo[query::keys::SAMPLES_PASSED], "[Query] No samples query.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
     int samples = 0;
-    glGetQueryObjectiv(m_query_obj[query::keys::SAMPLES_PASSED], GL_QUERY_RESULT, &samples);
+    glGetQueryObjectiv(m_glo[query::keys::SAMPLES_PASSED], GL_QUERY_RESULT, &samples);
     return samples;
   }
 
   int query::primitives()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    MGL_CORE_ASSERT(m_glo[query::keys::PRIMITIVES_GENERATED], "[Query] No primitives query.");
     int primitives = 0;
-    glGetQueryObjectiv(
-        m_query_obj[query::keys::PRIMITIVES_GENERATED], GL_QUERY_RESULT, &primitives);
+    glGetQueryObjectiv(m_glo[query::keys::PRIMITIVES_GENERATED], GL_QUERY_RESULT, &primitives);
     return primitives;
   }
 
   int query::elapsed()
   {
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Query] Resource context not current.");
+    MGL_CORE_ASSERT(m_glo[query::keys::TIME_ELAPSED], "[Query] No time query.");
     int elapsed = 0;
-    glGetQueryObjectiv(m_query_obj[query::keys::TIME_ELAPSED], GL_QUERY_RESULT, &elapsed);
+    glGetQueryObjectiv(m_glo[query::keys::TIME_ELAPSED], GL_QUERY_RESULT, &elapsed);
     return elapsed;
   }
 

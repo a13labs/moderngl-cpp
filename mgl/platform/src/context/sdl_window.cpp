@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_platform/context/sdl_window.hpp"
 #include "mgl_core/log.hpp"
 
@@ -45,8 +29,8 @@ namespace mgl::platform
   {
     std::fill(key_forward_map, key_forward_map + 256, 0);
     std::fill(key_reverse_map, key_reverse_map + 256, 0);
-    std::fill(s_input_state.pressed_keys, s_input_state.pressed_keys + 256, 0);
-    std::fill(s_input_state.pressed_mouse_buttons, s_input_state.pressed_mouse_buttons + 256, 0);
+    std::fill(s_input_state.pressed_keys, s_input_state.pressed_keys + 95, 0);
+    std::fill(s_input_state.pressed_mouse_buttons, s_input_state.pressed_mouse_buttons + 4, 0);
   }
 
   inline void set_key_pressed_state(key::name key, bool value)
@@ -236,14 +220,13 @@ namespace mgl::platform
   {
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-      MGL_CORE_TRACE("Window: Error initializing SDL");
+      MGL_CORE_TRACE("[SDL Window] Error initializing SDL.");
       return false;
     }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG, 1);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
@@ -272,20 +255,20 @@ namespace mgl::platform
       }
     }
 
-    MGL_CORE_INFO("Window: Creating window {0},{1} with OpenGL support",
+    MGL_CORE_INFO("[SDL Window] Creating window ({0},{1}) with OpenGL support.",
                   m_state.current_config.width,
                   m_state.current_config.height);
     m_api_window = SDL_CreateWindow(m_state.current_config.title.c_str(),
-                                       SDL_WINDOWPOS_CENTERED,
-                                       SDL_WINDOWPOS_CENTERED,
-                                       m_state.current_config.width,
-                                       m_state.current_config.height,
-                                       flags);
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    m_state.current_config.width,
+                                    m_state.current_config.height,
+                                    flags);
 
     if(!m_api_window)
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error creating window, '{0}'.", error);
+      MGL_CORE_TRACE("[SDL Window] Error creating window, '{0}'.", error);
       SDL_Quit();
       return false;
     }
@@ -294,7 +277,7 @@ namespace mgl::platform
     if(!m_context)
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error creating OpenGL context, '{0}'.", error);
+      MGL_CORE_TRACE("[SDL Window] Error creating OpenGL context, '{0}'.", error);
       SDL_DestroyWindow(m_api_window);
       m_api_window = nullptr;
       SDL_Quit();
@@ -309,7 +292,7 @@ namespace mgl::platform
     if(!SDL_GetWindowWMInfo(m_api_window, &wmi))
     {
       auto error = SDL_GetError();
-      MGL_CORE_TRACE("Window: Error retrieving window information: {0}.", error);
+      MGL_CORE_TRACE("[SDL Window] Error retrieving window information: {0}.", error);
       SDL_GL_DeleteContext(m_context);
       SDL_DestroyWindow(m_api_window);
       m_context = nullptr;
@@ -447,6 +430,11 @@ namespace mgl::platform
     int x, y;
     SDL_GL_GetDrawableSize(m_api_window, &x, &y);
     return { x, y };
+  }
+
+  bool sdl_window::is_minimized()
+  {
+    return SDL_GetWindowFlags(m_api_window) & SDL_WINDOW_MINIMIZED;
   }
 
 } // namespace  mgl::platform

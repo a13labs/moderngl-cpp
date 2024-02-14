@@ -2,77 +2,46 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "example/basic_simple_color_triangle",
+            "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_simple_color_triangle/basic_simple_color_triangle",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
             "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_simple_color_triangle",
-            "MIMode": "gdb",
+            "stopAtEntry": false,
+            "cwd": "${cmake.getLaunchTargetDirectory}",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "lldb"
         },
         {
-            "name": "example/basic_index_buffer",
+            "name": "(ctest) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_index_buffer/basic_index_buffer",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_index_buffer",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "example/basic_perspective_projection",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_perspective_projection/basic_perspective_projection",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_perspective_projection",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "example/basic_alpha_blending",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_alpha_blending/basic_alpha_blending",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_alpha_blending",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "example/basic_uniforms_and_attributes",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_uniforms_and_attributes/basic_uniforms_and_attributes",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_uniforms_and_attributes",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "example/basic_application_example",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/examples/basic_application_example/basic_application_example",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/basic_application_example",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "example/compute_shader",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/examples/compute_shader/compute_shader",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/examples/compute_shader",
-            "MIMode": "gdb",
-        },
-        {
-            "name": "tests/mgl_registry_test_registry",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/mgl/registry/mgl_registry_test_registry",
-            "args": [],
-            "cwd": "${workspaceFolder}/build/mgl/registry",
-            "MIMode": "gdb",
-        },
-    ],
-    "compounds": []
+            // Resolved by CMake Tools:
+            "cwd": "${cmake.testWorkingDirectory}",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                },
+            ],
+            "program": "${cmake.testProgram}",
+            "args": [
+                "${cmake.testArgs}"
+            ],
+            "stopAtEntry": true,
+            "MIMode": "lldb",
+            "externalConsole": false,
+        }
+    ]
 }

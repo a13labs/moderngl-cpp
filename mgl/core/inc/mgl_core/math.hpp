@@ -2,7 +2,6 @@
  * @file math.hpp
  * @brief Contains mathematical utility functions and structures.
  */
-
 #pragma once
 
 #include <cstdint>

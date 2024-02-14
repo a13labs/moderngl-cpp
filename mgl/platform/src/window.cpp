@@ -1,27 +1,10 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_platform/window.hpp"
-#include "mgl_core/debug.hpp"
-#include "mgl_core/profiling.hpp"
-#include "mgl_opengl/context.hpp"
-#include "mgl_platform/api/opengl.hpp"
 #include "mgl_platform/context/sdl_window.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
+
+#include "mgl_core/debug.hpp"
+#include "mgl_core/profiling.hpp"
 
 namespace mgl::platform
 {
@@ -77,15 +60,13 @@ namespace mgl::platform
 
     if(!m_api_window->create_window())
     {
-      MGL_CORE_TRACE("Window: Error creating Window");
+      MGL_CORE_TRACE("[Window] Error creating Window.");
       return;
     }
 
-    m_context = mgl::opengl::create_context(mgl::opengl::context_mode::ATTACHED, 330);
-
-    if(!m_context)
+    if(!mgl::platform::api::render_api::init_api())
     {
-      MGL_CORE_TRACE("Window: Error initializing GL shared context.");
+      MGL_CORE_TRACE("[Window] Error initializing rendering API.");
       m_api_window->destroy_window();
       return;
     }
@@ -94,13 +75,11 @@ namespace mgl::platform
 
     m_running = true;
 
-    mgl::platform::api::init_api();
-
     MGL_PROFILE_BEGIN_SESSION();
 
     if(!on_load())
     {
-      MGL_CORE_TRACE("Window: Error loading application.");
+      MGL_CORE_TRACE("[Window] Error loading application.");
       m_api_window->destroy_window();
       return;
     }
@@ -110,7 +89,14 @@ namespace mgl::platform
     while(m_running)
     {
       m_api_window->process_events();
+
       auto frame_time = m_timer.next_frame();
+
+      if(m_api_window->is_minimized())
+      {
+        continue;
+      }
+
       on_update(frame_time.current, frame_time.delta);
       m_api_window->swap_buffers();
 
@@ -123,16 +109,19 @@ namespace mgl::platform
 
     MGL_PROFILE_END_SESSION();
 
-    mgl::platform::api::shutdown_api();
+    mgl::platform::api::render_api::shutdown_api();
 
-    m_context->release();
     m_api_window->destroy_window();
   }
 
   bool window::on_window_resize(window_resize_event& event)
   {
+    if(!m_running)
+    {
+      return true;
+    }
     auto size = m_api_window->get_drawable_size();
-    m_context->screen().set_viewport({ 0, 0, size.width, size.height });
+    mgl::platform::api::render_api::update_window_size(glm::vec2(size.width, size.height));
     return true;
   }
 
@@ -140,11 +129,6 @@ namespace mgl::platform
   {
     // TODO: Implement load from JSON
     return window_config();
-  }
-
-  const api::context_ref& window::current_context() const
-  {
-    return m_context;
   }
 
   window& window::current()

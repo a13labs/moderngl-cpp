@@ -98,7 +98,7 @@ namespace mgl::graphics
 
   void font_atlas::text_to_vertices(const glm::vec2& pos,
                                     const std::string& text,
-                                    vertex_buffer_ref& buffer,
+                                    mgl::platform::api::vertex_buffer_ref& buffer,
                                     int32_t& vertices,
                                     float sx,
                                     float sy) const

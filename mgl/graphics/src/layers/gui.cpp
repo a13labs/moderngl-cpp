@@ -1,15 +1,15 @@
 #include "mgl_graphics/layers/gui.hpp"
 #include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/shaders/gui.hpp"
-#include "mgl_graphics/textures/texture2d.hpp"
+#include "mgl_graphics/textures.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/profiling.hpp"
-#include "mgl_registry/resources/image.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
 #include "mgl_platform/window.hpp"
+#include "mgl_registry/resources/image.hpp"
 
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -90,84 +90,87 @@ namespace mgl::graphics::layers
     }
 
     register_shader("gui", mgl::create_ref<builtins::gui_shader>());
-    register_buffer("gui_vb", mgl::create_ref<vertex_buffer>("2f 2f 4f1", 0, true));
-    register_buffer("gui_ib", mgl::create_ref<index_buffer>(0, sizeof(ImDrawIdx), true));
+    register_buffer("gui_vb",
+                    mgl::platform::api::render_api::create_vertex_buffer(
+                        "2f 2f 4f1", { "i_position", "i_uv", "i_color" }, true));
+    register_buffer(
+        "gui_ib", mgl::platform::api::render_api::create_index_buffer(0, sizeof(ImDrawIdx), true));
 
     refresh_font();
 
     io.BackendRendererName = "mgl::platform::imgui";
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
 
-    io.KeyMap[ImGuiKey_Tab] = static_cast<int>(mgl::platform::key::Tab);
-    io.KeyMap[ImGuiKey_LeftArrow] = static_cast<int>(mgl::platform::key::Left);
-    io.KeyMap[ImGuiKey_RightArrow] = static_cast<int>(mgl::platform::key::Right);
-    io.KeyMap[ImGuiKey_UpArrow] = static_cast<int>(mgl::platform::key::Up);
-    io.KeyMap[ImGuiKey_DownArrow] = static_cast<int>(mgl::platform::key::Down);
-    io.KeyMap[ImGuiKey_PageUp] = static_cast<int>(mgl::platform::key::PageUp);
-    io.KeyMap[ImGuiKey_PageDown] = static_cast<int>(mgl::platform::key::PageDown);
-    io.KeyMap[ImGuiKey_Home] = static_cast<int>(mgl::platform::key::Home);
-    io.KeyMap[ImGuiKey_End] = static_cast<int>(mgl::platform::key::End);
-    io.KeyMap[ImGuiKey_Insert] = static_cast<int>(mgl::platform::key::Insert);
-    io.KeyMap[ImGuiKey_Delete] = static_cast<int>(mgl::platform::key::Delete);
-    io.KeyMap[ImGuiKey_Backspace] = static_cast<int>(mgl::platform::key::Backspace);
-    io.KeyMap[ImGuiKey_Space] = static_cast<int>(mgl::platform::key::Space);
-    io.KeyMap[ImGuiKey_Enter] = static_cast<int>(mgl::platform::key::Return);
-    io.KeyMap[ImGuiKey_Escape] = static_cast<int>(mgl::platform::key::Esc);
-    io.KeyMap[ImGuiKey_KeyPadEnter] = static_cast<int>(mgl::platform::key::NumPadEnter);
-    io.KeyMap[ImGuiKey_A] = static_cast<int>(mgl::platform::key::KeyA);
-    io.KeyMap[ImGuiKey_B] = static_cast<int>(mgl::platform::key::KeyB);
-    io.KeyMap[ImGuiKey_C] = static_cast<int>(mgl::platform::key::KeyC);
-    io.KeyMap[ImGuiKey_D] = static_cast<int>(mgl::platform::key::KeyD);
-    io.KeyMap[ImGuiKey_E] = static_cast<int>(mgl::platform::key::KeyE);
-    io.KeyMap[ImGuiKey_F] = static_cast<int>(mgl::platform::key::KeyF);
-    io.KeyMap[ImGuiKey_G] = static_cast<int>(mgl::platform::key::KeyG);
-    io.KeyMap[ImGuiKey_H] = static_cast<int>(mgl::platform::key::KeyH);
-    io.KeyMap[ImGuiKey_I] = static_cast<int>(mgl::platform::key::KeyI);
-    io.KeyMap[ImGuiKey_J] = static_cast<int>(mgl::platform::key::KeyJ);
-    io.KeyMap[ImGuiKey_K] = static_cast<int>(mgl::platform::key::KeyK);
-    io.KeyMap[ImGuiKey_L] = static_cast<int>(mgl::platform::key::KeyL);
-    io.KeyMap[ImGuiKey_M] = static_cast<int>(mgl::platform::key::KeyM);
-    io.KeyMap[ImGuiKey_N] = static_cast<int>(mgl::platform::key::KeyN);
-    io.KeyMap[ImGuiKey_O] = static_cast<int>(mgl::platform::key::KeyO);
-    io.KeyMap[ImGuiKey_P] = static_cast<int>(mgl::platform::key::KeyP);
-    io.KeyMap[ImGuiKey_Q] = static_cast<int>(mgl::platform::key::KeyQ);
-    io.KeyMap[ImGuiKey_R] = static_cast<int>(mgl::platform::key::KeyR);
-    io.KeyMap[ImGuiKey_S] = static_cast<int>(mgl::platform::key::KeyS);
-    io.KeyMap[ImGuiKey_T] = static_cast<int>(mgl::platform::key::KeyT);
-    io.KeyMap[ImGuiKey_U] = static_cast<int>(mgl::platform::key::KeyU);
-    io.KeyMap[ImGuiKey_V] = static_cast<int>(mgl::platform::key::KeyV);
-    io.KeyMap[ImGuiKey_W] = static_cast<int>(mgl::platform::key::KeyW);
-    io.KeyMap[ImGuiKey_X] = static_cast<int>(mgl::platform::key::KeyX);
-    io.KeyMap[ImGuiKey_Y] = static_cast<int>(mgl::platform::key::KeyY);
-    io.KeyMap[ImGuiKey_Z] = static_cast<int>(mgl::platform::key::KeyZ);
-    io.KeyMap[ImGuiKey_LeftShift] = static_cast<int>(mgl::platform::key::LeftShift);
-    io.KeyMap[ImGuiKey_RightShift] = static_cast<int>(mgl::platform::key::RightShift);
-    io.KeyMap[ImGuiKey_LeftCtrl] = static_cast<int>(mgl::platform::key::LeftCtrl);
-    io.KeyMap[ImGuiKey_RightCtrl] = static_cast<int>(mgl::platform::key::RightCtrl);
-    io.KeyMap[ImGuiKey_LeftAlt] = static_cast<int>(mgl::platform::key::LeftAlt);
-    io.KeyMap[ImGuiKey_RightAlt] = static_cast<int>(mgl::platform::key::RightAlt);
-    io.KeyMap[ImGuiKey_0] = static_cast<int>(mgl::platform::key::Key0);
-    io.KeyMap[ImGuiKey_1] = static_cast<int>(mgl::platform::key::Key1);
-    io.KeyMap[ImGuiKey_2] = static_cast<int>(mgl::platform::key::Key2);
-    io.KeyMap[ImGuiKey_3] = static_cast<int>(mgl::platform::key::Key3);
-    io.KeyMap[ImGuiKey_4] = static_cast<int>(mgl::platform::key::Key4);
-    io.KeyMap[ImGuiKey_5] = static_cast<int>(mgl::platform::key::Key5);
-    io.KeyMap[ImGuiKey_6] = static_cast<int>(mgl::platform::key::Key6);
-    io.KeyMap[ImGuiKey_7] = static_cast<int>(mgl::platform::key::Key7);
-    io.KeyMap[ImGuiKey_8] = static_cast<int>(mgl::platform::key::Key8);
-    io.KeyMap[ImGuiKey_9] = static_cast<int>(mgl::platform::key::Key9);
-    io.KeyMap[ImGuiKey_F1] = static_cast<int>(mgl::platform::key::F1);
-    io.KeyMap[ImGuiKey_F2] = static_cast<int>(mgl::platform::key::F2);
-    io.KeyMap[ImGuiKey_F3] = static_cast<int>(mgl::platform::key::F3);
-    io.KeyMap[ImGuiKey_F4] = static_cast<int>(mgl::platform::key::F4);
-    io.KeyMap[ImGuiKey_F5] = static_cast<int>(mgl::platform::key::F5);
-    io.KeyMap[ImGuiKey_F6] = static_cast<int>(mgl::platform::key::F6);
-    io.KeyMap[ImGuiKey_F7] = static_cast<int>(mgl::platform::key::F7);
-    io.KeyMap[ImGuiKey_F8] = static_cast<int>(mgl::platform::key::F8);
-    io.KeyMap[ImGuiKey_F9] = static_cast<int>(mgl::platform::key::F9);
-    io.KeyMap[ImGuiKey_F10] = static_cast<int>(mgl::platform::key::F10);
-    io.KeyMap[ImGuiKey_F11] = static_cast<int>(mgl::platform::key::F11);
-    io.KeyMap[ImGuiKey_F12] = static_cast<int>(mgl::platform::key::F12);
+    io.KeyMap[ImGuiKey_Tab] = static_cast<int32_t>(mgl::platform::key::Tab);
+    io.KeyMap[ImGuiKey_LeftArrow] = static_cast<int32_t>(mgl::platform::key::Left);
+    io.KeyMap[ImGuiKey_RightArrow] = static_cast<int32_t>(mgl::platform::key::Right);
+    io.KeyMap[ImGuiKey_UpArrow] = static_cast<int32_t>(mgl::platform::key::Up);
+    io.KeyMap[ImGuiKey_DownArrow] = static_cast<int32_t>(mgl::platform::key::Down);
+    io.KeyMap[ImGuiKey_PageUp] = static_cast<int32_t>(mgl::platform::key::PageUp);
+    io.KeyMap[ImGuiKey_PageDown] = static_cast<int32_t>(mgl::platform::key::PageDown);
+    io.KeyMap[ImGuiKey_Home] = static_cast<int32_t>(mgl::platform::key::Home);
+    io.KeyMap[ImGuiKey_End] = static_cast<int32_t>(mgl::platform::key::End);
+    io.KeyMap[ImGuiKey_Insert] = static_cast<int32_t>(mgl::platform::key::Insert);
+    io.KeyMap[ImGuiKey_Delete] = static_cast<int32_t>(mgl::platform::key::Delete);
+    io.KeyMap[ImGuiKey_Backspace] = static_cast<int32_t>(mgl::platform::key::Backspace);
+    io.KeyMap[ImGuiKey_Space] = static_cast<int32_t>(mgl::platform::key::Space);
+    io.KeyMap[ImGuiKey_Enter] = static_cast<int32_t>(mgl::platform::key::Return);
+    io.KeyMap[ImGuiKey_Escape] = static_cast<int32_t>(mgl::platform::key::Esc);
+    io.KeyMap[ImGuiKey_KeyPadEnter] = static_cast<int32_t>(mgl::platform::key::NumPadEnter);
+    io.KeyMap[ImGuiKey_A] = static_cast<int32_t>(mgl::platform::key::KeyA);
+    io.KeyMap[ImGuiKey_B] = static_cast<int32_t>(mgl::platform::key::KeyB);
+    io.KeyMap[ImGuiKey_C] = static_cast<int32_t>(mgl::platform::key::KeyC);
+    io.KeyMap[ImGuiKey_D] = static_cast<int32_t>(mgl::platform::key::KeyD);
+    io.KeyMap[ImGuiKey_E] = static_cast<int32_t>(mgl::platform::key::KeyE);
+    io.KeyMap[ImGuiKey_F] = static_cast<int32_t>(mgl::platform::key::KeyF);
+    io.KeyMap[ImGuiKey_G] = static_cast<int32_t>(mgl::platform::key::KeyG);
+    io.KeyMap[ImGuiKey_H] = static_cast<int32_t>(mgl::platform::key::KeyH);
+    io.KeyMap[ImGuiKey_I] = static_cast<int32_t>(mgl::platform::key::KeyI);
+    io.KeyMap[ImGuiKey_J] = static_cast<int32_t>(mgl::platform::key::KeyJ);
+    io.KeyMap[ImGuiKey_K] = static_cast<int32_t>(mgl::platform::key::KeyK);
+    io.KeyMap[ImGuiKey_L] = static_cast<int32_t>(mgl::platform::key::KeyL);
+    io.KeyMap[ImGuiKey_M] = static_cast<int32_t>(mgl::platform::key::KeyM);
+    io.KeyMap[ImGuiKey_N] = static_cast<int32_t>(mgl::platform::key::KeyN);
+    io.KeyMap[ImGuiKey_O] = static_cast<int32_t>(mgl::platform::key::KeyO);
+    io.KeyMap[ImGuiKey_P] = static_cast<int32_t>(mgl::platform::key::KeyP);
+    io.KeyMap[ImGuiKey_Q] = static_cast<int32_t>(mgl::platform::key::KeyQ);
+    io.KeyMap[ImGuiKey_R] = static_cast<int32_t>(mgl::platform::key::KeyR);
+    io.KeyMap[ImGuiKey_S] = static_cast<int32_t>(mgl::platform::key::KeyS);
+    io.KeyMap[ImGuiKey_T] = static_cast<int32_t>(mgl::platform::key::KeyT);
+    io.KeyMap[ImGuiKey_U] = static_cast<int32_t>(mgl::platform::key::KeyU);
+    io.KeyMap[ImGuiKey_V] = static_cast<int32_t>(mgl::platform::key::KeyV);
+    io.KeyMap[ImGuiKey_W] = static_cast<int32_t>(mgl::platform::key::KeyW);
+    io.KeyMap[ImGuiKey_X] = static_cast<int32_t>(mgl::platform::key::KeyX);
+    io.KeyMap[ImGuiKey_Y] = static_cast<int32_t>(mgl::platform::key::KeyY);
+    io.KeyMap[ImGuiKey_Z] = static_cast<int32_t>(mgl::platform::key::KeyZ);
+    io.KeyMap[ImGuiKey_LeftShift] = static_cast<int32_t>(mgl::platform::key::LeftShift);
+    io.KeyMap[ImGuiKey_RightShift] = static_cast<int32_t>(mgl::platform::key::RightShift);
+    io.KeyMap[ImGuiKey_LeftCtrl] = static_cast<int32_t>(mgl::platform::key::LeftCtrl);
+    io.KeyMap[ImGuiKey_RightCtrl] = static_cast<int32_t>(mgl::platform::key::RightCtrl);
+    io.KeyMap[ImGuiKey_LeftAlt] = static_cast<int32_t>(mgl::platform::key::LeftAlt);
+    io.KeyMap[ImGuiKey_RightAlt] = static_cast<int32_t>(mgl::platform::key::RightAlt);
+    io.KeyMap[ImGuiKey_0] = static_cast<int32_t>(mgl::platform::key::Key0);
+    io.KeyMap[ImGuiKey_1] = static_cast<int32_t>(mgl::platform::key::Key1);
+    io.KeyMap[ImGuiKey_2] = static_cast<int32_t>(mgl::platform::key::Key2);
+    io.KeyMap[ImGuiKey_3] = static_cast<int32_t>(mgl::platform::key::Key3);
+    io.KeyMap[ImGuiKey_4] = static_cast<int32_t>(mgl::platform::key::Key4);
+    io.KeyMap[ImGuiKey_5] = static_cast<int32_t>(mgl::platform::key::Key5);
+    io.KeyMap[ImGuiKey_6] = static_cast<int32_t>(mgl::platform::key::Key6);
+    io.KeyMap[ImGuiKey_7] = static_cast<int32_t>(mgl::platform::key::Key7);
+    io.KeyMap[ImGuiKey_8] = static_cast<int32_t>(mgl::platform::key::Key8);
+    io.KeyMap[ImGuiKey_9] = static_cast<int32_t>(mgl::platform::key::Key9);
+    io.KeyMap[ImGuiKey_F1] = static_cast<int32_t>(mgl::platform::key::F1);
+    io.KeyMap[ImGuiKey_F2] = static_cast<int32_t>(mgl::platform::key::F2);
+    io.KeyMap[ImGuiKey_F3] = static_cast<int32_t>(mgl::platform::key::F3);
+    io.KeyMap[ImGuiKey_F4] = static_cast<int32_t>(mgl::platform::key::F4);
+    io.KeyMap[ImGuiKey_F5] = static_cast<int32_t>(mgl::platform::key::F5);
+    io.KeyMap[ImGuiKey_F6] = static_cast<int32_t>(mgl::platform::key::F6);
+    io.KeyMap[ImGuiKey_F7] = static_cast<int32_t>(mgl::platform::key::F7);
+    io.KeyMap[ImGuiKey_F8] = static_cast<int32_t>(mgl::platform::key::F8);
+    io.KeyMap[ImGuiKey_F9] = static_cast<int32_t>(mgl::platform::key::F9);
+    io.KeyMap[ImGuiKey_F10] = static_cast<int32_t>(mgl::platform::key::F10);
+    io.KeyMap[ImGuiKey_F11] = static_cast<int32_t>(mgl::platform::key::F11);
+    io.KeyMap[ImGuiKey_F12] = static_cast<int32_t>(mgl::platform::key::F12);
 
     io.DisplaySize =
         ImVec2(mgl::platform::current_window().width(), mgl::platform::current_window().height());
@@ -179,7 +182,7 @@ namespace mgl::graphics::layers
     ImGuiIO& io = ImGui::GetIO();
 
     unsigned char* pixels;
-    int width, height;
+    int32_t width, height;
     io.Fonts->GetTexDataAsRGBA32(
         &pixels,
         &width,
@@ -224,8 +227,8 @@ namespace mgl::graphics::layers
 
     ImGuiIO& io = ImGui::GetIO();
 
-    int fb_width = static_cast<int>(io.DisplaySize.x * io.DisplayFramebufferScale.x);
-    int fb_height = static_cast<int>(io.DisplaySize.y * io.DisplayFramebufferScale.y);
+    int32_t fb_width = static_cast<int32_t>(io.DisplaySize.x * io.DisplayFramebufferScale.x);
+    int32_t fb_height = static_cast<int32_t>(io.DisplaySize.y * io.DisplayFramebufferScale.y);
 
     if(fb_width == 0 || fb_height == 0)
       return;
@@ -238,49 +241,38 @@ namespace mgl::graphics::layers
       return;
 
     auto prg = get_shader("gui");
-
     MGL_CORE_ASSERT(prg != nullptr, "No shader available");
-
-    mgl::platform::api::enable_program(prg->api());
-    mgl::platform::api::set_program_attributes(prg->attributes());
-
-    prg->set_uniform_value("ProjMtx",
-                           glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    mgl::platform::api::enable_state(mgl::graphics::enable_flag::BLEND);
-    mgl::platform::api::set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
-    mgl::platform::api::set_blend_func(mgl::graphics::blend_factor::SRC_ALPHA,
-                                     mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
+    mgl::platform::api::render_api::enable_state(mgl::graphics::enable_flag::BLEND);
+    mgl::platform::api::render_api::set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
+    mgl::platform::api::render_api::set_blend_func(
+        mgl::graphics::blend_factor::SRC_ALPHA, mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    mgl::platform::api::enable_scissor();
+    mgl::platform::api::render_api::enable_scissor();
 
-    auto vb = std::static_pointer_cast<vertex_buffer>(get_buffer("gui_vb"));
-    auto ib = std::static_pointer_cast<index_buffer>(get_buffer("gui_ib"));
+    auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("gui_vb"));
+    auto ib = std::static_pointer_cast<mgl::platform::api::index_buffer>(get_buffer("gui_ib"));
 
-    for(int n = 0; n < draw_data->CmdListsCount; ++n)
+    mgl::platform::api::render_api::enable_program(prg->api());
+    mgl::platform::api::render_api::set_projection_matrix(
+        glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
+
+    auto vao = mgl::platform::api::render_api::create_vertex_array(vb, ib);
+
+    for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
     {
       const ImDrawList* cmd_list = draw_data->CmdLists[n];
 
       vb->orphan(cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+      vb->write(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+
       ib->orphan(cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+      ib->write(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
 
-      vb->upload(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-      ib->upload(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
-
-      mgl::platform::api::geom_data geom = {
-        vb->api(),
-        vb->layout(),
-        ib->api(),
-        ib->element_size(),
-        (uint32_t)mgl::graphics::render_mode::TRIANGLES,
-      };
-
-      geom.allocate();
-
-      int idx_buffer_offset = 0;
-      for(int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
+      int32_t idx_buffer_offset = 0;
+      for(int32_t cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
       {
         const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
 
@@ -290,26 +282,29 @@ namespace mgl::graphics::layers
         }
         else
         {
-          mgl::platform::api::set_scissor(static_cast<int>(pcmd->ClipRect.x),
-                                        static_cast<int>(fb_height - pcmd->ClipRect.w),
-                                        static_cast<int>(pcmd->ClipRect.z - pcmd->ClipRect.x),
-                                        static_cast<int>(pcmd->ClipRect.w - pcmd->ClipRect.y));
+          mgl::platform::api::render_api::set_scissor(
+              static_cast<int32_t>(pcmd->ClipRect.x),
+              static_cast<int32_t>(fb_height - pcmd->ClipRect.w),
+              static_cast<int32_t>(pcmd->ClipRect.z - pcmd->ClipRect.x),
+              static_cast<int32_t>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
           auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
-          tex->bind(0);
+          mgl::platform::api::render_api::bind_texture(0, tex->api());
 
-          mgl::platform::api::draw(geom, glm::mat4(1.0f), pcmd->ElemCount, idx_buffer_offset, 0);
+          vao->render(
+              mgl::platform::api::render_mode::TRIANGLES, pcmd->ElemCount, idx_buffer_offset);
 
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
-
-      geom.deallocate();
     }
 
-    mgl::platform::api::clear_samplers(0, 1);
-    mgl::platform::api::disable_program();
-    mgl::platform::api::disable_scissor();
+    vao->release();
+
+    mgl::platform::api::render_api::disable_program();
+    mgl::platform::api::render_api::clear_samplers(0, 1);
+    mgl::platform::api::render_api::disable_program();
+    mgl::platform::api::render_api::disable_scissor();
   }
 
   bool gui_layer::on_window_close(mgl::platform::window_close_event& event)
@@ -329,7 +324,7 @@ namespace mgl::graphics::layers
   {
     ImGuiIO& io = ImGui::GetIO();
     const auto& e = static_cast<const mgl::platform::key_pressed_event&>(event);
-    io.KeysDown[static_cast<int>(e.key())] = true;
+    io.KeysDown[static_cast<int32_t>(e.key())] = true;
     return false;
   }
 
@@ -337,7 +332,7 @@ namespace mgl::graphics::layers
   {
     ImGuiIO& io = ImGui::GetIO();
     const auto& e = static_cast<const mgl::platform::key_released_event&>(event);
-    io.KeysDown[static_cast<int>(e.key())] = false;
+    io.KeysDown[static_cast<int32_t>(e.key())] = false;
     return false;
   }
 
@@ -362,7 +357,7 @@ namespace mgl::graphics::layers
   {
     ImGuiIO& io = ImGui::GetIO();
     const auto& e = static_cast<const mgl::platform::mouse_button_pressed_event&>(event);
-    io.MouseDown[static_cast<int>(e.button())] = true;
+    io.MouseDown[static_cast<int32_t>(e.button())] = true;
     return false;
   }
 
@@ -370,7 +365,7 @@ namespace mgl::graphics::layers
   {
     ImGuiIO& io = ImGui::GetIO();
     const auto& e = static_cast<const mgl::platform::mouse_button_released_event&>(event);
-    io.MouseDown[static_cast<int>(e.button())] = false;
+    io.MouseDown[static_cast<int32_t>(e.button())] = false;
     return false;
   }
 

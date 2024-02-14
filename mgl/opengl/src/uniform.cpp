@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/uniform.hpp"
 #include "mgl_opengl/context.hpp"
 
@@ -153,18 +137,12 @@ namespace mgl::opengl
       case GL_DOUBLE_MAT4x2: return &gl_double_mat_4x2;
       case GL_DOUBLE_MAT4x3: return &gl_double_mat_4x3;
       case GL_DOUBLE_MAT4: return &gl_double_mat_4;
-      default: MGL_CORE_ASSERT(false, "invalid gl type"); return nullptr;
+      default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); return nullptr;
     };
   }
 
-  uniform::uniform(const std::string& name,
-                   int gl_type,
-                   int program_obj,
-                   int location,
-                   size_t size,
-                   context* ctx)
+  uniform::uniform(const std::string& name, int gl_type, int program_obj, int location, size_t size)
   {
-    m_context = ctx;
     m_name = name;
     m_gl_type = gl_type;
     m_program_obj = program_obj;
@@ -181,7 +159,8 @@ namespace mgl::opengl
 
   void uniform::set_value(void* data, size_t size)
   {
-    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size), "invalid data size");
+    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size),
+                    "[Uniform] Invalid data size.");
 
     char* ptr = (char*)data;
 
@@ -437,14 +416,16 @@ namespace mgl::opengl
         glUniformMatrix4dv(m_location, m_size, false, (double*)ptr);
       }
       break;
-      default: MGL_CORE_ASSERT(false, "invalid gl type"); break;
+      default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); break;
     }
+    MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Uniform] Failed to set uniform value.");
   }
 
   void uniform::get_value(void* data, size_t size)
   {
 
-    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size), "invalid data size");
+    MGL_CORE_ASSERT(size == (size_t)(m_size * m_data_type->element_size),
+                    "[Uniform] Invalid data size.");
 
     char* ptr = (char*)data;
     glUseProgram(m_program_obj);
@@ -765,7 +746,7 @@ namespace mgl::opengl
               m_program_obj, m_location + i, (double*)(ptr + i * m_data_type->element_size));
         }
         break;
-        default: MGL_CORE_ASSERT(false, "invalid gl type"); break;
+        default: MGL_CORE_ASSERT(false, "[Uniform] Invalid gl type."); break;
       }
     }
   }

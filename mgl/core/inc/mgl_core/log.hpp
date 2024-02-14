@@ -5,7 +5,6 @@
  * The mgl::log namespace provides functions for logging messages at different levels of severity.
  * It also includes macros for convenient logging.
  */
-
 #pragma once
 #include "memory.hpp"
 #include "string.hpp"
@@ -33,7 +32,7 @@ namespace mgl::log
    * @param lvl The log level.
    * @param msg The message to log.
    */
-  void log(level lvl, const std::string& msg);
+  void log(level lvl, const std::string& msg, const char* file, int line);
 
   /**
    * @brief Logs a trace message with formatted arguments.
@@ -43,10 +42,10 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void trace(std::format_string<Args...> fmt, Args&&... args)
+  void trace(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::trace, msg);
+    log(level::trace, msg, file, line);
   }
 
   /**
@@ -57,10 +56,10 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void debug(std::format_string<Args...> fmt, Args&&... args)
+  void debug(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::debug, msg);
+    log(level::debug, msg, file, line);
   }
 
   /**
@@ -71,10 +70,10 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void info(std::format_string<Args...> fmt, Args&&... args)
+  void info(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::info, msg);
+    log(level::info, msg, file, line);
   }
 
   /**
@@ -85,10 +84,10 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void warn(std::format_string<Args...> fmt, Args&&... args)
+  void warn(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::warn, msg);
+    log(level::warn, msg, file, line);
   }
 
   /**
@@ -99,10 +98,10 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void error(std::format_string<Args...> fmt, Args&&... args)
+  void error(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::error, msg);
+    log(level::error, msg, file, line);
   }
 
   /**
@@ -113,21 +112,21 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void critical(std::format_string<Args...> fmt, Args&&... args)
+  void critical(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
   {
     std::string msg = std::format(fmt, std::forward<Args>(args)...);
-    log(level::critical, msg);
+    log(level::critical, msg, file, line);
   }
 
 } // namespace mgl::log
 
 // log macros
 #ifdef MGL_DEBUG
-#  define MGL_CORE_TRACE(...) ::mgl::log::trace(__VA_ARGS__)
-#  define MGL_CORE_INFO(...) ::mgl::log::info(__VA_ARGS__)
-#  define MGL_CORE_WARN(...) ::mgl::log::warn(__VA_ARGS__)
-#  define MGL_CORE_ERROR(...) ::mgl::log::error(__VA_ARGS__)
-#  define MGL_CORE_CRITICAL(...) ::mgl::log::critical(__VA_ARGS__)
+#  define MGL_CORE_TRACE(...) ::mgl::log::trace(__FILE__, __LINE__, __VA_ARGS__)
+#  define MGL_CORE_INFO(...) ::mgl::log::info(__FILE__, __LINE__, __VA_ARGS__)
+#  define MGL_CORE_WARN(...) ::mgl::log::warn(__FILE__, __LINE__, __VA_ARGS__)
+#  define MGL_CORE_ERROR(...) ::mgl::log::error(__FILE__, __LINE__, __VA_ARGS__)
+#  define MGL_CORE_CRITICAL(...) ::mgl::log::critical(__FILE__, __LINE__, __VA_ARGS__)
 #else
 #  define MGL_CORE_TRACE(...)
 #  define MGL_CORE_INFO(...)

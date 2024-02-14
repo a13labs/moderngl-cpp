@@ -1,19 +1,3 @@
-
-/*
-   Copyright 2022 Alexandre Pires (c.alexandre.pires@gmail.com)
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
 #include "mgl_opengl/scope.hpp"
 #include "mgl_opengl/context.hpp"
 #include "mgl_opengl/framebuffer.hpp"
@@ -25,17 +9,92 @@
 
 namespace mgl::opengl
 {
-  void scope::release()
+  scope::scope(const context_ref& ctx,
+               framebuffer_ref framebuffer,
+               int32_t enable_flags,
+               const texture_bindings& textures,
+               const buffer_bindings& uniform_buffers,
+               const buffer_bindings& storage_buffers,
+               const sampler_bindings& samplers)
+      : m_ctx(ctx)
   {
-    if(m_released)
+    MGL_CORE_ASSERT(framebuffer, "[Scope] Invalid framebuffer.");
+    MGL_CORE_ASSERT(framebuffer->ctx() == m_ctx, "[Scope] Framebuffer context mismatch.");
+
+    m_scope_state = { enable_flags, framebuffer };
+
+    m_textures = mgl::list<scope::binding_data>(textures.size());
+    m_buffers = mgl::list<scope::binding_data>(uniform_buffers.size() + storage_buffers.size());
+    m_samplers = samplers;
+
+    m_previous_state = { enable_flag::INVALID, nullptr };
+
+    int32_t i = 0;
+    for(auto&& t : textures)
     {
-      return;
+      int32_t texture_type;
+      int32_t texture_obj;
+
+      MGL_CORE_ASSERT(t.texture, "[Scope] Invalid texture.");
+      MGL_CORE_ASSERT(t.texture->ctx() == m_ctx, "[Scope] Texture context mismatch.");
+
+      texture_obj = t.texture->glo();
+
+      switch(t.texture->texture_type())
+      {
+        case texture::type::TEXTURE_2D: {
+          auto texture = std::dynamic_pointer_cast<texture_2d>(t.texture);
+          MGL_CORE_ASSERT(texture != nullptr, "[Scope] Invalid texture type.");
+          texture_type = texture->samples() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+        }
+        break;
+        case texture::type::TEXTURE_3D: {
+          texture_type = GL_TEXTURE_3D;
+        }
+        break;
+        case texture::type::TEXTURE_CUBE: {
+          texture_type = GL_TEXTURE_CUBE_MAP;
+        }
+        break;
+        default: MGL_CORE_ASSERT(false, "[Scope] Invalid texture type."); return;
+      }
+
+      int32_t binding = t.binding;
+      m_textures[i].binding = GL_TEXTURE0 + binding;
+      m_textures[i].type = texture_type;
+      m_textures[i].gl_object = texture_obj;
+      i++;
     }
 
-    m_released = true;
-    m_framebuffer = nullptr;
-    m_old_framebuffer = nullptr;
-    m_context = nullptr;
+    i = 0;
+    for(auto&& b : uniform_buffers)
+    {
+      MGL_CORE_ASSERT(b.buffer, "[Scope] Buffer is not valid.");
+
+      m_buffers[i].binding = b.binding;
+      m_buffers[i].gl_object = b.buffer->glo();
+      m_buffers[i].type = GL_UNIFORM_BUFFER;
+      i++;
+    }
+
+    for(auto&& b : storage_buffers)
+    {
+      MGL_CORE_ASSERT(b.buffer, "[Scope] Buffer is not valid.");
+
+      m_buffers[i].binding = b.binding;
+      m_buffers[i].gl_object = b.buffer->glo();
+      m_buffers[i].type = GL_SHADER_STORAGE_BUFFER;
+      i++;
+    }
+
+    m_begin = false;
+  }
+
+  scope::~scope()
+  {
+    MGL_CORE_ASSERT(!m_begin, "[Scope] Scope not ended.");
+    m_scope_state = { enable_flag::INVALID, nullptr };
+    m_previous_state = { enable_flag::INVALID, nullptr };
     m_samplers.clear();
     m_textures.clear();
     m_buffers.clear();
@@ -43,16 +102,16 @@ namespace mgl::opengl
 
   void scope::begin()
   {
-    MGL_CORE_ASSERT(!m_released, "Scope released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
+    MGL_CORE_ASSERT(!m_begin, "[Scope] Scope already started.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Scope] Resource context not current.");
+    m_begin = true;
 
-    const int& flags = m_enable_flags;
+    const int32_t& flags = m_scope_state.enable_flags;
 
-    m_old_enable_flags = m_context->enable_flags();
-    m_context->set_enable_flags(m_enable_flags);
+    m_previous_state = { m_ctx->enable_flags(), m_ctx->current_framebuffer() };
+    m_ctx->enable(flags);
 
-    m_framebuffer->use();
+    m_scope_state.framebuffer->use();
 
     for(auto&& texture : m_textures)
     {
@@ -67,111 +126,41 @@ namespace mgl::opengl
 
     for(auto&& sampler : m_samplers)
     {
-      MGL_CORE_ASSERT(sampler.sampler, "invalid sampler");
+      MGL_CORE_ASSERT(sampler.sampler, "[Scope] Invalid sampler.");
       sampler.sampler->use(sampler.binding);
-    }
-
-    if(flags & mgl::opengl::enable_flag::BLEND)
-    {
-      glEnable(GL_BLEND);
-    }
-    else
-    {
-      glDisable(GL_BLEND);
-    }
-
-    if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
-    {
-      glEnable(GL_DEPTH_TEST);
-    }
-    else
-    {
-      glDisable(GL_DEPTH_TEST);
-    }
-
-    if(flags & mgl::opengl::enable_flag::CULL_FACE)
-    {
-      glEnable(GL_CULL_FACE);
-    }
-    else
-    {
-      glDisable(GL_CULL_FACE);
-    }
-
-    if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
-    {
-      glEnable(GL_RASTERIZER_DISCARD);
-    }
-    else
-    {
-      glDisable(GL_RASTERIZER_DISCARD);
-    }
-
-    if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
-    {
-      glEnable(GL_PROGRAM_POINT_SIZE);
-    }
-    else
-    {
-      glDisable(GL_PROGRAM_POINT_SIZE);
     }
   }
 
   void scope::end()
   {
-    MGL_CORE_ASSERT(!m_released, "Scope released");
-    MGL_CORE_ASSERT(m_context, "No context");
-    MGL_CORE_ASSERT(!m_context->released(), "Context already released");
-    const int& flags = m_old_enable_flags;
+    MGL_CORE_ASSERT(m_begin, "[Scope] Scope not started.");
+    MGL_CORE_ASSERT(m_ctx->is_current(), "[Scope] Resource context not current.");
+    const int32_t& flags = m_previous_state.enable_flags;
 
-    m_context->set_enable_flags(m_old_enable_flags);
+    m_ctx->enable(flags);
 
-    m_old_framebuffer->use();
+    m_previous_state.framebuffer->use();
 
-    if(flags & mgl::opengl::enable_flag::BLEND)
+    m_previous_state = { enable_flag::INVALID, nullptr };
+
+    for(auto&& sampler : m_samplers)
     {
-      glEnable(GL_BLEND);
-    }
-    else
-    {
-      glDisable(GL_BLEND);
+      MGL_CORE_ASSERT(sampler.sampler, "[Scope] Invalid sampler.");
+      sampler.sampler->clear(sampler.binding);
     }
 
-    if(flags & mgl::opengl::enable_flag::DEPTH_TEST)
+    for(auto&& buffer : m_buffers)
     {
-      glEnable(GL_DEPTH_TEST);
-    }
-    else
-    {
-      glDisable(GL_DEPTH_TEST);
+      glBindBufferBase(buffer.type, buffer.binding, 0);
     }
 
-    if(flags & mgl::opengl::enable_flag::CULL_FACE)
+    for(auto&& texture : m_textures)
     {
-      glEnable(GL_CULL_FACE);
-    }
-    else
-    {
-      glDisable(GL_CULL_FACE);
+      glActiveTexture(texture.binding);
+      glBindTexture(texture.type, 0);
     }
 
-    if(flags & mgl::opengl::enable_flag::RASTERIZER_DISCARD)
-    {
-      glEnable(GL_RASTERIZER_DISCARD);
-    }
-    else
-    {
-      glDisable(GL_RASTERIZER_DISCARD);
-    }
-
-    if(flags & mgl::opengl::enable_flag::PROGRAM_POINT_SIZE)
-    {
-      glEnable(GL_PROGRAM_POINT_SIZE);
-    }
-    else
-    {
-      glDisable(GL_PROGRAM_POINT_SIZE);
-    }
+    m_begin = false;
   }
 
 } // namespace  mgl::opengl

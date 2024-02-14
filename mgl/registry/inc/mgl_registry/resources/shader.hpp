@@ -53,7 +53,7 @@ private:
     bool handle_includes(const location_ref& location, int depth = 0, int source_id = 0);
 
     std::string m_source;
-    int m_version_code;
+    int m_version;
     shader::type m_type;
     mgl::string_list m_attributes;
   };

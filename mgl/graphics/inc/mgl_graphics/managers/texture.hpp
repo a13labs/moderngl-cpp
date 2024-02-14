@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mgl_graphics/manager.hpp"
-#include "mgl_graphics/texture.hpp"
+#include "mgl_graphics/textures.hpp"
 
 namespace mgl::graphics
 {

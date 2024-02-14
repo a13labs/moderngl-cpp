@@ -2,10 +2,12 @@
 
 #include "mgl_core/containers.hpp"
 #include "mgl_core/memory.hpp"
-#include "mgl_graphics/buffers/vertex.hpp"
+
 #include "mgl_registry/resource.hpp"
 #include "mgl_registry/resources/font.hpp"
 #include "mgl_registry/resources/image.hpp"
+
+#include "mgl_platform/api/buffers.hpp"
 
 namespace mgl::graphics
 {
@@ -41,7 +43,7 @@ public:
 
     void text_to_vertices(const glm::vec2& pos,
                           const std::string& text,
-                          vertex_buffer_ref& buffer,
+                          mgl::platform::api::vertex_buffer_ref& buffer,
                           int32_t& vertices,
                           float sx = 1.0,
                           float sy = 1.0) const;

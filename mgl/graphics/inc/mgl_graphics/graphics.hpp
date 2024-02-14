@@ -1,8 +1,5 @@
 #pragma once
 #include "batch.hpp"
-#include "buffer.hpp"
-#include "buffers/index.hpp"
-#include "buffers/vertex.hpp"
 #include "command.hpp"
 #include "enums.hpp"
 #include "glm/glm.hpp"
@@ -10,9 +7,6 @@
 #include "managers/font.hpp"
 #include "managers/shader.hpp"
 #include "managers/texture.hpp"
-#include "mgl_platform/api/opengl.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
 
 namespace mgl::graphics
 {
@@ -70,7 +64,8 @@ namespace mgl::graphics
     return textures().get_item(idx);
   }
 
-  inline size_t register_buffer(const std::string& name, const buffer_ref& buffer)
+  inline size_t register_buffer(const std::string& name,
+                                const mgl::platform::api::buffer_ref& buffer)
   {
     return buffers().add_item(name, buffer);
   }
@@ -85,12 +80,12 @@ namespace mgl::graphics
     return buffers().has_item(name);
   }
 
-  inline buffer_ref get_buffer(const std::string& name)
+  inline mgl::platform::api::buffer_ref get_buffer(const std::string& name)
   {
     return buffers().get_item(name);
   }
 
-  inline buffer_ref get_buffer(size_t idx)
+  inline mgl::platform::api::buffer_ref get_buffer(size_t idx)
   {
     return buffers().get_item(idx);
   }
