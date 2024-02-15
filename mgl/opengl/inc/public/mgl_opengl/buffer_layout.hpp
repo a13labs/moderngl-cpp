@@ -99,9 +99,13 @@ public:
     { }
 
     const std::string& layout() const { return m_layout; }
+
     const mgl::list<element>& elements() const { return m_elements; }
+
     int stride() const { return m_stride; }
+
     int divisor() const { return m_divisor; }
+
     size_t size() const { return m_elements.size(); }
 
     bool is_invalid() const { return m_elements.empty(); }
@@ -134,6 +138,14 @@ public:
     }
 
     const element& operator[](size_t index) const { return m_elements[index]; }
+
+    bool operator==(const std::string& layout) { return m_layout == layout; }
+
+    bool operator!=(const std::string& layout) { return !(*this == layout); }
+
+    bool operator==(const buffer_layout& other) const { return m_layout == other.m_layout; }
+
+    bool operator!=(const buffer_layout& other) const { return !(*this == other); }
 
 private:
     /*

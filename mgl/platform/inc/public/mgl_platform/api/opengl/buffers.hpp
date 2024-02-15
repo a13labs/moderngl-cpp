@@ -211,20 +211,18 @@ public:
     virtual void allocate() override final
     {
       ogl_buffer::allocate();
-      m_vbo.buffer = m_buffer;
-      m_vbo.vertex_count = m_buffer->size() / m_vbo.layout.size();
+      m_vbo.update(m_buffer);
     }
 
     virtual void free() override final
     {
       ogl_buffer::free();
-      m_vbo.buffer = nullptr;
-      m_vbo.vertex_count = 0;
+      m_vbo.release();
     }
 
-    virtual const std::string& layout() const override final { return m_vbo.layout.layout(); }
+    virtual const std::string& layout() const override final { return m_vbo.layout().layout(); }
 
-    virtual const mgl::string_list& attributes() const override final { return m_vbo.attributes; }
+    virtual const mgl::string_list& attributes() const override final { return m_vbo.attributes(); }
 
     const mgl::opengl::vertex_buffer& native_vbo() const { return m_vbo; }
 
