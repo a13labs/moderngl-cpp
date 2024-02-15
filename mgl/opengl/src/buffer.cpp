@@ -67,10 +67,10 @@ namespace mgl::opengl
     glBindBuffer(GL_ARRAY_BUFFER, gl_object::glo());
     glBufferSubData(GL_ARRAY_BUFFER, (GLintptr)off, src_sz, src);
     MGL_CORE_ASSERT(glGetError() == GL_NO_ERROR, "[Buffer] Error writing to buffer.");
-    m_pos = 0;
+    m_pos = off + src_sz;
   }
 
-  void buffer::clear()
+    void buffer::clear()
   {
     MGL_CORE_ASSERT(!gl_object::released(), "[Buffer] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Buffer] Resource context not current.");

@@ -335,7 +335,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + size <= m_size, "Buffer overflow");
       upload(data, size, m_pos);
-      m_pos += size;
     }
 
     /**
@@ -346,7 +345,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint8_t), m_pos);
-      m_pos += data.size() * sizeof(uint8_t);
     }
 
     /**
@@ -357,7 +355,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint16_t), m_pos);
-      m_pos += data.size() * sizeof(uint16_t);
     }
 
     /**
@@ -368,7 +365,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint32_t), m_pos);
-      m_pos += data.size() * sizeof(uint32_t);
     }
 
     /**
@@ -379,7 +375,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint64_t), m_pos);
-      m_pos += data.size() * sizeof(uint64_t);
     }
 
     /**
@@ -390,7 +385,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int8_t), m_pos);
-      m_pos += data.size() * sizeof(int8_t);
     }
 
     /**
@@ -401,7 +395,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int16_t), m_pos);
-      m_pos += data.size() * sizeof(int16_t);
     }
 
     /**
@@ -412,7 +405,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int32_t), m_pos);
-      m_pos += data.size() * sizeof(int32_t);
     }
 
     /**
@@ -423,7 +415,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int64_t), m_pos);
-      m_pos += data.size() * sizeof(int64_t);
     }
 
     /**
@@ -434,7 +425,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(float), m_pos);
-      m_pos += data.size() * sizeof(float);
     }
 
     /**
@@ -445,7 +435,6 @@ public:
     {
       MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(double), m_pos);
-      m_pos += data.size() * sizeof(double);
     }
 
     /**
