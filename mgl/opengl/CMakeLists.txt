@@ -22,6 +22,7 @@ target_include_directories(
 if(WIN32)
   message(STATUS "OpenGL Platform: Windows")
   set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_WGL")
+  target_link_libraries(mgl_opengl_static PUBLIC opengl32)
 elseif (UNIX)
   if (NOT APPLE)
     set(MGL_OPENGL_PLATFORM_DEFINITION "-DMGL_OPENGL_EGL")

@@ -1,10 +1,10 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace mgl::opengl
 {
-
   struct data_type
   {
     int32_t* base_format;

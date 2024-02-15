@@ -30,7 +30,7 @@ namespace mgl::opengl
 
     if(!wgl_version)
     {
-      MGL_CORE_ERROR("Error loading WGL");
+      MGL_CORE_ERROR("[WGL Context] Error loading WGL");
       return;
     }
 
@@ -44,7 +44,7 @@ namespace mgl::opengl
 
         if(!res->wnd)
         {
-          MGL_CORE_ERROR("Error creating window");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error creating window.");
           delete res;
           return;
         }
@@ -53,7 +53,7 @@ namespace mgl::opengl
 
         if(!res->dc)
         {
-          MGL_CORE_ERROR("Error getting device context");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error getting device context.");
           delete res;
           return;
         }
@@ -70,14 +70,14 @@ namespace mgl::opengl
 
         if(!pixelformat)
         {
-          MGL_CORE_ERROR("Error choosing pixel format");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error choosing pixel format.");
           delete res;
           return;
         }
 
         if(!SetPixelFormat(res->dc, pixelformat, &pfd))
         {
-          MGL_CORE_ERROR("Error setting pixel format");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error setting pixel format.");
           delete res;
           return;
         }
@@ -97,14 +97,14 @@ namespace mgl::opengl
 
         if(!res->ctx)
         {
-          MGL_CORE_ERROR("Error creating context");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error creating context.");
           delete res;
           return;
         }
 
         if(!wglMakeCurrent(res->dc, res->ctx))
         {
-          MGL_CORE_ERROR("Error making context current");
+          MGL_CORE_ERROR("[WGL Context] (standalone) Error making context current.");
           delete res;
           return;
         }
@@ -118,7 +118,8 @@ namespace mgl::opengl
 
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) wglGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[WGL Context] (share) wglGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -127,7 +128,7 @@ namespace mgl::opengl
 
         if(!res->dc)
         {
-          MGL_CORE_ERROR("(share) wglGetCurrentDC: cannot detect OpenGL context");
+          MGL_CORE_ERROR("[WGL Context] (share) wglGetCurrentDC: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -147,14 +148,15 @@ namespace mgl::opengl
 
         if(!res->ctx)
         {
-          MGL_CORE_ERROR("(share) wglCreateContextAttribsARB failed (0x%x)", GetLastError());
+          MGL_CORE_ERROR("[WGL Context] (share) wglCreateContextAttribsARB failed (0x{0:x}).",
+                         GetLastError());
           delete res;
           return;
         }
 
         if(!wglMakeCurrent(res->dc, res->ctx))
         {
-          MGL_CORE_ERROR("(share) wglMakeCurrent failed (0x%x)", GetLastError());
+          MGL_CORE_ERROR("[WGL Context] (share) wglMakeCurrent failed (0x{0:x}).", GetLastError());
           delete res;
           return;
         }
@@ -168,7 +170,8 @@ namespace mgl::opengl
 
         if(!ctx_share)
         {
-          MGL_CORE_ERROR("(share) wglGetCurrentContext: cannot detect OpenGL context");
+          MGL_CORE_ERROR(
+              "[WGL Context] (attached) wglGetCurrentContext: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -177,7 +180,7 @@ namespace mgl::opengl
 
         if(!res->dc)
         {
-          MGL_CORE_ERROR("(share) wglGetCurrentDC: cannot detect OpenGL context");
+          MGL_CORE_ERROR("[WGL Context] (attached) wglGetCurrentDC: cannot detect OpenGL context.");
           delete res;
           return;
         }
@@ -186,14 +189,15 @@ namespace mgl::opengl
 
         if(!wglMakeCurrent(res->dc, res->ctx))
         {
-          MGL_CORE_ERROR("(share) wglMakeCurrent failed (0x%x)", GetLastError());
+          MGL_CORE_ERROR("[WGL Context] (attached) wglMakeCurrent failed (0x{0:x}).",
+                         GetLastError());
           delete res;
           return;
         }
         break;
       }
       default: {
-        MGL_CORE_ERROR("Invalid context mode");
+        MGL_CORE_ERROR("[WGL Context] Invalid context mode");
         delete res;
         return;
         break;
@@ -204,13 +208,13 @@ namespace mgl::opengl
 
     if(!gl_version)
     {
-      MGL_CORE_ERROR("Error loading OpenGL");
+      MGL_CORE_ERROR("[WGL Context] Error loading OpenGL.");
       return;
     }
     else
     {
       MGL_CORE_INFO(
-          "OpenGL {0}.{1}", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
+          "OpenGL '{0}.{1}'", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
     }
 
     m_context = res;
