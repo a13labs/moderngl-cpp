@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgl_core/memory.hpp"
+#include <cstdint>
 namespace mgl::opengl
 {
   class context;
