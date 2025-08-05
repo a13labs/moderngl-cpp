@@ -195,6 +195,16 @@ private:
     bool m_req_dynamic;
   };
 
+  class ogl_generic_buffer : public ogl_buffer<mgl::platform::api::buffer>
+  {
+public:
+    ogl_generic_buffer(size_t size = 0, bool dynamic = false)
+        : ogl_buffer(size, dynamic)
+    { }
+
+    virtual ~ogl_generic_buffer() = default;
+  };
+
   class ogl_vertex_buffer : public ogl_buffer<mgl::platform::api::vertex_buffer>
   {
 public:

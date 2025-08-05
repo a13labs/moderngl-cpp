@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffers.hpp"
+#include "program.hpp"
 #include "enums.hpp"
 
 #include "mgl_core/debug.hpp"

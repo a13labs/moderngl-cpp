@@ -9,6 +9,10 @@ set(SHADER_TYPES
     CACHE STRING "Shader types to generate headers for"
 )
 
+if (NOT DEFINED MGL_RENDER_API)
+    set(MGL_RENDER_API "opengl" CACHE STRING "The render API to use")
+endif()
+
 function(get_shader_type_extension SHADER_TYPE SHADER_EXTENSION)
     if (${SHADER_TYPE} STREQUAL "vertex")
         set(${SHADER_EXTENSION} "vs" PARENT_SCOPE)
@@ -58,7 +62,7 @@ endfunction()
 function(generate_shader SHADER_TYPE) 
     # Get the extension for the shader type
     get_shader_type_extension(${SHADER_TYPE} SHADER_EXTENSION)
-    file(GLOB_RECURSE SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${SHADER_TYPE}/*.${SHADER_EXTENSION}")
+    file(GLOB_RECURSE SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/${MGL_RENDER_API}/${SHADER_TYPE}/*.${SHADER_EXTENSION}")
     # Create a directory to store generated headers
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/inc/shaders/${SHADER_TYPE}")
 

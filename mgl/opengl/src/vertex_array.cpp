@@ -330,12 +330,12 @@ namespace mgl::opengl
           auto& element = v_data.get_element(j);
 
           char* ptr = (char*)(intptr_t)element.offset;
-          for(int32_t r = 0; r < attr.data_type->rows_length; ++r)
+          for(int32_t r = 0; r < attr.d_type->rows_length; ++r)
           {
             int32_t location = attr.location + r;
-            int32_t count = element.count / attr.data_type->rows_length;
+            int32_t count = element.count / attr.d_type->rows_length;
 
-            switch(attr.data_type->scalar_type)
+            switch(attr.d_type->scalar_type)
             {
               case GL_FLOAT:
                 glVertexAttribPointer(
@@ -354,7 +354,7 @@ namespace mgl::opengl
 
             glVertexAttribDivisor(location, v_data.layout().divisor());
             glEnableVertexAttribArray(location);
-            ptr += element.size / attr.data_type->rows_length;
+            ptr += element.size / attr.d_type->rows_length;
           }
           j++;
         }

@@ -32,7 +32,7 @@ public:
     struct attribute
     {
       std::string name;
-      data_type* data_type;
+      data_type* d_type;
       int32_t location;
       size_t array_length;
     };

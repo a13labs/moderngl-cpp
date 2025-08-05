@@ -4,8 +4,23 @@ option(SDL_TESTS "" OFF)
 option(SDL2_DISABLE_UNINSTALL "" ON)
 option(SDL2_DISABLE_SDL2MAIN "" ON)
 if (MGL_LINUX_OS)
+    # Check for Wayland development libraries
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(WAYLAND REQUIRED wayland-client wayland-protocols wayland-egl libdecor-0)
+    
+    if(NOT WAYLAND_FOUND)
+        message(FATAL_ERROR "Wayland development libraries not found.")
+    endif()
+
+    # Check for X11 development libraries
+    pkg_check_modules(X11 REQUIRED x11 xext xrandr)
+    
+    if(NOT X11_FOUND)
+        message(FATAL_ERROR "X11 development libraries not found.")
+    endif()
+    
     option(SDL_WAYLAND "" ON)
-    option(SDL_X11 "" OFF)
+    option(SDL_X11 "" ON)
 endif()
 
 # Use FetchContent to download sdl2

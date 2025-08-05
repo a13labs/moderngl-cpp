@@ -218,11 +218,42 @@ namespace mgl::platform
 
   bool sdl_window::create_window()
   {
+
+  // Show available video drivers before initialization
+#ifdef MGL_DEBUG
+  int num_drivers = SDL_GetNumVideoDrivers();
+  MGL_CORE_INFO("[SDL Window] Available video drivers ({0}):", num_drivers);
+  for(int i = 0; i < num_drivers; i++)
+  {
+    const char* driver_name = SDL_GetVideoDriver(i);
+    MGL_CORE_INFO("[SDL Window]   {0}: {1}", i, driver_name ? driver_name : "NULL");
+  }
+#endif
+// Force proper video driver (prevent offscreen driver)
+#ifdef __linux__
+    // Try Wayland first, then X11, avoid offscreen
+    if(!SDL_SetHint(SDL_HINT_VIDEODRIVER, "wayland,x11"))
+    {
+      MGL_CORE_WARN("[SDL Window] Failed to set video driver hint.");
+    }
+#endif
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
       MGL_CORE_TRACE("[SDL Window] Error initializing SDL.");
       return false;
     }
+
+    // Add this check to verify we got a proper driver
+    const char* driver = SDL_GetCurrentVideoDriver();
+    if(!driver || strcmp(driver, "offscreen") == 0)
+    {
+      MGL_CORE_ERROR("[SDL Window] Using offscreen driver - no display available!");
+      SDL_Quit();
+      return false;
+    }
+
+    MGL_CORE_INFO("[SDL Window] Using video driver: {0}", driver);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -286,19 +317,12 @@ namespace mgl::platform
 
     SDL_GL_SetSwapInterval(m_state.current_config.v_sync ? 1 : 0);
 
-    SDL_SysWMinfo wmi;
-    SDL_VERSION(&wmi.version);
+    SDL_ShowWindow(m_api_window);
 
-    if(!SDL_GetWindowWMInfo(m_api_window, &wmi))
-    {
-      auto error = SDL_GetError();
-      MGL_CORE_TRACE("[SDL Window] Error retrieving window information: {0}.", error);
-      SDL_GL_DeleteContext(m_context);
-      SDL_DestroyWindow(m_api_window);
-      m_context = nullptr;
-      m_api_window = nullptr;
-      return false;
-    }
+    // Add debugging info
+    MGL_CORE_INFO("[SDL Window] Window created successfully. Flags: {0}",
+                  SDL_GetWindowFlags(m_api_window));
+    MGL_CORE_INFO("[SDL Window] Video driver: {0}", SDL_GetCurrentVideoDriver());
 
     m_state.width = m_state.current_config.width;
     m_state.height = m_state.current_config.height;
@@ -407,7 +431,11 @@ namespace mgl::platform
   void sdl_window::process_events()
   {
     SDL_Event e;
-    SDL_PollEvent(&e);
+    while(SDL_PollEvent(&e))
+    {
+      // Events are automatically handled by the SDL_AddEventWatch callback
+      // Just need to pump the event queue
+    }
   }
 
   int sdl_window::width()

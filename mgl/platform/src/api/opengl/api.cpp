@@ -332,10 +332,8 @@ namespace mgl::platform::api::backends
 
   buffer_ref ogl_api::api_create_buffer(size_t size, bool dynamic)
   {
-    // MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    // return mgl::create_ref<ogl_buffer>(size, dynamic);
-    MGL_CORE_ASSERT(false, "Not implemented");
-    return nullptr;
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    return mgl::create_ref<ogl_generic_buffer>(size, dynamic);
   }
 
   program_ref ogl_api::api_create_program(const std::string& vs_source,

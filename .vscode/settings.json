@@ -85,6 +85,7 @@
         "locale": "cpp",
         "mutex": "cpp",
         "cinttypes": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "any": "cpp"
     }
 }

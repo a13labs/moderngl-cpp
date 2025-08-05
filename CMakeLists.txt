@@ -32,6 +32,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Detect the compiler and set MGL_COMPILER_DEFINITION
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_GNU")
+    # Disable changes-meaning warning for GCC (C++ only)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Wno-changes-meaning>)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(MGL_COMPILER_DEFINITION "-DMGL_COMPILER_MSVC")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
