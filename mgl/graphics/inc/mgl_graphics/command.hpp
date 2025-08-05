@@ -1,5 +1,4 @@
 #pragma once
-#include "batch.hpp"
 #include "enums.hpp"
 #include "glm/glm.hpp"
 #include "shader.hpp"
@@ -82,7 +81,7 @@ public:
                    uint32_t size = 16,
                    const std::string& font = "default");
 
-    void draw_batch(const batch_ref& batch);
+    void draw_batch(const mgl::platform::api::render_batch_ref& batch);
 
     void enable_shader(shader_ref shader);
 

@@ -2,6 +2,7 @@
 #include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/shaders/gui.hpp"
 #include "mgl_graphics/textures.hpp"
+#include "mgl_graphics/commands/draw.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
@@ -259,7 +260,9 @@ namespace mgl::graphics::layers
     mgl::platform::api::render_api::set_projection_matrix(
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
-    auto vao = mgl::platform::api::render_api::create_vertex_array(vb, ib);
+    // Create a batch for GUI rendering
+    auto gui_batch = mgl::create_ref<mgl::platform::api::render_batch>(
+        vb, ib, nullptr, mgl::platform::api::render_mode::TRIANGLES);
 
     for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
     {
@@ -282,24 +285,29 @@ namespace mgl::graphics::layers
         }
         else
         {
-          mgl::platform::api::render_api::set_scissor(
+          glm::vec4 clip_rect(
               static_cast<int32_t>(pcmd->ClipRect.x),
               static_cast<int32_t>(fb_height - pcmd->ClipRect.w),
               static_cast<int32_t>(pcmd->ClipRect.z - pcmd->ClipRect.x),
               static_cast<int32_t>(pcmd->ClipRect.w - pcmd->ClipRect.y));
 
-          auto tex = get_texture(reinterpret_cast<size_t>(pcmd->TextureId));
-          mgl::platform::api::render_api::bind_texture(0, tex->api());
-
-          vao->render(
-              mgl::platform::api::render_mode::TRIANGLES, pcmd->ElemCount, idx_buffer_offset);
+          size_t texture_id = reinterpret_cast<size_t>(pcmd->TextureId);
+          
+          // Add draw call to batch
+          auto tex = get_texture(texture_id);
+          gui_batch->add_draw_call(tex->api(), pcmd->ElemCount, idx_buffer_offset, clip_rect);
 
           idx_buffer_offset += pcmd->ElemCount;
         }
       }
     }
 
-    vao->release();
+    // Execute the batch
+    if(!gui_batch->draw_calls.empty())
+    {
+      auto draw_command = mgl::create_ref<mgl::graphics::draw_batch_command>(gui_batch);
+      draw_command->execute();
+    }
 
     mgl::platform::api::render_api::disable_program();
     mgl::platform::api::render_api::clear_samplers(0, 1);

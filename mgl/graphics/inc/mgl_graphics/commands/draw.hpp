@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mgl_graphics/batch.hpp"
 #include "mgl_graphics/command.hpp"
 
 #include "mgl_platform/api/buffers.hpp"
@@ -43,42 +42,17 @@ private:
   class draw_batch_command : public render_command
   {
 public:
-    draw_batch_command(const batch_ref& batch)
+    draw_batch_command(const mgl::platform::api::render_batch_ref& batch)
         : m_batch(batch)
     { }
 
     void execute() override final
     {
-      MGL_CORE_ASSERT(false, "Not implemented");
-      // if(m_batch->index_buffer())
-      // {
-      // mgl::platform::api::vertex_array_ref vao =
-      //     mgl::platform::api::create_vertex_array(m_batch->vertex_buffer()->api(),
-      //                                             m_batch->vertex_buffer()->layout(),
-      //                                             m_batch->index_buffer()->api(),
-      //                                             m_batch->index_buffer()->element_size(),
-      //                                             m_batch->mode());
-      // vao->allocate();
-      // mgl::platform::api::draw_batch(vao, m_batch->get());
-      // vao->deallocate();
-      // }
-      // else
-      // {
-      // mgl::platform::api::vertex_array_ref vao =
-      //     mgl::platform::api::create_vertex_array(m_batch->vertex_buffer()->api(),
-      //                                             m_batch->vertex_buffer()->layout(),
-      //                                             nullptr,
-      //                                             4,
-      //                                             m_batch->mode());
-
-      // vao->allocate();
-      // mgl::platform::api::draw_batch(vao, m_batch->get());
-      // vao->deallocate();
-      // }
+      mgl::platform::api::render_api::render_call(m_batch);
     }
 
 private:
-    batch_ref m_batch;
+    mgl::platform::api::render_batch_ref m_batch;
   };
 
 } // namespace mgl::graphics

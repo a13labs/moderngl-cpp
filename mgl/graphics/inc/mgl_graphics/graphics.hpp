@@ -1,5 +1,4 @@
 #pragma once
-#include "batch.hpp"
 #include "command.hpp"
 #include "enums.hpp"
 #include "glm/glm.hpp"

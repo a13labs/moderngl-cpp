@@ -4,7 +4,6 @@
 #include "enums.hpp"
 #include "program.hpp"
 #include "textures.hpp"
-#include "vertex_array.hpp"
 
 #include "mgl_registry/resources/image.hpp"
 
@@ -12,6 +11,53 @@
 
 namespace mgl::platform::api
 {
+   struct draw_call
+  {
+    texture_ref tex;
+    size_t element_count;
+    size_t index_offset;
+    glm::vec4 clip_rect;
+  };
+
+  struct render_batch
+  {
+    int32_t count;
+    platform::api::render_mode render_mode;
+    platform::api::vertex_buffer_ref vertex_buffer;
+    platform::api::index_buffer_ref index_buffer;
+    platform::api::buffer_ref uniform_buffer;
+    mgl::list<draw_call> draw_calls;
+
+    render_batch(const mgl::platform::api::vertex_buffer_ref& vb = nullptr,
+          const mgl::platform::api::index_buffer_ref& ib = nullptr,
+          const mgl::platform::api::buffer_ref& ub = nullptr,
+          platform::api::render_mode m = render_mode::TRIANGLES)
+        : count(0)
+        , render_mode(m)
+        , vertex_buffer(vb)
+        , index_buffer(ib)
+        , uniform_buffer(ub)
+    { }
+
+    void clear()
+    {
+      draw_calls.clear();
+      count = 0;
+    }
+
+    void add_draw_call(texture_ref tex, size_t element_count, size_t index_offset, const glm::vec4& clip_rect = glm::vec4(0))
+    {
+      draw_calls.push_back({tex, element_count, index_offset, clip_rect});
+      count++;
+    }
+
+    ~render_batch() { 
+      clear();
+    }
+  };
+
+  using render_batch_ref = mgl::ref<render_batch>;
+
   struct render_state
   {
     render_state()
@@ -127,6 +173,8 @@ private:
                                  int32_t offset,
                                  render_mode mode) = 0;
 
+    virtual void api_render_call(const mgl::platform::api::render_batch_ref& batch) = 0;
+
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) = 0;
 
@@ -134,9 +182,6 @@ private:
                                                        mgl::string_list attrs,
                                                        size_t size,
                                                        bool dynamic) = 0;
-
-    virtual vertex_array_ref api_create_vertex_array(const vertex_buffer_ref& vbo,
-                                                     const index_buffer_ref ibo) = 0;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
 
@@ -341,6 +386,11 @@ public:
       render_api::instance().api_render_call(vertex_buffer, nullptr, count, offset, mode);
     }
 
+    static void render_call(const mgl::platform::api::render_batch_ref& batch)
+    {
+      render_api::instance().api_render_call(batch);
+    }
+
     static program_ref create_program(const std::string& vs_source,
                                       const std::string& fs_source,
                                       const std::string& gs_source = "",
@@ -433,12 +483,6 @@ public:
                                                   bool dynamic = false)
     {
       return render_api::instance().api_create_vertex_buffer(layout, attrs, size, dynamic);
-    }
-
-    static vertex_array_ref create_vertex_array(const vertex_buffer_ref& vbo,
-                                                const index_buffer_ref ibo)
-    {
-      return render_api::instance().api_create_vertex_array(vbo, ibo);
     }
 
     static buffer_ref create_buffer(size_t size, bool dynamic = false)

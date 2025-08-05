@@ -301,8 +301,9 @@ namespace mgl::platform::api::backends
   {
     MGL_PROFILE_FUNCTION("API_RENDER_CALL");
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    auto vao = create_vertex_array(vb, ib);
-    vao->render(mode, count, offset);
+    MGL_CORE_ASSERT(m_state_data.current_program, "No program bound");
+    auto vao = mgl::create_ref<ogl_vertex_array>(m_state_data.current_program, vb, ib);
+    vao->render(mode, count, offset, 1);
     vao->release();
   }
 
@@ -320,14 +321,6 @@ namespace mgl::platform::api::backends
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     return mgl::create_ref<ogl_vertex_buffer>(layout, attrs, size, dynamic);
-  }
-
-  vertex_array_ref ogl_api::api_create_vertex_array(const vertex_buffer_ref& vbo,
-                                                    const index_buffer_ref ibo)
-  {
-    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    MGL_CORE_ASSERT(m_state_data.current_program, "No program bound");
-    return mgl::create_ref<ogl_vertex_array>(m_state_data.current_program, vbo, ibo);
   }
 
   buffer_ref ogl_api::api_create_buffer(size_t size, bool dynamic)
@@ -356,4 +349,38 @@ namespace mgl::platform::api::backends
     return mgl::create_ref<ogl_texture_2d>(mgl::size{ width, height }, components, samples);
   }
 
+  void ogl_api::api_render_call(const mgl::platform::api::render_batch_ref& batch)
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    MGL_CORE_ASSERT(m_state_data.current_program, "No program bound");
+    if(!batch || !batch->vertex_buffer || batch->draw_calls.empty())
+      return;
+
+    auto vao = mgl::create_ref<ogl_vertex_array>(
+        m_state_data.current_program, batch->vertex_buffer, batch->index_buffer);
+
+    // Execute all draw calls in the batch
+    for(const auto& draw_call : batch->draw_calls)
+    {
+      // Set scissor if clip rect is provided
+      if(draw_call.clip_rect != glm::vec4(0))
+      {
+        mgl::platform::api::render_api::set_scissor(static_cast<int32_t>(draw_call.clip_rect.x),
+                                                    static_cast<int32_t>(draw_call.clip_rect.y),
+                                                    static_cast<int32_t>(draw_call.clip_rect.z),
+                                                    static_cast<int32_t>(draw_call.clip_rect.w));
+      }
+
+      // Bind texture if provided
+      if(draw_call.tex > 0)
+      {
+        mgl::platform::api::render_api::bind_texture(0, draw_call.tex);
+      }
+
+      // Render the draw call
+      vao->render(batch->render_mode, draw_call.element_count, draw_call.index_offset, 1);
+    }
+
+    vao->release();
+  }
 }; // namespace mgl::platform::api::backends

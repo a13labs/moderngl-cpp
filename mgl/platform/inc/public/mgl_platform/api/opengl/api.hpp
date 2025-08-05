@@ -114,6 +114,8 @@ private:
                                  int32_t offset,
                                  render_mode mode) override final;
 
+    virtual void api_render_call(const render_batch_ref& batch) override final;
+
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) override final;
 
@@ -121,9 +123,6 @@ private:
                                                        mgl::string_list attrs,
                                                        size_t size,
                                                        bool dynamic) override final;
-
-    virtual vertex_array_ref api_create_vertex_array(const vertex_buffer_ref& vbo,
-                                                     const index_buffer_ref ibo) override final;
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) override final;
 
