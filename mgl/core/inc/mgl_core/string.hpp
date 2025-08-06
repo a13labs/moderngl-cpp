@@ -15,8 +15,18 @@
 #  include <algorithm>
 #endif
 
+/**
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
+ */
 namespace mgl
 {
+/**
+ * \brief A list of strings.
+ *
+ * This is an alias to the STL `std::list<std::string>` type, providing a more descriptive name and documentation. It represents a collection of strings that can be resized and efficiently manipulated. 
+ */
   using string_list = list<std::string>;
 
   static const size_t npos = std::string::npos;

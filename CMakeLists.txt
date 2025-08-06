@@ -18,7 +18,7 @@ include(ShadersHeaderGenerator)
 
 # Build options
 option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
-option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
+option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" ON)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 
 # Set the C23 standard
@@ -88,6 +88,13 @@ if (MGL_BUILD_DOCS)
         # set input and output files
         set(DOXYGEN_IN "${CMAKE_SOURCE_DIR}/doc/Doxyfile.in")
         set(DOXYGEN_OUT "${CMAKE_BINARY_DIR}/Doxyfile")
+        # Set the folders to be documented
+        set(DOXYGEN_INPUT_DIRS 
+            "${CMAKE_SOURCE_DIR}/mgl/core/inc"
+            "${CMAKE_SOURCE_DIR}/inc/cglm"
+        )
+        # Join the list into a space-separated string for Doxyfile
+        string (REPLACE ";" " " DOXYGEN_INPUT_DIRS_STR "${DOXYGEN_INPUT_DIRS}")
 
         # request to configure the file
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)

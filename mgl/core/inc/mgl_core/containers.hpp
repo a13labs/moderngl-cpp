@@ -1,3 +1,7 @@
+/**
+ * @file containers.hpp
+ * @brief This file contains the definition of various container such as lists, pairs, dictionaries, and unordered maps.
+ */
 #pragma once
 
 #include <map>
@@ -5,7 +9,9 @@
 #include <vector>
 
 /**
- * @brief Namespace mgl contains aliases for various container types.
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
  */
 namespace mgl
 {

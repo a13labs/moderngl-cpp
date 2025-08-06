@@ -9,6 +9,11 @@
 #define MGL_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MGL_MIN(a, b) (((a) < (b)) ? (a) : (b))
 
+/**
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
+ */
 namespace mgl
 {
   /**

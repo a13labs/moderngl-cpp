@@ -6,9 +6,17 @@
 
 #include <chrono>
 
+/**
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
+ */
 namespace mgl
 {
 
+/**
+ * \brief A type alias representing a point in time using the system clock from the C++ standard library's chrono module.
+ */
   using timepoint = std::chrono::time_point<std::chrono::system_clock>;
 
   /**
@@ -16,6 +24,9 @@ namespace mgl
    */
   class Timer
   {
+/**
+ * \brief The FrameTime struct represents a time frame with start and end points, providing methods to get the duration of that frame in seconds.
+ */
     struct FrameTime
     {
       float current; /**< The current time in seconds. */

@@ -24,6 +24,11 @@
 #    define GET_PROCESS_ID getpid
 #  endif
 
+/**
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
+ */
 namespace mgl::profiling
 {
   /**
@@ -142,6 +147,10 @@ private:
     bool m_stopped; ///< Flag indicating whether the timer has been stopped.
   };
 
+/**
+ * \brief This namespace provides utilities for profiling and instrumentation functionalities.
+ * It includes classes, functions, and utilities for performance measurement and analysis. The main purpose is to provide tools for measuring the execution time of code blocks or functions, which can be useful in optimizing application performance. 
+ */
   namespace instrumentor_utils
   {
     /**

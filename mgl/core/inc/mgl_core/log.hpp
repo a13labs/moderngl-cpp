@@ -1,9 +1,6 @@
 /**
  * @file log.hpp
  * @brief This file contains the declaration of the logging functionality for the mgl::log namespace.
- *
- * The mgl::log namespace provides functions for logging messages at different levels of severity.
- * It also includes macros for convenient logging.
  */
 #pragma once
 #include "memory.hpp"
@@ -11,6 +8,12 @@
 
 #include <format>
 
+/**
+ * @brief The mgl::log namespace provides functions for logging messages at different levels of severity.
+ *
+ * It includes functions for logging trace, debug, info, warning, error, and critical messages.
+ * The logging system is designed to be used throughout the MGL library for consistent logging practices.
+ */
 namespace mgl::log
 {
   /**

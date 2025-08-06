@@ -1,3 +1,7 @@
+/**
+ * @file io.hpp
+ * @brief Contains the definition of the mgl namespace and related types for core input/output functionality.
+ */
 #pragma once
 
 #include "containers.hpp"
@@ -9,12 +13,8 @@
 #include "glm/glm.hpp"
 
 /**
- * @file io.hpp
- * @brief Contains the definition of the mgl namespace and related types for core input/output functionality.
+ * \brief The mgl::io namespace provides utilities for input and output operations. This is part of the MGL library.
  */
-/**
-  * @brief Namespace for core input/output functionality.
-  */
 namespace mgl::io
 {
   /**

@@ -62,6 +62,11 @@ namespace TCB_SPAN_NAMESPACE_NAME
 #endif
 
 #if defined(TCB_SPAN_THROW_ON_CONTRACT_VIOLATION)
+/**
+ * @brief Represents an error that occurs when a precondition or postcondition is violated in the MGL library.
+ * 
+ * This class extends std::logic_error and provides additional functionality for handling contract violation errors. It allows developers to catch these exceptions specifically, providing more context about what went wrong during runtime.
+ */
   struct contract_violation_error : std::logic_error
   {
     explicit contract_violation_error(const char* msg)
@@ -136,6 +141,10 @@ namespace TCB_SPAN_NAMESPACE_NAME
 #endif
 
 #ifdef TCB_SPAN_HAVE_STD_BYTE
+/**
+ * \brief The 'byte' type represents an array of bytes with fixed size and lifetime.
+ * It is defined as std::byte in the standard library, which provides a byte-oriented interface to the underlying hardware.
+ */
   using byte = std::byte;
 #else
   using byte = unsigned char;
@@ -150,12 +159,28 @@ namespace TCB_SPAN_NAMESPACE_NAME
   TCB_SPAN_INLINE_VAR constexpr std::size_t dynamic_extent = SIZE_MAX;
 
   template <typename ElementType, std::size_t Extent = dynamic_extent>
+/**
+ * \brief A flexible, efficient and safe mechanism for representing contiguous sequences of elements in memory.
+ *
+ * The span class template allows access to a contiguous sequence of objects without copying them, providing strong exception safety guarantees.
+ */
   class span;
 
+/**
+ * \brief The 'detail' namespace is an implementation of the `std::span` from C++20. It provides a flexible, efficient and safe mechanism for representing contiguous sequences of elements in memory.
+ */
   namespace detail
   {
 
     template <typename E, std::size_t S>
+/**
+ * \brief A structure that provides storage for an array-like object with contiguous elements in memory.
+ *
+ * This struct is similar to `std::span` from C++20, providing a flexible and efficient mechanism for representing
+ * contiguous sequences of elements without copying them. It allows access to a sequence of objects without the need for 
+ * explicit bounds checking or memory allocation/deallocation operations. The span class template provides strong exception safety 
+ * guarantees.
+ */
     struct span_storage
     {
       constexpr span_storage() noexcept = default;
@@ -228,13 +253,26 @@ namespace TCB_SPAN_NAMESPACE_NAME
     using std::void_t;
 #else
     template <typename...>
+/**
+ * @brief `void_t` is an alias template that represents the fact of not having any type at all.
+ * It's used primarily to aid in SFINAE (Substitution Failure Is Not An Error) scenarios, where it helps determine if a particular function 
+ * or class can be instantiated with certain types. In essence, `void_t` is an empty type that signifies the absence of any actual type.
+ */
     using void_t = void;
 #endif
 
     template <typename T>
+/**
+ * @brief This is an alias template that removes cv-qualifiers and references from a type T, resulting in the 'uncvref_t' type.
+ */
     using uncvref_t = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
 
     template <typename>
+/**
+ * @brief A type trait to check if a given type is std::span.
+ * 
+ * This type trait checks whether the template parameter T is an instance of `std::span` from C++20 standard library.
+ */
     struct is_span : std::false_type
     { };
 
@@ -243,6 +281,9 @@ namespace TCB_SPAN_NAMESPACE_NAME
     { };
 
     template <typename>
+/**
+ * @brief This struct, `is_std_array`, serves as a type trait that evaluates whether a given type is an array or not. It inherits from `std::false_type` by default.
+ */
     struct is_std_array : std::false_type
     { };
 
@@ -251,6 +292,9 @@ namespace TCB_SPAN_NAMESPACE_NAME
     { };
 
     template <typename, typename = void>
+/**
+ * @brief Represents a type trait that evaluates to true if the given type has both size() and data() methods, false otherwise.
+ */
     struct has_size_and_data : std::false_type
     { };
 
@@ -261,6 +305,9 @@ namespace TCB_SPAN_NAMESPACE_NAME
     { };
 
     template <typename C, typename U = uncvref_t<C>>
+/**
+ * @brief A type trait to check if a type is a container.
+ */
     struct is_container
     {
       static constexpr bool value = !is_span<U>::value && !is_std_array<U>::value &&
@@ -268,9 +315,17 @@ namespace TCB_SPAN_NAMESPACE_NAME
     };
 
     template <typename T>
+/**
+ * @brief Alias template for removing pointer from type T.
+ */
     using remove_pointer_t = typename std::remove_pointer<T>::type;
 
     template <typename, typename, typename = void>
+/**
+ * @brief A type trait that checks if the element type of a container is compatible with a given type.
+ * 
+ * This type trait inherits from `std::false_type` and is used to determine whether an element type of a container can be assigned or compared with a specific type.
+ */
     struct is_container_element_type_compatible : std::false_type
     { };
 
@@ -286,6 +341,9 @@ namespace TCB_SPAN_NAMESPACE_NAME
     { };
 
     template <typename, typename = size_t>
+/**
+ * \brief A type trait that determines if the template parameter is complete or not.
+ */
     struct is_complete : std::false_type
     { };
 
@@ -307,6 +365,11 @@ namespace TCB_SPAN_NAMESPACE_NAME
     static_assert(!std::is_abstract<ElementType>::value,
                   "A span's ElementType cannot be an abstract class type");
 
+/**
+ * \brief Alias for the span storage type used in MGL library.
+ *
+ * This alias provides a more readable and understandable name for the underlying span storage type, which is typically used internally by the MGL library.
+ */
     using storage_type = detail::span_storage<ElementType, Extent>;
 
 public:
@@ -432,6 +495,13 @@ public:
     }
 
     template <std::size_t Offset, std::size_t Count = dynamic_extent>
+/**
+ * \brief A type alias representing the return value of the `subspan` function in span.hpp.
+ *
+ * This is an abstraction that provides a way to create sub-spans (views) into existing spans without copying their elements. It allows for 
+ * efficient and safe manipulation of contiguous sequences of elements, providing strong exception safety guarantees. The `subspan` function 
+ * returns an object of this type which can be used as a view into the original span.
+ */
     using subspan_return_t =
         span<ElementType,
              Count != dynamic_extent
@@ -598,6 +668,15 @@ namespace std
 {
 
   template <typename ElementType, size_t Extent>
+/**
+ * @brief Provides the number of elements in a span object.
+ *
+ * This function returns the size of the provided span object, i.e., the number of elements it contains. It is part of the C++20 standard library and provides an efficient way to get the length or size of a contiguous sequence represented by a `span` object without copying its elements.
+ *
+ * @tparam TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent> The span type for which the size is being queried.
+ * 
+ * @return The number of elements in the provided span object.
+ */
   class tuple_size<TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>>
       : public integral_constant<size_t, Extent>
   { };
@@ -607,15 +686,31 @@ namespace std
                        span<ElementType, TCB_SPAN_NAMESPACE_NAME::dynamic_extent>>; // not defined
 
   template <size_t I, typename ElementType, size_t Extent>
+/**
+ * @brief Represents the type of an element in a std::span at compile time.
+ *
+ * This class is used to obtain information about the type of elements contained within a span object, specifically for use with the tuple_element utility. It provides static member functions that return types and indices related to the span's elements.
+ * 
+ * @tparam I The index of the element in the tuple.
+ * @tparam TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent> The span object for which information about its elements is being requested.
+ */
   class tuple_element<I, TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>>
   {
 public:
     static_assert(Extent != TCB_SPAN_NAMESPACE_NAME::dynamic_extent && I < Extent, "");
+/**
+ * \brief The ElementType is the type of elements in the span. It can be any valid C++ data type.
+ */
     using type = ElementType;
   };
 
 } // end namespace std
 
+/**
+ * \brief The mgl namespace encapsulates the core functionalities of the MGL library, providing a structured and organized way to access these utilities.
+ * It includes sub-namespaces such as io (input/output), log (logging) and profiling (profiling and instrumentation). 
+ * These namespaces provide specific functionalities for managing file operations, logging messages at different levels, and measuring the execution time of code blocks or functions respectively.
+ */
 namespace mgl
 {
   template <typename T>
