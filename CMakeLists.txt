@@ -18,7 +18,7 @@ include(ShadersHeaderGenerator)
 
 # Build options
 option(MGL_BUILD_TESTS "Enable ModernGL-Cpp unit tests" ON)
-option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" ON)
+option(MGL_BUILD_DOCS "Build ModernGL-Cpp documentation" OFF)
 option(MGL_BUILD_EXAMPLES "Build ModernGL-Cpp documentation" ON)
 
 # Set the C23 standard
@@ -65,6 +65,12 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Platform: MacOS detected")
     set(MGL_OSX_OS TRUE)
+    execute_process(
+        COMMAND xcrun --show-sdk-path
+        OUTPUT_VARIABLE MACOSX_SDK_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(CMAKE_OSX_SYSROOT "${MACOSX_SDK_PATH}" CACHE PATH "macOS SDK path")
 else()
     message(FATAL_ERROR "Unsupported operating system!")
 endif()
