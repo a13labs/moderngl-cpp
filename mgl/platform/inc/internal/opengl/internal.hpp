@@ -1,5 +1,4 @@
 #pragma once
-
 #include "mgl_opengl/enums.hpp"
 #include "mgl_platform/api/enums.hpp"
 

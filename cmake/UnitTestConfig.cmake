@@ -13,6 +13,18 @@ function(find_unit_tests)
         # Create the unit test executable
         add_executable(${PROJECT_NAME}_${TEST_NAME} ${FILE_PATH})
 
+        # Set language properties for projects that include Objective-C++ libraries
+        if(PROJECT_NAME MATCHES ".*metal.*")
+            set_target_properties(${PROJECT_NAME}_${TEST_NAME} PROPERTIES
+                LINKER_LANGUAGE CXX
+            )
+            # Enable Objective-C++ compilation for linking with Metal libraries
+            if(APPLE)
+                target_compile_options(${PROJECT_NAME}_${TEST_NAME} PRIVATE -ObjC++)
+                target_link_libraries(${PROJECT_NAME}_${TEST_NAME} PRIVATE "-framework Foundation")
+            endif()
+        endif()
+
         # Link mgl_registry and gtest library to the unit test executable
         target_link_libraries(
             ${PROJECT_NAME}_${TEST_NAME} 
@@ -21,7 +33,18 @@ function(find_unit_tests)
             gtest
           )
   
-          # Add a custom test target to run the unit tests
+        # Add include directories
+        target_include_directories(
+            ${PROJECT_NAME}_${TEST_NAME} 
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc/public>
+        PRIVATE
+            ${CMAKE_CURRENT_BINARY_DIR}/inc
+            ${CMAKE_BINARY_DIR}/inc
+            ${CMAKE_CURRENT_SOURCE_DIR}/inc/internal
+        )
+           
+        # Add a custom test target to run the unit tests
         add_test(NAME ${PROJECT_NAME}_ctest_${TEST_NAME} COMMAND ${PROJECT_NAME}_${TEST_NAME})
     endforeach()
 

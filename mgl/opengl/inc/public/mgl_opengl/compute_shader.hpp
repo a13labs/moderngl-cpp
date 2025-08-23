@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl_object.hpp"
+#include "object.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"
 
@@ -15,15 +15,17 @@ namespace mgl::opengl
 
   /**
    * @brief The compute_shader class represents a compute shader in the OpenGL context.
-   * 
-   * It provides methods for running the compute shader, querying the number of uniforms and uniform blocks, and getting and setting uniform values.
+   *
+   * It provides methods for running the compute shader, querying the number of uniforms and uniform
+   * blocks, and getting and setting uniform values.
    */
   class compute_shader : public gl_object
   {
 public:
     /**
-     * @brief The compute_shader constructor creates a new compute shader with the specified context, source, and filename.
-     * 
+     * @brief The compute_shader constructor creates a new compute shader with the specified
+     * context, source, and filename.
+     *
      * @param ctx The context.
      * @param source The source.
      * @param filename The filename (optional).
@@ -36,8 +38,9 @@ public:
     virtual void release() override final;
 
     /**
-     * @brief The run method runs the compute shader with the specified number of work groups and barrier.
-     * 
+     * @brief The run method runs the compute shader with the specified number of work groups and
+     * barrier.
+     *
      * @param x The number of work groups in the x direction.
      * @param y The number of work groups in the y direction.
      * @param z The number of work groups in the z direction.
@@ -46,8 +49,9 @@ public:
     void run(int32_t x = 1, int32_t y = 1, int32_t z = 1, bool barrier = true);
 
     /**
-     * @brief The has_uniform method returns whether the compute shader has a uniform with the specified name.
-     * 
+     * @brief The has_uniform method returns whether the compute shader has a uniform with the
+     * specified name.
+     *
      * @param name The name.
      * @return Whether the compute shader has a uniform with the specified name.
      */
@@ -58,7 +62,7 @@ public:
 
     /**
      * @brief The uniform method returns the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @return The uniform with the specified name.
      */
@@ -73,7 +77,7 @@ public:
 
     /**
      * @brief The num_uniforms method returns the names of uniforms of the compute shader.
-     * 
+     *
      * @return The names of uniforms of the compute shader.
      */
     const mgl::string_list uniforms() const
@@ -87,8 +91,9 @@ public:
     }
 
     /**
-     * @brief The has_uniform_block method returns whether the compute shader has a uniform block with the specified name.
-     * 
+     * @brief The has_uniform_block method returns whether the compute shader has a uniform block
+     * with the specified name.
+     *
      * @param name The name.
      * @return Whether the compute shader has a uniform block with the specified name.
      */
@@ -99,7 +104,7 @@ public:
 
     /**
      * @brief The uniform_block method returns the uniform block with the specified name.
-     * 
+     *
      * @param name The name.
      * @return The uniform block with the specified name.
      */
@@ -114,21 +119,22 @@ public:
 
     /**
      * @brief The num_uniform method returns the number of uniform blocks of the compute shader.
-     * 
+     *
      * @return The number of uniform of the compute shader.
      */
     size_t num_uniforms() const { return m_uniforms_map.size(); }
 
     /**
-     * @brief The num_uniform_blocks method returns the number of uniform blocks of the compute shader.
-     * 
+     * @brief The num_uniform_blocks method returns the number of uniform blocks of the compute
+     * shader.
+     *
      * @return The number of uniform blocks of the compute shader.
      */
     size_t num_uniform_blocks() const { return m_uniform_blocks_map.size(); }
 
     /**
      * @brief The uniform_blocks method returns the names of uniform blocks of the compute shader.
-     * 
+     *
      * @return The names of uniform blocks of the compute shader.
      */
     const mgl::string_list uniform_blocks() const
@@ -143,7 +149,7 @@ public:
 
     /**
      * @brief The operator[] method returns the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @return The uniform with the specified name.
      */
@@ -151,7 +157,7 @@ public:
 
     /**
      * @brief get_value method gets a bool value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -164,7 +170,7 @@ public:
 
     /**
      * @brief get_value method gets a uint8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -177,7 +183,7 @@ public:
 
     /**
      * @brief get_value method gets a uint16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -190,7 +196,7 @@ public:
 
     /**
      * @brief get_value method gets a uint32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -203,7 +209,7 @@ public:
 
     /**
      * @brief get_value method gets a int32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -216,7 +222,7 @@ public:
 
     /**
      * @brief get_valuemethod gets a float value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -229,7 +235,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::vec2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -242,7 +248,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::vec3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -255,7 +261,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::vec4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -268,7 +274,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -281,7 +287,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat2x3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -294,7 +300,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat2x4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -307,7 +313,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -320,7 +326,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat3x2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -333,7 +339,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat3x4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -346,7 +352,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -359,7 +365,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat4x2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -372,7 +378,7 @@ public:
 
     /**
      * @brief get_value method gets a glm::mat4x3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -385,7 +391,7 @@ public:
 
     /**
      * @brief get_value method gets a uint8_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -398,7 +404,7 @@ public:
 
     /**
      * @brief get_value method gets a uint16_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -411,7 +417,7 @@ public:
 
     /**
      * @brief get_value method gets a uint32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -424,7 +430,7 @@ public:
 
     /**
      * @brief get_value method gets a int8_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -437,7 +443,7 @@ public:
 
     /**
      * @brief get_value method gets a int16_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -450,7 +456,7 @@ public:
 
     /**
      * @brief get_value method gets a int32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -463,7 +469,7 @@ public:
 
     /**
      * @brief get_value method gets a float32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -476,7 +482,7 @@ public:
 
     /**
      * @brief get_value method gets a float64_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -489,7 +495,7 @@ public:
 
     /**
      * @brief get_value method gets a uint8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -502,7 +508,7 @@ public:
 
     /**
      * @brief get_value method gets a uint16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -515,7 +521,7 @@ public:
 
     /**
      * @brief get_value method gets a uint32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -528,7 +534,7 @@ public:
 
     /**
      * @brief get_value method gets a int8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -541,7 +547,7 @@ public:
 
     /**
      * @brief get_value method gets a int16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -554,7 +560,7 @@ public:
 
     /**
      * @brief get_value method gets a int32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -567,7 +573,7 @@ public:
 
     /**
      * @brief get_value method gets a float value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -580,7 +586,7 @@ public:
 
     /**
      * @brief get_value method gets a double value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -593,7 +599,7 @@ public:
 
     /**
      * @brief set_value method sets a bool value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -606,7 +612,7 @@ public:
 
     /**
      * @brief set_value method sets a uint8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -619,7 +625,7 @@ public:
 
     /**
      * @brief set_value method sets a uint16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -632,7 +638,7 @@ public:
 
     /**
      * @brief set_value method sets a uint32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -645,7 +651,7 @@ public:
 
     /**
      * @brief set_value method sets a int32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -658,7 +664,7 @@ public:
 
     /**
      * @brief set_value method sets a float value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -671,7 +677,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::vec2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -684,7 +690,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::vec3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -697,7 +703,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::vec4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -710,7 +716,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -723,7 +729,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat2x3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -736,7 +742,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat2x4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -749,7 +755,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -762,7 +768,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat3x2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -775,7 +781,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat3x4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -788,7 +794,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat4 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -801,7 +807,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat4x2 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -814,7 +820,7 @@ public:
 
     /**
      * @brief set_value method sets a glm::mat4x3 value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -827,7 +833,7 @@ public:
 
     /**
      * @brief set_value method sets a uint8_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -840,7 +846,7 @@ public:
 
     /**
      * @brief set_value method sets a uint16_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -853,7 +859,7 @@ public:
 
     /**
      * @brief set_value method sets a uint32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -866,7 +872,7 @@ public:
 
     /**
      * @brief set_value method sets a int8_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -879,7 +885,7 @@ public:
 
     /**
      * @brief set_value method sets a int16_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -892,7 +898,7 @@ public:
 
     /**
      * @brief set_value method sets a int32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -905,7 +911,7 @@ public:
 
     /**
      * @brief set_value method sets a float32_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -918,7 +924,7 @@ public:
 
     /**
      * @brief set_value method sets a float64_buffer value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -931,7 +937,7 @@ public:
 
     /**
      * @brief set_value method sets a uint8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -944,7 +950,7 @@ public:
 
     /**
      * @brief set_value method sets a uint16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -957,7 +963,7 @@ public:
 
     /**
      * @brief set_value method sets a uint32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -970,7 +976,7 @@ public:
 
     /**
      * @brief set_value method sets a int8_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -983,7 +989,7 @@ public:
 
     /**
      * @brief set_value method sets a int16_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -996,7 +1002,7 @@ public:
 
     /**
      * @brief set_value method sets a int32_t value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -1009,7 +1015,7 @@ public:
 
     /**
      * @brief set_value method sets a float value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -1022,7 +1028,7 @@ public:
 
     /**
      * @brief set_value method sets a double value of the uniform with the specified name.
-     * 
+     *
      * @param name The name.
      * @param value The value.
      */
@@ -1038,7 +1044,7 @@ private:
 
     /**
      * @brief The compute_shader class represents a compute shader.
-     * 
+     *
      * @param ctx The context.
      * @param source The source code of the compute shader.
      * @param filename The filename of the compute shader (optional)

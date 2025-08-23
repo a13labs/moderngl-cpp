@@ -5,7 +5,7 @@
 
 #include "object.hpp"
 
-namespace mgl::opengl
+namespace mgl::metal
 {
   class buffer;
   using buffer_ref = mgl::ref<buffer>;
@@ -13,9 +13,9 @@ namespace mgl::opengl
 
   /**
    * @class buffer
-   * @brief Represents an OpenGL buffer object.
+   * @brief Represents a Metal buffer object.
    */
-  class buffer : public gl_object
+  class buffer : public object
   {
 public:
     /**
@@ -26,7 +26,7 @@ public:
     /**
      * @brief Releases the buffer object.
      */
-    void release();
+    virtual void release() override;
 
     /**
      * @brief Clears the buffer data.
@@ -40,26 +40,16 @@ public:
     void orphan(size_t size);
 
     /**
-     * @brief Binds the buffer to a uniform block.
-     * @param binding The binding point index.
-     * @param size The size of the buffer to bind.
-     * @param off The offset within the buffer to bind.
-     */
-    void bind_to_uniform_block(int binding = 0, size_t size = SIZE_MAX, size_t off = 0);
-
-    /**
-     * @brief Binds the buffer to a storage buffer.
-     * @param binding The binding point index.
-     * @param size The size of the buffer to bind.
-     * @param off The offset within the buffer to bind.
-     */
-    void bind_to_storage_buffer(int binding = 0, size_t size = SIZE_MAX, size_t off = 0);
-
-    /**
      * @brief Checks if the buffer is used for dynamic updates.
      * @return True if the buffer is dynamic, false otherwise.
      */
     bool dynamic() const { return m_dynamic; }
+
+    /**
+     * @brief Checks if the buffer has been released.
+     * @return True if the buffer is released, false otherwise.
+     */
+    bool released() const;
 
     /**
      * @brief Gets the size of the buffer in bytes.
@@ -470,9 +460,11 @@ private:
      */
     buffer(const context_ref& ctx, const void* data, size_t reserve, bool dynamic);
 
+    context_ref m_ctx; ///< The associated context.
+    void* m_buffer = nullptr; ///< The Metal buffer object.
     size_t m_size; ///< The size of the buffer.
     bool m_dynamic; ///< True if the buffer is dynamic, false otherwise.
     size_t m_pos; ///< The current position within the buffer.
   };
 
-} // namespace  mgl::opengl
+} // namespace mgl::metal

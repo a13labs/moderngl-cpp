@@ -18,13 +18,21 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/inc/internal
 )
 
+if(MGL_RENDER_API STREQUAL "OpenGL")
+    set(LIB_RENDER_OBJECT mgl::opengl::static)
+elseif(MGL_RENDER_API STREQUAL "Metal")
+    set(LIB_RENDER_OBJECT mgl::metal::static)
+else()
+    message(FATAL_ERROR "Unknown MGL_RENDER_API: ${MGL_RENDER_API}")
+endif()
+
 # Link library to required external libraries
 target_link_libraries(
     mgl_platform_static 
   PRIVATE 
     mgl::core::static 
     mgl::registry::static
-    mgl::opengl::static
+    ${LIB_RENDER_OBJECT}
 )
 
 # Link library to SDL2 dependencies

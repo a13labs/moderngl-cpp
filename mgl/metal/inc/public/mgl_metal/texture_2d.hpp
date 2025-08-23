@@ -1,7 +1,7 @@
 #pragma once
+
 #include "attachment.hpp"
 #include "buffer.hpp"
-#include "data_type.hpp"
 #include "enums.hpp"
 #include "object.hpp"
 #include "texture.hpp"
@@ -10,9 +10,9 @@
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-namespace mgl::opengl
+namespace mgl::metal
 {
-  class texture_2d : public attachment, public texture, public gl_object
+  class texture_2d : public attachment, public texture
   {
 public:
     ~texture_2d() = default;
@@ -33,9 +33,7 @@ public:
 
     virtual int32_t components() const override { return m_components; }
 
-    virtual int32_t glo() const override { return gl_object::glo(); }
-
-    virtual const context_ref& ctx() const override { return gl_object::ctx(); }
+    virtual const context_ref& ctx() const override { return m_ctx; }
 
     bool repeat_x() const { return m_repeat_x; }
 
@@ -49,9 +47,9 @@ public:
 
     void set_filter(const texture::filter& value);
 
-    mgl::opengl::compare_func compare_func() const { return m_compare_func; }
+    mgl::metal::compare_func compare_func() const { return m_compare_func; }
 
-    void set_compare_func(mgl::opengl::compare_func value);
+    void set_compare_func(mgl::metal::compare_func value);
 
     float anisotropy() const { return m_anisotropy; }
 
@@ -83,6 +81,9 @@ public:
 
     virtual void use(int32_t index = 0) override;
 
+    // Metal-specific methods
+    void* native_texture() const { return m_native_texture; }
+
 private:
     friend class context;
 
@@ -93,8 +94,7 @@ private:
                const void* data,
                int32_t samples,
                int32_t align,
-               const std::string& dtype,
-               int32_t internal_format_override);
+               const std::string& dtype);
 
     texture_2d(const context_ref& ctx,
                int32_t w,
@@ -103,7 +103,8 @@ private:
                int32_t samples,
                int32_t align);
 
-    data_type* m_data_type;
+    context_ref m_ctx;
+    void* m_native_texture;
     int32_t m_width;
     int32_t m_height;
     bool m_depth;
@@ -111,7 +112,7 @@ private:
     int32_t m_components;
     texture::filter m_filter;
     int32_t m_max_lvl;
-    mgl::opengl::compare_func m_compare_func;
+    mgl::metal::compare_func m_compare_func;
     float m_anisotropy;
     bool m_repeat_x;
     bool m_repeat_y;
@@ -119,4 +120,4 @@ private:
 
   using texture_2d_ref = mgl::ref<texture_2d>;
 
-} // namespace  mgl::opengl
+} // namespace mgl::metal

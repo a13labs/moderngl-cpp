@@ -1,11 +1,12 @@
-#include "mgl_platform/api/opengl/vertex_array.hpp"
-#include "mgl_platform/api/opengl/api.hpp"
-#include "mgl_platform/api/opengl/buffers.hpp"
-#include "mgl_platform/api/opengl/program.hpp"
+#if defined(MGL_RENDER_OPENGL)
+#  include "mgl_platform/api/opengl/vertex_array.hpp"
+#  include "mgl_platform/api/opengl/api.hpp"
+#  include "mgl_platform/api/opengl/buffers.hpp"
+#  include "mgl_platform/api/opengl/program.hpp"
 
-#include "mgl_platform_internal.hpp"
+#  include "opengl/internal.hpp"
 
-#include "mgl_opengl/context.hpp"
+#  include "mgl_opengl/context.hpp"
 
 namespace mgl::platform::api::backends
 {
@@ -70,3 +71,4 @@ namespace mgl::platform::api::backends
   }
 
 } // namespace mgl::platform::api::backends
+#endif

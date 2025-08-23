@@ -1,7 +1,8 @@
-#include "mgl_platform/api/opengl/program.hpp"
-#include "mgl_platform/api/opengl/api.hpp"
+#if defined(MGL_RENDER_OPENGL)
+#  include "mgl_platform/api/opengl/program.hpp"
+#  include "mgl_platform/api/opengl/api.hpp"
 
-#include "mgl_core/debug.hpp"
+#  include "mgl_core/debug.hpp"
 
 namespace mgl::platform::api::backends
 {
@@ -21,3 +22,4 @@ namespace mgl::platform::api::backends
   }
 
 } // namespace mgl::platform::api::backends
+#endif

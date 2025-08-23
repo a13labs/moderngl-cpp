@@ -11,7 +11,7 @@
 
 namespace mgl::platform::api
 {
-   struct draw_call
+  struct draw_call
   {
     texture_ref tex;
     size_t element_count;
@@ -29,9 +29,9 @@ namespace mgl::platform::api
     mgl::list<draw_call> draw_calls;
 
     render_batch(const mgl::platform::api::vertex_buffer_ref& vb = nullptr,
-          const mgl::platform::api::index_buffer_ref& ib = nullptr,
-          const mgl::platform::api::buffer_ref& ub = nullptr,
-          platform::api::render_mode m = render_mode::TRIANGLES)
+                 const mgl::platform::api::index_buffer_ref& ib = nullptr,
+                 const mgl::platform::api::buffer_ref& ub = nullptr,
+                 platform::api::render_mode m = render_mode::TRIANGLES)
         : count(0)
         , render_mode(m)
         , vertex_buffer(vb)
@@ -45,15 +45,16 @@ namespace mgl::platform::api
       count = 0;
     }
 
-    void add_draw_call(texture_ref tex, size_t element_count, size_t index_offset, const glm::vec4& clip_rect = glm::vec4(0))
+    void add_draw_call(texture_ref tex,
+                       size_t element_count,
+                       size_t index_offset,
+                       const glm::vec4& clip_rect = glm::vec4(0))
     {
-      draw_calls.push_back({tex, element_count, index_offset, clip_rect});
+      draw_calls.push_back({ tex, element_count, index_offset, clip_rect });
       count++;
     }
 
-    ~render_batch() { 
-      clear();
-    }
+    ~render_batch() { clear(); }
   };
 
   using render_batch_ref = mgl::ref<render_batch>;
@@ -84,6 +85,7 @@ public:
     enum class dialect
     {
       OPENGL,
+      METAL,
       UNKNOWN
     };
 

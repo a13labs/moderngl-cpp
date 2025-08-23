@@ -1,6 +1,6 @@
 #pragma once
 #include "enums.hpp"
-#include "gl_object.hpp"
+#include "object.hpp"
 
 #include "mgl_core/memory.hpp"
 

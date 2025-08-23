@@ -1,0 +1,30 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "release",
+            "hidden": false,
+            "description": "Release build",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "MGL_BUILD_TYPE_DEFINITIONS": "-DMGL_RELEASE"
+            }
+        },
+        {
+            "name": "debug",
+            "hidden": false,
+            "description": "Debug build",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "MGL_BUILD_TYPE_DEFINITIONS": "-DMGL_DEBUG"
+            }
+        }
+    ]
+}

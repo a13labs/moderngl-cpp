@@ -1,7 +1,7 @@
 #pragma once
 #include "attachment.hpp"
 #include "data_type.hpp"
-#include "gl_object.hpp"
+#include "object.hpp"
 
 #include "mgl_core/memory.hpp"
 

@@ -1,0 +1,18 @@
+function(set_mgl_build_type_definitions)
+    set(MGL_BUILD_TYPE_DEFINITIONS "")
+
+    if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+        list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RELEASE")
+        set(MGL_BUILD_DOCS ON PARENT_SCOPE)
+    else()
+        list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_DEBUG")
+    endif()
+
+    if (MGL_RENDER_API STREQUAL "OpenGL")
+        list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RENDER_OPENGL")
+    elseif (MGL_RENDER_API STREQUAL "Metal")
+        list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RENDER_METAL")
+    endif()
+
+    set(MGL_BUILD_TYPE_DEFINITIONS "${MGL_BUILD_TYPE_DEFINITIONS}" PARENT_SCOPE)
+endfunction()

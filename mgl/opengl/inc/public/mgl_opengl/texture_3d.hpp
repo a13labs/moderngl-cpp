@@ -2,7 +2,7 @@
 #include "buffer.hpp"
 #include "data_type.hpp"
 #include "enums.hpp"
-#include "gl_object.hpp"
+#include "object.hpp"
 #include "texture.hpp"
 
 #include "mgl_core/math.hpp"

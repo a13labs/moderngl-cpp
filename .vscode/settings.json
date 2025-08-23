@@ -86,6 +86,7 @@
         "mutex": "cpp",
         "cinttypes": "cpp",
         "execution": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "print": "cpp"
     }
 }

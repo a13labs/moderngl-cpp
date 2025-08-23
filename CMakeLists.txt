@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(mgl
         VERSION 0.0.1
-        LANGUAGES CXX C
+        LANGUAGES CXX C OBJCXX OBJC
        )
 
 # Set scripts directory
@@ -44,13 +44,6 @@ else()
     message(FATAL_ERROR "Unsupported compiler! ${CMAKE_CXX_COMPILER_ID}" )
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
-    set(MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RELEASE")
-    set(MGL_BUILD_DOCS ON)
-else()
-    set(MGL_BUILD_TYPE_DEFINITIONS "-DMGL_DEBUG")
-endif()
-
 set(MGL_LINUX_OS FALSE)
 set(MGL_WINDOWS_OS FALSE)
 set(MGL_OSX_OS FALSE)
@@ -59,12 +52,15 @@ set(MGL_OSX_OS FALSE)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message(STATUS "Platform: Linux detected")
     set(MGL_LINUX_OS TRUE)
+    set(MGL_RENDER_API "OpenGL")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     message(STATUS "Platform: Windows detected")
     set(MGL_WINDOWS_OS TRUE)
+    set(MGL_RENDER_API "OpenGL")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Platform: MacOS detected")
     set(MGL_OSX_OS TRUE)
+    set(MGL_RENDER_API "Metal")
     execute_process(
         COMMAND xcrun --show-sdk-path
         OUTPUT_VARIABLE MACOSX_SDK_PATH
@@ -75,8 +71,12 @@ else()
     message(FATAL_ERROR "Unsupported operating system!")
 endif()
 
+include(cmake/BuildTypeDefinitions.cmake)
+set_mgl_build_type_definitions()
+
 # Configure the version.hpp file using version.hpp
-configure_file(version.hpp.in ${CMAKE_BINARY_DIR}/inc/version.hpp)
+configure_file(version.hpp.in ${CMAKE_BINARY_DIR}/inc/generated/version.hpp)
+configure_file(config.hpp.in ${CMAKE_BINARY_DIR}/inc/generated/config.hpp)
                     
 if (MGL_BUILD_TESTS)
     include(UnitTestConfig)
@@ -124,10 +124,25 @@ endif()
 add_subdirectory(vendors)
 add_subdirectory(mgl)
 
-add_library(mgl_static STATIC 
+add_library(mgl_build_type INTERFACE)
+if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+    target_compile_definitions(mgl_build_type INTERFACE MGL_RELEASE)
+else()
+    target_compile_definitions(mgl_build_type INTERFACE MGL_DEBUG)
+endif()
+
+if(MGL_RENDER_API STREQUAL "OpenGL")
+    set(MGL_RENDER_OBJECT mgl::opengl::static)
+elseif(MGL_RENDER_API STREQUAL "Metal")
+    set(MGL_RENDER_OBJECT mgl::metal::static)
+else()
+    message(FATAL_ERROR "Unknown MGL_RENDER_API: ${MGL_RENDER_API}")
+endif()
+
+add_library(mgl_static STATIC
     $<TARGET_OBJECTS:mgl::core::static>
     $<TARGET_OBJECTS:mgl::registry::static>
-    $<TARGET_OBJECTS:mgl::opengl::static>
+    $<TARGET_OBJECTS:${MGL_RENDER_OBJECT}>
     $<TARGET_OBJECTS:mgl::platform::static>
     $<TARGET_OBJECTS:mgl::graphics::static>
     $<TARGET_OBJECTS:mgl::application::static>
@@ -140,10 +155,12 @@ target_link_libraries(mgl_static
   PUBLIC
     mgl::core::static
     mgl::registry::static
-    mgl::opengl::static
+   ${MGL_RENDER_OBJECT}
     mgl::platform::static
     mgl::graphics::static
-    mgl::application::static
+    mgl::application::static 
+  PRIVATE
+    mgl_build_type
 )
 
 # Build the examples
@@ -151,7 +168,7 @@ if(MGL_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-install(TARGETS mgl_static
+install(TARGETS mgl_static mgl_build_type
     EXPORT mgl-targets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -165,7 +182,7 @@ install(EXPORT mgl-targets
     DESTINATION lib/cmake/mgl
 )
 
-# Debug CMake Vars, uncomment to show CMake vars
+# #Debug CMake Vars, uncomment to show CMake vars
 # get_cmake_property(_variableNames VARIABLES)
 # list (SORT _variableNames)
 # foreach (_variableName ${_variableNames})

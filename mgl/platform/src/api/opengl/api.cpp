@@ -1,18 +1,19 @@
-#include "mgl_platform/api/opengl/api.hpp"
-#include "mgl_platform/api/opengl/buffers.hpp"
-#include "mgl_platform/api/opengl/program.hpp"
-#include "mgl_platform/api/opengl/textures.hpp"
-#include "mgl_platform/api/opengl/vertex_array.hpp"
+#if defined(MGL_RENDER_OPENGL)
+#  include "mgl_platform/api/opengl/api.hpp"
+#  include "mgl_platform/api/opengl/buffers.hpp"
+#  include "mgl_platform/api/opengl/program.hpp"
+#  include "mgl_platform/api/opengl/textures.hpp"
+#  include "mgl_platform/api/opengl/vertex_array.hpp"
 
-#include "mgl_core/debug.hpp"
-#include "mgl_core/profiling.hpp"
-#include "mgl_registry/resources/font.hpp"
-#include "mgl_registry/resources/image.hpp"
+#  include "mgl_core/debug.hpp"
+#  include "mgl_core/profiling.hpp"
+#  include "mgl_registry/resources/font.hpp"
+#  include "mgl_registry/resources/image.hpp"
 
-#include "mgl_platform_internal.hpp"
+#  include "opengl/internal.hpp"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#  include "glm/glm.hpp"
+#  include "glm/gtc/matrix_transform.hpp"
 
 namespace mgl::platform::api::backends
 {
@@ -384,3 +385,4 @@ namespace mgl::platform::api::backends
     vao->release();
   }
 }; // namespace mgl::platform::api::backends
+#endif

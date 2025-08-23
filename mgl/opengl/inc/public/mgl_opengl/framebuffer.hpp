@@ -2,7 +2,7 @@
 #include "attachment.hpp"
 #include "buffer.hpp"
 #include "color_mask.hpp"
-#include "gl_object.hpp"
+#include "object.hpp"
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/memory.hpp"

@@ -1,7 +1,7 @@
 #pragma once
 #include "buffer.hpp"
 #include "enums.hpp"
-#include "gl_object.hpp"
+#include "object.hpp"
 #include "program.hpp"
 #include "vertex_buffer.hpp"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl_object.hpp"
+#include "object.hpp"
 #include "shader.hpp"
 #include "uniform.hpp"
 #include "uniform_block.hpp"

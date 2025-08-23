@@ -1,4 +1,5 @@
-#include "mgl_platform_internal.hpp"
+#if defined(MGL_RENDER_OPENGL)
+#  include "opengl/internal.hpp"
 
 namespace mgl::platform::internal
 {
@@ -68,3 +69,4 @@ namespace mgl::platform::internal
   }
 
 } // namespace mgl::platform::internal
+#endif

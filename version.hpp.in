@@ -3,3 +3,8 @@
 #define MGL_VERSION_MAJOR "@MGL_VERSION_MAJOR@"
 #define MGL_VERSION_MINOR "@MGL_VERSION_MINOR@"
 #define MGL_VERSION_RELEASE "@MGL_VERSION_RELEASE@"
+#if defined(MGL_RELEASE)
+#  define MGL_BUILD_TYPE "Release"
+#else
+#  define MGL_BUILD_TYPE "Debug"
+#endif
