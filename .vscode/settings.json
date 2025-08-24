@@ -88,5 +88,23 @@
         "execution": "cpp",
         "any": "cpp",
         "print": "cpp"
-    }
+    },
+    // Hide build folder from Explorer
+    "files.exclude": {
+        "**/build": true,
+        "**/build/**": true
+    },
+    // Exclude build folder from search
+    "search.exclude": {
+        "**/build": true,
+        "**/build/**": true
+    },
+    // Prevent filesystem watchers from scanning the build folder
+    "files.watcherExclude": {
+        "**/build": true,
+        "**/build/**": true
+    },
+    "cmake.exclude": [
+        "**/build/**"
+    ]
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
+#include "mgl_core/string.hpp"
 
 namespace mgl::platform::api
 {

@@ -3,8 +3,6 @@
  * @brief This file contains the declaration of the logging functionality for the mgl::log namespace.
  */
 #pragma once
-#include "memory.hpp"
-#include "string.hpp"
 
 #include <format>
 
