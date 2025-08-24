@@ -3,6 +3,12 @@ project(mgl_metal
        )
 # Add the C++ source files for the library
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm)
+# Ensure any manually added C++/ObjC++ sources are included (non-.mm files or
+# newly created sources that may be missed by the glob at configure time).
+list(APPEND LIB_SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/buffer_layout.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/framebuffer.mm
+)
 set_source_files_properties(${LIB_SOURCES} PROPERTIES LANGUAGE OBJCXX)
 
 # Create the static library target "mgl_metal"

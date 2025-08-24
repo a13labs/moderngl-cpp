@@ -2,6 +2,9 @@ project(mgl_platform)
 
 # Add the C source files for the library
 file(GLOB_RECURSE LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+list(APPEND LIB_SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/metal/wrappers.cpp
+)
 
 # Create the static library target "mgl_platform"
 add_library(mgl_platform_static STATIC ${LIB_SOURCES})

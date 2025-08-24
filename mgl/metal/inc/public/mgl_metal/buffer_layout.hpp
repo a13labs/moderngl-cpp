@@ -23,7 +23,7 @@
  */
 #pragma once
 
-#include "mgl_core/string.hpp"
+#include "mgl_core/containers.hpp"
 
 namespace mgl::metal
 {

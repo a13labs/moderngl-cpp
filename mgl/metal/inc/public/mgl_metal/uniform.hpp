@@ -288,7 +288,7 @@ public:
       set_value((void*)&tmp, sizeof(glm::mat4x2));
     }
 
-    void set_value(const glm::mat4x3 value)
+  void set_value(const glm::mat4x3& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::mat4x3));

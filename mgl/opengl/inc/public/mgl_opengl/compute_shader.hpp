@@ -681,7 +681,7 @@ public:
      * @param name The name.
      * @param value The value.
      */
-    void set_value(const std::string& name, const glm::vec2 value)
+  void set_value(const std::string& name, const glm::vec2& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(),
                       "[Compute Shader] Uniform not found.");
@@ -694,7 +694,7 @@ public:
      * @param name The name.
      * @param value The value.
      */
-    void set_value(const std::string& name, const glm::vec3 value)
+  void set_value(const std::string& name, const glm::vec3& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(),
                       "[Compute Shader] Uniform not found.");
@@ -707,7 +707,7 @@ public:
      * @param name The name.
      * @param value The value.
      */
-    void set_value(const std::string& name, const glm::vec4 value)
+  void set_value(const std::string& name, const glm::vec4& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(),
                       "[Compute Shader] Uniform not found.");
@@ -824,7 +824,7 @@ public:
      * @param name The name.
      * @param value The value.
      */
-    void set_value(const std::string& name, const glm::mat4x3 value)
+  void set_value(const std::string& name, const glm::mat4x3& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(),
                       "[Compute Shader] Uniform not found.");

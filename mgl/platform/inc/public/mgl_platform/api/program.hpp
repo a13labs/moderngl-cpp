@@ -121,55 +121,35 @@ public:
 
     virtual void set_value(const std::string& name, double value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::vec2& value) = 0;
+  virtual void set_value(const std::string& name, const glm::vec2& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::vec3& value) = 0;
+  virtual void set_value(const std::string& name, const glm::vec3& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::vec4& value) = 0;
+  virtual void set_value(const std::string& name, const glm::vec4& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat2& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat2& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat2x3& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat2x3& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat2x4& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat2x4& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat3& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat3& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat3x2& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat3x2& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat3x4& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat3x4& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat4& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat4& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat4x2& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat4x2& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::mat4x3& value) = 0;
+  virtual void set_value(const std::string& name, const glm::mat4x3& value) = 0;
 
-    virtual void set_value(const std::string& name, const glm::vec2 value) = 0;
+  // Note: by-value overloads for glm types are intentionally omitted to avoid
+  // overload ambiguity with the const-reference versions above. Callers may
+  // pass temporaries; they will bind to the const& overloads.
 
-    virtual void set_value(const std::string& name, const glm::vec3 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::vec4 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat2 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat2x3 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat2x4 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat3 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat3x2 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat3x4 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat4 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat4x2 value) = 0;
-
-    virtual void set_value(const std::string& name, const glm::mat4x3 value) = 0;
-
-    virtual void set_value(const std::string& name, const uint8_buffer& value) = 0;
+  virtual void set_value(const std::string& name, const uint8_buffer& value) = 0;
 
     virtual void set_value(const std::string& name, const uint16_buffer& value) = 0;
 

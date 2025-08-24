@@ -457,7 +457,7 @@ public:
       m_uniforms_map.at(name)->set_value(value);
     }
 
-    void set_value(const std::string& name, const glm::mat4x3 value)
+  void set_value(const std::string& name, const glm::mat4x3& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
       m_uniforms_map.at(name)->set_value(value);

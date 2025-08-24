@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
+#include "mgl_core/debug.hpp"
 
 #include "object.hpp"
 

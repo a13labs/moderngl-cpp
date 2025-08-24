@@ -53,5 +53,7 @@ public:
 private:
     friend class metal_api;
     mgl::metal::texture_2d_ref m_texture;
+  // cached platform filter to satisfy the platform API (converted when needed)
+  texture::filter m_filter{};
   };
 } // namespace mgl::platform::api::backends

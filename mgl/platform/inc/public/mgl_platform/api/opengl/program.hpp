@@ -390,7 +390,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::vec2 value) override final
+  virtual void set_value(const std::string& name, const glm::vec2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -399,7 +399,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::vec3 value) override final
+  virtual void set_value(const std::string& name, const glm::vec3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -408,7 +408,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::vec4 value) override final
+  virtual void set_value(const std::string& name, const glm::vec4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -417,7 +417,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat2 value) override final
+  virtual void set_value(const std::string& name, const glm::mat2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -426,7 +426,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat2x3 value) override final
+  virtual void set_value(const std::string& name, const glm::mat2x3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -435,7 +435,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat2x4 value) override final
+  virtual void set_value(const std::string& name, const glm::mat2x4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -444,7 +444,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat3 value) override final
+  virtual void set_value(const std::string& name, const glm::mat3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -453,7 +453,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat3x2 value) override final
+  virtual void set_value(const std::string& name, const glm::mat3x2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -462,7 +462,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat3x4 value) override final
+  virtual void set_value(const std::string& name, const glm::mat3x4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -471,7 +471,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat4 value) override final
+  virtual void set_value(const std::string& name, const glm::mat4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -480,7 +480,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat4x2 value) override final
+  virtual void set_value(const std::string& name, const glm::mat4x2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -489,7 +489,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const glm::mat4x3 value) override final
+  virtual void set_value(const std::string& name, const glm::mat4x3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
