@@ -4,6 +4,9 @@ project(mgl
         LANGUAGES CXX C OBJCXX OBJC
        )
 
+# Enable export compile commands for tools like clang-tidy
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set scripts directory
 set(MGL_SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts" CACHE PATH "Path to scripts directory")
 

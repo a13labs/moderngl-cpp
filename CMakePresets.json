@@ -11,6 +11,7 @@
             "hidden": false,
             "description": "Release build",
             "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "MGL_BUILD_TYPE_DEFINITIONS": "-DMGL_RELEASE"
@@ -21,6 +22,7 @@
             "hidden": false,
             "description": "Debug build",
             "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "MGL_BUILD_TYPE_DEFINITIONS": "-DMGL_DEBUG"

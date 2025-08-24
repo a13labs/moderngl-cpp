@@ -5,12 +5,11 @@
 
 # Tested on: clang-format version 6.0.1
 
-
 # Common settings
-BasedOnStyle:  WebKit
-TabWidth:        2
-IndentWidth:     2
-UseTab:          Never
+BasedOnStyle: WebKit
+TabWidth: 2
+IndentWidth: 2
+UseTab: Never
 ColumnLimit: 100
 
 # Other languages JavaScript, Proto
@@ -25,7 +24,7 @@ Language: Cpp
 # // clang-format on
 # void formatted_code_again;
 
-DisableFormat:   false
+DisableFormat: false
 Standard: Cpp11
 
 AccessModifierOffset: -4
@@ -33,7 +32,7 @@ AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlinesLeft: false
-AlignOperands:   true
+AlignOperands: true
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: false
@@ -51,22 +50,21 @@ BinPackParameters: false
 # Configure each individual brace in BraceWrapping
 BreakBeforeBraces: Custom
 # Control of individual brace wrapping cases
-BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
-    AfterEnum : 'true'
-    AfterFunction : 'true'
-    AfterNamespace : 'true'
-    AfterStruct : 'true'
-    AfterUnion : 'true'
-    BeforeCatch : 'true'
-    BeforeElse : 'true'
-    IndentBraces : 'false'
-    AfterExternBlock : 'true'
-    SplitEmptyFunction : 'false'
-    SplitEmptyRecord : 'false'
-    SplitEmptyNamespace : 'true'
-}
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: true
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: true
+    AfterUnion: true
+    BeforeCatch: true
+    BeforeElse: true
+    IndentBraces: false
+    AfterExternBlock: true
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: true
 
 BreakAfterJavaFieldAnnotations: true
 BreakBeforeInheritanceComma: false
@@ -75,7 +73,7 @@ BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: true
 
-CommentPragmas:  '^ IWYU pragma:'
+CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
@@ -84,13 +82,13 @@ Cpp11BracedListStyle: false
 SpaceBeforeCpp11BracedList: false
 DerivePointerAlignment: false
 ExperimentalAutoDetectBinPacking: false
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
+ForEachMacros: [foreach, Q_FOREACH, BOOST_FOREACH]
 IndentCaseLabels: true
 FixNamespaceComments: true
 IndentWrappedFunctionNames: false
 KeepEmptyLinesAtTheStartOfBlocks: true
-MacroBlockBegin: ''
-MacroBlockEnd:   ''
+MacroBlockBegin: ""
+MacroBlockEnd: ""
 JavaScriptQuotes: Double
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
@@ -110,7 +108,7 @@ SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: Never
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
-SpacesInAngles:  false
+SpacesInAngles: false
 SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
@@ -127,9 +125,9 @@ ReflowComments: true
 IncludeBlocks: Preserve
 IndentPPDirectives: AfterHash
 ---
-Language: ObjC++
+Language: ObjC
 # Mirror the Cpp settings you want for Objective-C(++)
-DisableFormat:   false
+DisableFormat: false
 Standard: Cpp11
 
 AccessModifierOffset: -4
@@ -137,7 +135,7 @@ AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlinesLeft: false
-AlignOperands:   true
+AlignOperands: true
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: false
@@ -153,22 +151,21 @@ BinPackArguments: false
 BinPackParameters: false
 
 BreakBeforeBraces: Custom
-BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
-    AfterEnum : 'true'
-    AfterFunction : 'true'
-    AfterNamespace : 'true'
-    AfterStruct : 'true'
-    AfterUnion : 'true'
-    BeforeCatch : 'true'
-    BeforeElse : 'true'
-    IndentBraces : 'false'
-    AfterExternBlock : 'true'
-    SplitEmptyFunction : 'false'
-    SplitEmptyRecord : 'false'
-    SplitEmptyNamespace : 'true'
-}
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: true
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: true
+    AfterUnion: true
+    BeforeCatch: true
+    BeforeElse: true
+    IndentBraces: false
+    AfterExternBlock: true
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: true
 
 BreakAfterJavaFieldAnnotations: true
 BreakBeforeInheritanceComma: false
@@ -177,7 +174,7 @@ BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: true
 
-CommentPragmas:  '^ IWYU pragma:'
+CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
@@ -186,13 +183,13 @@ Cpp11BracedListStyle: false
 SpaceBeforeCpp11BracedList: false
 DerivePointerAlignment: false
 ExperimentalAutoDetectBinPacking: false
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
+ForEachMacros: [foreach, Q_FOREACH, BOOST_FOREACH]
 IndentCaseLabels: true
 FixNamespaceComments: true
 IndentWrappedFunctionNames: false
 KeepEmptyLinesAtTheStartOfBlocks: true
-MacroBlockBegin: ''
-MacroBlockEnd:   ''
+MacroBlockBegin: ""
+MacroBlockEnd: ""
 JavaScriptQuotes: Double
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
@@ -212,7 +209,7 @@ SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: Never
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
-SpacesInAngles:  false
+SpacesInAngles: false
 SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false

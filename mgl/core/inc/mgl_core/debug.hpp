@@ -5,6 +5,7 @@
 #pragma once
 
 #include "log.hpp"
+#include "platform.hpp"
 
 #ifdef MGL_DEBUG
 #  if defined(MGL_PLATFORM_WINDOWS)
