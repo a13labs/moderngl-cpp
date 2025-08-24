@@ -33,6 +33,8 @@ public:
 
     virtual void get_value(const std::string& name, float& value) = 0;
 
+    virtual void get_value(const std::string& name, double& value) = 0;
+
     virtual void get_value(const std::string& name, glm::vec2& value) = 0;
 
     virtual void get_value(const std::string& name, glm::vec3& value) = 0;
@@ -79,11 +81,19 @@ public:
 
     virtual void get_value(const std::string& name, uint32_t* value, size_t size) = 0;
 
+    virtual void get_value(const std::string& name, uint64_t& value) = 0;
+
+    virtual void get_value(const std::string& name, int8_t& value) = 0;
+
+    virtual void get_value(const std::string& name, int16_t& value) = 0;
+
     virtual void get_value(const std::string& name, int8_t* value, size_t size) = 0;
 
     virtual void get_value(const std::string& name, int16_t* value, size_t size) = 0;
 
     virtual void get_value(const std::string& name, int32_t* value, size_t size) = 0;
+
+    virtual void get_value(const std::string& name, int64_t& value) = 0;
 
     virtual void get_value(const std::string& name, float* value, size_t size) = 0;
 
@@ -97,9 +107,43 @@ public:
 
     virtual void set_value(const std::string& name, uint32_t value) = 0;
 
+    virtual void set_value(const std::string& name, uint64_t value) = 0;
+
+    virtual void set_value(const std::string& name, int8_t value) = 0;
+
+    virtual void set_value(const std::string& name, int16_t value) = 0;
+
     virtual void set_value(const std::string& name, int value) = 0;
 
+    virtual void set_value(const std::string& name, int64_t value) = 0;
+
     virtual void set_value(const std::string& name, float value) = 0;
+
+    virtual void set_value(const std::string& name, double value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::vec2& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::vec3& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::vec4& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat2& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat2x3& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat2x4& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat3& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat3x2& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat3x4& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat4& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat4x2& value) = 0;
+
+    virtual void set_value(const std::string& name, const glm::mat4x3& value) = 0;
 
     virtual void set_value(const std::string& name, const glm::vec2 value) = 0;
 
@@ -131,11 +175,15 @@ public:
 
     virtual void set_value(const std::string& name, const uint32_buffer& value) = 0;
 
+    virtual void set_value(const std::string& name, const mgl::uint64_buffer& value) = 0;
+
     virtual void set_value(const std::string& name, const int8_buffer& value) = 0;
 
     virtual void set_value(const std::string& name, const int16_buffer& value) = 0;
 
     virtual void set_value(const std::string& name, const int32_buffer& value) = 0;
+
+    virtual void set_value(const std::string& name, const mgl::int64_buffer& value) = 0;
 
     virtual void set_value(const std::string& name, const float32_buffer& value) = 0;
 
@@ -156,5 +204,7 @@ public:
     virtual void set_value(const std::string& name, float* value, size_t size) = 0;
 
     virtual void set_value(const std::string& name, double* value, size_t size) = 0;
+
+    virtual bool has_uniform(const std::string& name) = 0;
   };
 } // namespace mgl::platform::api

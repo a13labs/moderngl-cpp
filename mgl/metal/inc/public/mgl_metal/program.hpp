@@ -162,6 +162,12 @@ public:
       m_uniforms_map.at(name)->get_value(value);
     }
 
+    void get_value(const std::string& name, double& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->get_value(value);
+    }
+
     void get_value(const std::string& name, glm::vec2& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
@@ -330,6 +336,7 @@ public:
       m_uniforms_map.at(name)->get_value(value, size);
     }
 
+
     void set_value(const std::string& name, bool value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
@@ -354,13 +361,31 @@ public:
       m_uniforms_map.at(name)->set_value(value);
     }
 
+    void set_value(const std::string& name, uint64_t value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->set_value(value);
+    }
+
     void set_value(const std::string& name, int value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
       m_uniforms_map.at(name)->set_value(value);
     }
 
+    void set_value(const std::string& name, int64_t value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->set_value(value);
+    }
+
     void set_value(const std::string& name, float value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->set_value(value);
+    }
+
+    void set_value(const std::string& name, double value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
       m_uniforms_map.at(name)->set_value(value);
@@ -456,6 +481,30 @@ public:
       m_uniforms_map.at(name)->set_value(value);
     }
 
+    void set_value(const std::string& name, const mgl::uint64_buffer& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->set_value(value);
+    }
+
+    void get_value(const std::string& name, uint64_t& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->get_value(value);
+    }
+
+    void get_value(const std::string& name, int8_t& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->get_value(value);
+    }
+
+    void get_value(const std::string& name, int16_t& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->get_value(value);
+    }
+
     void set_value(const std::string& name, const int8_buffer& value)
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
@@ -472,6 +521,18 @@ public:
     {
       MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
       m_uniforms_map.at(name)->set_value(value);
+    }
+
+    void set_value(const std::string& name, const mgl::int64_buffer& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->set_value(value);
+    }
+
+    void get_value(const std::string& name, int64_t& value)
+    {
+      MGL_CORE_ASSERT(m_uniforms_map.find(name) != m_uniforms_map.end(), "Uniform not found");
+      m_uniforms_map.at(name)->get_value(value);
     }
 
     void set_value(const std::string& name, const float32_buffer& value)

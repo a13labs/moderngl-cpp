@@ -3,7 +3,9 @@
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 
+#include "api.hpp"
 #include "mgl_metal/buffer.hpp"
+#include "mgl_metal/vertex_buffer.hpp"
 #include "mgl_metal/buffer_layout.hpp"
 
 namespace mgl::platform::api::backends
