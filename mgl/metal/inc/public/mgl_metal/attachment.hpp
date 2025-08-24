@@ -75,13 +75,6 @@ public:
      * @return True if the attachment is a depth attachment, false otherwise.
      */
     virtual bool depth() const = 0;
-
-    /**
-     * @brief The ctx method returns the context associated with the attachment.
-     *
-     * @return The context associated with the attachment.
-     */
-    virtual const context_ref& ctx() const = 0;
   };
 
 } // namespace mgl::metal

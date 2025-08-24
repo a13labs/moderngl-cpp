@@ -51,6 +51,8 @@ namespace mgl::opengl
   class context : public mgl::ref_from_this<context>
   {
 public:
+    static context_ref create_context(context_mode::mode mode, int32_t required = 330);
+
     virtual ~context() = default;
 
     bool released() const { return m_released; }
@@ -203,9 +205,6 @@ public:
 
     // Compute Shader
     compute_shader_ref compute_shader(const std::string& source, const std::string& filename = "");
-
-    // Create Shader
-    static context_ref create_context(context_mode::mode mode, int32_t required = 330);
 
     // Framebuffer
     framebuffer_ref framebuffer(const attachments_ref& color_attachments,
@@ -386,7 +385,7 @@ private:
 
 public:
     ContextWGL(context_mode::mode mode, int32_t required);
-    ContextWGL(){};
+    ContextWGL() { };
     virtual ~ContextWGL() override;
 
     virtual void enter() override;

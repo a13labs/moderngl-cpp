@@ -28,94 +28,340 @@ namespace mgl::metal
   class uniform
   {
 public:
-    enum data_type
+    struct data_type
     {
-      BOOL = 0,
-      INT = 1,
-      UINT = 2,
-      FLOAT = 3,
-      DOUBLE = 4,
-      SAMPLER = 5,
+      bool matrix;
+      int32_t dimension;
+      int32_t element_size;
     };
 
-    ~uniform() = default;
+    uniform(const std::string& name,
+            int32_t dtype,
+            int32_t program_obj,
+            int32_t location,
+            size_t size);
 
-    inline int32_t location() const { return m_location; }
-    inline const std::string& name() const { return m_name; }
-    inline size_t array_length() const { return m_array_length; }
-    inline int32_t dimension() const { return m_dimension; }
-    inline data_type type() const { return m_data_type; }
+    ~uniform();
 
-    void get_value(bool& dst);
-    void get_value(uint8_t& dst);
-    void get_value(uint16_t& dst);
-    void get_value(uint32_t& dst);
-    void get_value(uint64_t& dst);
-    void get_value(int8_t& dst);
-    void get_value(int16_t& dst);
-    void get_value(int32_t& dst);
-    void get_value(int64_t& dst);
-    void get_value(float& dst);
-    void get_value(double& dst);
-    void get_value(glm::vec2& dst);
-    void get_value(glm::vec3& dst);
-    void get_value(glm::vec4& dst);
-    void get_value(glm::mat2& dst);
-    void get_value(glm::mat2x3& dst);
-    void get_value(glm::mat2x4& dst);
-    void get_value(glm::mat3& dst);
-    void get_value(glm::mat3x2& dst);
-    void get_value(glm::mat3x4& dst);
-    void get_value(glm::mat4& dst);
-    void get_value(glm::mat4x2& dst);
-    void get_value(glm::mat4x3& dst);
+    void get_value(bool& value) { get_value((void*)&value, sizeof(bool)); }
 
-    void set_value(bool value);
-    void set_value(uint8_t value);
-    void set_value(uint16_t value);
-    void set_value(uint32_t value);
-    void set_value(uint64_t value);
-    void set_value(int8_t value);
-    void set_value(int16_t value);
-    void set_value(int32_t value);
-    void set_value(int64_t value);
-    void set_value(float value);
-    void set_value(double value);
-    void set_value(const glm::vec2& value);
-    void set_value(const glm::vec3& value);
-    void set_value(const glm::vec4& value);
-    void set_value(const glm::mat2& value);
-    void set_value(const glm::mat2x3& value);
-    void set_value(const glm::mat2x4& value);
-    void set_value(const glm::mat3& value);
-    void set_value(const glm::mat3x2& value);
-    void set_value(const glm::mat3x4& value);
-    void set_value(const glm::mat4& value);
-    void set_value(const glm::mat4x2& value);
-    void set_value(const glm::mat4x3& value);
+    void get_value(uint8_t& value) { get_value((void*)&value, sizeof(uint8_t)); }
 
-    void set_value(const mgl::uint8_buffer& value);
-    void set_value(const mgl::uint16_buffer& value);
-    void set_value(const mgl::uint32_buffer& value);
-    void set_value(const mgl::uint64_buffer& value);
-    void set_value(const mgl::int8_buffer& value);
-    void set_value(const mgl::int16_buffer& value);
-    void set_value(const mgl::int32_buffer& value);
-    void set_value(const mgl::int64_buffer& value);
-    void set_value(const mgl::float32_buffer& value);
-    void set_value(const mgl::float64_buffer& value);
+    void get_value(uint16_t& value) { get_value((void*)&value, sizeof(uint16_t)); }
+
+    void get_value(uint32_t& value) { get_value((void*)&value, sizeof(uint32_t)); }
+
+    void get_value(int32_t& value) { get_value((void*)&value, sizeof(int32_t)); }
+
+    void get_value(float& value) { get_value((void*)&value, sizeof(float)); }
+
+    void get_value(glm::vec2& value) { get_value((void*)&value, sizeof(glm::vec2)); }
+
+    void get_value(glm::vec3& value) { get_value((void*)&value, sizeof(glm::vec3)); }
+
+    void get_value(glm::vec4& value) { get_value((void*)&value, sizeof(glm::vec4)); }
+
+    void get_value(glm::mat2& value) { get_value((void*)&value, sizeof(glm::mat2)); }
+
+    void get_value(glm::mat2x3& value) { get_value((void*)&value, sizeof(glm::mat2x3)); }
+
+    void get_value(glm::mat2x4& value) { get_value((void*)&value, sizeof(glm::mat2x4)); }
+
+    void get_value(glm::mat3& value) { get_value((void*)&value, sizeof(glm::mat3)); }
+
+    void get_value(glm::mat3x2& value) { get_value((void*)&value, sizeof(glm::mat3x2)); }
+
+    void get_value(glm::mat3x4& value) { get_value((void*)&value, sizeof(glm::mat3x4)); }
+
+    void get_value(glm::mat4& value) { get_value((void*)&value, sizeof(glm::mat4)); }
+
+    void get_value(glm::mat4x2& value) { get_value((void*)&value, sizeof(glm::mat4x2)); }
+
+    void get_value(glm::mat4x3& value) { get_value((void*)&value, sizeof(glm::mat4x3)); }
+
+    void get_value(uint8_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(uint8_t));
+    }
+
+    void get_value(uint16_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(uint16_t));
+    }
+
+    void get_value(uint64_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(uint64_t));
+    }
+
+    void get_value(uint32_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(uint32_t));
+    }
+
+    void get_value(int8_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(int8_t));
+    }
+
+    void get_value(int16_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(int16_t));
+    }
+
+    void get_value(int32_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(int32_t));
+    }
+
+    void get_value(int64_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(int64_t));
+    }
+
+    void get_value(float32_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(float));
+    }
+
+    void get_value(float64_buffer& value)
+    {
+      get_value((void*)value.data(), value.size() * sizeof(double));
+    }
+
+    void get_value(uint8_t* value, size_t size) { get_value((void*)value, size * sizeof(uint8_t)); }
+
+    void get_value(uint16_t* value, size_t size)
+    {
+      get_value((void*)value, size * sizeof(uint16_t));
+    }
+
+    void get_value(uint32_t* value, size_t size)
+    {
+      get_value((void*)value, size * sizeof(uint32_t));
+    }
+
+    void get_value(uint64_t* value, size_t size)
+    {
+      get_value((void*)value, size * sizeof(uint64_t));
+    }
+
+    void get_value(int8_t* value, size_t size) { get_value((void*)value, size * sizeof(int8_t)); }
+
+    void get_value(int16_t* value, size_t size) { get_value((void*)value, size * sizeof(int16_t)); }
+
+    void get_value(int32_t* value, size_t size) { get_value((void*)value, size * sizeof(int32_t)); }
+
+    void get_value(int64_t* value, size_t size) { get_value((void*)value, size * sizeof(int64_t)); }
+
+    void get_value(float* value, size_t size) { get_value((void*)value, size * sizeof(float)); }
+
+    void get_value(double* value, size_t size) { get_value((void*)value, size * sizeof(double)); }
+
+    void set_value(bool value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(bool));
+    }
+
+    void set_value(uint8_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(uint8_t));
+    }
+
+    void set_value(uint16_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(uint16_t));
+    }
+
+    void set_value(uint32_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(uint32_t));
+    }
+
+    void set_value(int32_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(int32_t));
+    }
+
+    void set_value(float value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(float));
+    }
+
+    void set_value(const glm::vec2 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::vec2));
+    }
+
+    void set_value(const glm::vec3 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::vec3));
+    }
+
+    void set_value(const glm::vec4 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::vec4));
+    }
+
+    void set_value(const glm::mat2 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat2));
+    }
+
+    void set_value(const glm::mat2x3 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat2x3));
+    }
+
+    void set_value(const glm::mat2x4 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat2x4));
+    }
+
+    void set_value(const glm::mat3 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat3));
+    }
+
+    void set_value(const glm::mat3x2 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat3x2));
+    }
+
+    void set_value(const glm::mat3x4 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat3x4));
+    }
+
+    void set_value(const glm::mat4 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat4));
+    }
+
+    void set_value(const glm::mat4x2 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat4x2));
+    }
+
+    void set_value(const glm::mat4x3 value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(glm::mat4x3));
+    }
+
+    void set_value(const uint8_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(uint8_t));
+    }
+
+    void set_value(const uint16_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(uint16_t));
+    }
+
+    void set_value(const uint64_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(uint64_t));
+    }
+
+    void set_value(const uint32_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(uint32_t));
+    }
+
+    void set_value(const int8_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(int8_t));
+    }
+
+    void set_value(const int16_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(int16_t));
+    }
+
+    void set_value(const int32_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(int32_t));
+    }
+
+    void set_value(const int64_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(int64_t));
+    }
+
+    void set_value(const float32_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(float));
+    }
+
+    void set_value(const float64_buffer& value)
+    {
+      set_value((void*)value.data(), value.size() * sizeof(double));
+    }
+
+    void set_value(uint8_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(uint8_t));
+    }
+
+    void set_value(uint16_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(uint16_t));
+    }
+
+    void set_value(uint32_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(uint32_t));
+    }
+
+    void set_value(uint64_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(uint64_t));
+    }
+
+    void set_value(int8_t* value, size_t size) { set_value((void*)&value, size * sizeof(int8_t)); }
+
+    void set_value(int16_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(int16_t));
+    }
+
+    void set_value(int32_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(int32_t));
+    }
+
+    void set_value(int64_t* value, size_t size)
+    {
+      set_value((void*)&value, size * sizeof(int64_t));
+    }
+
+    void set_value(float* value, size_t size) { set_value((void*)&value, size * sizeof(float)); }
+
+    void set_value(double* value, size_t size) { set_value((void*)&value, size * sizeof(double)); }
 
 private:
-    friend class program;
+    void set_value(void* data, size_t size);
+    void get_value(void* data, size_t size);
 
-    uniform(const context_ref& ctx,
-            program* prg,
-            int32_t location,
-            const std::string& name,
-            data_type type,
-            int32_t dimension,
-            size_t array_length,
-            void* native_uniform);
+private:
 
     context_ref m_ctx;
     program* m_program;

@@ -46,12 +46,6 @@ public:
     bool dynamic() const { return m_dynamic; }
 
     /**
-     * @brief Checks if the buffer has been released.
-     * @return True if the buffer is released, false otherwise.
-     */
-    bool released() const;
-
-    /**
      * @brief Gets the size of the buffer in bytes.
      * @return The size of the buffer.
      */
@@ -460,8 +454,6 @@ private:
      */
     buffer(const context_ref& ctx, const void* data, size_t reserve, bool dynamic);
 
-    context_ref m_ctx; ///< The associated context.
-    void* m_buffer = nullptr; ///< The Metal buffer object.
     size_t m_size; ///< The size of the buffer.
     bool m_dynamic; ///< True if the buffer is dynamic, false otherwise.
     size_t m_pos; ///< The current position within the buffer.

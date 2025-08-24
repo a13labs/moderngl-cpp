@@ -12,7 +12,7 @@
 
 namespace mgl::metal
 {
-  class texture_2d : public attachment, public texture
+  class texture_2d : public attachment, public texture, public object
   {
 public:
     ~texture_2d() = default;
@@ -32,8 +32,6 @@ public:
     virtual bool depth() const override { return m_depth; }
 
     virtual int32_t components() const override { return m_components; }
-
-    virtual const context_ref& ctx() const override { return m_ctx; }
 
     bool repeat_x() const { return m_repeat_x; }
 
@@ -94,7 +92,8 @@ private:
                const void* data,
                int32_t samples,
                int32_t align,
-               const std::string& dtype);
+               const std::string& dtype,
+               int32_t internal_format_override);
 
     texture_2d(const context_ref& ctx,
                int32_t w,
@@ -103,7 +102,6 @@ private:
                int32_t samples,
                int32_t align);
 
-    context_ref m_ctx;
     void* m_native_texture;
     int32_t m_width;
     int32_t m_height;

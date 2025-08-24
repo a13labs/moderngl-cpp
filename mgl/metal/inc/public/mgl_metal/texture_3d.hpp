@@ -12,7 +12,7 @@
 
 namespace mgl::metal
 {
-  class texture_3d : public texture
+  class texture_3d : public texture, public object
   {
 public:
     ~texture_3d() = default;
@@ -28,8 +28,6 @@ public:
     virtual int32_t depth() const { return m_depth_size; }
 
     virtual int32_t components() const override { return m_components; }
-
-    virtual const context_ref& ctx() const override { return m_ctx; }
 
     bool repeat_x() const { return m_repeat_x; }
 
@@ -96,7 +94,6 @@ private:
                int32_t align,
                const std::string& dtype);
 
-    context_ref m_ctx;
     void* m_native_texture;
     int32_t m_width;
     int32_t m_height;

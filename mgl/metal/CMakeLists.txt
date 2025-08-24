@@ -9,6 +9,18 @@ set_source_files_properties(${LIB_SOURCES} PROPERTIES LANGUAGE OBJCXX)
 add_library(mgl_metal_static STATIC ${LIB_SOURCES})
 add_library(mgl::metal::static ALIAS mgl_metal_static)
 
+# Ensure a C++20 standard for the target (and Objective-C++ files)
+target_compile_features(mgl_metal_static PUBLIC cxx_std_20)
+
+set_target_properties(mgl_metal_static PROPERTIES
+  CXX_STANDARD 20
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
+
+  OBJCXX_STANDARD 20
+  OBJCXX_STANDARD_REQUIRED ON
+)
+
 # Add include directories
 target_include_directories(
     mgl_metal_static

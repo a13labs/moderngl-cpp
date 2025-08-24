@@ -1,10 +1,11 @@
 #pragma once
 
-#include "object.hpp"
+#include <cstdint>
+#include "mgl_core/memory.hpp"
 
 namespace mgl::metal
 {
-  class texture : public object
+  class texture
   {
 public:
     enum type
@@ -31,8 +32,6 @@ public:
     virtual int32_t components() const = 0;
 
     virtual void use(int index) = 0;
-
-    virtual const context_ref& ctx() const = 0;
   };
 
   using texture_ref = mgl::ref<mgl::metal::texture>;
