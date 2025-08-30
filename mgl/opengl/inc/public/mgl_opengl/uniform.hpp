@@ -45,9 +45,19 @@ public:
 
     void get_value(uint32_t& value) { get_value((void*)&value, sizeof(uint32_t)); }
 
+    void get_value(uint64_t& value) { get_value((void*)&value, sizeof(uint64_t)); }
+
+    void get_value(int8_t& value) { get_value((void*)&value, sizeof(int8_t)); }
+
+    void get_value(int16_t& value) { get_value((void*)&value, sizeof(int16_t)); }
+
     void get_value(int32_t& value) { get_value((void*)&value, sizeof(int32_t)); }
 
+    void get_value(int64_t& value) { get_value((void*)&value, sizeof(int64_t)); }
+
     void get_value(float& value) { get_value((void*)&value, sizeof(float)); }
+
+    void get_value(double& value) { get_value((void*)&value, sizeof(double)); }
 
     void get_value(glm::vec2& value) { get_value((void*)&value, sizeof(glm::vec2)); }
 
@@ -176,10 +186,34 @@ public:
       set_value((void*)&tmp, sizeof(uint32_t));
     }
 
+    void set_value(uint64_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(uint64_t));
+    }
+
+    void set_value(int8_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(int8_t));
+    }
+
+    void set_value(int16_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(int16_t));
+    }
+
     void set_value(int32_t value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(int32_t));
+    }
+
+    void set_value(int64_t value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(int64_t));
     }
 
     void set_value(float value)
@@ -188,31 +222,37 @@ public:
       set_value((void*)&tmp, sizeof(float));
     }
 
-  void set_value(const glm::vec2& value)
+    void set_value(double value)
+    {
+      auto tmp = value;
+      set_value((void*)&tmp, sizeof(double));
+    }
+
+    void set_value(const glm::vec2& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::vec2));
     }
 
-  void set_value(const glm::vec3& value)
+    void set_value(const glm::vec3& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::vec3));
     }
 
-  void set_value(const glm::vec4& value)
+    void set_value(const glm::vec4& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::vec4));
     }
 
-  void set_value(const glm::mat2& value)
+    void set_value(const glm::mat2& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::mat2));
     }
 
-  void set_value(const glm::mat2x3& value)
+    void set_value(const glm::mat2x3& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::mat2x3));
@@ -254,7 +294,7 @@ public:
       set_value((void*)&tmp, sizeof(glm::mat4x2));
     }
 
-  void set_value(const glm::mat4x3& value)
+    void set_value(const glm::mat4x3& value)
     {
       auto tmp = value;
       set_value((void*)&tmp, sizeof(glm::mat4x3));

@@ -1,4 +1,4 @@
-if(MGL_RENDER_API STREQUAL "OpenGL")
+if(MGL_RENDER_API STREQUAL "opengl")
     add_subdirectory(opengl)
 endif()
 

@@ -21,9 +21,9 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/inc/internal
 )
 
-if(MGL_RENDER_API STREQUAL "OpenGL")
+if(MGL_RENDER_API STREQUAL "opengl")
     set(LIB_RENDER_OBJECT mgl::opengl::static)
-elseif(MGL_RENDER_API STREQUAL "Metal")
+elseif(MGL_RENDER_API STREQUAL "metal")
     set(LIB_RENDER_OBJECT mgl::metal::static)
 else()
     message(FATAL_ERROR "Unknown MGL_RENDER_API: ${MGL_RENDER_API}")

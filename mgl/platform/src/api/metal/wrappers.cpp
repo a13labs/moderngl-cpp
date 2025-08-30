@@ -1,3 +1,4 @@
+#if defined(MGL_RENDER_METAL)
 #include "mgl_platform/api/metal/program.hpp"
 #include "mgl_platform/api/metal/textures.hpp"
 #include "mgl_platform/api/metal/api.hpp"
@@ -45,3 +46,4 @@ namespace mgl::platform::api::backends
   }
 
 } // namespace mgl::platform::api::backends
+#endif

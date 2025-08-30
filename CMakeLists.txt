@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(mgl
         VERSION 0.0.1
-        LANGUAGES CXX C OBJCXX OBJC
+        LANGUAGES CXX C
        )
 
 # Enable export compile commands for tools like clang-tidy
@@ -55,15 +55,17 @@ set(MGL_OSX_OS FALSE)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message(STATUS "Platform: Linux detected")
     set(MGL_LINUX_OS TRUE)
-    set(MGL_RENDER_API "OpenGL")
+    set(MGL_RENDER_API "opengl")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     message(STATUS "Platform: Windows detected")
     set(MGL_WINDOWS_OS TRUE)
-    set(MGL_RENDER_API "OpenGL")
+    set(MGL_RENDER_API "opengl")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Platform: MacOS detected")
+    enable_language(OBJCXX)
+    enable_language(OBJC)
     set(MGL_OSX_OS TRUE)
-    set(MGL_RENDER_API "Metal")
+    set(MGL_RENDER_API "metal")
     execute_process(
         COMMAND xcrun --show-sdk-path
         OUTPUT_VARIABLE MACOSX_SDK_PATH
@@ -134,9 +136,9 @@ else()
     target_compile_definitions(mgl_build_type INTERFACE MGL_DEBUG)
 endif()
 
-if(MGL_RENDER_API STREQUAL "OpenGL")
+if(MGL_RENDER_API STREQUAL "opengl")
     set(MGL_RENDER_OBJECT mgl::opengl::static)
-elseif(MGL_RENDER_API STREQUAL "Metal")
+elseif(MGL_RENDER_API STREQUAL "metal")
     set(MGL_RENDER_OBJECT mgl::metal::static)
 else()
     message(FATAL_ERROR "Unknown MGL_RENDER_API: ${MGL_RENDER_API}")

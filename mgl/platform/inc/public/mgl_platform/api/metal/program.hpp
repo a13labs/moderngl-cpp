@@ -102,8 +102,6 @@ public:
       m_program->get_value(name, value);
     }
 
-    
-
     virtual void get_value(const std::string& name, float& value) override final
     {
       if(!m_program->has_uniform(name))

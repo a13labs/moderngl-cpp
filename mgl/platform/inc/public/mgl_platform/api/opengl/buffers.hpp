@@ -1,7 +1,10 @@
 #pragma once
 
+#include "api.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
+
+#include "mgl_platform/api/buffers.hpp"
 
 #include "mgl_opengl/buffer.hpp"
 #include "mgl_opengl/buffer_layout.hpp"

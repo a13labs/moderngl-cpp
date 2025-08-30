@@ -20,9 +20,9 @@ target_include_directories(
 set(LIB_COMMON_OBJECTS
 )
 
-if(MGL_RENDER_API STREQUAL "OpenGL")
+if(MGL_RENDER_API STREQUAL "opengl")
     set(LIB_RENDER_OBJECT $<TARGET_OBJECTS:mgl::opengl::static>)
-elseif(MGL_RENDER_API STREQUAL "Metal")
+elseif(MGL_RENDER_API STREQUAL "metal")
     set(LIB_RENDER_OBJECT $<TARGET_OBJECTS:mgl::metal::static>)
 else()
     message(FATAL_ERROR "Unknown MGL_RENDER_API: ${MGL_RENDER_API}")

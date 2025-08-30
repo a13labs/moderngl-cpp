@@ -8,9 +8,9 @@ function(set_mgl_build_type_definitions)
         list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_DEBUG")
     endif()
 
-    if (MGL_RENDER_API STREQUAL "OpenGL")
+    if (MGL_RENDER_API STREQUAL "opengl")
         list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RENDER_OPENGL")
-    elseif (MGL_RENDER_API STREQUAL "Metal")
+    elseif (MGL_RENDER_API STREQUAL "metal")
         list(APPEND MGL_BUILD_TYPE_DEFINITIONS "-DMGL_RENDER_METAL")
     endif()
 

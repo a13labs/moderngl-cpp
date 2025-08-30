@@ -2,7 +2,6 @@
 
 #include "mgl_platform/api/program.hpp"
 
-#include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 
 #include "mgl_opengl/program.hpp"
@@ -29,6 +28,7 @@ public:
     virtual void bind() override final { m_program->bind(); }
 
     virtual void unbind() override final { m_program->unbind(); }
+
 
     virtual void get_value(const std::string& name, bool& value) override final
     {
@@ -66,7 +66,34 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, int& value) override final
+    virtual void get_value(const std::string& name, uint64_t& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->get_value(name, value);
+    }
+
+    virtual void get_value(const std::string& name, int8_t& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->get_value(name, value);
+    }
+
+    virtual void get_value(const std::string& name, int16_t& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->get_value(name, value);
+    }
+
+    virtual void get_value(const std::string& name, int32_t& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -76,6 +103,15 @@ public:
     }
 
     virtual void get_value(const std::string& name, float& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->get_value(name, value);
+    }
+
+    virtual void get_value(const std::string& name, double& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -192,7 +228,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, uint8_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::uint8_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -201,7 +237,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, uint16_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::uint16_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -210,7 +246,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, uint32_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::uint32_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -219,7 +255,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, int8_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::int8_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -228,7 +264,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, int16_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::int16_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -237,7 +273,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, int32_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::int32_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -246,7 +282,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, float32_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::float32_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -255,7 +291,7 @@ public:
       m_program->get_value(name, value);
     }
 
-    virtual void get_value(const std::string& name, float64_buffer& value) override final
+    virtual void get_value(const std::string& name, mgl::float64_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -318,6 +354,15 @@ public:
       m_program->get_value(name, value, size);
     }
 
+    virtual void get_value(const std::string& name, int64_t& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->get_value(name, value);
+    }
+
     virtual void get_value(const std::string& name, float* value, size_t size) override final
     {
       if(!m_program->has_uniform(name))
@@ -334,7 +379,7 @@ public:
         return;
       }
       m_program->get_value(name, value, size);
-    }
+    }    
 
     virtual void set_value(const std::string& name, bool value) override final
     {
@@ -372,7 +417,43 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, int value) override final
+    virtual void set_value(const std::string& name, uint64_t value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, int8_t value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, int16_t value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, int32_t value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, int64_t value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -390,7 +471,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::vec2& value) override final
+    virtual void set_value(const std::string& name, double value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -399,7 +480,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::vec3& value) override final
+    virtual void set_value(const std::string& name, const glm::vec2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -408,7 +489,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::vec4& value) override final
+    virtual void set_value(const std::string& name, const glm::vec3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -417,7 +498,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat2& value) override final
+    virtual void set_value(const std::string& name, const glm::vec4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -426,7 +507,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat2x3& value) override final
+    virtual void set_value(const std::string& name, const glm::mat2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -435,7 +516,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat2x4& value) override final
+    virtual void set_value(const std::string& name, const glm::mat2x3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -444,7 +525,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat3& value) override final
+    virtual void set_value(const std::string& name, const glm::mat2x4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -453,7 +534,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat3x2& value) override final
+    virtual void set_value(const std::string& name, const glm::mat3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -462,7 +543,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat3x4& value) override final
+    virtual void set_value(const std::string& name, const glm::mat3x2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -471,7 +552,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat4& value) override final
+    virtual void set_value(const std::string& name, const glm::mat3x4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -480,7 +561,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat4x2& value) override final
+    virtual void set_value(const std::string& name, const glm::mat4& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -489,7 +570,7 @@ public:
       m_program->set_value(name, value);
     }
 
-  virtual void set_value(const std::string& name, const glm::mat4x3& value) override final
+    virtual void set_value(const std::string& name, const glm::mat4x2& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -498,7 +579,8 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const uint8_buffer& value) override final
+
+    virtual void set_value(const std::string& name, const glm::mat4x3& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -507,7 +589,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const uint16_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::uint8_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -516,7 +598,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const uint32_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::uint16_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -525,7 +607,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const int8_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::uint32_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -534,7 +616,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const int16_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::uint64_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -543,7 +625,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const int32_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::int8_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -552,7 +634,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const float32_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::int16_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -561,7 +643,7 @@ public:
       m_program->set_value(name, value);
     }
 
-    virtual void set_value(const std::string& name, const float64_buffer& value) override final
+    virtual void set_value(const std::string& name, const mgl::int32_buffer& value) override final
     {
       if(!m_program->has_uniform(name))
       {
@@ -569,6 +651,35 @@ public:
       }
       m_program->set_value(name, value);
     }
+
+    virtual void set_value(const std::string& name, const mgl::int64_buffer& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, const mgl::float32_buffer& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+    virtual void set_value(const std::string& name, const mgl::float64_buffer& value) override final
+    {
+      if(!m_program->has_uniform(name))
+      {
+        return;
+      }
+      m_program->set_value(name, value);
+    }
+
+
 
     virtual void set_value(const std::string& name, uint8_t* value, size_t size) override final
     {
@@ -642,6 +753,11 @@ public:
       m_program->set_value(name, value, size);
     }
 
+    virtual bool has_uniform(const std::string& name) override final
+    {
+      return m_program->has_uniform(name);
+    }
+    
     mgl::opengl::program_ref& native() { return m_program; }
 
 protected:
