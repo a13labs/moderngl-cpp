@@ -22,11 +22,10 @@ namespace mgl::opengl
                     "[Renderbuffer] Components must be 1, 2, 3 or 4.");
     MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "[Renderbuffer] Samples must be a power of 2.");
     MGL_CORE_ASSERT(samples <= ctx->max_samples(),
-                    "[Renderbuffer] Samples must be less than or equal to {0}.",
-                    ctx->max_samples());
+                    "[Renderbuffer] Samples must be less than or equal to max samples.");
 
     auto data_type = from_dtype(dtype);
-    MGL_CORE_ASSERT(data_type, "[Renderbuffer] Invalid data type got '{0}'.", dtype);
+    MGL_CORE_ASSERT(data_type, "[Renderbuffer] Invalid data type.");
 
     int32_t format = data_type->internal_format[components];
 
@@ -64,8 +63,7 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT((samples & (samples - 1)) == 0, "[Renderbuffer] Samples must be a power of 2.");
     MGL_CORE_ASSERT(samples <= ctx->max_samples(),
-                    "[Renderbuffer] Samples must be less than or equal to {0}.",
-                    ctx->max_samples());
+                    "[Renderbuffer] Samples must be less than or equal to max samples.");
 
     m_width = w;
     m_height = h;

@@ -33,7 +33,7 @@ namespace mgl::opengl
 
     if(!data_type)
     {
-      MGL_CORE_ASSERT(false, "[Texture3D] Invalid data type got '{0}'.", dtype);
+      MGL_CORE_ASSERT(false, "[Texture3D] Invalid data type.");
       return;
     }
 
@@ -414,7 +414,7 @@ namespace mgl::opengl
     {
       tex_swizzle[i] = internal::swizzle_from_char(value[i]);
       MGL_CORE_ASSERT(
-          tex_swizzle[i] != -1, "[Texture3D] '{0}' is not a valid swizzle parameter.", value[i]);
+          tex_swizzle[i] != -1, "[Texture3D] Invalid swizzle parameter.");
     }
 
     glActiveTexture(GL_TEXTURE0 + gl_object::ctx()->default_texture_unit());

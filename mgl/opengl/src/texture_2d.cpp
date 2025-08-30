@@ -31,8 +31,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0,
                     "[Texture2D] Samples must be a power of 2.");
     MGL_CORE_ASSERT(!samples || samples <= gl_object::ctx()->max_samples(),
-                    "[Texture2D] Samples must be less than or equal to {0}.",
-                    gl_object::ctx()->max_samples());
+                    "[Texture2D] Samples must be less than or equal to max samples.");
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
@@ -43,7 +42,7 @@ namespace mgl::opengl
 
     if(!data_type)
     {
-      MGL_CORE_ASSERT(false, "[Texture2D] Invalid data type got '{0}'.", dtype);
+      MGL_CORE_ASSERT(false, "[Texture2D] Invalid data type.");
       return;
     }
 
@@ -121,8 +120,7 @@ namespace mgl::opengl
     MGL_CORE_ASSERT(!samples || (samples & (samples - 1)) == 0,
                     "[Texture2D] Samples must be a power of 2.");
     MGL_CORE_ASSERT(!samples || samples <= ctx->max_samples(),
-                    "[Texture2D] Samples must be less than or equal to {0}.",
-                    ctx->max_samples());
+                    "[Texture2D] Samples must be less than or equal to max samples.");
 
     MGL_CORE_ASSERT(align == 1 || align == 2 || align == 4 || align == 8,
                     "[Texture2D] Alignment must be 1, 2, 4 or 8.");
@@ -533,7 +531,7 @@ namespace mgl::opengl
     {
       tex_swizzle[i] = internal::swizzle_from_char(value[i]);
       MGL_CORE_ASSERT(
-          tex_swizzle[i] != -1, "[Texture2D] '{0}' is not a valid swizzle parameter.", value[i]);
+          tex_swizzle[i] != -1, "[Texture2D] Invalid swizzle parameter.");
     }
 
     int texture_target = m_samples ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;

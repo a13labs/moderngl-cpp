@@ -46,7 +46,7 @@ namespace mgl::opengl
 
     MGL_CORE_ASSERT(!gl_object::released(), "[Buffer] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Buffer] Resource context not current.");
-    MGL_CORE_ASSERT(n_bytes >= 0, "[Buffer] Invalid size: {0}.", n_bytes)
+    MGL_CORE_ASSERT(n_bytes >= 0, "[Buffer] Invalid size.")
     MGL_CORE_ASSERT(m_size >= off + n_bytes, "[Buffer] Source out of bounds.")
     MGL_CORE_ASSERT(dst_sz >= dst_off + n_bytes, "[Buffer] Destination out of bounds.")
 
@@ -104,8 +104,8 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!gl_object::released(), "[Buffer] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Buffer] Resource context not current.");
-    MGL_CORE_ASSERT(size >= 0, "[Buffer] Invalid data size: {0}.", size)
-    MGL_CORE_ASSERT(off >= 0, "[Buffer] Invalid off: {0}.", off)
+    MGL_CORE_ASSERT(size >= 0, "[Buffer] Invalid data size.")
+    MGL_CORE_ASSERT(off >= 0, "[Buffer] Invalid off.")
 
     if(size == SIZE_MAX)
     {
@@ -119,8 +119,8 @@ namespace mgl::opengl
   {
     MGL_CORE_ASSERT(!gl_object::released(), "[Buffer] Resource already released or not valid.");
     MGL_CORE_ASSERT(gl_object::ctx()->is_current(), "[Buffer] Resource context not current.");
-    MGL_CORE_ASSERT(size >= 0, "[Buffer] Invalid data size: {0}.", size)
-    MGL_CORE_ASSERT(off >= 0, "[Buffer] Invalid off: {0}.", off)
+    MGL_CORE_ASSERT(size >= 0, "[Buffer] Invalid data size.")
+    MGL_CORE_ASSERT(off >= 0, "[Buffer] Invalid off.")
 
     if(size == SIZE_MAX)
     {

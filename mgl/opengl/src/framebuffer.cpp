@@ -118,11 +118,9 @@ namespace mgl::opengl
       for(auto&& attachment : color_attachments)
       {
         MGL_CORE_ASSERT(!attachment->depth(),
-                        "[Framebuffer] 'color_attachments[{0}]' is a depth attachment.",
-                        i);
+                        "[Framebuffer] 'color_attachments' is a depth attachment.");
         MGL_CORE_ASSERT(attachment->ctx() == gl_object::ctx(),
-                        "[Framebuffer] 'color_attachments[{0}]' is from a different context.",
-                        i);
+                        "[Framebuffer] 'color_attachments' is from a different context.");
 
         if(i == 0)
         {
@@ -133,14 +131,11 @@ namespace mgl::opengl
         else
         {
           MGL_CORE_ASSERT(attachment->width() == width,
-                          "[Framebuffer] 'color_attachments[{0}]' have different widths.",
-                          i)
+                          "[Framebuffer] 'color_attachments' have different widths.")
           MGL_CORE_ASSERT(attachment->height() == height,
-                          "[Framebuffer] 'color_attachments[{0}]' have different heights.",
-                          i)
+                          "[Framebuffer] 'color_attachments' have different heights.")
           MGL_CORE_ASSERT(attachment->samples() == samples,
-                          "[Framebuffer] 'color_attachments[{0}]' have different samples.",
-                          i)
+                          "[Framebuffer] 'color_attachments' have different samples.")
         }
 
         GLenum draw_buffer = GL_COLOR_ATTACHMENT0 + i;
