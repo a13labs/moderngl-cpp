@@ -19,7 +19,7 @@ texture_cube::texture_cube(const context_ref &ctx, int32_t w, int32_t h,
 
   auto dtype_info = from_dtype(dtype);
   if (!dtype_info) {
-    MGL_CORE_ASSERT(false, "[TextureCube] Invalid data type got '{0}'.", dtype);
+    MGL_CORE_ASSERT(false, "[TextureCube] Invalid data type");
     return;
   }
 

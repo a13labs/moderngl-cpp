@@ -24,14 +24,24 @@
 #endif
 
 #ifdef MGL_CORE_ENABLE_ASSERTS
-#  define MGL_CORE_ASSERT(x, ...)                                                                  \
-    {                                                                                              \
-      if(!(x))                                                                                     \
-      {                                                                                            \
-        MGL_CORE_TRACE("Assertion Failed: {0}", __VA_ARGS__);                                      \
-        MGL_DEBUGBREAK();                                                                          \
-      }                                                                                            \
-    }
+#define MGL_CORE_ASSERT1(x) \
+  { \
+    if(!(x)) { \
+      MGL_CORE_TRACE("Assertion Failed!"); \
+      MGL_DEBUGBREAK(); \
+    } \
+  }
+
+#define MGL_CORE_ASSERT2(x, msg) \
+  { \
+    if(!(x)) { \
+      MGL_CORE_TRACE("Assertion Failed: {0}", msg); \
+      MGL_DEBUGBREAK(); \
+    } \
+  }
+
+#define GET_MACRO(_1,_2,NAME,...) NAME
+#define MGL_CORE_ASSERT(...) GET_MACRO(__VA_ARGS__, MGL_CORE_ASSERT2, MGL_CORE_ASSERT1)(__VA_ARGS__)
 #else
-#  define MGL_CORE_ASSERT(x, y, ...)
+#define MGL_CORE_ASSERT(x, y, ...)
 #endif

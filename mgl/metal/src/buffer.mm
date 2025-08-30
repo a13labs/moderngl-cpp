@@ -51,8 +51,8 @@ void buffer::download(void *dst, size_t dst_sz, size_t n_bytes, size_t off,
 
   MGL_CORE_ASSERT(!released(),
                   "[Buffer] Resource already released or not valid.");
-  MGL_CORE_ASSERT(n_bytes >= 0, "[Buffer] Invalid size: {0}.", n_bytes)
-  MGL_CORE_ASSERT(m_size >= off + n_bytes, "[Buffer] Source out of bounds.")
+  MGL_CORE_ASSERT(n_bytes >= 0, "[Buffer] Invalid size.");
+  MGL_CORE_ASSERT(m_size >= off + n_bytes, "[Buffer] Source out of bounds.");
   MGL_CORE_ASSERT(dst_sz >= dst_off + n_bytes,
                   "[Buffer] Destination out of bounds.")
 

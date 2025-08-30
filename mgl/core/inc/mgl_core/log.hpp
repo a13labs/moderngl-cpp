@@ -4,7 +4,8 @@
  */
 #pragma once
 
-#include <format>
+#include <string>
+#include <fmt/core.h>
 
 /**
  * @brief The mgl::log namespace provides functions for logging messages at different levels of severity.
@@ -43,11 +44,12 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void trace(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void trace(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::trace, msg, file, line);
   }
+
 
   /**
    * @brief Logs a debug message with formatted arguments.
@@ -57,9 +59,9 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void debug(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void debug(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::debug, msg, file, line);
   }
 
@@ -71,9 +73,9 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void info(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void info(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::info, msg, file, line);
   }
 
@@ -85,9 +87,9 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void warn(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void warn(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::warn, msg, file, line);
   }
 
@@ -99,9 +101,9 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void error(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void error(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::error, msg, file, line);
   }
 
@@ -113,9 +115,9 @@ namespace mgl::log
    * @param args The arguments to format.
    */
   template <typename... Args>
-  void critical(const char* file, int line, std::format_string<Args...> fmt, Args&&... args)
+  void critical(const char* file, int line, fmt::format_string<Args...> fmt, Args&&... args)
   {
-    std::string msg = std::format(fmt, std::forward<Args>(args)...);
+    std::string msg = fmt::format(fmt, std::forward<Args>(args)...);
     log(level::critical, msg, file, line);
   }
 

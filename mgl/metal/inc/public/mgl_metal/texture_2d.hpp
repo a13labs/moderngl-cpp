@@ -8,7 +8,6 @@
 
 #include "mgl_core/math.hpp"
 #include "mgl_core/memory.hpp"
-#include "mgl_core/string.hpp"
 
 namespace mgl::metal
 {

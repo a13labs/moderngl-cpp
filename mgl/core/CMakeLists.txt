@@ -13,6 +13,7 @@ target_include_directories(
   PUBLIC
     $<TARGET_PROPERTY:glm::static,INTERFACE_INCLUDE_DIRECTORIES>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+    $<TARGET_PROPERTY:fmt::fmt,INTERFACE_INCLUDE_DIRECTORIES>
   PRIVATE     
     ${VENDORS_HEADERS_ONLY_INC_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/inc
@@ -29,6 +30,7 @@ target_link_libraries(
     $<TARGET_OBJECTS:simplelog::static>
     nlohmann_json::nlohmann_json
     libzip::zip 
+    fmt::fmt
 )
 
 # compiler and OS definitions

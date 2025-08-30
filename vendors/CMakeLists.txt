@@ -7,6 +7,10 @@ endif()
 message(STATUS "Configuring header-only libraries")
 add_subdirectory(headers_only)
 
+# FMT Library
+message(STATUS "Configuring FMT Library")
+add_subdirectory(fmt)
+
 # SDL2
 message(STATUS "Configuring SDL2")
 add_subdirectory(sdl2)

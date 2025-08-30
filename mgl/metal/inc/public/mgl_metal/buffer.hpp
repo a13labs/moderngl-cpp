@@ -317,7 +317,6 @@ public:
      */
     void write(const void* data, size_t size)
     {
-      MGL_CORE_ASSERT(m_pos + size <= m_size, "Buffer overflow");
       upload(data, size, m_pos);
     }
 
@@ -327,7 +326,6 @@ public:
      */
     void write(mgl::uint8_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint8_t), m_pos);
     }
 
@@ -337,7 +335,6 @@ public:
      */
     void write(mgl::uint16_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(uint16_t), m_pos);
     }
 
@@ -347,8 +344,7 @@ public:
      */
     void write(mgl::uint32_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
-      upload(data.data(), data.size() * sizeof(uint32_t), m_pos);
+     upload(data.data(), data.size() * sizeof(uint32_t), m_pos);
     }
 
     /**
@@ -357,8 +353,7 @@ public:
      */
     void write(mgl::uint64_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
-      upload(data.data(), data.size() * sizeof(uint64_t), m_pos);
+     upload(data.data(), data.size() * sizeof(uint64_t), m_pos);
     }
 
     /**
@@ -367,7 +362,6 @@ public:
      */
     void write(mgl::int8_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int8_t), m_pos);
     }
 
@@ -377,7 +371,6 @@ public:
      */
     void write(mgl::int16_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int16_t), m_pos);
     }
 
@@ -387,7 +380,6 @@ public:
      */
     void write(mgl::int32_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int32_t), m_pos);
     }
 
@@ -397,7 +389,6 @@ public:
      */
     void write(mgl::int64_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(int64_t), m_pos);
     }
 
@@ -407,7 +398,6 @@ public:
      */
     void write(float32_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(float), m_pos);
     }
 
@@ -417,7 +407,6 @@ public:
      */
     void write(float64_buffer& data)
     {
-      MGL_CORE_ASSERT(m_pos + data.size() <= m_size, "Buffer overflow");
       upload(data.data(), data.size() * sizeof(double), m_pos);
     }
 

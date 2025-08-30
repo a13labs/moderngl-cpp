@@ -1166,7 +1166,7 @@ namespace mgl::io
   inline ifstream_ref open_read(const path& path, openmode mode = std::ios::binary)
   {
     ifstream_ref result = mgl::create_ref<std::ifstream>(path, std::ios_base::in | mode);
-    MGL_CORE_ASSERT(result->is_open(), "open_read: failed to open file {0}", path.string());
+    MGL_CORE_ASSERT(result->is_open(), "open_read: failed to open file");
     return result;
   }
 
@@ -1178,7 +1178,7 @@ namespace mgl::io
   inline ofstream_ref open_write(const path& path, openmode mode = std::ios::binary)
   {
     ofstream_ref result = mgl::create_ref<std::ofstream>(path, std::ios_base::out | mode);
-    MGL_CORE_ASSERT(result->is_open(), "open_write: failed to open file {0}", path.string());
+    MGL_CORE_ASSERT(result->is_open(), "open_write: failed to open file");
     return result;
   }
 
