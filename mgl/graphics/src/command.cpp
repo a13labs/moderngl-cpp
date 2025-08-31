@@ -5,7 +5,7 @@
 #include "mgl_graphics/commands/texture.hpp"
 #include "mgl_graphics/graphics.hpp"
 
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/commands.hpp"
 #include "mgl_platform/window.hpp"
 
 #include "mgl_core/debug.hpp"
@@ -231,7 +231,7 @@ namespace mgl::graphics
     }
     else
     {
-      mgl::platform::api::render_api::bind_screen_framebuffer();
+      mgl::platform::api::commands::bind_screen_framebuffer();
     }
 
     for(auto& command : m_commands)

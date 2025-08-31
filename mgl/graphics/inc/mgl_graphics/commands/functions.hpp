@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mgl_graphics/command.hpp"
-#include "mgl_platform/api/command_executor.hpp"
+#include "mgl_platform/api/commands.hpp"
 namespace mgl::graphics
 {
   class clear_command : public render_command
@@ -11,7 +11,7 @@ public:
         : m_color(color)
     { }
 
-  void execute() override final { mgl::platform::api::command_executor::instance().clear(m_color); }
+  void execute() override final { mgl::platform::api::commands::clear(m_color); }
 
 private:
     glm::vec4 m_color;
@@ -27,7 +27,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().set_viewport(m_position, m_size);
+      mgl::platform::api::commands::set_viewport(m_position, m_size);
     }
 
 private:
@@ -42,7 +42,7 @@ public:
         : m_view(view)
     { }
 
-  void execute() override final { mgl::platform::api::command_executor::instance().set_view_matrix(m_view); }
+  void execute() override final { mgl::platform::api::commands::set_view_matrix(m_view); }
 
 private:
     glm::mat4 m_view;
@@ -57,7 +57,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().set_projection_matrix(m_projection);
+      mgl::platform::api::commands::set_projection_matrix(m_projection);
     }
 
 private:
@@ -79,7 +79,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().set_blend_func(
+      mgl::platform::api::commands::set_blend_func(
           m_srcRGB, m_dstRGB, m_srcAlpha, m_dstAlpha);
     }
 
@@ -100,7 +100,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().set_blend_equation(m_modeRGB, m_modeAlpha);
+      mgl::platform::api::commands::set_blend_equation(m_modeRGB, m_modeAlpha);
     }
 
 private:
@@ -118,7 +118,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().clear_samplers(m_start, m_end);
+      mgl::platform::api::commands::clear_samplers(m_start, m_end);
     }
 
 private:
@@ -133,7 +133,7 @@ private:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().enable_scissor();
+      mgl::platform::api::commands::enable_scissor();
     }
 
   };
@@ -145,7 +145,7 @@ private:
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().disable_scissor();
+      mgl::platform::api::commands::disable_scissor();
     }
   };
 

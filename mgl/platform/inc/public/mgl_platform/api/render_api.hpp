@@ -202,8 +202,6 @@ public:
 
     static void shutdown_api() { render_api::instance().api_shutdown(); }
 
-    static void bind_screen_framebuffer() { render_api::instance().api_bind_screen_framebuffer(); }
-
     static void update_window_size(const glm::vec2& size)
     {
       render_api::instance().api_update_window_size(size);

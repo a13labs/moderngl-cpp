@@ -2,7 +2,7 @@
 
 #include "mgl_graphics/command.hpp"
 
-#include "mgl_platform/api/command_executor.hpp"
+#include "mgl_platform/api/commands.hpp"
 
 namespace mgl::graphics
 {
@@ -13,7 +13,7 @@ public:
         : m_flags(flags)
     { }
 
-    void execute() override final { mgl::platform::api::command_executor::instance().enable_state(m_flags); }
+    void execute() override final { mgl::platform::api::commands::enable_state(m_flags); }
 
 private:
     int m_flags;
@@ -26,7 +26,7 @@ public:
         : m_flags(flags)
     { }
 
-    void execute() override final { mgl::platform::api::command_executor::instance().disable_state(m_flags); }
+    void execute() override final { mgl::platform::api::commands::disable_state(m_flags); }
 
 private:
     int m_flags;
