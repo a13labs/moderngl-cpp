@@ -1,4 +1,4 @@
-#include "mgl_platform/api/commands.hpp"
+#include "mgl_platform/commands.hpp"
 #include "mgl_platform/api/render_api.hpp"
 
 namespace mgl::platform::api

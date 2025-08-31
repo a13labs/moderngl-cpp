@@ -4,7 +4,7 @@
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-#include "mgl_platform/api/resources.hpp"
+#include "mgl_platform/gpu.hpp"
 #include "mgl_registry/resources/image.hpp"
 
 namespace mgl::graphics

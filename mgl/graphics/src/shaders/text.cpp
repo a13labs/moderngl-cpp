@@ -3,7 +3,7 @@
 
 #include "mgl_graphics/shaders/text.hpp"
 
-#include "mgl_platform/api/resources.hpp"
+#include "mgl_platform/gpu.hpp"
 
 namespace mgl::graphics::builtins
 {

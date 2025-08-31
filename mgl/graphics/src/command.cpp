@@ -5,7 +5,7 @@
 #include "mgl_graphics/commands/texture.hpp"
 #include "mgl_graphics/graphics.hpp"
 
-#include "mgl_platform/api/commands.hpp"
+#include "mgl_platform/commands.hpp"
 #include "mgl_platform/window.hpp"
 
 #include "mgl_core/debug.hpp"

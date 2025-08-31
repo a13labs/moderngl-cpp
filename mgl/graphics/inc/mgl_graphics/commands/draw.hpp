@@ -4,7 +4,7 @@
 
 #include "mgl_platform/api/buffers.hpp"
 
-#include "mgl_platform/api/commands.hpp"
+#include "mgl_platform/commands.hpp"
 
 namespace mgl::graphics
 {

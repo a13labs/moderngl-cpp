@@ -8,7 +8,7 @@
 #include "mgl_core/profiling.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
-#include "mgl_platform/api/resources.hpp"
+#include "mgl_platform/gpu.hpp"
 #include "mgl_platform/window.hpp"
 #include "mgl_registry/resources/image.hpp"
 

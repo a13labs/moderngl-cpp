@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mgl_graphics/command.hpp"
-#include "mgl_platform/api/commands.hpp"
+#include "mgl_platform/commands.hpp"
 namespace mgl::graphics
 {
   class clear_command : public render_command

@@ -2,7 +2,7 @@
 #include "mgl_graphics/fonts/default.hpp"
 #include "mgl_graphics/shaders/text.hpp"
 
-#include "mgl_platform/api/resources.hpp"
+#include "mgl_platform/gpu.hpp"
 
 #include "mgl_registry/resources/fonts/truetype.hpp"
 
