@@ -3,7 +3,7 @@
 #include "mgl_graphics/command.hpp"
 #include "mgl_graphics/textures.hpp"
 
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/command_executor.hpp"
 
 namespace mgl::graphics
 {
@@ -17,7 +17,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::render_api::bind_texture(m_slot, m_texture->api());
+      mgl::platform::api::command_executor::instance().bind_texture(m_slot, m_texture->api());
     }
 
 private:

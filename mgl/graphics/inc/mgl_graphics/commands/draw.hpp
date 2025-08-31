@@ -3,7 +3,8 @@
 #include "mgl_graphics/command.hpp"
 
 #include "mgl_platform/api/buffers.hpp"
-#include "mgl_platform/api/render_api.hpp"
+
+#include "mgl_platform/api/command_executor.hpp"
 
 namespace mgl::graphics
 {
@@ -26,7 +27,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::render_api::render_call(
+      mgl::platform::api::command_executor::instance().render_call(
           m_vertex_buffer, m_index_buffer, m_count, m_offset, m_mode);
     }
 
@@ -48,7 +49,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::render_api::render_call(m_batch);
+      mgl::platform::api::command_executor::instance().render_call(m_batch);
     }
 
 private:
