@@ -126,4 +126,27 @@ private:
     int m_end;
   };
 
+  class enable_scissor_command : public render_command
+  {
+  public:
+    enable_scissor_command() { }
+
+    void execute() override final
+    {
+      mgl::platform::api::command_executor::instance().enable_scissor();
+    }
+
+  };
+
+  class disable_scissor_command : public render_command
+  {
+  public:
+    disable_scissor_command() { }
+
+    void execute() override final
+    {
+      mgl::platform::api::command_executor::instance().disable_scissor();
+    }
+  };
+
 } // namespace mgl::graphics

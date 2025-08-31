@@ -121,6 +121,10 @@ public:
 
     void disable_shader();
 
+    void enable_scissor();
+
+    void disable_scissor();
+
     void execute();
 
 private:

@@ -211,6 +211,16 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::disable_shader>());
   }
 
+  void render_script::enable_scissor()
+  {
+    submit(mgl::create_ref<mgl::graphics::enable_scissor_command>());
+  }
+
+  void render_script::disable_scissor()
+  {
+    submit(mgl::create_ref<mgl::graphics::disable_scissor_command>());
+  }
+
   void render_script::execute()
   {
     MGL_PROFILE_FUNCTION("RENDER_SCRIPT");

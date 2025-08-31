@@ -1,5 +1,4 @@
 #include "mgl_graphics/layers/render.hpp"
-#include "mgl_core/debug.hpp"
 #include "mgl_core/profiling.hpp"
 
 namespace mgl::graphics::layers

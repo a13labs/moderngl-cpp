@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgl_graphics/layer.hpp"
+#include "mgl_graphics/command.hpp"
 #include "mgl_platform/event.hpp"
 
 namespace mgl::graphics::layers
@@ -23,10 +24,6 @@ public:
     void on_event(mgl::platform::event& event) override;
 
 private:
-    static void init_subsystem();
-    static void shutdown_subsystem();
-    static void render_subsystem();
-    static bool is_initialized();
     static void refresh_font();
     static bool on_window_close(mgl::platform::window_close_event& event);
     static bool on_window_resize(mgl::platform::window_resize_event& event);
@@ -36,6 +33,12 @@ private:
     static bool on_mouse_scrolled(mgl::platform::mouse_scrolled_event& event);
     static bool on_mouse_button_pressed(mgl::platform::mouse_button_pressed_event& event);
     static bool on_mouse_button_released(mgl::platform::mouse_button_released_event& event);
+
+
+    static bool is_initialized();
+    static void init_subsystem();
+    static void shutdown_subsystem();
+    static void render_subsystem(render_script& script);
   };
 
   class null_gui_layer : public gui_layer

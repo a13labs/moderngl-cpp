@@ -36,7 +36,9 @@ namespace mgl::graphics::layers
   {
     MGL_PROFILE_FUNCTION("GUI_LAYER");
     draw_ui(time, frame_time);
-    render_subsystem();
+    render_script script;
+    render_subsystem(script);
+    script.execute();
   }
 
   void gui_layer::on_event(mgl::platform::event& event)
@@ -221,7 +223,7 @@ namespace mgl::graphics::layers
     return ImGui::GetCurrentContext() != nullptr;
   }
 
-  void gui_layer::render_subsystem()
+  void gui_layer::render_subsystem(render_script& script)
   {
     MGL_PROFILE_FUNCTION("GUI_LAYER");
     MGL_CORE_ASSERT(ImGui::GetCurrentContext() != nullptr, "ImGui Context not initialized");
@@ -246,18 +248,18 @@ namespace mgl::graphics::layers
 
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    mgl::platform::api::render_api::enable_state(mgl::graphics::enable_flag::BLEND);
-    mgl::platform::api::render_api::set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
-    mgl::platform::api::render_api::set_blend_func(
+    script.enable_state(mgl::graphics::enable_flag::BLEND);
+    script.set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
+    script.set_blend_func(
         mgl::graphics::blend_factor::SRC_ALPHA, mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    mgl::platform::api::render_api::enable_scissor();
+    script.enable_scissor();
 
     auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("gui_vb"));
     auto ib = std::static_pointer_cast<mgl::platform::api::index_buffer>(get_buffer("gui_ib"));
 
-    mgl::platform::api::render_api::enable_program(prg->api());
-    mgl::platform::api::render_api::set_projection_matrix(
+    script.enable_shader(prg);
+    script.set_projection(
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     // Create a batch for GUI rendering
@@ -305,14 +307,12 @@ namespace mgl::graphics::layers
     // Execute the batch
     if(!gui_batch->draw_calls.empty())
     {
-      auto draw_command = mgl::create_ref<mgl::graphics::draw_batch_command>(gui_batch);
-      draw_command->execute();
+      script.draw_batch(gui_batch);
     }
 
-    mgl::platform::api::render_api::disable_program();
-    mgl::platform::api::render_api::clear_samplers(0, 1);
-    mgl::platform::api::render_api::disable_program();
-    mgl::platform::api::render_api::disable_scissor();
+    script.disable_shader();
+    script.clear_samplers(0, 1);
+    script.disable_scissor();
   }
 
   bool gui_layer::on_window_close(mgl::platform::window_close_event& event)
