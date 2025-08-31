@@ -83,7 +83,7 @@ public:
 
     void draw_batch(const mgl::platform::api::render_batch_ref& batch);
 
-    void enable_shader(shader_ref shader);
+    void enable_pipeline(shader_ref shader);
 
     void enable_pipeline(const std::string& name);
 

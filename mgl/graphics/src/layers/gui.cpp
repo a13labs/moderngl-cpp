@@ -258,7 +258,7 @@ namespace mgl::graphics::layers
     auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("gui_vb"));
     auto ib = std::static_pointer_cast<mgl::platform::api::index_buffer>(get_buffer("gui_ib"));
 
-    script.enable_shader(prg);
+    script.enable_pipeline(prg);
     script.set_projection(
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 

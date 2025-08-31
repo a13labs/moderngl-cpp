@@ -112,7 +112,7 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::draw_batch_command>(batch));
   }
 
-  void render_script::enable_shader(shader_ref shader)
+  void render_script::enable_pipeline(shader_ref shader)
   {
     submit(mgl::create_ref<mgl::graphics::enable_pipeline>(shader));
   }
@@ -259,7 +259,7 @@ namespace mgl::graphics
                               static_cast<float>(mgl::platform::current_window().width()),
                               0.0f,
                               static_cast<float>(mgl::platform::current_window().height())));
-    enable_shader(shader);
+    enable_pipeline(shader);
     set_shader_uniform("color", color);
     set_shader_uniform("px_range", static_cast<float>(atlas->pixel_height()));
     enable_texture(0, tex);
