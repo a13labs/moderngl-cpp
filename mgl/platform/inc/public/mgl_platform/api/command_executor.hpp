@@ -23,6 +23,17 @@ namespace mgl::platform::api
     // Scissor
     virtual void enable_scissor() = 0;
     virtual void disable_scissor() = 0;
+
+    void set_scissor(const glm::vec4& rect)
+    {
+      set_scissor(glm::vec2(rect), glm::vec2(rect.z, rect.w));
+    }
+
+    void set_scissor(float x, float y, float width, float height)
+    {
+      set_scissor(glm::vec2(x, y), glm::vec2(width, height));
+    }
+
     virtual void set_scissor(const glm::vec2& position, const glm::vec2& size) = 0;
 
     // State
@@ -30,7 +41,18 @@ namespace mgl::platform::api
     virtual void disable_state(int32_t state) = 0;
 
     // Blend
+    void set_blend_equation(blend_equation_mode mode)
+    {
+      set_blend_equation(mode, mode);
+    }
+
     virtual void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha) = 0;
+
+    void set_blend_func(blend_factor src, blend_factor dst)
+    {
+      set_blend_func(src, dst, src, dst);
+    }
+
     virtual void set_blend_func(blend_factor srcRGB,
                                 blend_factor dstRGB,
                                 blend_factor srcAlpha,
@@ -64,6 +86,14 @@ namespace mgl::platform::api
     virtual void bind_texture(int32_t unit, const texture_ref& texture) = 0;
 
     // Render calls
+    void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                            int32_t count,
+                            int32_t offset,
+                            render_mode mode)
+    {
+      render_call(vertex_buffer, nullptr, count, offset, mode);
+    }
+
     virtual void render_call(const vertex_buffer_ref& vertex_buffer,
                              const index_buffer_ref& index_buffer,
                              int32_t count,

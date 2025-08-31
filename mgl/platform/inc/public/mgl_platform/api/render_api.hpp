@@ -218,60 +218,9 @@ public:
 
     static void clear(const glm::vec4& color) { render_api::instance().api_clear(color); }
 
-    static void set_blend_equation(blend_equation_mode mode)
-    {
-      render_api::instance().api_set_blend_equation(mode, mode);
-    }
-
-    static void set_blend_func(blend_factor src, blend_factor dst)
-    {
-      render_api::instance().api_set_blend_func(src, dst, src, dst);
-    }
-
-    static void enable_scissor() { render_api::instance().api_enable_scissor(); }
-
-    static void disable_scissor() { render_api::instance().api_disable_scissor(); }
-
-    static void set_scissor(const glm::vec2& position, const glm::vec2& size)
-    {
-      render_api::instance().api_set_scissor(position, size);
-    }
-
-    static void set_scissor(const glm::vec4& rect)
-    {
-      render_api::instance().api_set_scissor(glm::vec2(rect), glm::vec2(rect.z, rect.w));
-    }
-
-    static void set_scissor(float x, float y, float width, float height)
-    {
-      render_api::instance().api_set_scissor(glm::vec2(x, y), glm::vec2(width, height));
-    }
-
-    static void enable_state(int32_t state) { render_api::instance().api_enable_state(state); }
-
-    static void disable_state(int32_t state) { render_api::instance().api_disable_state(state); }
-
     static void set_viewport(const glm::vec2& position, const glm::vec2& size)
     {
       render_api::instance().api_set_viewport(position, size);
-    }
-
-    static void clear_samplers(int32_t start = 0, int32_t end = -1)
-    {
-      render_api::instance().api_clear_samplers(start, end);
-    }
-
-    static void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
-    {
-      render_api::instance().api_set_blend_equation(modeRGB, modeAlpha);
-    }
-
-    static void set_blend_func(blend_factor srcRGB,
-                               blend_factor dstRGB,
-                               blend_factor srcAlpha,
-                               blend_factor dstAlpha)
-    {
-      render_api::instance().api_set_blend_func(srcRGB, dstRGB, srcAlpha, dstAlpha);
     }
 
     static void set_view_matrix(const glm::mat4& matrix)
@@ -284,10 +233,63 @@ public:
       render_api::instance().api_set_projection_matrix(matrix);
     }
 
-    static void enable_program(const mgl::platform::api::program_ref& program)
+    static void enable_scissor() { render_api::instance().api_enable_scissor(); }
+
+    static void disable_scissor() { render_api::instance().api_disable_scissor(); }
+
+    static void set_scissor(const glm::vec4& rect)
+    {
+      render_api::set_scissor(glm::vec2(rect), glm::vec2(rect.z, rect.w));
+    }
+
+    static void set_scissor(float x, float y, float width, float height)
+    {
+      render_api::set_scissor(glm::vec2(x, y), glm::vec2(width, height));
+    }
+
+    static void set_scissor(const glm::vec2& position, const glm::vec2& size)
+    {
+      render_api::instance().api_set_scissor(position, size);
+    }
+
+    static void enable_state(int32_t state) { render_api::instance().api_enable_state(state); }
+
+    static void disable_state(int32_t state) { render_api::instance().api_disable_state(state); }
+
+    static void set_blend_equation(blend_equation_mode mode)
+    {
+      render_api::set_blend_equation(mode, mode);
+    }
+
+    static void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
+    {
+      render_api::instance().api_set_blend_equation(modeRGB, modeAlpha);
+    }
+
+    static void set_blend_func(blend_factor src, blend_factor dst)
+    {
+      render_api::set_blend_func(src, dst, src, dst);
+    }
+
+    static void set_blend_func(blend_factor srcRGB,
+                               blend_factor dstRGB,
+                               blend_factor srcAlpha,
+                               blend_factor dstAlpha)
+    {
+      render_api::instance().api_set_blend_func(srcRGB, dstRGB, srcAlpha, dstAlpha);
+    }
+
+    static void clear_samplers(int32_t start = 0, int32_t end = -1)
+    {
+      render_api::instance().api_clear_samplers(start, end);
+    }
+
+    static void enable_pipeline(const mgl::platform::api::program_ref& program)
     {
       render_api::instance().api_enable_program(program);
     }
+
+    static void disable_pipeline() { render_api::instance().api_disable_program(); }
 
     static void set_program_uniform(const std::string& uniform, bool value)
     {
@@ -364,11 +366,22 @@ public:
       render_api::instance().api_set_program_uniform(uniform, value);
     }
 
-    static void disable_program() { render_api::instance().api_disable_program(); }
-
     static void bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture)
     {
       render_api::instance().api_bind_texture(unit, texture);
+    }
+
+    static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+                            int32_t count,
+                            int32_t offset,
+                            render_mode mode)
+    {
+      render_api::render_call(vertex_buffer, nullptr, count, offset, mode);
+    }
+
+    static void render_call(const mgl::platform::api::render_batch_ref& batch)
+    {
+      render_api::instance().api_render_call(batch);
     }
 
     static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
@@ -380,18 +393,6 @@ public:
       render_api::instance().api_render_call(vertex_buffer, index_buffer, count, offset, mode);
     }
 
-    static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
-                            int32_t count,
-                            int32_t offset,
-                            render_mode mode)
-    {
-      render_api::instance().api_render_call(vertex_buffer, nullptr, count, offset, mode);
-    }
-
-    static void render_call(const mgl::platform::api::render_batch_ref& batch)
-    {
-      render_api::instance().api_render_call(batch);
-    }
 
     static program_ref create_program(const std::string& vs_source,
                                       const std::string& fs_source,

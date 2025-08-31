@@ -58,10 +58,10 @@ namespace mgl::platform::api
 
       void enable_pipeline(const program_ref& program) override
       {
-        render_api::enable_program(program);
+        render_api::enable_pipeline(program);
       }
 
-      void disable_pipeline() override { render_api::disable_program(); }
+      void disable_pipeline() override { render_api::disable_pipeline(); }
 
       void set_program_uniform(const std::string& uniform, bool value) override
       {
