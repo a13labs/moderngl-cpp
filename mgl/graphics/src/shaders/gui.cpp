@@ -3,7 +3,7 @@
 
 #include "mgl_graphics/shaders/gui.hpp"
 
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/resources.hpp"
 
 namespace mgl::graphics::builtins
 {
@@ -15,7 +15,7 @@ namespace mgl::graphics::builtins
     MGL_CORE_ASSERT(mgl::shaders::imgui::fragment_shader_source().size() > 0,
                     "Fragment shader source is empty");
 
-    m_program = mgl::platform::api::render_api::create_program(
+    m_program = mgl::platform::api::resources::create_program(
         mgl::shaders::imgui::vertex_shader_source(), mgl::shaders::imgui::fragment_shader_source());
     set_uniform_value("tex", 0);
   }

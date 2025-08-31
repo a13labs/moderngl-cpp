@@ -4,7 +4,7 @@
 #include "mgl_core/memory.hpp"
 #include "mgl_core/string.hpp"
 
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/resources.hpp"
 #include "mgl_registry/resources/image.hpp"
 
 namespace mgl::graphics
@@ -73,7 +73,7 @@ public:
     {
       MGL_CORE_ASSERT(m_texture == nullptr, "Texture already loaded");
       MGL_CORE_ASSERT(m_image != nullptr, "Image is null");
-      m_texture = mgl::platform::api::render_api::create_texture_2d(m_image, m_opts.samples);
+      m_texture = mgl::platform::api::resources::create_texture_2d(m_image, m_opts.samples);
       MGL_CORE_ASSERT(m_texture != nullptr, "Texture is null");
       // tex->set_filter({ (int)m_opts.min_filter, (int)m_opts.mag_filter });
     }

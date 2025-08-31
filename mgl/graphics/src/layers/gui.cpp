@@ -2,13 +2,13 @@
 #include "mgl_graphics/graphics.hpp"
 #include "mgl_graphics/shaders/gui.hpp"
 #include "mgl_graphics/textures.hpp"
-#include "mgl_graphics/commands/draw.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 #include "mgl_core/profiling.hpp"
 #include "mgl_platform/event.hpp"
 #include "mgl_platform/input.hpp"
+#include "mgl_platform/api/resources.hpp"
 #include "mgl_platform/window.hpp"
 #include "mgl_registry/resources/image.hpp"
 
@@ -94,10 +94,10 @@ namespace mgl::graphics::layers
 
     register_shader("gui", mgl::create_ref<builtins::gui_shader>());
     register_buffer("gui_vb",
-                    mgl::platform::api::render_api::create_vertex_buffer(
+                    mgl::platform::api::resources::create_vertex_buffer(
                         "2f 2f 4f1", { "i_position", "i_uv", "i_color" }, true));
     register_buffer(
-        "gui_ib", mgl::platform::api::render_api::create_index_buffer(0, sizeof(ImDrawIdx), true));
+        "gui_ib", mgl::platform::api::resources::create_index_buffer(0, sizeof(ImDrawIdx), true));
 
     refresh_font();
 
