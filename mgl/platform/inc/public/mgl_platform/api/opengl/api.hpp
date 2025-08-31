@@ -23,7 +23,7 @@ public:
       return static_cast<mgl::platform::api::backends::ogl_api&>(api).get_context();
     }
 
-private:
+public:
     virtual bool api_init() override final;
 
     virtual void api_shutdown() override final;

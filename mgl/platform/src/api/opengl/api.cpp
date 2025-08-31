@@ -366,16 +366,16 @@ namespace mgl::platform::api::backends
       // Set scissor if clip rect is provided
       if(draw_call.clip_rect != glm::vec4(0))
       {
-        mgl::platform::api::render_api::set_scissor(static_cast<int32_t>(draw_call.clip_rect.x),
-                                                    static_cast<int32_t>(draw_call.clip_rect.y),
-                                                    static_cast<int32_t>(draw_call.clip_rect.z),
-                                                    static_cast<int32_t>(draw_call.clip_rect.w));
+        api_set_scissor({static_cast<int32_t>(draw_call.clip_rect.x),
+                                                    static_cast<int32_t>(draw_call.clip_rect.y)},
+                                                    {static_cast<int32_t>(draw_call.clip_rect.z),
+                                                    static_cast<int32_t>(draw_call.clip_rect.w)});
       }
 
       // Bind texture if provided
       if(draw_call.tex > 0)
       {
-        mgl::platform::api::render_api::bind_texture(0, draw_call.tex);
+        api_bind_texture(0, draw_call.tex);
       }
 
       // Render the draw call
