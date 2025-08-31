@@ -7,16 +7,16 @@
 
 namespace mgl::graphics
 {
-  class enable_shader : public render_command
+  class enable_pipeline : public render_command
   {
 public:
-    enable_shader(mgl::graphics::shader_ref shader)
+    enable_pipeline(mgl::graphics::shader_ref shader)
         : m_shader(shader)
     { }
 
     void execute() override final
     {
-      mgl::platform::api::command_executor::instance().enable_program(m_shader->api());
+      mgl::platform::api::command_executor::instance().enable_pipeline(m_shader->api());
       m_shader->prepare();
     }
 
@@ -161,12 +161,12 @@ private:
     shader::uniform_value m_value;
   };
 
-  class disable_shader : public render_command
+  class disable_pipeline : public render_command
   {
 public:
-    disable_shader() { }
+    disable_pipeline() { }
 
-    void execute() override final { mgl::platform::api::command_executor::instance().disable_program(); }
+    void execute() override final { mgl::platform::api::command_executor::instance().disable_pipeline(); }
   };
 
 } // namespace mgl::graphics

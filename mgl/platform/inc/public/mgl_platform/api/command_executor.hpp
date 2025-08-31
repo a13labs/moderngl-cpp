@@ -12,6 +12,9 @@ namespace mgl::platform::api
     virtual ~command_executor() = default;
 
     // Basic commands
+    void clear(float r, float g, float b, float a) {
+      clear(glm::vec4(r, g, b, a));
+    }
     virtual void clear(const glm::vec4& color) = 0;
     virtual void set_viewport(const glm::vec2& position, const glm::vec2& size) = 0;
     virtual void set_view_matrix(const glm::mat4& matrix) = 0;
@@ -37,8 +40,8 @@ namespace mgl::platform::api
     virtual void clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
     // Program / shader
-    virtual void enable_program(const program_ref& program) = 0;
-    virtual void disable_program() = 0;
+    virtual void enable_pipeline(const program_ref& program) = 0;
+    virtual void disable_pipeline() = 0;
 
     // Program uniforms (overloads)
     virtual void set_program_uniform(const std::string& uniform, bool value) = 0;

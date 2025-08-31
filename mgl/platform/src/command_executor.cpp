@@ -56,12 +56,12 @@ namespace mgl::platform::api
         render_api::clear_samplers(start, end);
       }
 
-      void enable_program(const program_ref& program) override
+      void enable_pipeline(const program_ref& program) override
       {
         render_api::enable_program(program);
       }
 
-      void disable_program() override { render_api::disable_program(); }
+      void disable_pipeline() override { render_api::disable_program(); }
 
       void set_program_uniform(const std::string& uniform, bool value) override
       {

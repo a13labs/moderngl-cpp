@@ -10,9 +10,9 @@ static mgl::platform::api::vertex_buffer_ref s_vbo = nullptr;
 void render_layer::render_prepare(mgl::graphics::render_script& script)
 {
   script.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-  script.enable_shader("custom_shader");
+  script.enable_pipeline("custom_shader");
   script.draw(s_vbo);
-  script.disable_shader();
+  script.disable_pipeline();
   script.draw_text("This is a text size 8!", glm::vec2(0.0), glm::vec4(1.0, 0.0, 0.0, 1.0));
   script.draw_text("This is a multi-line text!\nWith size 16!",
                    glm::vec2(0.0, 16.f),

@@ -310,7 +310,7 @@ namespace mgl::graphics::layers
       script.draw_batch(gui_batch);
     }
 
-    script.disable_shader();
+    script.disable_pipeline();
     script.clear_samplers(0, 1);
     script.disable_scissor();
   }

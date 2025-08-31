@@ -114,21 +114,21 @@ namespace mgl::graphics
 
   void render_script::enable_shader(shader_ref shader)
   {
-    submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
+    submit(mgl::create_ref<mgl::graphics::enable_pipeline>(shader));
   }
 
-  void render_script::enable_shader(const std::string& name)
+  void render_script::enable_pipeline(const std::string& name)
   {
     auto shader = get_shader(name);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
-    submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
+    submit(mgl::create_ref<mgl::graphics::enable_pipeline>(shader));
   }
 
-  void render_script::enable_shader(uint32_t idx)
+  void render_script::enable_pipeline(uint32_t idx)
   {
     auto shader = get_shader(idx);
     MGL_CORE_ASSERT(shader != nullptr, "Shader is null");
-    submit(mgl::create_ref<mgl::graphics::enable_shader>(shader));
+    submit(mgl::create_ref<mgl::graphics::enable_pipeline>(shader));
   }
 
   void render_script::set_shader_uniform(const std::string& name, bool value)
@@ -206,9 +206,9 @@ namespace mgl::graphics
     submit(mgl::create_ref<mgl::graphics::set_shader_uniform>(name, value));
   }
 
-  void render_script::disable_shader()
+  void render_script::disable_pipeline()
   {
-    submit(mgl::create_ref<mgl::graphics::disable_shader>());
+    submit(mgl::create_ref<mgl::graphics::disable_pipeline>());
   }
 
   void render_script::enable_scissor()
@@ -276,7 +276,7 @@ namespace mgl::graphics
     atlas->text_to_vertices({ x, y }, text, vb, vertices, scale, scale);
     draw(vb, nullptr, render_mode::TRIANGLES, vertices, first);
 
-    disable_shader();
+    disable_pipeline();
     clear_samplers(0, 1);
   }
 

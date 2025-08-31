@@ -85,9 +85,9 @@ public:
 
     void enable_shader(shader_ref shader);
 
-    void enable_shader(const std::string& name);
+    void enable_pipeline(const std::string& name);
 
-    void enable_shader(uint32_t idx);
+    void enable_pipeline(uint32_t idx);
 
     void set_shader_uniform(const std::string& name, bool value);
 
@@ -119,7 +119,7 @@ public:
 
     void set_shader_uniform(const std::string& name, const glm::mat4x3& value);
 
-    void disable_shader();
+    void disable_pipeline();
 
     void enable_scissor();
 
