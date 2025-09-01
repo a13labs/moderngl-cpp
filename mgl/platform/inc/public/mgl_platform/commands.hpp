@@ -48,33 +48,33 @@ private:
     virtual void impl_disable_pipeline() = 0;
 
     // Program uniforms (overloads)
-    virtual void impl_set_program_uniform(const std::string& uniform, bool value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, int32_t value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, float value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::vec2& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::vec3& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::vec4& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat2& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat2x3& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat2x4& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat3& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat3x2& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat3x4& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat4& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat4x2& value) = 0;
-    virtual void impl_set_program_uniform(const std::string& uniform, const glm::mat4x3& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, bool value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, int32_t value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, float value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::vec2& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::vec3& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::vec4& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat2& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat2x3& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat2x4& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat3& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat3x2& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat3x4& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat4& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat4x2& value) = 0;
+    virtual void impl_set_uniform(const std::string& uniform, const glm::mat4x3& value) = 0;
 
     // Textures
     virtual void impl_bind_texture(int32_t unit, const api::texture_ref& texture) = 0;
 
     // Render calls
-    virtual void impl_render_call(const api::vertex_buffer_ref& vertex_buffer,
+    virtual void impl_draw(const api::vertex_buffer_ref& vertex_buffer,
                                  const api::index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
                                  api::render_mode mode) = 0;
 
-    virtual void impl_render_call(const api::render_batch_ref& batch) = 0;
+    virtual void impl_draw(const api::render_batch_ref& batch) = 0;
 
 public:
     static void begin_frame() { instance().impl_begin_frame(); }
@@ -169,77 +169,77 @@ public:
     // Program uniforms (overloads)
     static void set_program_uniform(const std::string& uniform, bool value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, int32_t value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, float value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::vec2& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::vec3& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::vec4& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat2& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat2x3& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat2x4& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat3& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat3x2& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat3x4& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat4& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat4x2& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     static void set_program_uniform(const std::string& uniform, const glm::mat4x3& value)
     {
-      instance().impl_set_program_uniform(uniform, value);
+      instance().impl_set_uniform(uniform, value);
     }
 
     // Textures
@@ -249,24 +249,24 @@ public:
     }
 
     // Render calls
-    static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
+    static void draw(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                             int32_t count,
                             int32_t offset,
                             api::render_mode mode)
     {
-      render_call(vertex_buffer, nullptr, count, offset, mode);
+      draw(vertex_buffer, nullptr, count, offset, mode);
     }
 
-    static void render_call(const api::vertex_buffer_ref& vertex_buffer,
+    static void draw(const api::vertex_buffer_ref& vertex_buffer,
                             const api::index_buffer_ref& index_buffer,
                             int32_t count,
                             int32_t offset,
                             api::render_mode mode)
     {
-      instance().impl_render_call(vertex_buffer, index_buffer, count, offset, mode);
+      instance().impl_draw(vertex_buffer, index_buffer, count, offset, mode);
     }
 
-    static void render_call(const api::render_batch_ref& batch) { instance().impl_render_call(batch); }
+    static void draw(const api::render_batch_ref& batch) { instance().impl_draw(batch); }
 
     // Singleton installation
     static commands& instance();

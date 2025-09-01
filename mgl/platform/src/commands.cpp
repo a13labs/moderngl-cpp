@@ -80,77 +80,77 @@ namespace mgl::platform::gpu
 
       void impl_disable_pipeline() override { api::render_api::instance().api_disable_program(); }
 
-      void impl_set_program_uniform(const std::string& uniform, bool value) override
+      void impl_set_uniform(const std::string& uniform, bool value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, int32_t value) override
+      void impl_set_uniform(const std::string& uniform, int32_t value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, float value) override
+      void impl_set_uniform(const std::string& uniform, float value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::vec2& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::vec2& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::vec3& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::vec3& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::vec4& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::vec4& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat2& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat2& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat2x3& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat2x3& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat2x4& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat2x4& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat3& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat3& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat3x2& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat3x2& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat3x4& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat3x4& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat4& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat4& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat4x2& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat4x2& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
 
-      void impl_set_program_uniform(const std::string& uniform, const glm::mat4x3& value) override
+      void impl_set_uniform(const std::string& uniform, const glm::mat4x3& value) override
       {
         api::render_api::instance().api_set_program_uniform(uniform, value);
       }
@@ -160,7 +160,7 @@ namespace mgl::platform::gpu
         api::render_api::instance().api_bind_texture(unit, texture);
       }
 
-      void impl_render_call(const api::vertex_buffer_ref& vertex_buffer,
+      void impl_draw(const api::vertex_buffer_ref& vertex_buffer,
                             const api::index_buffer_ref& index_buffer,
                             int32_t count,
                             int32_t offset,
@@ -170,7 +170,7 @@ namespace mgl::platform::gpu
             vertex_buffer, index_buffer, count, offset, mode);
       }
 
-      void impl_render_call(const api::render_batch_ref& batch) override
+      void impl_draw(const api::render_batch_ref& batch) override
       {
         api::render_api::instance().api_render_call(batch);
       }

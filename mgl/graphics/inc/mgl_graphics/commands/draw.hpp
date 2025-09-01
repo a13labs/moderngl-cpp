@@ -27,7 +27,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::gpu::commands::render_call(
+      mgl::platform::gpu::commands::draw(
           m_vertex_buffer, m_index_buffer, m_count, m_offset, m_mode);
     }
 
@@ -49,7 +49,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::gpu::commands::render_call(m_batch);
+      mgl::platform::gpu::commands::draw(m_batch);
     }
 
 private:
