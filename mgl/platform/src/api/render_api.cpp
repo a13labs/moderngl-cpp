@@ -1,4 +1,4 @@
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/api.hpp"
 #if defined(MGL_RENDER_OPENGL)
 #  include "mgl_platform/api/opengl/api.hpp"
 #elif defined(MGL_RENDER_METAL)

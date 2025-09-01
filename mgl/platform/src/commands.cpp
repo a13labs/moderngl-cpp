@@ -1,5 +1,5 @@
 #include "mgl_platform/commands.hpp"
-#include "mgl_platform/api/render_api.hpp"
+#include "mgl_platform/api/api.hpp"
 
 namespace mgl::platform::gpu
 {
