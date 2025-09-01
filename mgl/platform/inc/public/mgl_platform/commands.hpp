@@ -44,7 +44,7 @@ private:
     virtual void impl_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
     // Pipeline
-    virtual void impl_enable_pipeline(const api::program_ref& program) = 0;
+    virtual void impl_enable_pipeline(const api::pipeline_ref& program) = 0;
     virtual void impl_disable_pipeline() = 0;
 
     // Program uniforms (overloads)
@@ -159,7 +159,7 @@ public:
     }
 
     // Pipeline
-    static void enable_pipeline(const api::program_ref& program)
+    static void enable_pipeline(const api::pipeline_ref& program)
     {
       instance().impl_enable_pipeline(program);
     }

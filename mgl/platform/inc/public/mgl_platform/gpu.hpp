@@ -5,38 +5,7 @@
 namespace mgl::platform::gpu
 {
 
-  // Pipeline / descriptor abstractions for explicit APIs (Vulkan/Metal).
-  // Kept at namespace scope so backends can refer to them directly.
-  struct pipeline_desc
-  {
-    bool depth_test;
-    bool depth_write;
-    bool blend;
-
-    pipeline_desc()
-        : depth_test(false)
-        , depth_write(false)
-        , blend(true)
-    { }
-  };
-
-  class pipeline
-  {
-public:
-    pipeline(const mgl::platform::api::program_ref& p = nullptr,
-             const std::string& vl = std::string(),
-             const pipeline_desc& d = pipeline_desc())
-        : program(p)
-        , vertex_layout(vl)
-        , desc(d)
-    { }
-
-    api::program_ref program;
-    std::string vertex_layout;
-    pipeline_desc desc;
-  };
-
-  inline api::program_ref create_program(const std::string& vs_source,
+  inline api::pipeline_ref create_pipeline(const std::string& vs_source,
                                          const std::string& fs_source,
                                          const std::string& gs_source = "",
                                          const std::string& tes_source = "",

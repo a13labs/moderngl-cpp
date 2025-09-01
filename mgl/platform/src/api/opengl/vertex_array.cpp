@@ -2,7 +2,7 @@
 #  include "mgl_platform/api/opengl/vertex_array.hpp"
 #  include "mgl_platform/api/opengl/api.hpp"
 #  include "mgl_platform/api/opengl/buffers.hpp"
-#  include "mgl_platform/api/opengl/program.hpp"
+#  include "mgl_platform/api/opengl/pipeline.hpp"
 
 #  include "opengl/internal.hpp"
 

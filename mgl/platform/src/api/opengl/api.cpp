@@ -1,7 +1,7 @@
 #if defined(MGL_RENDER_OPENGL)
 #  include "mgl_platform/api/opengl/api.hpp"
 #  include "mgl_platform/api/opengl/buffers.hpp"
-#  include "mgl_platform/api/opengl/program.hpp"
+#  include "mgl_platform/api/opengl/pipeline.hpp"
 #  include "mgl_platform/api/opengl/textures.hpp"
 #  include "mgl_platform/api/opengl/vertex_array.hpp"
 
@@ -81,7 +81,7 @@ namespace mgl::platform::api::backends
     m_state_data.view_matrix = matrix;
     if(m_state_data.current_program != nullptr)
     {
-      m_state_data.current_program->set_value("view", matrix);
+      m_state_data.current_program->set_uniform_value("view", matrix);
     }
   }
 
@@ -90,7 +90,7 @@ namespace mgl::platform::api::backends
     m_state_data.projection_matrix = matrix;
     if(m_state_data.current_program != nullptr)
     {
-      m_state_data.current_program->set_value("projection", matrix);
+      m_state_data.current_program->set_uniform_value("projection", matrix);
     }
   }
 
@@ -157,103 +157,103 @@ namespace mgl::platform::api::backends
     // Set the view and projection matrices if the uniforms exist
     if(m_state_data.current_program != nullptr)
     {
-      m_state_data.current_program->set_value("view", m_state_data.view_matrix);
+      m_state_data.current_program->set_uniform_value("view", m_state_data.view_matrix);
     }
 
     if(m_state_data.current_program != nullptr)
     {
-      m_state_data.current_program->set_value("projection", m_state_data.projection_matrix);
+      m_state_data.current_program->set_uniform_value("projection", m_state_data.projection_matrix);
     }
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, bool value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, int32_t value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, float value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::vec4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat2x4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat3x4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x2& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_set_program_uniform(const std::string& uniform, const glm::mat4x3& value)
   {
     MGL_CORE_ASSERT(m_state_data.current_program != nullptr, "Program is null");
-    m_state_data.current_program->set_value(uniform, value);
+    m_state_data.current_program->set_uniform_value(uniform, value);
   }
 
   void ogl_api::api_disable_program()

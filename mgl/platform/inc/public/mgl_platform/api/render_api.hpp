@@ -2,7 +2,7 @@
 
 #include "buffers.hpp"
 #include "enums.hpp"
-#include "program.hpp"
+#include "pipeline.hpp"
 #include "textures.hpp"
 
 namespace mgl::platform::api
@@ -65,7 +65,7 @@ namespace mgl::platform::api
 
     // The current shader, view and projection matrices are stored in the render, as they are
     // used by multiple commands
-    program_ref current_program;
+    pipeline_ref current_program;
 
     // Transform matrices
     glm::mat4 view_matrix;
@@ -138,7 +138,7 @@ public:
     virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
 
-    virtual void api_enable_program(const mgl::platform::api::program_ref& program) = 0;
+    virtual void api_enable_program(const mgl::platform::api::pipeline_ref& program) = 0;
 
     virtual void api_set_program_uniform(const std::string& uniform, bool value) = 0;
 
@@ -194,7 +194,7 @@ public:
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
 
-    virtual program_ref api_create_program(const std::string& vs_source,
+    virtual pipeline_ref api_create_program(const std::string& vs_source,
                                            const std::string& fs_source,
                                            const std::string& gs_source = "",
                                            const std::string& tes_source = "",

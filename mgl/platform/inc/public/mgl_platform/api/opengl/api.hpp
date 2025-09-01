@@ -70,7 +70,7 @@ public:
 
     virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) override final;
 
-    virtual void api_enable_program(const program_ref& program) override final;
+    virtual void api_enable_program(const pipeline_ref& program) override final;
 
     virtual void api_set_program_uniform(const std::string& uniform, bool value) override final;
 
@@ -138,7 +138,7 @@ public:
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) override final;
 
-    virtual program_ref api_create_program(const std::string& vs_source,
+    virtual pipeline_ref api_create_program(const std::string& vs_source,
                                            const std::string& fs_source,
                                            const std::string& gs_source = "",
                                            const std::string& tes_source = "",

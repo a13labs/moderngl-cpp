@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl_platform/api/program.hpp"
+#include "mgl_platform/api/pipeline.hpp"
 #include "mgl_platform/api/buffers.hpp"
 #include "mgl_platform/api/enums.hpp"
 
@@ -14,7 +14,7 @@ namespace mgl::platform::api::backends
   class ogl_vertex_array 
   {
 public:
-    ogl_vertex_array(const program_ref& prg,
+    ogl_vertex_array(const pipeline_ref& prg,
                      const vertex_buffer_ref& vertex_buffers,
                      const index_buffer_ref& index_buffer);
 
@@ -46,7 +46,7 @@ public:
       MGL_CORE_ASSERT(false, "Not implemented");
     }
 
-    virtual void update(const api::program_ref& prg,
+    virtual void update(const api::pipeline_ref& prg,
                         api::vertex_buffer_ref vertex_buffers,
                         const api::index_buffer_ref& index_buffer);
 

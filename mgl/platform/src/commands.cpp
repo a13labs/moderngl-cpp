@@ -73,7 +73,7 @@ namespace mgl::platform::gpu
         api::render_api::instance().api_clear_samplers(start, end);
       }
 
-      void impl_enable_pipeline(const api::program_ref& program) override
+      void impl_enable_pipeline(const api::pipeline_ref& program) override
       {
         api::render_api::instance().api_enable_program(program);
       }

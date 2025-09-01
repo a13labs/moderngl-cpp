@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl_platform/api/program.hpp"
+#include "mgl_platform/api/pipeline.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
