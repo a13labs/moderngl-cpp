@@ -29,8 +29,6 @@ public:
 public:
     command_buffer();
 
-    command_buffer(const mgl::platform::api::framebuffer_ref& target);
-
     ~command_buffer() { m_commands.clear(); }
 
     void begin();

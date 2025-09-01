@@ -22,13 +22,6 @@ namespace mgl::graphics
     m_commands.reserve(100);
   }
 
-  command_buffer::command_buffer(const mgl::platform::api::framebuffer_ref& target)
-      : m_render_target(target)
-      , m_commands()
-  {
-    m_commands.reserve(100);
-  }
-
   void command_buffer::begin()
   {
     auto vb = get_buffer("text_vb");
