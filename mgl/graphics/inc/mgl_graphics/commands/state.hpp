@@ -13,7 +13,7 @@ public:
         : m_flags(flags)
     { }
 
-    void execute() override final { mgl::platform::api::commands::enable_state(m_flags); }
+    void execute() override final { mgl::platform::gpu::commands::enable_state(m_flags); }
 
 private:
     int m_flags;
@@ -26,7 +26,7 @@ public:
         : m_flags(flags)
     { }
 
-    void execute() override final { mgl::platform::api::commands::disable_state(m_flags); }
+    void execute() override final { mgl::platform::gpu::commands::disable_state(m_flags); }
 
 private:
     int m_flags;

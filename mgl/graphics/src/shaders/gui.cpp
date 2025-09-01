@@ -15,7 +15,7 @@ namespace mgl::graphics::builtins
     MGL_CORE_ASSERT(mgl::shaders::imgui::fragment_shader_source().size() > 0,
                     "Fragment shader source is empty");
 
-    m_program = mgl::platform::api::resources::create_program(
+    m_program = mgl::platform::gpu::create_program(
         mgl::shaders::imgui::vertex_shader_source(), mgl::shaders::imgui::fragment_shader_source());
     set_uniform_value("tex", 0);
   }

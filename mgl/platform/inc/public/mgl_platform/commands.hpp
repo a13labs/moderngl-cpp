@@ -2,9 +2,7 @@
 
 #include "mgl_platform/api/render_api.hpp"
 
-#include <memory>
-
-namespace mgl::platform::api
+namespace mgl::platform::gpu
 {
   class commands
   {
@@ -29,18 +27,18 @@ private:
     virtual void cmd_disable_state(int32_t state) = 0;
 
     // Blend
-    virtual void cmd_set_blend_equation(blend_equation_mode modeRGB,
-                                        blend_equation_mode modeAlpha) = 0;
-    virtual void cmd_set_blend_func(blend_factor srcRGB,
-                                    blend_factor dstRGB,
-                                    blend_factor srcAlpha,
-                                    blend_factor dstAlpha) = 0;
+    virtual void cmd_set_blend_equation(api::blend_equation_mode modeRGB,
+                                        api::blend_equation_mode modeAlpha) = 0;
+    virtual void cmd_set_blend_func(api::blend_factor srcRGB,
+                                    api::blend_factor dstRGB,
+                                    api::blend_factor srcAlpha,
+                                    api::blend_factor dstAlpha) = 0;
 
     // Samplers
     virtual void cmd_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
     // Program / shader
-    virtual void cmd_enable_pipeline(const program_ref& program) = 0;
+    virtual void cmd_enable_pipeline(const api::program_ref& program) = 0;
     virtual void cmd_disable_pipeline() = 0;
 
     // Program uniforms (overloads)
@@ -61,16 +59,16 @@ private:
     virtual void cmd_set_program_uniform(const std::string& uniform, const glm::mat4x3& value) = 0;
 
     // Textures
-    virtual void cmd_bind_texture(int32_t unit, const texture_ref& texture) = 0;
+    virtual void cmd_bind_texture(int32_t unit, const api::texture_ref& texture) = 0;
 
     // Render calls
-    virtual void cmd_render_call(const vertex_buffer_ref& vertex_buffer,
-                                 const index_buffer_ref& index_buffer,
+    virtual void cmd_render_call(const api::vertex_buffer_ref& vertex_buffer,
+                                 const api::index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
-                                 render_mode mode) = 0;
+                                 api::render_mode mode) = 0;
 
-    virtual void cmd_render_call(const render_batch_ref& batch) = 0;
+    virtual void cmd_render_call(const api::render_batch_ref& batch) = 0;
 
 public:
     static void clear(float r, float g, float b, float a)
@@ -120,22 +118,22 @@ public:
     static void disable_state(int32_t state) { instance().cmd_disable_state(state); }
 
     // Blend
-    static void set_blend_equation(blend_equation_mode mode) { set_blend_equation(mode, mode); }
+    static void set_blend_equation(api::blend_equation_mode mode) { set_blend_equation(mode, mode); }
 
-    static void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
+    static void set_blend_equation(api::blend_equation_mode modeRGB, api::blend_equation_mode modeAlpha)
     {
       instance().cmd_set_blend_equation(modeRGB, modeAlpha);
     }
 
-    static void set_blend_func(blend_factor src, blend_factor dst)
+    static void set_blend_func(api::blend_factor src, api::blend_factor dst)
     {
       set_blend_func(src, dst, src, dst);
     }
 
-    static void set_blend_func(blend_factor srcRGB,
-                               blend_factor dstRGB,
-                               blend_factor srcAlpha,
-                               blend_factor dstAlpha)
+    static void set_blend_func(api::blend_factor srcRGB,
+                               api::blend_factor dstRGB,
+                               api::blend_factor srcAlpha,
+                               api::blend_factor dstAlpha)
     {
       instance().cmd_set_blend_func(srcRGB, dstRGB, srcAlpha, dstAlpha);
     }
@@ -147,7 +145,7 @@ public:
     }
 
     // Program / shader
-    static void enable_pipeline(const program_ref& program)
+    static void enable_pipeline(const api::program_ref& program)
     {
       instance().cmd_enable_pipeline(program);
     }
@@ -231,7 +229,7 @@ public:
     }
 
     // Textures
-    static void bind_texture(int32_t unit, const texture_ref& texture)
+    static void bind_texture(int32_t unit, const api::texture_ref& texture)
     {
       instance().cmd_bind_texture(unit, texture);
     }
@@ -240,21 +238,21 @@ public:
     static void render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                             int32_t count,
                             int32_t offset,
-                            render_mode mode)
+                            api::render_mode mode)
     {
       render_call(vertex_buffer, nullptr, count, offset, mode);
     }
 
-    static void render_call(const vertex_buffer_ref& vertex_buffer,
-                            const index_buffer_ref& index_buffer,
+    static void render_call(const api::vertex_buffer_ref& vertex_buffer,
+                            const api::index_buffer_ref& index_buffer,
                             int32_t count,
                             int32_t offset,
-                            render_mode mode)
+                            api::render_mode mode)
     {
       instance().cmd_render_call(vertex_buffer, index_buffer, count, offset, mode);
     }
 
-    static void render_call(const render_batch_ref& batch) { instance().cmd_render_call(batch); }
+    static void render_call(const api::render_batch_ref& batch) { instance().cmd_render_call(batch); }
 
     // Singleton installation
     static commands& instance();

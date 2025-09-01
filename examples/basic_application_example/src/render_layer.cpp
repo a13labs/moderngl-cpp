@@ -31,7 +31,7 @@ void render_layer::on_attach()
     0.6,  -0.8, 0.0, 0.0, 1.0, //
   };
 
-  s_vbo = mgl::platform::api::resources::create_vertex_buffer(
+  s_vbo = mgl::platform::gpu::create_vertex_buffer(
       vertices.size() * sizeof(float), "2f 3f", { "i_vert", "i_color" });
   s_vbo->allocate();
   s_vbo->upload(vertices);

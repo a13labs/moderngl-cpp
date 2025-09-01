@@ -17,7 +17,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::bind_texture(m_slot, m_texture->api());
+      mgl::platform::gpu::commands::bind_texture(m_slot, m_texture->api());
     }
 
 private:

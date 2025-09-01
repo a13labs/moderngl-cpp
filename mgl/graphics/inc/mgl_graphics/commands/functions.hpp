@@ -11,7 +11,7 @@ public:
         : m_color(color)
     { }
 
-  void execute() override final { mgl::platform::api::commands::clear(m_color); }
+  void execute() override final { mgl::platform::gpu::commands::clear(m_color); }
 
 private:
     glm::vec4 m_color;
@@ -27,7 +27,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::set_viewport(m_position, m_size);
+      mgl::platform::gpu::commands::set_viewport(m_position, m_size);
     }
 
 private:
@@ -42,7 +42,7 @@ public:
         : m_view(view)
     { }
 
-  void execute() override final { mgl::platform::api::commands::set_view_matrix(m_view); }
+  void execute() override final { mgl::platform::gpu::commands::set_view_matrix(m_view); }
 
 private:
     glm::mat4 m_view;
@@ -57,7 +57,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::set_projection_matrix(m_projection);
+      mgl::platform::gpu::commands::set_projection_matrix(m_projection);
     }
 
 private:
@@ -79,7 +79,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::set_blend_func(
+      mgl::platform::gpu::commands::set_blend_func(
           m_srcRGB, m_dstRGB, m_srcAlpha, m_dstAlpha);
     }
 
@@ -100,7 +100,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::set_blend_equation(m_modeRGB, m_modeAlpha);
+      mgl::platform::gpu::commands::set_blend_equation(m_modeRGB, m_modeAlpha);
     }
 
 private:
@@ -118,7 +118,7 @@ public:
 
     void execute() override final
     {
-      mgl::platform::api::commands::clear_samplers(m_start, m_end);
+      mgl::platform::gpu::commands::clear_samplers(m_start, m_end);
     }
 
 private:
@@ -133,7 +133,7 @@ private:
 
     void execute() override final
     {
-      mgl::platform::api::commands::enable_scissor();
+      mgl::platform::gpu::commands::enable_scissor();
     }
 
   };
@@ -145,7 +145,7 @@ private:
 
     void execute() override final
     {
-      mgl::platform::api::commands::disable_scissor();
+      mgl::platform::gpu::commands::disable_scissor();
     }
   };
 

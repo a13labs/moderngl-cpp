@@ -231,7 +231,7 @@ namespace mgl::graphics
     }
     else
     {
-      mgl::platform::api::commands::bind_screen_framebuffer();
+      mgl::platform::gpu::commands::bind_screen_framebuffer();
     }
 
     for(auto& command : m_commands)

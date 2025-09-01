@@ -20,7 +20,7 @@ namespace mgl::graphics
     register_font("default", font);
     MGL_CORE_INFO("Creating vertex buffer and shader for text rendering.");
     register_buffer("text_vb",
-                    mgl::platform::api::resources::create_vertex_buffer(
+                    mgl::platform::gpu::create_vertex_buffer(
                         TEXT_BUFFER_SIZE, "2f 2f", { "i_position", "i_uv" }, true));
     register_shader("text_shader", mgl::create_ref<builtins::text_shader>());
   }

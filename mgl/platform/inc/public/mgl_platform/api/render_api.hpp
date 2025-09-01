@@ -5,10 +5,6 @@
 #include "program.hpp"
 #include "textures.hpp"
 
-#include "mgl_registry/resources/image.hpp"
-
-#include "glm/glm.hpp"
-
 namespace mgl::platform::api
 {
   struct draw_call
