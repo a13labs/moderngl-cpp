@@ -1,10 +1,8 @@
 #pragma once
-#include "command.hpp"
-#include "enums.hpp"
-#include "glm/glm.hpp"
+
 #include "managers/buffer.hpp"
 #include "managers/font.hpp"
-#include "managers/shader.hpp"
+#include "managers/pipeline.hpp"
 #include "managers/texture.hpp"
 
 namespace mgl::graphics
@@ -13,29 +11,29 @@ namespace mgl::graphics
 
   void shutdown();
 
-  inline size_t register_shader(const std::string& name, const shader_ref& shader)
+  inline size_t register_pipeline(const std::string& name, const pipeline_ref& p)
   {
-    return shaders().add_item(name, shader);
+    return pipelines().add_item(name, p);
   }
 
-  inline void unregister_shader(const std::string& name)
+  inline void unregister_pipeline(const std::string& name)
   {
-    shaders().remove_item(name);
+    pipelines().remove_item(name);
   }
 
-  inline bool has_shader(const std::string& name)
+  inline bool has_pipeline(const std::string& name)
   {
-    return shaders().has_item(name);
+    return pipelines().has_item(name);
   }
 
-  inline shader_ref get_shader(const std::string& name)
+  inline pipeline_ref get_pipeline(const std::string& name)
   {
-    return shaders().get_item(name);
+    return pipelines().get_item(name);
   }
 
-  inline shader_ref get_shader(size_t idx)
+  inline pipeline_ref get_pipeline(size_t idx)
   {
-    return shaders().get_item(idx);
+    return pipelines().get_item(idx);
   }
 
   inline size_t register_texture(const std::string& name, const texture_ref& texture)

@@ -30,7 +30,25 @@ public:
 
     virtual void api_update_window_size(const glm::ivec2& size) override final;
 
+    // Commands
+
+    virtual void api_begin_frame() override final;
+
+    virtual void api_end_frame() override final;
+
+    virtual void api_begin_render_pass() override final;
+
+    virtual void api_end_render_pass() override final;
+
+    virtual void api_clear(const glm::vec4& color) override final;
+    
     virtual void api_bind_screen_framebuffer() override final;
+
+    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) override final;
+
+    virtual void api_set_view_matrix(const glm::mat4& matrix) override final;
+
+    virtual void api_set_projection_matrix(const glm::mat4& matrix) override final;
 
     virtual void api_enable_scissor() override final;
 
@@ -42,12 +60,6 @@ public:
 
     virtual void api_disable_state(int32_t state) override final;
 
-    virtual void api_clear(const glm::vec4& color) override final;
-
-    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) override final;
-
-    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) override final;
-
     virtual void api_set_blend_equation(blend_equation_mode modeRGB,
                                         blend_equation_mode modeAlpha) override final;
 
@@ -56,9 +68,7 @@ public:
                                     blend_factor srcAlpha,
                                     blend_factor dstAlpha) override final;
 
-    virtual void api_set_view_matrix(const glm::mat4& matrix) override final;
-
-    virtual void api_set_projection_matrix(const glm::mat4& matrix) override final;
+    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) override final;
 
     virtual void api_enable_program(const program_ref& program) override final;
 
@@ -115,6 +125,8 @@ public:
                                  render_mode mode) override final;
 
     virtual void api_render_call(const render_batch_ref& batch) override final;
+
+    // GPU resources
 
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) override final;

@@ -1,14 +1,14 @@
 #include "shaders/fragment/imgui.hpp"
 #include "shaders/vertex/imgui.hpp"
 
-#include "mgl_graphics/shaders/gui.hpp"
+#include "mgl_graphics/pipelines/gui.hpp"
 
 #include "mgl_platform/gpu.hpp"
 
 namespace mgl::graphics::builtins
 {
 
-  void gui_shader::load()
+  void gui_pipeline::load()
   {
     MGL_CORE_ASSERT(mgl::shaders::imgui::vertex_shader_source().size() > 0,
                     "Vertex shader source is empty");
@@ -20,6 +20,6 @@ namespace mgl::graphics::builtins
     set_uniform_value("tex", 0);
   }
 
-  void gui_shader::prepare() { }
+  void gui_pipeline::prepare() { }
 
 } // namespace mgl::graphics::builtins

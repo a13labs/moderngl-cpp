@@ -14,9 +14,10 @@ namespace mgl::graphics::layers
   void render_layer::on_update(float time, float frame_time)
   {
     MGL_PROFILE_FUNCTION("RENDER_LAYER");
-    render_script script;
+    command_buffer script;
+    script.begin();
     render_prepare(script);
-    script.execute();
+    script.end();
   }
 
   void render_layer::on_event(mgl::platform::event& event) { }

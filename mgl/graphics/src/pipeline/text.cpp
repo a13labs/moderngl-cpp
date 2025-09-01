@@ -1,13 +1,13 @@
 #include "shaders/fragment/text.hpp"
 #include "shaders/vertex/text.hpp"
 
-#include "mgl_graphics/shaders/text.hpp"
+#include "mgl_graphics/pipelines/text.hpp"
 
 #include "mgl_platform/gpu.hpp"
 
 namespace mgl::graphics::builtins
 {
-  void text_shader::load()
+  void text_pipeline::load()
   {
     MGL_CORE_ASSERT(mgl::shaders::text::vertex_shader_source().size() > 0,
                     "Vertex shader source is empty");
@@ -20,6 +20,6 @@ namespace mgl::graphics::builtins
     set_uniform_value("px_range", 64.f);
   }
 
-  void text_shader::prepare() { }
+  void text_pipeline::prepare() { }
 
 } // namespace mgl::graphics::builtins

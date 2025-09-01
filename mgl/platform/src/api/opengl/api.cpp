@@ -7,31 +7,11 @@
 
 #  include "mgl_core/debug.hpp"
 #  include "mgl_core/profiling.hpp"
-#  include "mgl_registry/resources/font.hpp"
-#  include "mgl_registry/resources/image.hpp"
 
 #  include "opengl/internal.hpp"
 
-#  include "glm/glm.hpp"
-#  include "glm/gtc/matrix_transform.hpp"
-
 namespace mgl::platform::api::backends
 {
-  // const mgl::float32_buffer quad_verts = {
-  //   // positions        // texture Coords
-  //   -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-  //   0.5f,  -0.5f, 1.0f, 0.0f, // bottom right
-  //   0.5f,  0.5f,  1.0f, 1.0f, // top right
-  //   -0.5f, 0.5f,  0.0f, 1.0f // top left
-  // };
-
-  // const mgl::uint32_buffer quad_indices = {
-  //   0, 1, 2, // first triangle
-  //   2, 3, 0 // second triangle
-  // };
-
-  // static const char* quad_layout = "2f 2f";
-
   bool ogl_api::api_init()
   {
     m_ctx = mgl::opengl::create_context(mgl::opengl::context_mode::ATTACHED, 330);
@@ -44,17 +24,12 @@ namespace mgl::platform::api::backends
 
     MGL_CORE_ASSERT(m_ctx->is_valid(), "[OpenGL API] Context is not valid.");
 
-    // auto vb = m_ctx->buffer(quad_verts);
-    // auto ib = m_ctx->buffer(quad_indices);
-
     return true;
   }
 
   void ogl_api::api_shutdown()
   {
     MGL_PROFILE_FUNCTION("API_SHUTDOWN");
-    // s_quad->deallocate();
-    // delete s_quad;
   }
 
   void ogl_api::api_bind_screen_framebuffer()
@@ -67,6 +42,56 @@ namespace mgl::platform::api::backends
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     m_ctx->screen().set_viewport({ 0, 0, size.x, size.y });
+  }
+
+  void ogl_api::api_begin_frame()
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+  }
+
+  void ogl_api::api_end_frame()
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+  }
+
+  void ogl_api::api_begin_render_pass()
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+  }
+
+  void ogl_api::api_end_render_pass()
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+  }
+
+  void ogl_api::api_clear(const glm::vec4& color)
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    m_ctx->clear(color);
+  }
+
+  void ogl_api::api_set_viewport(const glm::vec2& position, const glm::vec2& size)
+  {
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    m_ctx->set_viewport(position.x, position.y, size.x, size.y);
+  }
+
+  void ogl_api::api_set_view_matrix(const glm::mat4& matrix)
+  {
+    m_state_data.view_matrix = matrix;
+    if(m_state_data.current_program != nullptr)
+    {
+      m_state_data.current_program->set_value("view", matrix);
+    }
+  }
+
+  void ogl_api::api_set_projection_matrix(const glm::mat4& matrix)
+  {
+    m_state_data.projection_matrix = matrix;
+    if(m_state_data.current_program != nullptr)
+    {
+      m_state_data.current_program->set_value("projection", matrix);
+    }
   }
 
   void ogl_api::api_enable_scissor()
@@ -99,24 +124,6 @@ namespace mgl::platform::api::backends
     m_ctx->disable(state);
   }
 
-  void ogl_api::api_clear(const glm::vec4& color)
-  {
-    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    m_ctx->clear(color);
-  }
-
-  void ogl_api::api_set_viewport(const glm::vec2& position, const glm::vec2& size)
-  {
-    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    m_ctx->set_viewport(position.x, position.y, size.x, size.y);
-  }
-
-  void ogl_api::api_clear_samplers(int32_t start, int32_t end)
-  {
-    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
-    m_ctx->clear_samplers(start, end);
-  }
-
   void ogl_api::api_set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
@@ -135,22 +142,10 @@ namespace mgl::platform::api::backends
                           internal::to_api(dstAlpha));
   }
 
-  void ogl_api::api_set_view_matrix(const glm::mat4& matrix)
+  void ogl_api::api_clear_samplers(int32_t start, int32_t end)
   {
-    m_state_data.view_matrix = matrix;
-    if(m_state_data.current_program != nullptr)
-    {
-      m_state_data.current_program->set_value("view", matrix);
-    }
-  }
-
-  void ogl_api::api_set_projection_matrix(const glm::mat4& matrix)
-  {
-    m_state_data.projection_matrix = matrix;
-    if(m_state_data.current_program != nullptr)
-    {
-      m_state_data.current_program->set_value("projection", matrix);
-    }
+    MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
+    m_ctx->clear_samplers(start, end);
   }
 
   void ogl_api::api_enable_program(const program_ref& prg)
@@ -366,10 +361,10 @@ namespace mgl::platform::api::backends
       // Set scissor if clip rect is provided
       if(draw_call.clip_rect != glm::vec4(0))
       {
-        api_set_scissor({static_cast<int32_t>(draw_call.clip_rect.x),
-                                                    static_cast<int32_t>(draw_call.clip_rect.y)},
-                                                    {static_cast<int32_t>(draw_call.clip_rect.z),
-                                                    static_cast<int32_t>(draw_call.clip_rect.w)});
+        api_set_scissor({ static_cast<int32_t>(draw_call.clip_rect.x),
+                          static_cast<int32_t>(draw_call.clip_rect.y) },
+                        { static_cast<int32_t>(draw_call.clip_rect.z),
+                          static_cast<int32_t>(draw_call.clip_rect.w) });
       }
 
       // Bind texture if provided

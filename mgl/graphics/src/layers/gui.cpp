@@ -1,6 +1,6 @@
 #include "mgl_graphics/layers/gui.hpp"
 #include "mgl_graphics/graphics.hpp"
-#include "mgl_graphics/shaders/gui.hpp"
+#include "mgl_graphics/pipelines/gui.hpp"
 #include "mgl_graphics/textures.hpp"
 
 #include "mgl_core/debug.hpp"
@@ -36,9 +36,9 @@ namespace mgl::graphics::layers
   {
     MGL_PROFILE_FUNCTION("GUI_LAYER");
     draw_ui(time, frame_time);
-    render_script script;
+    command_buffer script;
     render_subsystem(script);
-    script.execute();
+    script.end();
   }
 
   void gui_layer::on_event(mgl::platform::event& event)
@@ -92,7 +92,7 @@ namespace mgl::graphics::layers
       return;
     }
 
-    register_shader("gui", mgl::create_ref<builtins::gui_shader>());
+    register_pipeline("gui_pipeline", mgl::create_ref<builtins::gui_pipeline>());
     register_buffer("gui_vb",
                     mgl::platform::gpu::create_vertex_buffer(
                         "2f 2f 4f1", { "i_position", "i_uv", "i_color" }, true));
@@ -189,7 +189,8 @@ namespace mgl::graphics::layers
     io.Fonts->GetTexDataAsRGBA32(
         &pixels,
         &width,
-        &height); // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
+        &height); 
+        // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
     auto image = mgl::create_ref<mgl::registry::image>(width, height, 4, pixels);
 
@@ -208,7 +209,7 @@ namespace mgl::graphics::layers
 
     unregister_buffer("gui_ib");
     unregister_buffer("gui_vb");
-    unregister_shader("gui");
+    unregister_pipeline("gui_pipeline");
     unregister_texture("gui_font");
 
     io.BackendRendererUserData = nullptr;
@@ -223,7 +224,7 @@ namespace mgl::graphics::layers
     return ImGui::GetCurrentContext() != nullptr;
   }
 
-  void gui_layer::render_subsystem(render_script& script)
+  void gui_layer::render_subsystem(command_buffer& cmds)
   {
     MGL_PROFILE_FUNCTION("GUI_LAYER");
     MGL_CORE_ASSERT(ImGui::GetCurrentContext() != nullptr, "ImGui Context not initialized");
@@ -243,23 +244,22 @@ namespace mgl::graphics::layers
     if(!draw_data)
       return;
 
-    auto prg = get_shader("gui");
-    MGL_CORE_ASSERT(prg != nullptr, "No shader available");
-
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
-    script.enable_state(mgl::graphics::enable_flag::BLEND);
-    script.set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
-    script.set_blend_func(
+    cmds.enable_state(mgl::graphics::enable_flag::BLEND);
+    cmds.set_blend_equation(mgl::graphics::blend_equation_mode::ADD);
+    cmds.set_blend_func(
         mgl::graphics::blend_factor::SRC_ALPHA, mgl::graphics::blend_factor::ONE_MINUS_SRC_ALPHA);
 
-    script.enable_scissor();
+    cmds.enable_scissor();
 
     auto vb = std::static_pointer_cast<mgl::platform::api::vertex_buffer>(get_buffer("gui_vb"));
     auto ib = std::static_pointer_cast<mgl::platform::api::index_buffer>(get_buffer("gui_ib"));
 
-    script.enable_pipeline(prg);
-    script.set_projection(
+    auto p = get_pipeline("gui_pipeline");
+    MGL_CORE_ASSERT(p != nullptr, "No pipeline available");
+    cmds.bind_pipeline(p);
+    cmds.set_projection(
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     // Create a batch for GUI rendering
@@ -307,12 +307,12 @@ namespace mgl::graphics::layers
     // Execute the batch
     if(!gui_batch->draw_calls.empty())
     {
-      script.draw_batch(gui_batch);
+      cmds.draw(gui_batch);
     }
 
-    script.disable_pipeline();
-    script.clear_samplers(0, 1);
-    script.disable_scissor();
+    cmds.disable_pipeline();
+    cmds.clear_samplers(0, 1);
+    cmds.disable_scissor();
   }
 
   bool gui_layer::on_window_close(mgl::platform::window_close_event& event)

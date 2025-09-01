@@ -17,7 +17,7 @@ class render_layer : public mgl::graphics::layers::render_layer
 
   virtual void on_detach() override;
 
-  virtual void render_prepare(mgl::graphics::render_script& script) override;
+  virtual void render_prepare(mgl::graphics::command_buffer& script) override;
 };
 
 class gui_layer : public mgl::graphics::layers::gui_layer

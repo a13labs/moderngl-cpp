@@ -1,6 +1,6 @@
 #include "mgl_graphics/commands/draw.hpp"
 #include "mgl_graphics/commands/functions.hpp"
-#include "mgl_graphics/commands/shader.hpp"
+#include "mgl_graphics/commands/pipeline.hpp"
 #include "mgl_graphics/commands/state.hpp"
 #include "mgl_graphics/commands/texture.hpp"
 #include "mgl_graphics/graphics.hpp"

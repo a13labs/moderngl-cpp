@@ -18,7 +18,7 @@ public:
 
     virtual void on_update(float time, float frame_time) override final;
 
-    virtual void render_prepare(render_script& script) = 0;
+    virtual void render_prepare(command_buffer& script) = 0;
 
     void on_event(mgl::platform::event& event) override;
   };
@@ -32,7 +32,7 @@ public:
 
     virtual ~null_render_layer() override = default;
 
-    virtual void render_prepare(render_script& script) override { }
+    virtual void render_prepare(command_buffer& script) override { }
   };
 
 } // namespace mgl::graphics::layers

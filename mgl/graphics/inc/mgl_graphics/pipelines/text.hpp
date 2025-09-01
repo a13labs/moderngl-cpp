@@ -1,14 +1,13 @@
 #pragma once
 
-#include "mgl_core/string.hpp"
-#include "mgl_graphics/shader.hpp"
+#include "mgl_graphics/pipeline.hpp"
 
 namespace mgl::graphics::builtins
 {
-  class gui_shader : public mgl::graphics::shader
+  class text_pipeline : public mgl::graphics::pipeline
   {
 public:
-    gui_shader() = default;
+    text_pipeline() = default;
 
     virtual void prepare() override final;
     virtual void load() override final;

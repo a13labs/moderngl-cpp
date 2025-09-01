@@ -97,8 +97,26 @@ public:
 
     virtual void api_update_window_size(const glm::ivec2& size) = 0;
 
-    virtual void api_bind_screen_framebuffer() = 0;
+    // Commands
 
+    virtual void api_begin_frame() = 0;
+
+    virtual void api_end_frame() = 0;
+
+    virtual void api_begin_render_pass() = 0;
+
+    virtual void api_end_render_pass() = 0;
+
+    virtual void api_clear(const glm::vec4& color) = 0;
+
+    virtual void api_bind_screen_framebuffer() = 0;
+    
+    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) = 0;
+    
+    virtual void api_set_view_matrix(const glm::mat4& matrix) = 0;
+
+    virtual void api_set_projection_matrix(const glm::mat4& matrix) = 0;
+    
     virtual void api_enable_scissor() = 0;
 
     virtual void api_disable_scissor() = 0;
@@ -109,12 +127,6 @@ public:
 
     virtual void api_disable_state(int32_t state) = 0;
 
-    virtual void api_clear(const glm::vec4& color) = 0;
-
-    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) = 0;
-
-    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
-
     virtual void api_set_blend_equation(blend_equation_mode modeRGB,
                                         blend_equation_mode modeAlpha) = 0;
 
@@ -123,9 +135,8 @@ public:
                                     blend_factor srcAlpha,
                                     blend_factor dstAlpha) = 0;
 
-    virtual void api_set_view_matrix(const glm::mat4& matrix) = 0;
+    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
-    virtual void api_set_projection_matrix(const glm::mat4& matrix) = 0;
 
     virtual void api_enable_program(const mgl::platform::api::program_ref& program) = 0;
 
@@ -171,6 +182,8 @@ public:
 
     virtual void api_render_call(const mgl::platform::api::render_batch_ref& batch) = 0;
 
+    // GPU resources
+
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) = 0;
 
@@ -193,18 +206,18 @@ public:
                                                  int32_t components,
                                                  int32_t samples = 0) = 0;
 
-public:
-    static bool init_api() { return render_api::instance().api_init(); }
-
-    static void shutdown_api() { render_api::instance().api_shutdown(); }
-
-    static void update_window_size(const glm::vec2& size)
-    {
-      render_api::instance().api_update_window_size(size);
-    }
-
 protected:
     render_api() = default;
   };
+
+
+    inline static bool init_api() { return render_api::instance().api_init(); }
+
+    inline static void shutdown_api() { render_api::instance().api_shutdown(); }
+
+    inline static void update_window_size(const glm::vec2& size)
+    {
+      render_api::instance().api_update_window_size(size);
+    }
 
 } // namespace mgl::platform::api

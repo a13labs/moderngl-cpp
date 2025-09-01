@@ -1,5 +1,5 @@
 #include "layers.hpp"
-#include "shader.hpp"
+#include "pipeline.hpp"
 
 #include "imgui/imgui.h"
 #include "mgl_application/application.hpp"
@@ -7,10 +7,10 @@
 
 static mgl::platform::api::vertex_buffer_ref s_vbo = nullptr;
 
-void render_layer::render_prepare(mgl::graphics::render_script& script)
+void render_layer::render_prepare(mgl::graphics::command_buffer& script)
 {
   script.clear(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-  script.enable_pipeline("custom_shader");
+  script.bind_pipeline("custom_pipeline");
   script.draw(s_vbo);
   script.disable_pipeline();
   script.draw_text("This is a text size 8!", glm::vec2(0.0), glm::vec4(1.0, 0.0, 0.0, 1.0));
@@ -36,7 +36,7 @@ void render_layer::on_attach()
   s_vbo->allocate();
   s_vbo->upload(vertices);
 
-  register_shader("custom_shader", mgl::create_ref<custom_shader>());
+  register_pipeline("custom_pipeline", mgl::create_ref<custom_pipeline>());
 }
 
 void render_layer::on_detach()

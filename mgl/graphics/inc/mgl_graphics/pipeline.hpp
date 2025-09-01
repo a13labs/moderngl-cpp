@@ -1,16 +1,13 @@
 #pragma once
 
 #include "mgl_platform/api/program.hpp"
-#include "mgl_platform/api/render_api.hpp"
 
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
-#include "mgl_core/string.hpp"
 
-#include "glm/glm.hpp"
 namespace mgl::graphics
 {
-  class shader
+  class pipeline
   {
 public:
     enum class uniform_type
@@ -153,7 +150,7 @@ public:
       }
     };
 
-    virtual ~shader() = default;
+    virtual ~pipeline() = default;
 
     virtual void prepare() = 0;
     virtual void load() = 0;
@@ -470,6 +467,6 @@ protected:
     mgl::platform::api::program_ref m_program = nullptr;
   };
 
-  using shader_ref = mgl::ref<shader>;
+  using pipeline_ref = mgl::ref<pipeline>;
 
 } // namespace mgl::graphics

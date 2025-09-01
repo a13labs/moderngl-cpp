@@ -38,7 +38,7 @@ private:
     static bool is_initialized();
     static void init_subsystem();
     static void shutdown_subsystem();
-    static void render_subsystem(render_script& script);
+    static void render_subsystem(command_buffer& script);
   };
 
   class null_gui_layer : public gui_layer

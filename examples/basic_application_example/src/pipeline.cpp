@@ -1,11 +1,11 @@
-#include "shader.hpp"
+#include "pipeline.hpp"
 #include "mgl_application/application.hpp"
 #include "mgl_graphics/graphics.hpp"
 
 #include "shaders/fragment/example.hpp"
 #include "shaders/vertex/example.hpp"
 
-void custom_shader::load()
+void custom_pipeline::load()
 {
   MGL_CORE_ASSERT(mgl::shaders::example::vertex_shader_source().size() > 0,
                   "Vertex shader source is empty");
@@ -16,4 +16,4 @@ void custom_shader::load()
       mgl::shaders::example::fragment_shader_source());
 }
 
-void custom_shader::prepare() { }
+void custom_pipeline::prepare() { }
