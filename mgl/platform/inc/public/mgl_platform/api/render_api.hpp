@@ -58,14 +58,14 @@ namespace mgl::platform::api
   struct render_state
   {
     render_state()
-        : current_program(nullptr)
+        : current_pipeline(nullptr)
         , view_matrix(1.0f)
         , projection_matrix(1.0f)
     { }
 
     // The current shader, view and projection matrices are stored in the render, as they are
     // used by multiple commands
-    pipeline_ref current_program;
+    pipeline_ref current_pipeline;
 
     // Transform matrices
     glm::mat4 view_matrix;
