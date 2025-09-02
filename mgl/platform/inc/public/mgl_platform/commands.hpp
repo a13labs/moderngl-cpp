@@ -1,6 +1,13 @@
 #pragma once
 
-#include "mgl_platform/device.hpp"
+#include "api/buffers.hpp"
+#include "api/pipeline.hpp"
+#include "api/textures.hpp"
+#include "render.hpp"
+#include "enums.hpp"
+
+#include "glm/glm.hpp"
+#include <string>
 
 namespace mgl::platform::gpu
 {
