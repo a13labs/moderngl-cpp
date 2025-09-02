@@ -2,7 +2,7 @@
 
 #include "mgl_platform/api/pipeline.hpp"
 #include "mgl_platform/api/buffers.hpp"
-#include "mgl_platform/api/enums.hpp"
+#include "mgl_platform/enums.hpp"
 
 #include "mgl_opengl/vertex_array.hpp"
 

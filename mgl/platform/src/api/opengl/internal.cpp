@@ -48,22 +48,22 @@ namespace mgl::platform::internal
     mgl::opengl::render_mode::TRIANGLE_FAN,
   };
 
-  mgl::opengl::compare_func to_api(mgl::platform::api::compare_func func)
+  mgl::opengl::compare_func to_api(mgl::platform::compare_func func)
   {
     return s_compare_func[static_cast<int>(func)];
   }
 
-  mgl::opengl::blend_factor to_api(mgl::platform::api::blend_factor factor)
+  mgl::opengl::blend_factor to_api(mgl::platform::blend_factor factor)
   {
     return s_blend_equation_mapping[static_cast<int>(factor)];
   }
 
-  mgl::opengl::blend_equation_mode to_api(mgl::platform::api::blend_equation_mode mode)
+  mgl::opengl::blend_equation_mode to_api(mgl::platform::blend_equation_mode mode)
   {
     return s_blend_equation_mode[static_cast<int>(mode)];
   }
 
-  mgl::opengl::render_mode to_api(mgl::platform::api::render_mode mode)
+  mgl::opengl::render_mode to_api(mgl::platform::render_mode mode)
   {
     return s_render_mode[static_cast<int>(mode)];
   }

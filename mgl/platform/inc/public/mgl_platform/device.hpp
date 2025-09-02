@@ -1,9 +1,10 @@
 #pragma once
 
 #include "api/buffers.hpp"
-#include "api/enums.hpp"
 #include "api/pipeline.hpp"
 #include "api/textures.hpp"
+
+#include "enums.hpp"
 
 namespace mgl::platform
 {
@@ -18,18 +19,18 @@ namespace mgl::platform
   struct render_batch
   {
     int32_t count;
-    platform::api::render_mode render_mode;
-    platform::api::vertex_buffer_ref vertex_buffer;
-    platform::api::index_buffer_ref index_buffer;
-    platform::api::buffer_ref uniform_buffer;
+    render_mode mode;
+    api::vertex_buffer_ref vertex_buffer;
+    api::index_buffer_ref index_buffer;
+    api::buffer_ref uniform_buffer;
     mgl::list<draw_call> draw_calls;
 
-    render_batch(const mgl::platform::api::vertex_buffer_ref& vb = nullptr,
-                 const mgl::platform::api::index_buffer_ref& ib = nullptr,
-                 const mgl::platform::api::buffer_ref& ub = nullptr,
-                 platform::api::render_mode m = api::render_mode::TRIANGLES)
+    render_batch(const api::vertex_buffer_ref& vb = nullptr,
+                 const api::index_buffer_ref& ib = nullptr,
+                 const api::buffer_ref& ub = nullptr,
+                 render_mode m = render_mode::TRIANGLES)
         : count(0)
-        , render_mode(m)
+        , mode(m)
         , vertex_buffer(vb)
         , index_buffer(ib)
         , uniform_buffer(ub)
@@ -127,18 +128,18 @@ public:
 
     virtual void api_disable_state(int32_t state) = 0;
 
-    virtual void api_set_blend_equation(api::blend_equation_mode modeRGB,
-                                        api::blend_equation_mode modeAlpha) = 0;
+    virtual void api_set_blend_equation(blend_equation_mode modeRGB,
+                                        blend_equation_mode modeAlpha) = 0;
 
-    virtual void api_set_blend_func(api::blend_factor srcRGB,
-                                    api::blend_factor dstRGB,
-                                    api::blend_factor srcAlpha,
-                                    api::blend_factor dstAlpha) = 0;
+    virtual void api_set_blend_func(blend_factor srcRGB,
+                                    blend_factor dstRGB,
+                                    blend_factor srcAlpha,
+                                    blend_factor dstAlpha) = 0;
 
     virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
 
-    virtual void api_enable_program(const mgl::platform::api::pipeline_ref& program) = 0;
+    virtual void api_enable_program(const api::pipeline_ref& program) = 0;
 
     virtual void api_set_program_uniform(const std::string& uniform, bool value) = 0;
 
@@ -178,7 +179,7 @@ public:
                                  const api::index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
-                                 api::render_mode mode) = 0;
+                                 render_mode  mode) = 0;
 
     virtual void api_render_call(const render_batch_ref& batch) = 0;
 

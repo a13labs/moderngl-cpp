@@ -33,12 +33,12 @@ private:
     virtual void impl_disable_state(int32_t state) = 0;
 
     // Blend
-    virtual void impl_set_blend_equation(api::blend_equation_mode modeRGB,
-                                        api::blend_equation_mode modeAlpha) = 0;
-    virtual void impl_set_blend_func(api::blend_factor srcRGB,
-                                    api::blend_factor dstRGB,
-                                    api::blend_factor srcAlpha,
-                                    api::blend_factor dstAlpha) = 0;
+    virtual void impl_set_blend_equation(blend_equation_mode modeRGB,
+                                        blend_equation_mode modeAlpha) = 0;
+    virtual void impl_set_blend_func(blend_factor srcRGB,
+                                    blend_factor dstRGB,
+                                    blend_factor srcAlpha,
+                                    blend_factor dstAlpha) = 0;
 
     // Samplers
     virtual void impl_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
@@ -72,7 +72,7 @@ private:
                                  const api::index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
-                                 api::render_mode mode) = 0;
+                                 render_mode  mode) = 0;
 
     virtual void impl_draw(const render_batch_ref& batch) = 0;
 
@@ -132,22 +132,22 @@ public:
     static void disable_state(int32_t state) { instance().impl_disable_state(state); }
 
     // Blend
-    static void set_blend_equation(api::blend_equation_mode mode) { set_blend_equation(mode, mode); }
+    static void set_blend_equation(blend_equation_mode mode) { set_blend_equation(mode, mode); }
 
-    static void set_blend_equation(api::blend_equation_mode modeRGB, api::blend_equation_mode modeAlpha)
+    static void set_blend_equation(blend_equation_mode modeRGB, blend_equation_mode modeAlpha)
     {
       instance().impl_set_blend_equation(modeRGB, modeAlpha);
     }
 
-    static void set_blend_func(api::blend_factor src, api::blend_factor dst)
+    static void set_blend_func(blend_factor src, blend_factor dst)
     {
       set_blend_func(src, dst, src, dst);
     }
 
-    static void set_blend_func(api::blend_factor srcRGB,
-                               api::blend_factor dstRGB,
-                               api::blend_factor srcAlpha,
-                               api::blend_factor dstAlpha)
+    static void set_blend_func(blend_factor srcRGB,
+                               blend_factor dstRGB,
+                               blend_factor srcAlpha,
+                               blend_factor dstAlpha)
     {
       instance().impl_set_blend_func(srcRGB, dstRGB, srcAlpha, dstAlpha);
     }
@@ -252,7 +252,7 @@ public:
     static void draw(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
                             int32_t count,
                             int32_t offset,
-                            api::render_mode mode)
+                            render_mode  mode)
     {
       draw(vertex_buffer, nullptr, count, offset, mode);
     }
@@ -261,7 +261,7 @@ public:
                             const api::index_buffer_ref& index_buffer,
                             int32_t count,
                             int32_t offset,
-                            api::render_mode mode)
+                            render_mode  mode)
     {
       instance().impl_draw(vertex_buffer, index_buffer, count, offset, mode);
     }

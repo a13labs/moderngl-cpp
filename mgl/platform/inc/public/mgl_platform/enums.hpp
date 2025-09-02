@@ -4,7 +4,7 @@
 
 #define BIT(x) 1 << x
 
-namespace mgl::platform::api
+namespace mgl::platform
 {
 
   enum render_mode : uint32_t
@@ -80,4 +80,4 @@ namespace mgl::platform::api
     ONE_MINUS_SRC1_ALPHA,
   };
 
-} // namespace mgl::platform::api
+} // namespace mgl::platform

@@ -54,16 +54,16 @@ namespace mgl::platform::gpu
         device::instance().api_disable_state(state);
       }
 
-      void impl_set_blend_equation(api::blend_equation_mode modeRGB,
-                                   api::blend_equation_mode modeAlpha) override
+      void impl_set_blend_equation(blend_equation_mode modeRGB,
+                                   blend_equation_mode modeAlpha) override
       {
         device::instance().api_set_blend_equation(modeRGB, modeAlpha);
       }
 
-      void impl_set_blend_func(api::blend_factor srcRGB,
-                               api::blend_factor dstRGB,
-                               api::blend_factor srcAlpha,
-                               api::blend_factor dstAlpha) override
+      void impl_set_blend_func(blend_factor srcRGB,
+                               blend_factor dstRGB,
+                               blend_factor srcAlpha,
+                               blend_factor dstAlpha) override
       {
         device::instance().api_set_blend_func(srcRGB, dstRGB, srcAlpha, dstAlpha);
       }
@@ -164,7 +164,7 @@ namespace mgl::platform::gpu
                             const api::index_buffer_ref& index_buffer,
                             int32_t count,
                             int32_t offset,
-                            api::render_mode mode) override
+                            render_mode  mode) override
       {
         device::instance().api_render_call(
             vertex_buffer, index_buffer, count, offset, mode);

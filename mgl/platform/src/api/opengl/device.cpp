@@ -374,7 +374,7 @@ namespace mgl::platform::api::backends
       }
 
       // Render the draw call
-      vao->render(batch->render_mode, draw_call.element_count, draw_call.index_offset, 1);
+      vao->render(batch->mode, draw_call.element_count, draw_call.index_offset, 1);
     }
 
     vao->release();

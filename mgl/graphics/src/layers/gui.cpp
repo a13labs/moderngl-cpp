@@ -264,7 +264,7 @@ namespace mgl::graphics::layers
 
     // Create a batch for GUI rendering
     auto gui_batch = mgl::create_ref<mgl::platform::render_batch>(
-        vb, ib, nullptr, mgl::platform::api::render_mode::TRIANGLES);
+        vb, ib, nullptr, mgl::platform::render_mode::TRIANGLES);
 
     for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
     {
