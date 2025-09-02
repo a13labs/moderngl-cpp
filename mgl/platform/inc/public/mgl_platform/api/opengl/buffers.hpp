@@ -1,6 +1,6 @@
 #pragma once
 
-#include "api.hpp"
+#include "device.hpp"
 #include "mgl_core/debug.hpp"
 #include "mgl_core/memory.hpp"
 

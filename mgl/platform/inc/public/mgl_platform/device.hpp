@@ -1,15 +1,15 @@
 #pragma once
 
-#include "buffers.hpp"
-#include "enums.hpp"
-#include "pipeline.hpp"
-#include "textures.hpp"
+#include "api/buffers.hpp"
+#include "api/enums.hpp"
+#include "api/pipeline.hpp"
+#include "api/textures.hpp"
 
-namespace mgl::platform::api
+namespace mgl::platform
 {
   struct draw_call
   {
-    texture_ref tex;
+    api::texture_ref tex;
     size_t element_count;
     size_t index_offset;
     glm::vec4 clip_rect;
@@ -27,7 +27,7 @@ namespace mgl::platform::api
     render_batch(const mgl::platform::api::vertex_buffer_ref& vb = nullptr,
                  const mgl::platform::api::index_buffer_ref& ib = nullptr,
                  const mgl::platform::api::buffer_ref& ub = nullptr,
-                 platform::api::render_mode m = render_mode::TRIANGLES)
+                 platform::api::render_mode m = api::render_mode::TRIANGLES)
         : count(0)
         , render_mode(m)
         , vertex_buffer(vb)
@@ -41,7 +41,7 @@ namespace mgl::platform::api
       count = 0;
     }
 
-    void add_draw_call(texture_ref tex,
+    void add_draw_call(api::texture_ref tex,
                        size_t element_count,
                        size_t index_offset,
                        const glm::vec4& clip_rect = glm::vec4(0))
@@ -65,17 +65,17 @@ namespace mgl::platform::api
 
     // The current shader, view and projection matrices are stored in the render, as they are
     // used by multiple commands
-    pipeline_ref current_pipeline;
+    api::pipeline_ref current_pipeline;
 
     // Transform matrices
     glm::mat4 view_matrix;
     glm::mat4 projection_matrix;
   };
 
-  class render_api;
-  using render_api_ref = mgl::scope<render_api>;
+  class device;
+  using device_ref = mgl::scope<device>;
 
-  class render_api
+  class device
   {
 public:
     enum class dialect
@@ -85,11 +85,11 @@ public:
       UNKNOWN
     };
 
-    virtual ~render_api() = default;
+    virtual ~device() = default;
 
     virtual dialect api() const = 0;
 
-    static render_api& instance();
+    static device& instance();
 
     virtual bool api_init() = 0;
 
@@ -127,13 +127,13 @@ public:
 
     virtual void api_disable_state(int32_t state) = 0;
 
-    virtual void api_set_blend_equation(blend_equation_mode modeRGB,
-                                        blend_equation_mode modeAlpha) = 0;
+    virtual void api_set_blend_equation(api::blend_equation_mode modeRGB,
+                                        api::blend_equation_mode modeAlpha) = 0;
 
-    virtual void api_set_blend_func(blend_factor srcRGB,
-                                    blend_factor dstRGB,
-                                    blend_factor srcAlpha,
-                                    blend_factor dstAlpha) = 0;
+    virtual void api_set_blend_func(api::blend_factor srcRGB,
+                                    api::blend_factor dstRGB,
+                                    api::blend_factor srcAlpha,
+                                    api::blend_factor dstAlpha) = 0;
 
     virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) = 0;
 
@@ -172,52 +172,52 @@ public:
 
     virtual void api_disable_program() = 0;
 
-    virtual void api_bind_texture(int32_t unit, const mgl::platform::api::texture_ref& texture) = 0;
+    virtual void api_bind_texture(int32_t unit, const api::texture_ref& texture) = 0;
 
-    virtual void api_render_call(const mgl::platform::api::vertex_buffer_ref& vertex_buffer,
-                                 const mgl::platform::api::index_buffer_ref& index_buffer,
+    virtual void api_render_call(const api::vertex_buffer_ref& vertex_buffer,
+                                 const api::index_buffer_ref& index_buffer,
                                  int32_t count,
                                  int32_t offset,
-                                 render_mode mode) = 0;
+                                 api::render_mode mode) = 0;
 
-    virtual void api_render_call(const mgl::platform::api::render_batch_ref& batch) = 0;
+    virtual void api_render_call(const render_batch_ref& batch) = 0;
 
     // GPU resources
 
-    virtual index_buffer_ref
+    virtual api::index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) = 0;
 
-    virtual vertex_buffer_ref api_create_vertex_buffer(const std::string& layout,
-                                                       mgl::string_list attrs,
-                                                       size_t size,
+    virtual api::vertex_buffer_ref api_create_vertex_buffer(const std::string& layout,
+                                                           mgl::string_list attrs,
+                                                           size_t size,
                                                        bool dynamic) = 0;
 
-    virtual buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
+    virtual api::buffer_ref api_create_buffer(size_t size, bool dynamic) = 0;
 
-    virtual pipeline_ref api_create_program(const std::string& vs_source,
+    virtual api::pipeline_ref api_create_program(const std::string& vs_source,
                                            const std::string& fs_source,
                                            const std::string& gs_source = "",
                                            const std::string& tes_source = "",
                                            const std::string& tcs_source = "",
                                            const std::string& filename = "") = 0;
 
-    virtual texture_2d_ref api_create_texture_2d(int32_t width,
+    virtual api::texture_2d_ref api_create_texture_2d(int32_t width,
                                                  int32_t height,
                                                  int32_t components,
                                                  int32_t samples = 0) = 0;
 
 protected:
-    render_api() = default;
+    device() = default;
   };
 
 
-    inline static bool init_api() { return render_api::instance().api_init(); }
+    inline static bool init_device() { return device::instance().api_init(); }
 
-    inline static void shutdown_api() { render_api::instance().api_shutdown(); }
+    inline static void shutdown_device() { device::instance().api_shutdown(); }
 
     inline static void update_window_size(const glm::vec2& size)
     {
-      render_api::instance().api_update_window_size(size);
+      device::instance().api_update_window_size(size);
     }
 
 } // namespace mgl::platform::api

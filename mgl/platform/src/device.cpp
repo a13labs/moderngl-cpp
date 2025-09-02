@@ -1,13 +1,13 @@
-#include "mgl_platform/api/api.hpp"
+#include "mgl_platform/device.hpp"
 #if defined(MGL_RENDER_OPENGL)
-#  include "mgl_platform/api/opengl/api.hpp"
+#  include "mgl_platform/api/opengl/device.hpp"
 #elif defined(MGL_RENDER_METAL)
 #  include "mgl_platform/api/metal/api.hpp"
 #endif
 
-namespace mgl::platform::api
+namespace mgl::platform
 {
-  render_api& render_api::instance()
+  device& device::instance()
   {
 #if defined(MGL_RENDER_OPENGL)
     static mgl::scope<mgl::platform::api::backends::ogl_api> s_instance =

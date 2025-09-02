@@ -1,54 +1,36 @@
 #pragma once
 
-#include "mgl_opengl/context.hpp"
-#include "mgl_platform/api/api.hpp"
+#include "mgl_metal/context.hpp"
+#include "mgl_platform/device.hpp"
 
 namespace mgl::platform::api::backends
 {
-  class ogl_api : public render_api
+  class metal_api : public render_api
   {
 public:
-    ogl_api() { }
+    metal_api() { }
 
-    virtual ~ogl_api() = default;
+    virtual ~metal_api() = default;
 
-    mgl::opengl::context_ref& get_context() { return m_ctx; }
+    mgl::metal::context_ref& get_context() { return m_ctx; }
 
-    virtual render_api::dialect api() const override final { return render_api::dialect::OPENGL; }
+    virtual render_api::dialect api() const override final { return render_api::dialect::METAL; }
 
-    static mgl::opengl::context_ref& current_context()
+    static mgl::metal::context_ref& current_context()
     {
       auto& api = mgl::platform::api::render_api::instance();
-      MGL_CORE_ASSERT(api.api() == render_api::dialect::OPENGL, "Invalid API");
-      return static_cast<mgl::platform::api::backends::ogl_api&>(api).get_context();
+      MGL_CORE_ASSERT(api.api() == render_api::dialect::METAL, "Invalid API");
+      return static_cast<mgl::platform::api::backends::metal_api&>(api).get_context();
     }
 
-public:
+private:
     virtual bool api_init() override final;
 
     virtual void api_shutdown() override final;
 
     virtual void api_update_window_size(const glm::ivec2& size) override final;
 
-    // Commands
-
-    virtual void api_begin_frame() override final;
-
-    virtual void api_end_frame() override final;
-
-    virtual void api_begin_render_pass() override final;
-
-    virtual void api_end_render_pass() override final;
-
-    virtual void api_clear(const glm::vec4& color) override final;
-    
     virtual void api_bind_screen_framebuffer() override final;
-
-    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) override final;
-
-    virtual void api_set_view_matrix(const glm::mat4& matrix) override final;
-
-    virtual void api_set_projection_matrix(const glm::mat4& matrix) override final;
 
     virtual void api_enable_scissor() override final;
 
@@ -60,6 +42,12 @@ public:
 
     virtual void api_disable_state(int32_t state) override final;
 
+    virtual void api_clear(const glm::vec4& color) override final;
+
+    virtual void api_set_viewport(const glm::vec2& position, const glm::vec2& size) override final;
+
+    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) override final;
+
     virtual void api_set_blend_equation(blend_equation_mode modeRGB,
                                         blend_equation_mode modeAlpha) override final;
 
@@ -68,9 +56,11 @@ public:
                                     blend_factor srcAlpha,
                                     blend_factor dstAlpha) override final;
 
-    virtual void api_clear_samplers(int32_t start = 0, int32_t end = -1) override final;
+    virtual void api_set_view_matrix(const glm::mat4& matrix) override final;
 
-    virtual void api_enable_program(const pipeline_ref& program) override final;
+    virtual void api_set_projection_matrix(const glm::mat4& matrix) override final;
+
+    virtual void api_enable_program(const program_ref& program) override final;
 
     virtual void api_set_program_uniform(const std::string& uniform, bool value) override final;
 
@@ -126,8 +116,6 @@ public:
 
     virtual void api_render_call(const render_batch_ref& batch) override final;
 
-    // GPU resources
-
     virtual index_buffer_ref
     api_create_index_buffer(size_t size, uint16_t element_size, bool dynamic) override final;
 
@@ -138,7 +126,7 @@ public:
 
     virtual buffer_ref api_create_buffer(size_t size, bool dynamic) override final;
 
-    virtual pipeline_ref api_create_program(const std::string& vs_source,
+    virtual program_ref api_create_program(const std::string& vs_source,
                                            const std::string& fs_source,
                                            const std::string& gs_source = "",
                                            const std::string& tes_source = "",
@@ -151,8 +139,8 @@ public:
                                                  int32_t samples = 0) override final;
 
 private:
-    mgl::platform::api::render_state m_state_data;
-    mgl::opengl::context_ref m_ctx;
+    mgl::platform::render_state m_state_data;
+    mgl::metal::context_ref m_ctx;
   };
 
 } // namespace mgl::platform::api::backends

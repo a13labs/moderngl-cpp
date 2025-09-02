@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl_platform/api/api.hpp"
+#include "mgl_platform/device.hpp"
 
 namespace mgl::platform::gpu
 {
@@ -74,7 +74,7 @@ private:
                                  int32_t offset,
                                  api::render_mode mode) = 0;
 
-    virtual void impl_draw(const api::render_batch_ref& batch) = 0;
+    virtual void impl_draw(const render_batch_ref& batch) = 0;
 
 public:
     static void begin_frame() { instance().impl_begin_frame(); }
@@ -266,7 +266,7 @@ public:
       instance().impl_draw(vertex_buffer, index_buffer, count, offset, mode);
     }
 
-    static void draw(const api::render_batch_ref& batch) { instance().impl_draw(batch); }
+    static void draw(const render_batch_ref& batch) { instance().impl_draw(batch); }
 
     // Singleton installation
     static commands& instance();

@@ -1,5 +1,5 @@
 #if defined(MGL_RENDER_OPENGL)
-#  include "mgl_platform/api/opengl/api.hpp"
+#  include "mgl_platform/api/opengl/device.hpp"
 #  include "mgl_platform/api/opengl/buffers.hpp"
 #  include "mgl_platform/api/opengl/pipeline.hpp"
 #  include "mgl_platform/api/opengl/textures.hpp"
@@ -345,7 +345,7 @@ namespace mgl::platform::api::backends
     return mgl::create_ref<ogl_texture_2d>(mgl::size{ width, height }, components, samples);
   }
 
-  void ogl_api::api_render_call(const mgl::platform::api::render_batch_ref& batch)
+  void ogl_api::api_render_call(const mgl::platform::render_batch_ref& batch)
   {
     MGL_CORE_ASSERT(m_ctx != nullptr, "[OpenGL API] Context is null.");
     MGL_CORE_ASSERT(m_state_data.current_pipeline, "No program bound");

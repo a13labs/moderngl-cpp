@@ -116,7 +116,7 @@ public:
               size_t count = 0,
               size_t offset = 0);
 
-    void draw(const mgl::platform::api::render_batch_ref& batch);
+    void draw(const mgl::platform::render_batch_ref& batch);
 
     void draw_text(const std::string& text,
                    const glm::vec2& position,

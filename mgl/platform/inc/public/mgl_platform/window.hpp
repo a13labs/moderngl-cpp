@@ -1,5 +1,5 @@
 #pragma once
-#include "api/api.hpp"
+#include "device.hpp"
 #include "event.hpp"
 #include "input.hpp"
 

@@ -231,7 +231,7 @@ namespace mgl::graphics
         vertex_array, index_buffer, mode, count, offset));
   }
 
-  void command_buffer::draw(const mgl::platform::api::render_batch_ref& batch)
+  void command_buffer::draw(const mgl::platform::render_batch_ref& batch)
   {
     submit(mgl::create_ref<mgl::graphics::draw_batch_command>(batch));
   }

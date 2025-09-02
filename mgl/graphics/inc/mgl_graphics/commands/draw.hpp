@@ -43,7 +43,7 @@ private:
   class draw_batch_command : public render_command
   {
 public:
-    draw_batch_command(const mgl::platform::api::render_batch_ref& batch)
+    draw_batch_command(const mgl::platform::render_batch_ref& batch)
         : m_batch(batch)
     { }
 
@@ -53,7 +53,7 @@ public:
     }
 
 private:
-    mgl::platform::api::render_batch_ref m_batch;
+    mgl::platform::render_batch_ref m_batch;
   };
 
 } // namespace mgl::graphics

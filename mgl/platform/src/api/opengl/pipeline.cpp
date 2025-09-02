@@ -1,6 +1,6 @@
 #if defined(MGL_RENDER_OPENGL)
 #  include "mgl_platform/api/opengl/pipeline.hpp"
-#  include "mgl_platform/api/opengl/api.hpp"
+#  include "mgl_platform/api/opengl/device.hpp"
 
 #  include "mgl_core/debug.hpp"
 

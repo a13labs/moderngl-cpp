@@ -1,6 +1,6 @@
 
 #include "mgl_opengl/context.hpp"
-#include "mgl_platform/api/opengl/api.hpp"
+#include "mgl_platform/api/opengl/device.hpp"
 #include "mgl_platform/window.hpp"
 
 class example : public mgl::platform::window

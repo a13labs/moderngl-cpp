@@ -64,7 +64,7 @@ namespace mgl::platform
       return;
     }
 
-    if(!mgl::platform::api::init_api())
+    if(!mgl::platform::init_device())
     {
       MGL_CORE_TRACE("[Window] Error initializing rendering API.");
       m_api_window->destroy_window();
@@ -109,7 +109,7 @@ namespace mgl::platform
 
     MGL_PROFILE_END_SESSION();
 
-    mgl::platform::api::shutdown_api();
+    mgl::platform::shutdown_device();
 
     m_api_window->destroy_window();
   }
@@ -121,7 +121,7 @@ namespace mgl::platform
       return true;
     }
     auto size = m_api_window->get_drawable_size();
-    mgl::platform::api::update_window_size(glm::vec2(size.width, size.height));
+    mgl::platform::update_window_size(glm::vec2(size.width, size.height));
     return true;
   }
 

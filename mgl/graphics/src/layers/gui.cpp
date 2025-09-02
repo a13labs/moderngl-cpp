@@ -263,7 +263,7 @@ namespace mgl::graphics::layers
         glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f));
 
     // Create a batch for GUI rendering
-    auto gui_batch = mgl::create_ref<mgl::platform::api::render_batch>(
+    auto gui_batch = mgl::create_ref<mgl::platform::render_batch>(
         vb, ib, nullptr, mgl::platform::api::render_mode::TRIANGLES);
 
     for(int32_t n = 0; n < draw_data->CmdListsCount; ++n)
